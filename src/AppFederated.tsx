@@ -1,12 +1,10 @@
 import React from 'react';
-import OBOverviewPage from '@app/OBOverview/OBOverviewPage/OBOverviewPage';
+import OBRoutes from '@app/OBRoutes/OBRoutes';
+import { useBasename } from '@rhoas/app-services-ui-shared';
 
 const AppFederated = () => {
-  return (
-    <>
-      <OBOverviewPage />
-    </>
-  );
+  const basename = useBasename();
+  return <OBRoutes baseName={basename?.getBasename()} />;
 };
 
 export default AppFederated;

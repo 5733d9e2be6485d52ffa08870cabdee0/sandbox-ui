@@ -13,8 +13,9 @@ import {
   Thead,
   Tr,
 } from '@patternfly/react-table';
+import { Link } from 'react-router-dom';
 
-const OBOverviewPage = () => {
+const OBInstancesListPage = () => {
   const columnNames = ['Name', 'ID', 'Creation date', 'Status'];
   const instances = [
     {
@@ -109,7 +110,9 @@ const OBOverviewPage = () => {
           <Tbody>
             {instances.map((instance) => (
               <Tr key={instance.id}>
-                <Td dataLabel={columnNames[0]}>{instance.name}</Td>
+                <Td dataLabel={columnNames[0]}>
+                  <Link to={`instance/${instance.id}`}>{instance.name}</Link>
+                </Td>
                 <Td
                   dataLabel={columnNames[1]}
                   style={{ fontFamily: 'monospace' }}
@@ -129,4 +132,4 @@ const OBOverviewPage = () => {
   );
 };
 
-export default OBOverviewPage;
+export default OBInstancesListPage;

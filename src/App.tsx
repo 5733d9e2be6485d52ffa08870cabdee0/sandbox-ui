@@ -1,14 +1,14 @@
 import React from 'react';
-import { AppLayout } from '@app/components/AppLayout/AppLayout';
-import { BrowserRouter } from 'react-router-dom';
 import '@patternfly/patternfly/patternfly.css';
-import OBOverviewPage from '@app/OBOverview/OBOverviewPage/OBOverviewPage';
+import { BrowserRouter } from 'react-router-dom';
+import { AppLayout } from '@app/components/AppLayout/AppLayout';
+import OBRoutes from '@app/OBRoutes/OBRoutes';
 
 const App = () => {
   return (
     <BrowserRouter>
       <AppLayout>
-        <OBOverviewPage />
+        <OBRoutes />
       </AppLayout>
     </BrowserRouter>
   );

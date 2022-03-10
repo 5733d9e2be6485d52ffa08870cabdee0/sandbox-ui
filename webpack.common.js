@@ -98,12 +98,6 @@ module.exports = (env, argv) => {
         systemvars: true,
         silent: true,
       }),
-      // new CopyPlugin({
-      //   patterns: [{ from: './favicon.png', to: 'images' }],
-      // }),
-      // new CopyPlugin({
-      //   patterns: [{ from: './locales', to: 'locales' }],
-      // }),
       new MiniCssExtractPlugin({
         filename: '[name].[contenthash:8].css',
         chunkFilename: '[contenthash:8].css',
@@ -144,8 +138,16 @@ module.exports = (env, argv) => {
             eager: true,
             requiredVersion: dependencies['react-router-dom'],
           },
-          '@rhoas/app-services-ui-shared': {
+          'react-i18next': {
             eager: true,
+            singleton: true,
+            requiredVersion: dependencies['react-i18next'],
+          },
+          '@rhoas/app-services-ui-components': {
+            singleton: true,
+            requiredVersion: dependencies['@rhoas/app-services-ui-components'],
+          },
+          '@rhoas/app-services-ui-shared': {
             singleton: true,
             requiredVersion: dependencies['@rhoas/app-services-ui-shared'],
           },

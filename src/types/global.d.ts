@@ -8,6 +8,10 @@ declare module '*.svg' {
   const content: any;
   export default content;
 }
+declare module '*.json' {
+  const value: any;
+  export default value;
+}
 
 declare function __webpack_init_sharing__(s: string): Promise<void>;
 declare const __webpack_share_scopes__: { [key: string]: any };

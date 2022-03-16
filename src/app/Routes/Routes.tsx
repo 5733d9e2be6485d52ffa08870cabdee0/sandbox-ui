@@ -1,24 +1,24 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import OBInstancePage from '@app/OBInstance/OBInstancePage/OBInstancePage';
-import OBInstancesListPage from '@app/OBInstance/OBInstancesListPage/OBInstancesListPage';
+import InstancePage from '@app/Instance/InstancePage/InstancePage';
+import InstancesListPage from '@app/Instance/InstancesListPage/InstancesListPage';
 
-interface OBRoutesProps {
+interface RoutesProps {
   /** Used as BrowserRouter basename*/
   baseName?: string;
 }
 
-const OBRoutes = (props: OBRoutesProps) => {
+const Routes = (props: RoutesProps) => {
   const { baseName = '' } = props;
 
   return (
     <BrowserRouter basename={baseName}>
       <Switch>
         <Route exact path={'/'}>
-          <OBInstancesListPage />
+          <InstancesListPage />
         </Route>
         <Route path={`/instance/:id`}>
-          <OBInstancePage />
+          <InstancePage />
         </Route>
         <Route path="*">
           <>
@@ -30,4 +30,4 @@ const OBRoutes = (props: OBRoutesProps) => {
   );
 };
 
-export default OBRoutes;
+export default Routes;

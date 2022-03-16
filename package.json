@@ -1,7 +1,7 @@
 {
-  "name": "openbridge-ui",
+  "name": "smartevents-ui",
   "version": "0.0.1",
-  "federatedModuleName": "openbridge",
+  "federatedModuleName": "smartevents",
   "private": true,
   "scripts": {
     "build": "FEDERATE=1 webpack --mode production --config webpack.prod.js",

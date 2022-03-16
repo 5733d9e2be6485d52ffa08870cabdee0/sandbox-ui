@@ -16,7 +16,7 @@ import {
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-const OBInstancesListPage = () => {
+const InstancesListPage = () => {
   const columnNames = ['Name', 'ID', 'Creation date', 'Status'];
   const instances = [
     {
@@ -137,4 +137,4 @@ const OBInstancesListPage = () => {
   );
 };
 
-export default OBInstancesListPage;
+export default InstancesListPage;

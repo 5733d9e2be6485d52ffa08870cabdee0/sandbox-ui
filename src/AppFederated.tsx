@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import OBRoutes from '@app/OBRoutes/OBRoutes';
+import Routes from '@app/Routes/Routes';
 import { useBasename } from '@rhoas/app-services-ui-shared';
 import {
   AppServicesLoading,
@@ -30,7 +30,7 @@ const AppFederated = () => {
         debug={true}
       >
         <Suspense fallback={<AppServicesLoading />}>
-          <OBRoutes baseName={basename?.getBasename()} />
+          <Routes baseName={basename?.getBasename()} />
         </Suspense>
       </I18nProvider>
     </>

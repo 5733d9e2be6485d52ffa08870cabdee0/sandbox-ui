@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import '@patternfly/patternfly/patternfly.css';
 import { AppLayout } from '@app/components/AppLayout/AppLayout';
-import OBRoutes from '@app/OBRoutes/OBRoutes';
+import Routes from '@app/Routes/Routes';
 import {
   AppServicesLoading,
   I18nProvider,
@@ -25,7 +25,7 @@ const App = () => {
       <Suspense fallback={<AppServicesLoading />}>
         <BrowserRouter>
           <AppLayout>
-            <OBRoutes />
+            <Routes />
           </AppLayout>
         </BrowserRouter>
       </Suspense>

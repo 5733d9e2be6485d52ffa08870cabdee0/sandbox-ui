@@ -2,7 +2,7 @@
 
 # Sandbox UI
 
-Sandbox UI for the bridge application.
+Sandbox UI for the smartevents application.
 
 ## Prerequisites
 * Node 16
@@ -26,4 +26,4 @@ npm install
 npm run start:federate
 ```
 
-This will run a dev server on http://localhost:9006 that will serve a federated module named `openbridge`.
+This will run a dev server on http://localhost:9006 that will serve a federated module named `smartevents`.

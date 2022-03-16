@@ -15,7 +15,7 @@ import {
 } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
 
-const OBInstancesListPage = () => {
+const InstancesListPage = () => {
   const columnNames = ['Name', 'ID', 'Creation date', 'Status'];
   const instances = [
     {
@@ -132,4 +132,4 @@ const OBInstancesListPage = () => {
   );
 };
 
-export default OBInstancesListPage;
+export default InstancesListPage;

@@ -1,10 +1,10 @@
 import React from 'react';
-import OBRoutes from '@app/OBRoutes/OBRoutes';
+import Routes from '@app/Routes/Routes';
 import { useBasename } from '@rhoas/app-services-ui-shared';
 
 const AppFederated = () => {
   const basename = useBasename();
-  return <OBRoutes baseName={basename?.getBasename()} />;
+  return <Routes baseName={basename?.getBasename()} />;
 };
 
 export default AppFederated;

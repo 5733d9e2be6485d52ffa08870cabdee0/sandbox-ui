@@ -55,7 +55,7 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
       <NavList id="nav-list-simple">
         <NavItem id={'connectors'}>
           <NavLink to={'/'} activeClassName="pf-m-current">
-            OpenBridge
+            SmartEvents
           </NavLink>
         </NavItem>
       </NavList>

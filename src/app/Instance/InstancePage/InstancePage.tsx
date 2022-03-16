@@ -6,7 +6,7 @@ import {
   TextContent,
 } from '@patternfly/react-core';
 
-const OBInstancePage = () => {
+const InstancePage = () => {
   return (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -25,4 +25,4 @@ const OBInstancePage = () => {
   );
 };
 
-export default OBInstancePage;
+export default InstancePage;

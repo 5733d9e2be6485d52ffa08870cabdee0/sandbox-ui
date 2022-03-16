@@ -27,3 +27,18 @@ npm run start:federate
 ```
 
 This will run a dev server on http://localhost:9006 that will serve a federated module named `smartevents`.
+
+## OpenAPI TS SDK 
+
+The OpenAPI SDK is located in the `openapi/generated` directory.
+
+It's possible to generate a fresh SDK by running:
+
+```sh
+npm run fetch-openapi
+npm run generate-openapi
+```
+
+The first script will download the OpenAPI spec from the `sandbox` repo, replacing `openapi/smart-events.yml`.
+
+The second one will delete the existing SDK and generate a new one.

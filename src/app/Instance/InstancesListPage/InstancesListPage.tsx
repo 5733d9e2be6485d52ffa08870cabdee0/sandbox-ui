@@ -14,6 +14,7 @@ import {
   Tr,
 } from '@patternfly/react-table';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const InstancesListPage = () => {
   const columnNames = ['Name', 'ID', 'Creation date', 'Status'];
@@ -91,11 +92,15 @@ const InstancesListPage = () => {
       status: 'Ready',
     },
   ];
+  const { t } = useTranslation();
+
   return (
     <>
       <PageSection variant={PageSectionVariants.light}>
         <TextContent>
-          <Text component="h1">Demo Overview</Text>
+          <Text component="h1">
+            {t('openbridgeTempDictionary:demoOverview')}
+          </Text>
         </TextContent>
       </PageSection>
       <PageSection>

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-openapi_filename="openapi/smart-events.yaml"
-output_path="openapi/generated"
+openapi_filename=$(dirname $0)/../openapi/smart-events.yaml
+output_path=$(dirname $0)/../openapi/generated
 package_name="smart-events"
 additional_properties="ngVersion=6.1.7,npmName=${package_name},supportsES6=true,withInterfaces=true,withSeparateModelsAndApi=true,modelPackage=model,apiPackage=api"
 
@@ -26,5 +26,4 @@ echo "Generating source code based on ${openapi_filename}"
 npx --yes @openapitools/openapi-generator-cli generate -g typescript-axios -i \
 "$openapi_filename" -o "$output_path" \
 --package-name=$package_name \
---additional-properties=$additional_properties \
---ignore-file-override=.openapi-generator-ignore
+--additional-properties=$additional_properties

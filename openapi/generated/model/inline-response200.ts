@@ -13,38 +13,43 @@
  */
 
 
-import { BaseAction } from './base-action';
-import { BaseFilter } from './base-filter';
+import { BridgeResponse } from './bridge-response';
 
 /**
  * 
  * @export
- * @interface ProcessorRequest
+ * @interface InlineResponse200
  */
-export interface ProcessorRequest {
+export interface InlineResponse200 {
     /**
      * 
      * @type {string}
-     * @memberof ProcessorRequest
+     * @memberof InlineResponse200
      */
-    'name': string;
+    'kind'?: string;
     /**
      * 
-     * @type {Set<BaseFilter>}
-     * @memberof ProcessorRequest
+     * @type {Array<BridgeResponse>}
+     * @memberof InlineResponse200
      */
-    'filters'?: Set<BaseFilter>;
+    'items'?: Array<BridgeResponse>;
     /**
      * 
-     * @type {string}
-     * @memberof ProcessorRequest
+     * @type {number}
+     * @memberof InlineResponse200
      */
-    'transformationTemplate'?: string;
+    'page'?: number;
     /**
      * 
-     * @type {BaseAction}
-     * @memberof ProcessorRequest
+     * @type {number}
+     * @memberof InlineResponse200
      */
-    'action': BaseAction;
+    'size'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse200
+     */
+    'total'?: number;
 }
 

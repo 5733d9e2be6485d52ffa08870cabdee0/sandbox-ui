@@ -8,6 +8,9 @@
     "start": "webpack serve --https --host prod.foo.redhat.com --port 1337 --hot --config webpack.dev.js",
     "start:federate": "webpack serve --host localhost --port 9006 --config webpack.dev.js",
     "test": "jest --silent --verbose --passWithNoTests",
+    "lint": ": eslint . -c .eslintrc.js --ext .js,.jsx,.ts,.tsx --ignore-pattern node_modules",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "fetch-openapi": "./scripts/fetch_openapi.sh",
     "generate-openapi": "./scripts/generate_openapi_client.sh"
   },

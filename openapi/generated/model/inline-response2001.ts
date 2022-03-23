@@ -13,42 +13,43 @@
  */
 
 
+import { ProcessorResponse } from './processor-response';
 
 /**
  * 
  * @export
- * @interface KafkaConnectionDTO
+ * @interface InlineResponse2001
  */
-export interface KafkaConnectionDTO {
+export interface InlineResponse2001 {
     /**
      * 
      * @type {string}
-     * @memberof KafkaConnectionDTO
+     * @memberof InlineResponse2001
      */
-    'bootstrapServers'?: string;
+    'kind'?: string;
     /**
      * 
-     * @type {string}
-     * @memberof KafkaConnectionDTO
+     * @type {Array<ProcessorResponse>}
+     * @memberof InlineResponse2001
      */
-    'clientId'?: string;
+    'items'?: Array<ProcessorResponse>;
     /**
      * 
-     * @type {string}
-     * @memberof KafkaConnectionDTO
+     * @type {number}
+     * @memberof InlineResponse2001
      */
-    'clientSecret'?: string;
+    'page'?: number;
     /**
      * 
-     * @type {string}
-     * @memberof KafkaConnectionDTO
+     * @type {number}
+     * @memberof InlineResponse2001
      */
-    'securityProtocol'?: string;
+    'size'?: number;
     /**
      * 
-     * @type {string}
-     * @memberof KafkaConnectionDTO
+     * @type {number}
+     * @memberof InlineResponse2001
      */
-    'topic'?: string;
+    'total'?: number;
 }
 

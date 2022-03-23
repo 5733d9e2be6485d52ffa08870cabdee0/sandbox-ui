@@ -13,38 +13,37 @@
  */
 
 
-import { BaseAction } from './base-action';
-import { BaseFilter } from './base-filter';
+import { BridgeErrorType } from './bridge-error-type';
 
 /**
  * 
  * @export
- * @interface ProcessorRequest
+ * @interface InlineResponse2003
  */
-export interface ProcessorRequest {
+export interface InlineResponse2003 {
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse2003
+     */
+    'id'?: number;
     /**
      * 
      * @type {string}
-     * @memberof ProcessorRequest
+     * @memberof InlineResponse2003
      */
-    'name': string;
-    /**
-     * 
-     * @type {Set<BaseFilter>}
-     * @memberof ProcessorRequest
-     */
-    'filters'?: Set<BaseFilter>;
+    'code'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ProcessorRequest
+     * @memberof InlineResponse2003
      */
-    'transformationTemplate'?: string;
+    'reason'?: string;
     /**
      * 
-     * @type {BaseAction}
-     * @memberof ProcessorRequest
+     * @type {BridgeErrorType}
+     * @memberof InlineResponse2003
      */
-    'action': BaseAction;
+    'type'?: BridgeErrorType;
 }
 

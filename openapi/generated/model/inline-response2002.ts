@@ -13,38 +13,43 @@
  */
 
 
-import { BaseAction } from './base-action';
-import { BaseFilter } from './base-filter';
+import { ErrorResponse } from './error-response';
 
 /**
  * 
  * @export
- * @interface ProcessorRequest
+ * @interface InlineResponse2002
  */
-export interface ProcessorRequest {
+export interface InlineResponse2002 {
     /**
      * 
      * @type {string}
-     * @memberof ProcessorRequest
+     * @memberof InlineResponse2002
      */
-    'name': string;
+    'kind'?: string;
     /**
      * 
-     * @type {Set<BaseFilter>}
-     * @memberof ProcessorRequest
+     * @type {Array<ErrorResponse>}
+     * @memberof InlineResponse2002
      */
-    'filters'?: Set<BaseFilter>;
+    'items'?: Array<ErrorResponse>;
     /**
      * 
-     * @type {string}
-     * @memberof ProcessorRequest
+     * @type {number}
+     * @memberof InlineResponse2002
      */
-    'transformationTemplate'?: string;
+    'page'?: number;
     /**
      * 
-     * @type {BaseAction}
-     * @memberof ProcessorRequest
+     * @type {number}
+     * @memberof InlineResponse2002
      */
-    'action': BaseAction;
+    'size'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof InlineResponse2002
+     */
+    'total'?: number;
 }
 

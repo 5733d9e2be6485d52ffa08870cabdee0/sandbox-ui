@@ -25,10 +25,10 @@ import { BridgeDTO } from '../model';
 // @ts-ignore
 import { ProcessorDTO } from '../model';
 /**
- * ShardAPISdk - axios parameter creator
+ * ShardApi - axios parameter creator
  * @export
  */
-export const ShardAPISdkAxiosParamCreator = function (configuration?: Configuration) {
+export const ShardApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * Get Bridge instances to be processed by a shard.
@@ -178,11 +178,11 @@ export const ShardAPISdkAxiosParamCreator = function (configuration?: Configurat
 };
 
 /**
- * ShardAPISdk - functional programming interface
+ * ShardApi - functional programming interface
  * @export
  */
-export const ShardAPISdkFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = ShardAPISdkAxiosParamCreator(configuration)
+export const ShardApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ShardApiAxiosParamCreator(configuration)
     return {
         /**
          * Get Bridge instances to be processed by a shard.
@@ -230,11 +230,11 @@ export const ShardAPISdkFp = function(configuration?: Configuration) {
 };
 
 /**
- * ShardAPISdk - factory interface
+ * ShardApi - factory interface
  * @export
  */
-export const ShardAPISdkFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = ShardAPISdkFp(configuration)
+export const ShardApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ShardApiFp(configuration)
     return {
         /**
          * Get Bridge instances to be processed by a shard.
@@ -278,17 +278,17 @@ export const ShardAPISdkFactory = function (configuration?: Configuration, baseP
 };
 
 /**
- * ShardAPISdk - interface
+ * ShardApi - interface
  * @export
- * @interface ShardAPISdk
+ * @interface ShardApi
  */
-export interface ShardAPISdkInterface {
+export interface ShardApiInterface {
     /**
      * Get Bridge instances to be processed by a shard.
      * @summary Get Bridge instances to be processed by a shard.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ShardAPISdkInterface
+     * @memberof ShardApiInterface
      */
     shardBridgesSyncAPIGetBridges(options?: AxiosRequestConfig): AxiosPromise<Array<BridgeDTO>>;
 
@@ -297,7 +297,7 @@ export interface ShardAPISdkInterface {
      * @summary Get Processors to be processed by a shard.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ShardAPISdkInterface
+     * @memberof ShardApiInterface
      */
     shardBridgesSyncAPIGetProcessors(options?: AxiosRequestConfig): AxiosPromise<Array<ProcessorDTO>>;
 
@@ -307,7 +307,7 @@ export interface ShardAPISdkInterface {
      * @param {BridgeDTO} [bridgeDTO] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ShardAPISdkInterface
+     * @memberof ShardApiInterface
      */
     shardBridgesSyncAPIUpdateBridge(bridgeDTO?: BridgeDTO, options?: AxiosRequestConfig): AxiosPromise<void>;
 
@@ -317,28 +317,28 @@ export interface ShardAPISdkInterface {
      * @param {ProcessorDTO} [processorDTO] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ShardAPISdkInterface
+     * @memberof ShardApiInterface
      */
     shardBridgesSyncAPIUpdateProcessorStatus(processorDTO?: ProcessorDTO, options?: AxiosRequestConfig): AxiosPromise<void>;
 
 }
 
 /**
- * ShardAPISdk - object-oriented interface
+ * ShardApi - object-oriented interface
  * @export
- * @class ShardAPISdk
+ * @class ShardApi
  * @extends {BaseAPI}
  */
-export class ShardAPISdk extends BaseAPI implements ShardAPISdkInterface {
+export class ShardApi extends BaseAPI implements ShardApiInterface {
     /**
      * Get Bridge instances to be processed by a shard.
      * @summary Get Bridge instances to be processed by a shard.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ShardAPISdk
+     * @memberof ShardApi
      */
     public shardBridgesSyncAPIGetBridges(options?: AxiosRequestConfig) {
-        return ShardAPISdkFp(this.configuration).shardBridgesSyncAPIGetBridges(options).then((request) => request(this.axios, this.basePath));
+        return ShardApiFp(this.configuration).shardBridgesSyncAPIGetBridges(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -346,10 +346,10 @@ export class ShardAPISdk extends BaseAPI implements ShardAPISdkInterface {
      * @summary Get Processors to be processed by a shard.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ShardAPISdk
+     * @memberof ShardApi
      */
     public shardBridgesSyncAPIGetProcessors(options?: AxiosRequestConfig) {
-        return ShardAPISdkFp(this.configuration).shardBridgesSyncAPIGetProcessors(options).then((request) => request(this.axios, this.basePath));
+        return ShardApiFp(this.configuration).shardBridgesSyncAPIGetProcessors(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -358,10 +358,10 @@ export class ShardAPISdk extends BaseAPI implements ShardAPISdkInterface {
      * @param {BridgeDTO} [bridgeDTO] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ShardAPISdk
+     * @memberof ShardApi
      */
     public shardBridgesSyncAPIUpdateBridge(bridgeDTO?: BridgeDTO, options?: AxiosRequestConfig) {
-        return ShardAPISdkFp(this.configuration).shardBridgesSyncAPIUpdateBridge(bridgeDTO, options).then((request) => request(this.axios, this.basePath));
+        return ShardApiFp(this.configuration).shardBridgesSyncAPIUpdateBridge(bridgeDTO, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -370,9 +370,9 @@ export class ShardAPISdk extends BaseAPI implements ShardAPISdkInterface {
      * @param {ProcessorDTO} [processorDTO] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ShardAPISdk
+     * @memberof ShardApi
      */
     public shardBridgesSyncAPIUpdateProcessorStatus(processorDTO?: ProcessorDTO, options?: AxiosRequestConfig) {
-        return ShardAPISdkFp(this.configuration).shardBridgesSyncAPIUpdateProcessorStatus(processorDTO, options).then((request) => request(this.axios, this.basePath));
+        return ShardApiFp(this.configuration).shardBridgesSyncAPIUpdateProcessorStatus(processorDTO, options).then((request) => request(this.axios, this.basePath));
     }
 }

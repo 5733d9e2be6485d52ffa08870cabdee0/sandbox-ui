@@ -14,8 +14,8 @@
 
 
 
-export * from './api/bridges-apisdk';
-export * from './api/errors-catalog-apisdk';
-export * from './api/processors-apisdk';
-export * from './api/shard-apisdk';
+export * from './api/bridges-api';
+export * from './api/error-catalog-api';
+export * from './api/processors-api';
+export * from './api/shard-api';
 

@@ -27,10 +27,10 @@ import { InlineResponse200 } from '../model';
 // @ts-ignore
 import { InlineResponse202 } from '../model';
 /**
- * BridgesAPISdk - axios parameter creator
+ * BridgesApi - axios parameter creator
  * @export
  */
-export const BridgesAPISdkAxiosParamCreator = function (configuration?: Configuration) {
+export const BridgesApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * Create a Bridge instance for the authenticated user.
@@ -194,11 +194,11 @@ export const BridgesAPISdkAxiosParamCreator = function (configuration?: Configur
 };
 
 /**
- * BridgesAPISdk - functional programming interface
+ * BridgesApi - functional programming interface
  * @export
  */
-export const BridgesAPISdkFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = BridgesAPISdkAxiosParamCreator(configuration)
+export const BridgesApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BridgesApiAxiosParamCreator(configuration)
     return {
         /**
          * Create a Bridge instance for the authenticated user.
@@ -249,11 +249,11 @@ export const BridgesAPISdkFp = function(configuration?: Configuration) {
 };
 
 /**
- * BridgesAPISdk - factory interface
+ * BridgesApi - factory interface
  * @export
  */
-export const BridgesAPISdkFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = BridgesAPISdkFp(configuration)
+export const BridgesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BridgesApiFp(configuration)
     return {
         /**
          * Create a Bridge instance for the authenticated user.
@@ -300,18 +300,18 @@ export const BridgesAPISdkFactory = function (configuration?: Configuration, bas
 };
 
 /**
- * BridgesAPISdk - interface
+ * BridgesApi - interface
  * @export
- * @interface BridgesAPISdk
+ * @interface BridgesApi
  */
-export interface BridgesAPISdkInterface {
+export interface BridgesApiInterface {
     /**
      * Create a Bridge instance for the authenticated user.
      * @summary Create a Bridge instance
      * @param {BridgeRequest} [bridgeRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof BridgesAPISdkInterface
+     * @memberof BridgesApiInterface
      */
     bridgesAPICreateBridge(bridgeRequest?: BridgeRequest, options?: AxiosRequestConfig): AxiosPromise<InlineResponse202>;
 
@@ -321,7 +321,7 @@ export interface BridgesAPISdkInterface {
      * @param {string} bridgeId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof BridgesAPISdkInterface
+     * @memberof BridgesApiInterface
      */
     bridgesAPIDeleteBridge(bridgeId: string, options?: AxiosRequestConfig): AxiosPromise<void>;
 
@@ -331,7 +331,7 @@ export interface BridgesAPISdkInterface {
      * @param {string} bridgeId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof BridgesAPISdkInterface
+     * @memberof BridgesApiInterface
      */
     bridgesAPIGetBridge(bridgeId: string, options?: AxiosRequestConfig): AxiosPromise<InlineResponse202>;
 
@@ -342,29 +342,29 @@ export interface BridgesAPISdkInterface {
      * @param {number} [size] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof BridgesAPISdkInterface
+     * @memberof BridgesApiInterface
      */
     bridgesAPIGetBridges(page?: number, size?: number, options?: AxiosRequestConfig): AxiosPromise<InlineResponse200>;
 
 }
 
 /**
- * BridgesAPISdk - object-oriented interface
+ * BridgesApi - object-oriented interface
  * @export
- * @class BridgesAPISdk
+ * @class BridgesApi
  * @extends {BaseAPI}
  */
-export class BridgesAPISdk extends BaseAPI implements BridgesAPISdkInterface {
+export class BridgesApi extends BaseAPI implements BridgesApiInterface {
     /**
      * Create a Bridge instance for the authenticated user.
      * @summary Create a Bridge instance
      * @param {BridgeRequest} [bridgeRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof BridgesAPISdk
+     * @memberof BridgesApi
      */
     public bridgesAPICreateBridge(bridgeRequest?: BridgeRequest, options?: AxiosRequestConfig) {
-        return BridgesAPISdkFp(this.configuration).bridgesAPICreateBridge(bridgeRequest, options).then((request) => request(this.axios, this.basePath));
+        return BridgesApiFp(this.configuration).bridgesAPICreateBridge(bridgeRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -373,10 +373,10 @@ export class BridgesAPISdk extends BaseAPI implements BridgesAPISdkInterface {
      * @param {string} bridgeId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof BridgesAPISdk
+     * @memberof BridgesApi
      */
     public bridgesAPIDeleteBridge(bridgeId: string, options?: AxiosRequestConfig) {
-        return BridgesAPISdkFp(this.configuration).bridgesAPIDeleteBridge(bridgeId, options).then((request) => request(this.axios, this.basePath));
+        return BridgesApiFp(this.configuration).bridgesAPIDeleteBridge(bridgeId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -385,10 +385,10 @@ export class BridgesAPISdk extends BaseAPI implements BridgesAPISdkInterface {
      * @param {string} bridgeId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof BridgesAPISdk
+     * @memberof BridgesApi
      */
     public bridgesAPIGetBridge(bridgeId: string, options?: AxiosRequestConfig) {
-        return BridgesAPISdkFp(this.configuration).bridgesAPIGetBridge(bridgeId, options).then((request) => request(this.axios, this.basePath));
+        return BridgesApiFp(this.configuration).bridgesAPIGetBridge(bridgeId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -398,9 +398,9 @@ export class BridgesAPISdk extends BaseAPI implements BridgesAPISdkInterface {
      * @param {number} [size] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof BridgesAPISdk
+     * @memberof BridgesApi
      */
     public bridgesAPIGetBridges(page?: number, size?: number, options?: AxiosRequestConfig) {
-        return BridgesAPISdkFp(this.configuration).bridgesAPIGetBridges(page, size, options).then((request) => request(this.axios, this.basePath));
+        return BridgesApiFp(this.configuration).bridgesAPIGetBridges(page, size, options).then((request) => request(this.axios, this.basePath));
     }
 }

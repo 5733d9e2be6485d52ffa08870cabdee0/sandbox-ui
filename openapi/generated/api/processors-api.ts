@@ -27,10 +27,10 @@ import { InlineResponse2021 } from '../model';
 // @ts-ignore
 import { ProcessorRequest } from '../model';
 /**
- * ProcessorsAPISdk - axios parameter creator
+ * ProcessorsApi - axios parameter creator
  * @export
  */
-export const ProcessorsAPISdkAxiosParamCreator = function (configuration?: Configuration) {
+export const ProcessorsApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * Create a Processor of a Bridge instance for the authenticated user.
@@ -210,11 +210,11 @@ export const ProcessorsAPISdkAxiosParamCreator = function (configuration?: Confi
 };
 
 /**
- * ProcessorsAPISdk - functional programming interface
+ * ProcessorsApi - functional programming interface
  * @export
  */
-export const ProcessorsAPISdkFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = ProcessorsAPISdkAxiosParamCreator(configuration)
+export const ProcessorsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ProcessorsApiAxiosParamCreator(configuration)
     return {
         /**
          * Create a Processor of a Bridge instance for the authenticated user.
@@ -269,11 +269,11 @@ export const ProcessorsAPISdkFp = function(configuration?: Configuration) {
 };
 
 /**
- * ProcessorsAPISdk - factory interface
+ * ProcessorsApi - factory interface
  * @export
  */
-export const ProcessorsAPISdkFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = ProcessorsAPISdkFp(configuration)
+export const ProcessorsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ProcessorsApiFp(configuration)
     return {
         /**
          * Create a Processor of a Bridge instance for the authenticated user.
@@ -324,11 +324,11 @@ export const ProcessorsAPISdkFactory = function (configuration?: Configuration, 
 };
 
 /**
- * ProcessorsAPISdk - interface
+ * ProcessorsApi - interface
  * @export
- * @interface ProcessorsAPISdk
+ * @interface ProcessorsApi
  */
-export interface ProcessorsAPISdkInterface {
+export interface ProcessorsApiInterface {
     /**
      * Create a Processor of a Bridge instance for the authenticated user.
      * @summary Create a Processor of a Bridge instance
@@ -336,7 +336,7 @@ export interface ProcessorsAPISdkInterface {
      * @param {ProcessorRequest} [processorRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ProcessorsAPISdkInterface
+     * @memberof ProcessorsApiInterface
      */
     processorsAPIAddProcessorToBridge(bridgeId: string, processorRequest?: ProcessorRequest, options?: AxiosRequestConfig): AxiosPromise<InlineResponse2021>;
 
@@ -347,7 +347,7 @@ export interface ProcessorsAPISdkInterface {
      * @param {string} processorId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ProcessorsAPISdkInterface
+     * @memberof ProcessorsApiInterface
      */
     processorsAPIDeleteProcessor(bridgeId: string, processorId: string, options?: AxiosRequestConfig): AxiosPromise<void>;
 
@@ -358,7 +358,7 @@ export interface ProcessorsAPISdkInterface {
      * @param {string} processorId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ProcessorsAPISdkInterface
+     * @memberof ProcessorsApiInterface
      */
     processorsAPIGetProcessor(bridgeId: string, processorId: string, options?: AxiosRequestConfig): AxiosPromise<InlineResponse2021>;
 
@@ -370,19 +370,19 @@ export interface ProcessorsAPISdkInterface {
      * @param {number} [size] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ProcessorsAPISdkInterface
+     * @memberof ProcessorsApiInterface
      */
     processorsAPIListProcessors(bridgeId: string, page?: number, size?: number, options?: AxiosRequestConfig): AxiosPromise<InlineResponse2001>;
 
 }
 
 /**
- * ProcessorsAPISdk - object-oriented interface
+ * ProcessorsApi - object-oriented interface
  * @export
- * @class ProcessorsAPISdk
+ * @class ProcessorsApi
  * @extends {BaseAPI}
  */
-export class ProcessorsAPISdk extends BaseAPI implements ProcessorsAPISdkInterface {
+export class ProcessorsApi extends BaseAPI implements ProcessorsApiInterface {
     /**
      * Create a Processor of a Bridge instance for the authenticated user.
      * @summary Create a Processor of a Bridge instance
@@ -390,10 +390,10 @@ export class ProcessorsAPISdk extends BaseAPI implements ProcessorsAPISdkInterfa
      * @param {ProcessorRequest} [processorRequest] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ProcessorsAPISdk
+     * @memberof ProcessorsApi
      */
     public processorsAPIAddProcessorToBridge(bridgeId: string, processorRequest?: ProcessorRequest, options?: AxiosRequestConfig) {
-        return ProcessorsAPISdkFp(this.configuration).processorsAPIAddProcessorToBridge(bridgeId, processorRequest, options).then((request) => request(this.axios, this.basePath));
+        return ProcessorsApiFp(this.configuration).processorsAPIAddProcessorToBridge(bridgeId, processorRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -403,10 +403,10 @@ export class ProcessorsAPISdk extends BaseAPI implements ProcessorsAPISdkInterfa
      * @param {string} processorId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ProcessorsAPISdk
+     * @memberof ProcessorsApi
      */
     public processorsAPIDeleteProcessor(bridgeId: string, processorId: string, options?: AxiosRequestConfig) {
-        return ProcessorsAPISdkFp(this.configuration).processorsAPIDeleteProcessor(bridgeId, processorId, options).then((request) => request(this.axios, this.basePath));
+        return ProcessorsApiFp(this.configuration).processorsAPIDeleteProcessor(bridgeId, processorId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -416,10 +416,10 @@ export class ProcessorsAPISdk extends BaseAPI implements ProcessorsAPISdkInterfa
      * @param {string} processorId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ProcessorsAPISdk
+     * @memberof ProcessorsApi
      */
     public processorsAPIGetProcessor(bridgeId: string, processorId: string, options?: AxiosRequestConfig) {
-        return ProcessorsAPISdkFp(this.configuration).processorsAPIGetProcessor(bridgeId, processorId, options).then((request) => request(this.axios, this.basePath));
+        return ProcessorsApiFp(this.configuration).processorsAPIGetProcessor(bridgeId, processorId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -430,9 +430,9 @@ export class ProcessorsAPISdk extends BaseAPI implements ProcessorsAPISdkInterfa
      * @param {number} [size] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ProcessorsAPISdk
+     * @memberof ProcessorsApi
      */
     public processorsAPIListProcessors(bridgeId: string, page?: number, size?: number, options?: AxiosRequestConfig) {
-        return ProcessorsAPISdkFp(this.configuration).processorsAPIListProcessors(bridgeId, page, size, options).then((request) => request(this.axios, this.basePath));
+        return ProcessorsApiFp(this.configuration).processorsAPIListProcessors(bridgeId, page, size, options).then((request) => request(this.axios, this.basePath));
     }
 }

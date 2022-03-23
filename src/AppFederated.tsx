@@ -1,10 +1,10 @@
-import React, { Suspense } from 'react';
-import Routes from '@app/Routes/Routes';
-import { useBasename } from '@rhoas/app-services-ui-shared';
+import React, { Suspense } from "react";
+import Routes from "@app/Routes/Routes";
+import { useBasename } from "@rhoas/app-services-ui-shared";
 import {
   AppServicesLoading,
   I18nProvider,
-} from '@rhoas/app-services-ui-components';
+} from "@rhoas/app-services-ui-components";
 
 const AppFederated = () => {
   const basename = useBasename();
@@ -21,10 +21,10 @@ const AppFederated = () => {
           en: {
             common: () =>
               import(
-                '@rhoas/app-services-ui-components/locales/en/common.json'
+                "@rhoas/app-services-ui-components/locales/en/common.json"
               ),
             openbridgeTempDictionary: () =>
-              import('../locales/en/openbridge.json'),
+              import("../locales/en/openbridge.json"),
           },
         }}
         debug={true}

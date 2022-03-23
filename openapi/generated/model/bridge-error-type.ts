@@ -17,14 +17,15 @@
 /**
  * 
  * @export
- * @interface BridgeRequest
+ * @enum {string}
  */
-export interface BridgeRequest {
-    /**
-     * 
-     * @type {string}
-     * @memberof BridgeRequest
-     */
-    'name': string;
-}
+
+export const BridgeErrorType = {
+    Platform: 'PLATFORM',
+    User: 'USER'
+} as const;
+
+export type BridgeErrorType = typeof BridgeErrorType[keyof typeof BridgeErrorType];
+
+
 

@@ -13,50 +13,48 @@
  */
 
 
-import { KafkaConnectionDTO } from './kafka-connection-dto';
-import { ManagedResourceStatus } from './managed-resource-status';
 
 /**
  * 
  * @export
- * @interface BridgeDTO
+ * @interface ErrorResponse
  */
-export interface BridgeDTO {
+export interface ErrorResponse {
     /**
      * 
      * @type {string}
-     * @memberof BridgeDTO
+     * @memberof ErrorResponse
+     */
+    'kind'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ErrorResponse
      */
     'id'?: string;
     /**
      * 
      * @type {string}
-     * @memberof BridgeDTO
+     * @memberof ErrorResponse
      */
     'name'?: string;
     /**
      * 
      * @type {string}
-     * @memberof BridgeDTO
+     * @memberof ErrorResponse
      */
-    'endpoint'?: string;
+    'href'?: string;
     /**
      * 
      * @type {string}
-     * @memberof BridgeDTO
+     * @memberof ErrorResponse
      */
-    'customerId'?: string;
+    'code'?: string;
     /**
      * 
-     * @type {ManagedResourceStatus}
-     * @memberof BridgeDTO
+     * @type {string}
+     * @memberof ErrorResponse
      */
-    'status'?: ManagedResourceStatus;
-    /**
-     * 
-     * @type {KafkaConnectionDTO}
-     * @memberof BridgeDTO
-     */
-    'kafkaConnection'?: KafkaConnectionDTO;
+    'reason'?: string;
 }
 

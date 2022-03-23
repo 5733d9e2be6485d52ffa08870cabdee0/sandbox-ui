@@ -15,16 +15,14 @@ const InstancesListPage = () => {
     {
       accessor: 'name',
       label: 'Name',
-      formatter: (value: IRowData, row?: IRow) => ({
-        title: (
-          <Link
-            data-testid="tableInstances-linkInstance"
-            to={`instance/${row?.id}`}
-          >
-            {value}
-          </Link>
-        ),
-      }),
+      formatter: (value: IRowData, row?: IRow) => (
+        <Link
+          data-testid="tableInstances-linkInstance"
+          to={`instance/${row?.id}`}
+        >
+          {value}
+        </Link>
+      ),
     },
     { accessor: 'id', label: 'ID' },
     { accessor: 'status', label: 'Status' },

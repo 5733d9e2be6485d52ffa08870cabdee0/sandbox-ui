@@ -34,14 +34,12 @@ describe('Table component', () => {
   });
 
   test('should render action cells, when `actionResolver` is configured', () => {
-    const actionResolver = () => {
-      return [
-        {
-          title: 'actions...',
-          onClick: jest.fn(),
-        },
-      ];
-    };
+    const actionResolver = () => [
+      {
+        title: 'actions...',
+        onClick: jest.fn(),
+      },
+    ];
 
     const { container } = render(
       <Table columns={columns} rows={rows} actionResolver={actionResolver} />

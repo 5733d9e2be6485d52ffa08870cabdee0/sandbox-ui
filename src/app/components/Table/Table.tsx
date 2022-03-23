@@ -1,13 +1,15 @@
 import React, { FunctionComponent } from 'react';
 import {
-  HeaderProps,
-  IActionsResolver,
+  ActionsColumn,
+  IAction,
   IRow,
   IRowData,
-  Table as PFTable,
-  TableBody,
-  TableBodyProps,
-  TableHeader,
+  TableComposable,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
 } from '@patternfly/react-table';
 import { css } from '@patternfly/react-styles';
 
@@ -22,7 +24,7 @@ interface TableColumn {
 
 interface TableProps {
   /** It enables the presence of an action menu on the rows, with the given resolver */
-  actionResolver?: IActionsResolver;
+  actionResolver?: (rowData: IRow) => IAction[];
   /** Accessible name for the table */
   ariaLabel?: string;
   /** Element to be appended after the `tbody` node */
@@ -33,10 +35,6 @@ interface TableProps {
   cssClasses?: string | string[];
   /** Collection of cells to render */
   rows: IRow[];
-  /** Additive table body props */
-  tableBodyProps?: Omit<TableBodyProps, 'children'>;
-  /** Additive table header props */
-  tableHeaderProps?: Omit<HeaderProps, 'children'>;
   /** Style variant for the table */
   variant?: 'compact' | undefined;
 }
@@ -48,8 +46,6 @@ export const Table: FunctionComponent<TableProps> = ({
   columns,
   cssClasses,
   rows,
-  tableBodyProps,
-  tableHeaderProps,
   variant = 'compact',
 }) => {
   const transformColumns = (columns: TableColumn[]) => {
@@ -70,17 +66,33 @@ export const Table: FunctionComponent<TableProps> = ({
   };
 
   return (
-    <PFTable
+    <TableComposable
       className={css(cssClasses)}
-      cells={transformColumns(columns)}
       variant={variant}
-      rows={transformRows(rows, columns)}
       aria-label={ariaLabel}
-      actionResolver={actionResolver}
     >
-      <TableHeader {...tableHeaderProps} />
-      <TableBody {...tableBodyProps} />
+      <Thead>
+        <Tr>
+          {transformColumns(columns).map((column) => (
+            <Th key={column}>{column}</Th>
+          ))}
+        </Tr>
+      </Thead>
+      <Tbody>
+        {transformRows(rows, columns).map((row, rowIndex) => (
+          <Tr key={row?.originalData?.id ?? rowIndex}>
+            {row?.cells?.map((cell, cellIndex) => (
+              <Td key={cellIndex}>{cell}</Td>
+            ))}
+            {actionResolver && (
+              <Td className="pf-c-table__action">
+                <ActionsColumn items={actionResolver(row?.originalData)} />
+              </Td>
+            )}
+          </Tr>
+        ))}
+      </Tbody>
       {children}
-    </PFTable>
+    </TableComposable>
   );
 };

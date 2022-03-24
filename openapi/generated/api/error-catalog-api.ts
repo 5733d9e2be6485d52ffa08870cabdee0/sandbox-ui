@@ -25,10 +25,10 @@ import { InlineResponse2002 } from '../model';
 // @ts-ignore
 import { InlineResponse2003 } from '../model';
 /**
- * ErrorsCatalogAPISdk - axios parameter creator
+ * ErrorCatalogApi - axios parameter creator
  * @export
  */
-export const ErrorsCatalogAPISdkAxiosParamCreator = function (configuration?: Configuration) {
+export const ErrorCatalogApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * Get an error from the error catalog.
@@ -116,11 +116,11 @@ export const ErrorsCatalogAPISdkAxiosParamCreator = function (configuration?: Co
 };
 
 /**
- * ErrorsCatalogAPISdk - functional programming interface
+ * ErrorCatalogApi - functional programming interface
  * @export
  */
-export const ErrorsCatalogAPISdkFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = ErrorsCatalogAPISdkAxiosParamCreator(configuration)
+export const ErrorCatalogApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ErrorCatalogApiAxiosParamCreator(configuration)
     return {
         /**
          * Get an error from the error catalog.
@@ -149,11 +149,11 @@ export const ErrorsCatalogAPISdkFp = function(configuration?: Configuration) {
 };
 
 /**
- * ErrorsCatalogAPISdk - factory interface
+ * ErrorCatalogApi - factory interface
  * @export
  */
-export const ErrorsCatalogAPISdkFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = ErrorsCatalogAPISdkFp(configuration)
+export const ErrorCatalogApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ErrorCatalogApiFp(configuration)
     return {
         /**
          * Get an error from the error catalog.
@@ -180,18 +180,18 @@ export const ErrorsCatalogAPISdkFactory = function (configuration?: Configuratio
 };
 
 /**
- * ErrorsCatalogAPISdk - interface
+ * ErrorCatalogApi - interface
  * @export
- * @interface ErrorsCatalogAPISdk
+ * @interface ErrorCatalogApi
  */
-export interface ErrorsCatalogAPISdkInterface {
+export interface ErrorCatalogApiInterface {
     /**
      * Get an error from the error catalog.
      * @summary Get an error from the error catalog.
      * @param {number} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ErrorsCatalogAPISdkInterface
+     * @memberof ErrorCatalogApiInterface
      */
     errorsAPIGetError(id: number, options?: AxiosRequestConfig): AxiosPromise<InlineResponse2003>;
 
@@ -202,29 +202,29 @@ export interface ErrorsCatalogAPISdkInterface {
      * @param {number} [size] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ErrorsCatalogAPISdkInterface
+     * @memberof ErrorCatalogApiInterface
      */
     errorsAPIGetErrors(page?: number, size?: number, options?: AxiosRequestConfig): AxiosPromise<InlineResponse2002>;
 
 }
 
 /**
- * ErrorsCatalogAPISdk - object-oriented interface
+ * ErrorCatalogApi - object-oriented interface
  * @export
- * @class ErrorsCatalogAPISdk
+ * @class ErrorCatalogApi
  * @extends {BaseAPI}
  */
-export class ErrorsCatalogAPISdk extends BaseAPI implements ErrorsCatalogAPISdkInterface {
+export class ErrorCatalogApi extends BaseAPI implements ErrorCatalogApiInterface {
     /**
      * Get an error from the error catalog.
      * @summary Get an error from the error catalog.
      * @param {number} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ErrorsCatalogAPISdk
+     * @memberof ErrorCatalogApi
      */
     public errorsAPIGetError(id: number, options?: AxiosRequestConfig) {
-        return ErrorsCatalogAPISdkFp(this.configuration).errorsAPIGetError(id, options).then((request) => request(this.axios, this.basePath));
+        return ErrorCatalogApiFp(this.configuration).errorsAPIGetError(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -234,9 +234,9 @@ export class ErrorsCatalogAPISdk extends BaseAPI implements ErrorsCatalogAPISdkI
      * @param {number} [size] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof ErrorsCatalogAPISdk
+     * @memberof ErrorCatalogApi
      */
     public errorsAPIGetErrors(page?: number, size?: number, options?: AxiosRequestConfig) {
-        return ErrorsCatalogAPISdkFp(this.configuration).errorsAPIGetErrors(page, size, options).then((request) => request(this.axios, this.basePath));
+        return ErrorCatalogApiFp(this.configuration).errorsAPIGetErrors(page, size, options).then((request) => request(this.axios, this.basePath));
     }
 }

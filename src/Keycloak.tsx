@@ -26,10 +26,10 @@ export const setKeycloakInstance = async () => {
 export const init = async () => {
   try {
     /* Keycloak configuration using OB authentication.
-     * Thiese params will change after sso is implemented.
+     * These params will change after sso is implemented.
      * See https://issues.redhat.com/browse/MGDOBR-466
      */
-    keycloak = new (Keycloak as any)({
+    keycloak = Keycloak({
       realm: 'event-bridge-fm',
       url: 'https://keycloak-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com/auth/',
       clientId: 'event-bridge',
@@ -91,7 +91,14 @@ export const logout = async () => {
 
 export const KeycloakAuthProvider: React.FunctionComponent = (props) => {
   const getUsername = () => {
-    return getParsedKeyCloakToken().then((token: any) => token['username']);
+    return getParsedKeyCloakToken().then(
+      (token: unknown) =>
+        (
+          token as {
+            [index: string]: string;
+          }
+        )['username'] ?? ''
+    );
   };
 
   const authTokenContext = {

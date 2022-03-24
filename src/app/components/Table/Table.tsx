@@ -46,7 +46,7 @@ export const Table: FunctionComponent<TableProps> = ({
   columns,
   cssClasses,
   rows,
-  variant = "compact",
+  variant,
 }) => {
   const transformColumns = (columns: TableColumn[]) => {
     return columns.map((column) => column.label);

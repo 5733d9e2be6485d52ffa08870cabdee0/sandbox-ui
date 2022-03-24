@@ -1,7 +1,13 @@
 {
   "trailingComma": "es5",
-  "singleQuote": true,
+  "singleQuote": false,
   "semi": true,
-  "importOrder": ["^@?xstate/?(.*)$", "^@patternfly/(.*)$", "^@bf2/(.*)$", "^@rhoas/(.*)$", "^[./]"],
+  "importOrder": [
+    "^@?xstate/?(.*)$",
+    "^@patternfly/(.*)$",
+    "^@bf2/(.*)$",
+    "^@rhoas/(.*)$",
+    "^[./]"
+  ],
   "importOrderSeparation": true
 }

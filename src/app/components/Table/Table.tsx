@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent } from "react";
 import {
   ActionsColumn,
   IAction,
@@ -10,8 +10,8 @@ import {
   Th,
   Thead,
   Tr,
-} from '@patternfly/react-table';
-import { css } from '@patternfly/react-styles';
+} from "@patternfly/react-table";
+import { css } from "@patternfly/react-styles";
 
 interface TableColumn {
   /** Column identifier */
@@ -36,17 +36,17 @@ interface TableProps {
   /** Collection of cells to render */
   rows: IRow[];
   /** Style variant for the table */
-  variant?: 'compact' | undefined;
+  variant?: "compact" | undefined;
 }
 
 export const Table: FunctionComponent<TableProps> = ({
   actionResolver,
-  ariaLabel = 'Table',
+  ariaLabel = "Table",
   children,
   columns,
   cssClasses,
   rows,
-  variant = 'compact',
+  variant = "compact",
 }) => {
   const transformColumns = (columns: TableColumn[]) => {
     return columns.map((column) => column.label);

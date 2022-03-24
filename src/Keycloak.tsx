@@ -5,6 +5,12 @@ import { Auth, AuthContext } from "@rhoas/app-services-ui-shared";
 
 export let keycloak: Keycloak.KeycloakInstance | undefined;
 
+/* Token min validity in seconds
+ * Passed to updateToken(). When the token is going to expire before
+ * the minimum validity, the token is refreshed.
+ */
+const TOKEN_MIN_VALIDITY_SECONDS = 50;
+
 /**
  * Get keycloak instance
  *
@@ -57,7 +63,7 @@ export const init = async () => {
  *
  */
 export const getKeyCloakToken = async (): Promise<string> => {
-  await keycloak?.updateToken(50);
+  await keycloak?.updateToken(TOKEN_MIN_VALIDITY_SECONDS);
   if (keycloak?.token) return keycloak.token;
   console.error("No keycloak token available");
   return "foo";
@@ -73,7 +79,7 @@ export const getKeyCloakToken = async (): Promise<string> => {
  */
 export const getParsedKeyCloakToken =
   async (): Promise<Keycloak.KeycloakTokenParsed> => {
-    await keycloak?.updateToken(50);
+    await keycloak?.updateToken(TOKEN_MIN_VALIDITY_SECONDS);
     if (keycloak?.tokenParsed) return keycloak.tokenParsed;
     console.error("No keycloak token available");
     return {} as Keycloak.KeycloakTokenParsed;

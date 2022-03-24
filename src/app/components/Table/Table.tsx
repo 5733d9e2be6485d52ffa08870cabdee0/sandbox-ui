@@ -36,7 +36,7 @@ interface TableProps {
   /** Collection of cells to render */
   rows: IRow[];
   /** Style variant for the table */
-  variant?: "compact" | undefined;
+  variant?: "compact";
 }
 
 export const Table: FunctionComponent<TableProps> = ({

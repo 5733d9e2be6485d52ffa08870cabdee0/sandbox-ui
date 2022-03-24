@@ -1,27 +1,27 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
+  parser: "@typescript-eslint/parser",
   extends: [
-    'plugin:jest-dom/recommended',
-    'plugin:react-hooks/recommended',
-    'prettier',
+    "plugin:jest-dom/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier",
   ],
-  plugins: ['@typescript-eslint', 'react-hooks', 'jest-dom', 'testing-library'],
+  plugins: ["@typescript-eslint", "react-hooks", "jest-dom", "testing-library"],
   settings: {
     react: {
-      version: '999.999.999',
+      version: "999.999.999",
     },
   },
   overrides: [
     {
       files: [
-        '**/__tests__/**/*.[jt]s?(x)',
-        'test/?(*.)+(spec|test).[jt]s?(x)',
+        "**/__tests__/**/*.[jt]s?(x)",
+        "test/?(*.)+(spec|test).[jt]s?(x)",
       ],
-      extends: ['plugin:testing-library/react'],
+      extends: ["plugin:testing-library/react"],
     },
   ],
   rules: {
-    'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': 'off',
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "off",
   },
 };

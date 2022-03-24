@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 import {
   PageSection,
   PageSectionVariants,
   Text,
   TextContent,
-} from '@patternfly/react-core';
+} from "@patternfly/react-core";
 
 const InstancePage = () => {
   return (

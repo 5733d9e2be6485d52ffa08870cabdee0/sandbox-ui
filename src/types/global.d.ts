@@ -4,11 +4,11 @@
 declare const __DEV__: boolean;
 declare const __VERSION__: string;
 declare const $FixMe: any;
-declare module '*.svg' {
+declare module "*.svg" {
   const content: any;
   export default content;
 }
-declare module '*.json' {
+declare module "*.json" {
   const value: any;
   export default value;
 }

@@ -15,12 +15,7 @@
     "esModuleInterop": true,
     "target": "es6",
     "noImplicitAny": true,
-    "outDir": "dist",
+    "outDir": "dist"
   },
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.stories.tsx",
-    "**/*.test.ts*",
-  ]
+  "exclude": ["dist", "node_modules", "**/*.stories.tsx", "**/*.test.ts*"]
 }

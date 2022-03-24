@@ -1,0 +1,7 @@
+.processor-form {
+    max-width: 800px;
+}
+
+.pf-c-tile:active, .pf-c-tile.pf-m-selected {
+    --pf-c-tile--TranslateY: 0;
+}

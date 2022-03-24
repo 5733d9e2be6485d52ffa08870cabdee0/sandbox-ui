@@ -37,7 +37,7 @@ const App = () => {
         debug={true}
       >
         <Suspense fallback={<AppServicesLoading />}>
-          <BrowserRouter>
+          <BrowserRouter basename={"/"}>
             {initialized && (
               <AppLayout>
                 <Routes />

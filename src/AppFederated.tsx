@@ -1,10 +1,11 @@
 import React, { Suspense } from "react";
-import Routes from "@app/Routes/Routes";
 import { useBasename } from "@rhoas/app-services-ui-shared";
 import {
   AppServicesLoading,
   I18nProvider,
 } from "@rhoas/app-services-ui-components";
+import { BrowserRouter } from "react-router-dom";
+import Routes from "@app/Routes/Routes";
 
 const AppFederated = () => {
   const basename = useBasename();
@@ -30,7 +31,9 @@ const AppFederated = () => {
         debug={true}
       >
         <Suspense fallback={<AppServicesLoading />}>
-          <Routes baseName={basename?.getBasename()} />
+          <BrowserRouter basename={basename?.getBasename()}>
+            <Routes />
+          </BrowserRouter>
         </Suspense>
       </I18nProvider>
     </>

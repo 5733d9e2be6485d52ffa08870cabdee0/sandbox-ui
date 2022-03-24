@@ -69,6 +69,11 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
             SmartEvents
           </NavLink>
         </NavItem>
+        <NavItem id={"connectors"}>
+          <NavLink to={"/processor/create"} activeClassName="pf-m-current">
+            Create processor
+          </NavLink>
+        </NavItem>
       </NavList>
     </Nav>
   );

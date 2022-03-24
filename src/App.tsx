@@ -1,13 +1,13 @@
-import React, { Suspense, useEffect, useState } from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import '@patternfly/patternfly/patternfly.css';
-import { AppLayout } from '@app/components/AppLayout/AppLayout';
-import Routes from '@app/Routes/Routes';
+import React, { Suspense, useEffect, useState } from "react";
+import { BrowserRouter } from "react-router-dom";
+import "@patternfly/patternfly/patternfly.css";
+import { AppLayout } from "@app/components/AppLayout/AppLayout";
+import Routes from "@app/Routes/Routes";
 import {
   AppServicesLoading,
   I18nProvider,
-} from '@rhoas/app-services-ui-components';
-import { KeycloakAuthProvider, setKeycloakInstance } from './Keycloak';
+} from "@rhoas/app-services-ui-components";
+import { KeycloakAuthProvider, setKeycloakInstance } from "./Keycloak";
 
 const App = () => {
   const [initialized, setInitialized] = useState(false);
@@ -28,10 +28,10 @@ const App = () => {
           en: {
             common: () =>
               import(
-                '@rhoas/app-services-ui-components/locales/en/common.json'
+                "@rhoas/app-services-ui-components/locales/en/common.json"
               ),
             openbridgeTempDictionary: () =>
-              import('../locales/en/openbridge.json'),
+              import("../locales/en/openbridge.json"),
           },
         }}
         debug={true}

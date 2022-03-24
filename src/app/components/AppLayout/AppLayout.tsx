@@ -1,5 +1,5 @@
-import React, { FunctionComponent, ReactNode, useState } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import React, { FunctionComponent, ReactNode, useState } from "react";
+import { NavLink, useHistory } from "react-router-dom";
 
 import {
   Button,
@@ -11,10 +11,10 @@ import {
   PageHeaderTools,
   PageHeaderToolsGroup,
   PageSidebar,
-} from '@patternfly/react-core';
+} from "@patternfly/react-core";
 
-import logo from './Patternfly-Logo.svg';
-import { logout } from '../../../Keycloak';
+import logo from "./Patternfly-Logo.svg";
+import { logout } from "../../../Keycloak";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -52,7 +52,7 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
       isNavOpen={isNavOpen}
       headerTools={HeaderTools}
       onNavToggle={isMobileView ? onNavToggleMobile : onNavToggle}
-      aria-label={'global_navigation'}
+      aria-label={"global_navigation"}
     />
   );
 
@@ -61,11 +61,11 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
       id="nav-primary-simple"
       role="navigation"
       theme="dark"
-      aria-label={'global'}
+      aria-label={"global"}
     >
       <NavList id="nav-list-simple">
-        <NavItem id={'connectors'}>
-          <NavLink to={'/'} activeClassName="pf-m-current">
+        <NavItem id={"connectors"}>
+          <NavLink to={"/"} activeClassName="pf-m-current">
             SmartEvents
           </NavLink>
         </NavItem>
@@ -95,7 +95,7 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
 function LogoImg() {
   const history = useHistory();
   function handleClick() {
-    history.push('/');
+    history.push("/");
   }
   return <img src={logo} onClick={handleClick} alt="PatternFly Logo" />;
 }

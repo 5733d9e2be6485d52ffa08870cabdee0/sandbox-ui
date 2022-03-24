@@ -1,7 +1,7 @@
-import Keycloak from 'keycloak-js';
-import React from 'react';
+import Keycloak from "keycloak-js";
+import React from "react";
 
-import { Auth, AuthContext } from '@rhoas/app-services-ui-shared';
+import { Auth, AuthContext } from "@rhoas/app-services-ui-shared";
 
 export let keycloak: Keycloak.KeycloakInstance | undefined;
 
@@ -30,19 +30,19 @@ export const init = async () => {
      * See https://issues.redhat.com/browse/MGDOBR-466
      */
     keycloak = Keycloak({
-      realm: 'event-bridge-fm',
-      url: 'https://keycloak-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com/auth/',
-      clientId: 'event-bridge',
+      realm: "event-bridge-fm",
+      url: "https://keycloak-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com/auth/",
+      clientId: "event-bridge",
     });
     if (keycloak) {
       await keycloak.init({
-        onLoad: 'login-required',
+        onLoad: "login-required",
       });
     }
   } catch (e) {
     keycloak = undefined;
     console.warn(
-      'Auth: Unable to initialize keycloak. Client side will not be configured to use authentication',
+      "Auth: Unable to initialize keycloak. Client side will not be configured to use authentication",
       e
     );
   }
@@ -59,8 +59,8 @@ export const init = async () => {
 export const getKeyCloakToken = async (): Promise<string> => {
   await keycloak?.updateToken(50);
   if (keycloak?.token) return keycloak.token;
-  console.error('No keycloak token available');
-  return 'foo';
+  console.error("No keycloak token available");
+  return "foo";
 };
 
 /**
@@ -75,7 +75,7 @@ export const getParsedKeyCloakToken =
   async (): Promise<Keycloak.KeycloakTokenParsed> => {
     await keycloak?.updateToken(50);
     if (keycloak?.tokenParsed) return keycloak.tokenParsed;
-    console.error('No keycloak token available');
+    console.error("No keycloak token available");
     return {} as Keycloak.KeycloakTokenParsed;
   };
 
@@ -97,7 +97,7 @@ export const KeycloakAuthProvider: React.FunctionComponent = (props) => {
           token as {
             [index: string]: string;
           }
-        )['username'] ?? ''
+        )["username"] ?? ""
     );
   };
 

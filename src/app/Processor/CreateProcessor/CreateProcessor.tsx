@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
+  ActionGroup,
+  Button,
+  Flex,
+  FlexItem,
   Form,
   FormGroup,
   FormSection,
@@ -11,83 +15,174 @@ import {
   TextContent,
   TextInput,
   Tile,
-} from '@patternfly/react-core';
+} from "@patternfly/react-core";
 import FiltersEdit, {
   EventFilter,
-} from '@app/Processor/CreateProcessor/FiltersEdit/FiltersEdit';
-import './CreateProcessor.css';
+} from "@app/Processor/CreateProcessor/FiltersEdit/FiltersEdit";
+import "./CreateProcessor.css";
+import { CodeEditor } from "@patternfly/react-code-editor";
+import ActionEdit from "@app/Processor/CreateProcessor/ActionEdit/ActionEdit";
+import { BaseAction } from "../../../../openapi/generated";
+import SourceEdit from "@app/Processor/CreateProcessor/SourceEdit/SourceEdit";
 
 const CreateProcessor = () => {
-  const [processorType, setProcessorType] = useState('');
+  const [processorType, setProcessorType] = useState("");
   const [filters, setFilters] = useState<EventFilter[]>([
-    { key: '', type: '', value: '' },
+    { key: "", type: "", value: "" },
   ]);
-  // const [transformation, setTransformation] = useState('');
+  const [transformation, setTransformation] = useState("");
+  const [action, setAction] = useState<BaseAction>({
+    type: "",
+    parameters: {},
+  });
+  const [source, setSource] = useState({
+    type: "",
+    parameters: {},
+  });
 
   return (
     <>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection variant={PageSectionVariants.light} hasShadowBottom={true}>
         <TextContent>
           <Text component="h1">Create Processor</Text>
         </TextContent>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light}>
-        <Form className={'processor-form'}>
-          <FormSection title="General Information" titleElement="h2">
-            <FormGroup
-              label="Select processor type"
-              fieldId={'processor-type'}
-              isRequired
+      <PageSection
+        variant={PageSectionVariants.light}
+        padding={{ default: "noPadding" }}
+        className="processor-edit__page-section"
+      >
+        <section className={"processor-edit__container"}>
+          <Flex direction={{ default: "column" }} style={{ height: "100%" }}>
+            <Flex
+              direction={{ default: "column" }}
+              grow={{ default: "grow" }}
+              flexWrap={{ default: "nowrap" }}
+              className={"processor-edit__outer-wrap"}
             >
-              <Grid
-                hasGutter={true}
-                className={'processor-form__type-selection'}
+              <Flex
+                direction={{ default: "column" }}
+                grow={{ default: "grow" }}
+                className={"processor-edit__inner-wrap"}
               >
-                <GridItem span={6}>
-                  <Tile
-                    title="Source Processor"
-                    isSelected={processorType === 'source'}
-                    style={{ height: '100%' }}
-                    onClick={() => setProcessorType('source')}
-                  >
-                    Source processors are ready-to-use connectors that allow to
-                    connect and stream data from external sources without having
-                    to write any code.
-                  </Tile>
-                </GridItem>
-                <GridItem span={6}>
-                  <Tile
-                    title="Sink Processor"
-                    style={{ width: '100%', height: '100%' }}
-                    isSelected={processorType === 'sink'}
-                    onClick={() => setProcessorType('sink')}
-                  >
-                    Sink processors help connect events to actions.
-                  </Tile>
-                </GridItem>
-              </Grid>
-            </FormGroup>
-            <FormGroup
-              fieldId={'processor-name'}
-              label="Processor name"
-              isRequired={true}
-            >
-              <TextInput
-                isRequired
-                type="text"
-                id="processor-name"
-                name="processor-name"
-                aria-describedby="processor-name"
-                maxLength={255}
-              />
-            </FormGroup>
-          </FormSection>
-          <FormSection title="Filters" titleElement="h2">
-            <FiltersEdit filters={filters} onChange={setFilters} />
-          </FormSection>
-          <FormSection title="Transformation"></FormSection>
-          <FormSection title="Action"></FormSection>
-        </Form>
+                <FlexItem
+                  grow={{ default: "grow" }}
+                  className={"processor-edit__content-wrap"}
+                >
+                  <Form className={"processor-edit__form"}>
+                    <FormSection title="General Information" titleElement="h2">
+                      <FormGroup
+                        label="Select processor type"
+                        fieldId={"processor-type"}
+                        isRequired
+                      >
+                        <Grid
+                          hasGutter={true}
+                          className={"processor-form__type-selection"}
+                        >
+                          <GridItem span={6}>
+                            <Tile
+                              title="Source Processor"
+                              isSelected={processorType === "source"}
+                              style={{ height: "100%" }}
+                              onClick={() => setProcessorType("source")}
+                            >
+                              Source processors are ready-to-use connectors that
+                              allow to connect and stream data from external
+                              sources without having to write any code.
+                            </Tile>
+                          </GridItem>
+                          <GridItem span={6}>
+                            <Tile
+                              title="Sink Processor"
+                              style={{ width: "100%", height: "100%" }}
+                              isSelected={processorType === "sink"}
+                              onClick={() => setProcessorType("sink")}
+                            >
+                              Sink processors help connect events to actions.
+                            </Tile>
+                          </GridItem>
+                        </Grid>
+                      </FormGroup>
+                      <FormGroup
+                        fieldId={"processor-name"}
+                        label="Processor name"
+                        isRequired={true}
+                      >
+                        <TextInput
+                          type="text"
+                          id="processor-name"
+                          name="processor-name"
+                          aria-describedby="processor-name"
+                          isRequired={true}
+                          maxLength={255}
+                        />
+                      </FormGroup>
+                    </FormSection>
+                    {processorType !== "" && (
+                      <>
+                        {processorType === "source" && (
+                          <FormSection title="Source">
+                            <TextContent>
+                              <Text component="p">
+                                Select a source type and provide its
+                                configuration.
+                              </Text>
+                            </TextContent>
+                            <SourceEdit source={source} onChange={setSource} />
+                          </FormSection>
+                        )}
+
+                        <FormSection title="Filters" titleElement="h2">
+                          <FiltersEdit
+                            filters={filters}
+                            onChange={setFilters}
+                          />
+                        </FormSection>
+                        <FormSection title="Transformation">
+                          <TextContent>
+                            <Text component="p">
+                              Add a transformation template.
+                            </Text>
+                          </TextContent>
+                          <CodeEditor
+                            id={"transformation-template"}
+                            height={"300px"}
+                            isLineNumbersVisible={true}
+                            code={transformation}
+                            onChange={setTransformation}
+                            options={{
+                              scrollbar: { alwaysConsumeMouseWheel: false },
+                            }}
+                          />
+                        </FormSection>
+                        {processorType === "sink" && (
+                          <FormSection title="Action">
+                            <TextContent>
+                              <Text component="p">
+                                Select an action and provide its configuration.
+                              </Text>
+                            </TextContent>
+                            <ActionEdit action={action} onChange={setAction} />
+                          </FormSection>
+                        )}
+                      </>
+                    )}
+                  </Form>
+                </FlexItem>
+              </Flex>
+              <Flex
+                flexWrap={{ default: "wrap" }}
+                shrink={{ default: "shrink" }}
+              >
+                <ActionGroup className={"processor-edit__actions"}>
+                  <Button variant="primary">Create</Button>
+                  <Button variant="link">Cancel</Button>
+                </ActionGroup>
+              </Flex>
+            </Flex>
+          </Flex>
+        </section>
       </PageSection>
     </>
   );

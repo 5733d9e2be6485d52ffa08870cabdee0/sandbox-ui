@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import InstancePage from "@app/Instance/InstancePage/InstancePage";
 import InstancesListPage from "@app/Instance/InstancesListPage/InstancesListPage";
-import CreateProcessor from "@app/Processor/CreateProcessor/CreateProcessor";
+import CreateProcessorPage from "@app/Processor/CreateProcessorPage/CreateProcessorPage";
 
 const Routes = () => {
   return (
@@ -10,11 +10,11 @@ const Routes = () => {
       <Route exact path={"/"}>
         <InstancesListPage />
       </Route>
-      <Route path={`/instance/:id`}>
-        <InstancePage />
+      <Route path={`/instance/:instanceId/create-processor`}>
+        <CreateProcessorPage />
       </Route>
-      <Route path={`/processor/create`}>
-        <CreateProcessor />
+      <Route path={`/instance/:instanceId`}>
+        <InstancePage />
       </Route>
       <Route path="*">
         <>

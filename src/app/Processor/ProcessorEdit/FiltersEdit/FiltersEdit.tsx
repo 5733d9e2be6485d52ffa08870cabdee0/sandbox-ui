@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Button,
   Flex,
@@ -11,8 +11,8 @@ import {
   Stack,
   StackItem,
   TextInput,
-} from '@patternfly/react-core';
-import { PlusCircleIcon, TrashAltIcon } from '@patternfly/react-icons';
+} from "@patternfly/react-core";
+import { PlusCircleIcon, TrashAltIcon } from "@patternfly/react-icons";
 
 interface FiltersEditProps {
   filters: EventFilter[];
@@ -24,29 +24,34 @@ const FiltersEdit = (props: FiltersEditProps) => {
 
   const filterTypesOptions = [
     {
-      value: '',
-      label: 'Select a type',
+      value: "",
+      label: "Select a type",
+      isPlaceholder: true,
     },
     {
-      value: 'StringEquals',
-      label: 'String equals',
+      value: "StringEquals",
+      label: "String equals",
+      isPlaceholder: false,
     },
     {
-      value: 'StringContains',
-      label: 'String contains',
+      value: "StringContains",
+      label: "String contains",
+      isPlaceholder: false,
     },
     {
-      value: 'StringBeginsWith',
-      label: 'String begins with',
+      value: "StringBeginsWith",
+      label: "String begins with",
+      isPlaceholder: false,
     },
     {
-      value: 'ValuesIn',
-      label: 'Values in',
+      value: "ValuesIn",
+      label: "Values in",
+      isPlaceholder: false,
     },
   ];
 
   const addFilter = () => {
-    onChange([...filters, { key: '', type: '', value: '' }]);
+    onChange([...filters, { key: "", type: "", value: "" }]);
   };
 
   const deleteFilter = (index: number) => {
@@ -100,6 +105,7 @@ const FiltersEdit = (props: FiltersEditProps) => {
                           key={index}
                           value={option.value}
                           label={option.label}
+                          isPlaceholder={option.isPlaceholder}
                         />
                       ))}
                     </FormSelect>
@@ -121,9 +127,9 @@ const FiltersEdit = (props: FiltersEditProps) => {
                 </SplitItem>
                 <SplitItem>
                   <Flex
-                    direction={{ default: 'column' }}
-                    justifyContent={{ default: 'justifyContentFlexEnd' }}
-                    style={{ height: '100%' }}
+                    direction={{ default: "column" }}
+                    justifyContent={{ default: "justifyContentFlexEnd" }}
+                    style={{ height: "100%" }}
                   >
                     <FlexItem>
                       <Button

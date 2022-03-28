@@ -18,14 +18,20 @@ import {
 } from "@patternfly/react-core";
 import FiltersEdit, {
   EventFilter,
-} from "@app/Processor/CreateProcessor/FiltersEdit/FiltersEdit";
-import "./CreateProcessor.css";
+} from "@app/Processor/ProcessorEdit/FiltersEdit/FiltersEdit";
 import { CodeEditor } from "@patternfly/react-code-editor";
-import ActionEdit from "@app/Processor/CreateProcessor/ActionEdit/ActionEdit";
+import ActionEdit from "@app/Processor/ProcessorEdit/ActionEdit/ActionEdit";
 import { BaseAction } from "../../../../openapi/generated";
-import SourceEdit from "@app/Processor/CreateProcessor/SourceEdit/SourceEdit";
+import SourceEdit from "@app/Processor/ProcessorEdit/SourceEdit/SourceEdit";
+import "./ProcessorEdit.css";
 
-const CreateProcessor = () => {
+interface ProcessorEditProps {
+  onSave: () => void;
+  onCancel: () => void;
+}
+
+const ProcessorEdit = (props: ProcessorEditProps) => {
+  const { onSave, onCancel } = props;
   const [processorType, setProcessorType] = useState("");
   const [filters, setFilters] = useState<EventFilter[]>([
     { key: "", type: "", value: "" },
@@ -42,11 +48,6 @@ const CreateProcessor = () => {
 
   return (
     <>
-      <PageSection variant={PageSectionVariants.light} hasShadowBottom={true}>
-        <TextContent>
-          <Text component="h1">Create Processor</Text>
-        </TextContent>
-      </PageSection>
       <PageSection
         variant={PageSectionVariants.light}
         padding={{ default: "noPadding" }}
@@ -176,8 +177,12 @@ const CreateProcessor = () => {
                 shrink={{ default: "shrink" }}
               >
                 <ActionGroup className={"processor-edit__actions"}>
-                  <Button variant="primary">Create</Button>
-                  <Button variant="link">Cancel</Button>
+                  <Button variant="primary" onClick={onSave}>
+                    Create
+                  </Button>
+                  <Button variant="link" onClick={onCancel}>
+                    Cancel
+                  </Button>
                 </ActionGroup>
               </Flex>
             </Flex>
@@ -188,4 +193,4 @@ const CreateProcessor = () => {
   );
 };
 
-export default CreateProcessor;
+export default ProcessorEdit;

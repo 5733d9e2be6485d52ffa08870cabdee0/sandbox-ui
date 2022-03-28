@@ -41,11 +41,11 @@ const ActionEdit = (props: ActionEditProps) => {
   }, [action]);
 
   const actionTypes = [
-    { value: "", label: "Select an action" },
-    { value: "KafkaTopic", label: "Send to Kafka" },
-    { value: "Webhook", label: "Webhook" },
-    { value: "SendToBridge", label: "Send to Instance" },
-    { value: "Slack", label: "Send to Slack" },
+    { value: "", label: "Select an action", isPlaceholder: true },
+    { value: "KafkaTopic", label: "Send to Kafka", isPlaceholder: false },
+    { value: "Webhook", label: "Webhook", isPlaceholder: false },
+    { value: "SendToBridge", label: "Send to Instance", isPlaceholder: false },
+    { value: "Slack", label: "Send to Slack", isPlaceholder: false },
   ];
 
   return (
@@ -63,6 +63,7 @@ const ActionEdit = (props: ActionEditProps) => {
               key={index}
               value={option.value}
               label={option.label}
+              isPlaceholder={option.isPlaceholder}
             />
           ))}
         </FormSelect>

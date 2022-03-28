@@ -35,8 +35,8 @@ const SourceEdit = (props: SourceEditProps) => {
   };
 
   const sourceTypes = [
-    { value: "", label: "Select a source" },
-    { value: "demoSource", label: "Demo Source" },
+    { value: "", label: "Select a source", isPlaceholder: true },
+    { value: "demoSource", label: "Demo Source", isPlaceholder: false },
   ];
 
   useEffect(() => {
@@ -61,6 +61,7 @@ const SourceEdit = (props: SourceEditProps) => {
               key={index}
               value={option.value}
               label={option.label}
+              isPlaceholder={option.isPlaceholder}
             />
           ))}
         </FormSelect>
@@ -68,14 +69,15 @@ const SourceEdit = (props: SourceEditProps) => {
       <FormGroup
         fieldId="source-parameters"
         label="Configuration"
-        isRequired={true}
+        isRequired={type !== ""}
       >
         <TextInput
           type="text"
           id="source-parameters"
           name="source-parameters"
           aria-describedby="source-parameters"
-          isRequired={true}
+          isRequired={type !== ""}
+          isDisabled={type === ""}
           value={parameters.config}
           onChange={(value) => {
             updateParameters({

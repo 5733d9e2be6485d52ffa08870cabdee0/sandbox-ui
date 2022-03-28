@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FormGroup,
   FormSelect,
@@ -40,20 +41,46 @@ const ActionEdit = (props: ActionEditProps) => {
     }
   }, [action]);
 
+  const { t } = useTranslation();
+
   const actionTypes = [
-    { value: "", label: "Select an action", isPlaceholder: true },
-    { value: "KafkaTopic", label: "Send to Kafka", isPlaceholder: false },
-    { value: "Webhook", label: "Webhook", isPlaceholder: false },
-    { value: "SendToBridge", label: "Send to Instance", isPlaceholder: false },
-    { value: "Slack", label: "Send to Slack", isPlaceholder: false },
+    {
+      value: "",
+      label: t("openbridgeTempDictionary:processor:selectAction"),
+      isPlaceholder: true,
+    },
+    {
+      value: "KafkaTopic",
+      label: t("openbridgeTempDictionary:processor:sendToKafka"),
+      isPlaceholder: false,
+    },
+    {
+      value: "Webhook",
+      label: t("openbridgeTempDictionary:common:webhook"),
+      isPlaceholder: false,
+    },
+    {
+      value: "SendToBridge",
+      label: t("openbridgeTempDictionary:processor:sendToBridge"),
+      isPlaceholder: false,
+    },
+    {
+      value: "Slack",
+      label: t("openbridgeTempDictionary:processor:sendToSlack"),
+      isPlaceholder: false,
+    },
   ];
 
   return (
     <>
-      <FormGroup fieldId={`action-type`} label="Action type" isRequired={true}>
+      <FormGroup
+        fieldId={`action-type`}
+        label={t("openbridgeTempDictionary:processor:actionType")}
+        isRequired={true}
+      >
         <FormSelect
           id={`action-type`}
-          aria-label="Action type"
+          aria-label={t("openbridgeTempDictionary:processor:actionType")}
           isRequired={true}
           value={type}
           onChange={(type) => updateType(type)}
@@ -69,7 +96,10 @@ const ActionEdit = (props: ActionEditProps) => {
         </FormSelect>
       </FormGroup>
       {type === "" && (
-        <FormGroup fieldId={`action-config`} label="Action configuration">
+        <FormGroup
+          fieldId={`action-config`}
+          label={t("openbridgeTempDictionary:processor:actionConfiguration")}
+        >
           <TextInput
             type="text"
             id="action-config"
@@ -82,7 +112,7 @@ const ActionEdit = (props: ActionEditProps) => {
       {type === "KafkaTopic" && (
         <FormGroup
           fieldId={`kafka-topic`}
-          label="Kafka topic"
+          label={t("openbridgeTempDictionary:common:kafkaTopic")}
           isRequired={true}
         >
           <TextInput
@@ -104,7 +134,7 @@ const ActionEdit = (props: ActionEditProps) => {
       {type === "Webhook" && (
         <FormGroup
           fieldId={`webhook-endpoint`}
-          label="Endpoint"
+          label={t("openbridgeTempDictionary:common:endpoint")}
           isRequired={true}
         >
           <TextInput
@@ -124,7 +154,11 @@ const ActionEdit = (props: ActionEditProps) => {
         </FormGroup>
       )}
       {type === "SendToBridge" && (
-        <FormGroup fieldId={`bridge-id`} label="Instance Id" isRequired={true}>
+        <FormGroup
+          fieldId={`bridge-id`}
+          label={t("openbridgeTempDictionary:instance:instanceId")}
+          isRequired={true}
+        >
           <TextInput
             type="text"
             id="bridge-id"
@@ -145,7 +179,7 @@ const ActionEdit = (props: ActionEditProps) => {
         <>
           <FormGroup
             fieldId={`slack-channel`}
-            label="Slack channel"
+            label={t("openbridgeTempDictionary:processor:slackChannel")}
             isRequired={true}
           >
             <TextInput
@@ -165,7 +199,7 @@ const ActionEdit = (props: ActionEditProps) => {
           </FormGroup>
           <FormGroup
             fieldId={`slack-webhook-url`}
-            label="Slack webhook URL"
+            label={t("openbridgeTempDictionary:processor:slackWebhookUrl")}
             isRequired={true}
           >
             <TextInput

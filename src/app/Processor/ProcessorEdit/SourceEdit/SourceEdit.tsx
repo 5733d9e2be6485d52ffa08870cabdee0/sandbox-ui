@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FormGroup,
   FormSelect,
@@ -34,8 +35,14 @@ const SourceEdit = (props: SourceEditProps) => {
     });
   };
 
+  const { t } = useTranslation();
+
   const sourceTypes = [
-    { value: "", label: "Select a source", isPlaceholder: true },
+    {
+      value: "",
+      label: t("openbridgeTempDictionary:processor.selectSource"),
+      isPlaceholder: true,
+    },
     { value: "demoSource", label: "Demo Source", isPlaceholder: false },
   ];
 
@@ -48,10 +55,14 @@ const SourceEdit = (props: SourceEditProps) => {
 
   return (
     <>
-      <FormGroup fieldId={`source-type`} label="Source type" isRequired={true}>
+      <FormGroup
+        fieldId={`source-type`}
+        label={t("openbridgeTempDictionary:processor:sourceType")}
+        isRequired={true}
+      >
         <FormSelect
           id={`source-type`}
-          aria-label="Source type"
+          aria-label={t("openbridgeTempDictionary:processor:sourceType")}
           isRequired={true}
           value={type}
           onChange={(type) => updateType(type)}
@@ -68,7 +79,7 @@ const SourceEdit = (props: SourceEditProps) => {
       </FormGroup>
       <FormGroup
         fieldId="source-parameters"
-        label="Configuration"
+        label={t("openbridgeTempDictionary:common.configuration")}
         isRequired={type !== ""}
       >
         <TextInput

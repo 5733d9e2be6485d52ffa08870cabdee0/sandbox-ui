@@ -2,16 +2,19 @@ import React, { FunctionComponent, ReactNode, useState } from "react";
 import { NavLink, useHistory } from "react-router-dom";
 
 import {
+  Button,
   Nav,
   NavItem,
   NavList,
   Page,
   PageHeader,
   PageHeaderTools,
+  PageHeaderToolsGroup,
   PageSidebar,
 } from "@patternfly/react-core";
 
 import logo from "./Patternfly-Logo.svg";
+import { logout } from "../../../Keycloak";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -32,7 +35,15 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
     setIsMobileView(props.mobileView);
   };
 
-  const HeaderTools = <PageHeaderTools>{"email"}</PageHeaderTools>;
+  const HeaderTools = (
+    <PageHeaderTools>
+      <PageHeaderToolsGroup>
+        <Button variant="tertiary" onClick={() => logout()}>
+          Logout
+        </Button>
+      </PageHeaderToolsGroup>
+    </PageHeaderTools>
+  );
 
   const Header = (
     <PageHeader

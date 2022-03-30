@@ -79,7 +79,7 @@ const SourceEdit = (props: SourceEditProps) => {
       </FormGroup>
       <FormGroup
         fieldId="source-parameters"
-        label={t("openbridgeTempDictionary:common.configuration")}
+        label={t("openbridgeTempDictionary:processor.sourceConfiguration")}
         isRequired={type !== ""}
       >
         <TextInput

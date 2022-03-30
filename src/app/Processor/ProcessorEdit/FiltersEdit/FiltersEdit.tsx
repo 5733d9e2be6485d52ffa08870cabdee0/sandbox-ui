@@ -77,7 +77,10 @@ const FiltersEdit = (props: FiltersEditProps) => {
       <StackItem>
         <Stack hasGutter={true}>
           {filters.map((filter, index) => (
-            <StackItem key={`filter-${filter.type}-${index}`}>
+            <StackItem
+              key={`filter-${filter.type}-${index}`}
+              data-testid="filter-item"
+            >
               <Split hasGutter={true}>
                 <SplitItem isFilled>
                   <FormGroup

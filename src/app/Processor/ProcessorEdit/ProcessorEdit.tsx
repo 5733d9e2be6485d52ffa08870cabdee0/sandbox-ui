@@ -47,7 +47,7 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
     parameters: {},
   });
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   return (
     <>
@@ -75,15 +75,11 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
                 >
                   <Form className={"processor-edit__form"}>
                     <FormSection
-                      title={t(
-                        "openbridgeTempDictionary:processor:generalInformation"
-                      )}
+                      title={t("processor.generalInformation")}
                       titleElement="h2"
                     >
                       <FormGroup
-                        label={t(
-                          "openbridgeTempDictionary:processor:selectProcessorType"
-                        )}
+                        label={t("processor.selectProcessorType")}
                         fieldId={"processor-type"}
                         isRequired
                       >
@@ -93,39 +89,29 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
                         >
                           <GridItem span={6}>
                             <Tile
-                              title={t(
-                                "openbridgeTempDictionary:processor:sourceProcessor"
-                              )}
+                              title={t("processor.sourceProcessor")}
                               isSelected={processorType === "source"}
                               style={{ height: "100%" }}
                               onClick={() => setProcessorType("source")}
                             >
-                              {t(
-                                "openbridgeTempDictionary:processor:sourceProcessorDescription"
-                              )}
+                              {t("processor.sourceProcessorDescription")}
                             </Tile>
                           </GridItem>
                           <GridItem span={6}>
                             <Tile
-                              title={t(
-                                "openbridgeTempDictionary:processor:sinkProcessor"
-                              )}
+                              title={t("processor.sinkProcessor")}
                               style={{ width: "100%", height: "100%" }}
                               isSelected={processorType === "sink"}
                               onClick={() => setProcessorType("sink")}
                             >
-                              {t(
-                                "openbridgeTempDictionary:processor:sinkProcessorDescription"
-                              )}
+                              {t("processor.sinkProcessorDescription")}
                             </Tile>
                           </GridItem>
                         </Grid>
                       </FormGroup>
                       <FormGroup
                         fieldId={"processor-name"}
-                        label={t(
-                          "openbridgeTempDictionary:processor:processorName"
-                        )}
+                        label={t("processor.processorName")}
                         isRequired={true}
                       >
                         <TextInput
@@ -141,16 +127,10 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
                     {processorType !== "" && (
                       <>
                         {processorType === "source" && (
-                          <FormSection
-                            title={t(
-                              "openbridgeTempDictionary:processor:source"
-                            )}
-                          >
+                          <FormSection title={t("processor.source")}>
                             <TextContent>
                               <Text component="p">
-                                {t(
-                                  "openbridgeTempDictionary:processor:selectProcessorTypeDescription"
-                                )}
+                                {t("processor.selectProcessorTypeDescription")}
                               </Text>
                             </TextContent>
                             <SourceEdit source={source} onChange={setSource} />
@@ -158,9 +138,7 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
                         )}
 
                         <FormSection
-                          title={t(
-                            "openbridgeTempDictionary:processor:filters"
-                          )}
+                          title={t("processor.filters")}
                           titleElement="h2"
                         >
                           <FiltersEdit
@@ -168,16 +146,10 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
                             onChange={setFilters}
                           />
                         </FormSection>
-                        <FormSection
-                          title={t(
-                            "openbridgeTempDictionary:processor:transformation"
-                          )}
-                        >
+                        <FormSection title={t("processor.transformation")}>
                           <TextContent>
                             <Text component="p">
-                              {t(
-                                "openbridgeTempDictionary:processor:addTransformationDescription"
-                              )}
+                              {t("processor.addTransformationDescription")}
                             </Text>
                           </TextContent>
                           <CodeEditor
@@ -192,16 +164,10 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
                           />
                         </FormSection>
                         {processorType === "sink" && (
-                          <FormSection
-                            title={t(
-                              "openbridgeTempDictionary:processor:action"
-                            )}
-                          >
+                          <FormSection title={t("processor.action")}>
                             <TextContent>
                               <Text component="p">
-                                {t(
-                                  "openbridgeTempDictionary:processor:selectActionDescription"
-                                )}
+                                {t("processor.selectActionDescription")}
                               </Text>
                             </TextContent>
                             <ActionEdit action={action} onChange={setAction} />
@@ -218,10 +184,10 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
               >
                 <ActionGroup className={"processor-edit__actions"}>
                   <Button variant="primary" onClick={onSave}>
-                    {t("openbridgeTempDictionary:common:create")}
+                    {t("common.create")}
                   </Button>
                   <Button variant="link" onClick={onCancel}>
-                    {t("openbridgeTempDictionary:common:cancel")}
+                    {t("common.cancel")}
                   </Button>
                 </ActionGroup>
               </Flex>

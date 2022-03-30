@@ -1,7 +1,6 @@
 {
   "common": {
     "cancel": "Cancel",
-    "configuration": "Configuration",
     "create": "Create",
     "endpoint": "Endpoint",
     "kafkaTopic": "Kafka Topic",
@@ -40,6 +39,7 @@
     "slackChannel": "Slack channel",
     "slackWebhookUrl": "Slack webhook URL",
     "source": "Source",
+    "sourceConfiguration": "Source configuration",
     "sourceProcessor": "Source processor",
     "sourceProcessorDescription": "Source processors are ready-to-use connectors that allow to connect and stream data from external sources without having to write any code.",
     "sourceType": "Source type",

@@ -15,6 +15,8 @@ const isPatternflyStyles = (stylesheet) =>
   stylesheet.includes("@patternfly/react-styles/css/") ||
   stylesheet.includes("@patternfly/react-core/");
 
+const ASSET_PATH = process.env.DEMO_APP ? "/" : "auto";
+
 module.exports = (env, argv) => {
   const isProduction = argv && argv.mode === "production";
   return {
@@ -88,7 +90,7 @@ module.exports = (env, argv) => {
     output: {
       filename: "[name].bundle.js",
       path: path.resolve(__dirname, "dist"),
-      publicPath: "auto",
+      publicPath: ASSET_PATH,
     },
     plugins: [
       new HtmlWebpackPlugin({

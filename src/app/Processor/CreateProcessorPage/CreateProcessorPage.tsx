@@ -10,12 +10,14 @@ import {
   TextContent,
 } from "@patternfly/react-core";
 import { Link, useHistory, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import ProcessorEdit from "@app/Processor/ProcessorEdit/ProcessorEdit";
 
 const CreateProcessorPage = () => {
   const { instanceId } = useParams<InstanceRouteParams>();
   const history = useHistory();
   const goToInstance = () => history.push(`/instance/${instanceId}`);
+  const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   return (
     <>
@@ -26,7 +28,7 @@ const CreateProcessorPage = () => {
               <BreadcrumbItem
                 render={({ className }) => (
                   <Link to={`/`} className={className}>
-                    Smart Events Instances
+                    {t("instance.smartEventInstances")}
                   </Link>
                 )}
               />
@@ -37,12 +39,14 @@ const CreateProcessorPage = () => {
                   </Link>
                 )}
               />
-              <BreadcrumbItem isActive>Create processor</BreadcrumbItem>
+              <BreadcrumbItem isActive>
+                {t("processor.createProcessor")}
+              </BreadcrumbItem>
             </Breadcrumb>
           </StackItem>
           <StackItem>
             <TextContent>
-              <Text component="h1">Create processor</Text>
+              <Text component="h1">{t("processor.createProcessor")}</Text>
             </TextContent>
           </StackItem>
         </Stack>

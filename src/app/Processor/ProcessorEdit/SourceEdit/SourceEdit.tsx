@@ -35,12 +35,12 @@ const SourceEdit = (props: SourceEditProps) => {
     });
   };
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const sourceTypes = [
     {
       value: "",
-      label: t("openbridgeTempDictionary:processor.selectSource"),
+      label: t("processor.selectSource"),
       isPlaceholder: true,
     },
     { value: "demoSource", label: "Demo Source", isPlaceholder: false },
@@ -57,12 +57,12 @@ const SourceEdit = (props: SourceEditProps) => {
     <>
       <FormGroup
         fieldId={`source-type`}
-        label={t("openbridgeTempDictionary:processor:sourceType")}
+        label={t("processor.sourceType")}
         isRequired={true}
       >
         <FormSelect
           id={`source-type`}
-          aria-label={t("openbridgeTempDictionary:processor:sourceType")}
+          aria-label={t("processor.sourceType")}
           isRequired={true}
           value={type}
           onChange={(type) => updateType(type)}
@@ -79,7 +79,7 @@ const SourceEdit = (props: SourceEditProps) => {
       </FormGroup>
       <FormGroup
         fieldId="source-parameters"
-        label={t("openbridgeTempDictionary:processor.sourceConfiguration")}
+        label={t("processor.sourceConfiguration")}
         isRequired={type !== ""}
       >
         <TextInput

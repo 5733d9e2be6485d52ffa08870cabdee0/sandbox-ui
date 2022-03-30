@@ -42,32 +42,32 @@ const FiltersEdit = (props: FiltersEditProps) => {
     );
   };
 
-  const { t } = useTranslation();
+  const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const filterTypesOptions = [
     {
       value: "",
-      label: t("openbridgeTempDictionary:common:selectType"),
+      label: t("common.selectType"),
       isPlaceholder: true,
     },
     {
       value: "StringEquals",
-      label: t("openbridgeTempDictionary:processor:stringEquals"),
+      label: t("processor.stringEquals"),
       isPlaceholder: false,
     },
     {
       value: "StringContains",
-      label: t("openbridgeTempDictionary:processor:stringContains"),
+      label: t("processor.stringContains"),
       isPlaceholder: false,
     },
     {
       value: "StringBeginsWith",
-      label: t("openbridgeTempDictionary:processor:stringBeginsWith"),
+      label: t("processor.stringBeginsWith"),
       isPlaceholder: false,
     },
     {
       value: "ValuesIn",
-      label: t("openbridgeTempDictionary:processor:valuesIn"),
+      label: t("processor.valuesIn"),
       isPlaceholder: false,
     },
   ];
@@ -85,7 +85,7 @@ const FiltersEdit = (props: FiltersEditProps) => {
                 <SplitItem isFilled>
                   <FormGroup
                     fieldId={`filter-key-${index}`}
-                    label={t("openbridgeTempDictionary:common:key")}
+                    label={t("common.key")}
                   >
                     <TextInput
                       type="text"
@@ -102,11 +102,11 @@ const FiltersEdit = (props: FiltersEditProps) => {
                 <SplitItem isFilled>
                   <FormGroup
                     fieldId={`filter-type-${index}`}
-                    label={t("openbridgeTempDictionary:common:type")}
+                    label={t("common.type")}
                   >
                     <FormSelect
                       id={`filter-type-${index}`}
-                      aria-label={t("openbridgeTempDictionary:common:type")}
+                      aria-label={t("common.type")}
                       value={filter.type}
                       onChange={(type) =>
                         updateFilter({ ...filter, type }, index)
@@ -126,7 +126,7 @@ const FiltersEdit = (props: FiltersEditProps) => {
                 <SplitItem isFilled>
                   <FormGroup
                     fieldId={`filter-value-${index}`}
-                    label={t("openbridgeTempDictionary:common:value")}
+                    label={t("common.value")}
                   >
                     <TextInput
                       type="text"
@@ -149,9 +149,7 @@ const FiltersEdit = (props: FiltersEditProps) => {
                     <FlexItem>
                       <Button
                         variant="plain"
-                        aria-label={t(
-                          "openbridgeTempDictionary:processor:deleteFilter"
-                        )}
+                        aria-label={t("processor.deleteFilter")}
                         onClick={() => deleteFilter(index)}
                         isDisabled={filters.length === 1}
                       >
@@ -172,7 +170,7 @@ const FiltersEdit = (props: FiltersEditProps) => {
           onClick={addFilter}
           isInline={true}
         >
-          {t("openbridgeTempDictionary:processor:addFilter")}
+          {t("processor.addFilter")}
         </Button>
       </StackItem>
     </Stack>

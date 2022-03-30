@@ -13,6 +13,7 @@
   "demoOverview": "Demo Overview",
   "instancesListTable": "Instances list table",
   "instance": {
+    "smartEventInstances": "Smart Event Instances",
     "instanceId": "Instance ID"
   },
   "processor": {
@@ -21,6 +22,7 @@
     "actionType": "Action type",
     "addFilter": "Add filter",
     "addTransformationDescription": "Add a transformation template.",
+    "createProcessor": "Create processor",
     "deleteFilter": "Delete filter",
     "filters": "Filters",
     "generalInformation": "General information",

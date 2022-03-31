@@ -1,6 +1,10 @@
 import React, { Suspense, useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import "@patternfly/patternfly/patternfly.css";
+import "@patternfly/patternfly/utilities/Accessibility/accessibility.css";
+import "@patternfly/patternfly/utilities/Sizing/sizing.css";
+import "@patternfly/patternfly/utilities/Spacing/spacing.css";
+import "@patternfly/patternfly/utilities/Display/display.css";
 import { AppLayout } from "@app/components/AppLayout/AppLayout";
 import Routes from "@app/Routes/Routes";
 import {

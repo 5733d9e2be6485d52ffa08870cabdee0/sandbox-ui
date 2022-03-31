@@ -130,7 +130,9 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
                           <FormSection title={t("processor.source")}>
                             <TextContent>
                               <Text component="p">
-                                {t("processor.selectProcessorTypeDescription")}
+                                {t(
+                                  "processor.selectSourceProcessorTypeDescription"
+                                )}
                               </Text>
                             </TextContent>
                             <SourceEdit source={source} onChange={setSource} />

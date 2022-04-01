@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Table } from "@app/components/Table";
 import { useTranslation } from "react-i18next";
 import {
+  Button,
   PageSection,
   PageSectionVariants,
   Text,
@@ -9,6 +10,7 @@ import {
 } from "@patternfly/react-core";
 import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
+import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
 
 const InstancesListPage = () => {
   const columnNames = [
@@ -102,7 +104,7 @@ const InstancesListPage = () => {
       status: "ready",
     },
   ];
-  const { t } = useTranslation();
+  const { t } = useTranslation("openbridgeTempDictionary");
 
   //TODO fake actionResolver
   const actionResolver = (rowData: IRowData) => {
@@ -115,6 +117,8 @@ const InstancesListPage = () => {
     ];
   };
 
+  const [showCreateInstance, setShowCreateInstance] = useState(false);
+
   return (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -123,6 +127,17 @@ const InstancesListPage = () => {
             {t("openbridgeTempDictionary:demoOverview")}
           </Text>
         </TextContent>
+      </PageSection>
+      <PageSection>
+        <Button onClick={() => setShowCreateInstance(true)}>
+          {t("instance.createSEInstance")}
+        </Button>
+        <CreateInstance
+          isLoading={false}
+          isModalOpen={showCreateInstance}
+          onClose={() => setShowCreateInstance(false)}
+          onCreate={() => setShowCreateInstance(false)}
+        />
       </PageSection>
       <PageSection>
         <Table

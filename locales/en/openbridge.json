@@ -61,6 +61,7 @@
     "stringContains": "String contains",
     "stringEquals": "String equals",
     "transformation": "Transformation",
+    "transformationTemplate": "Transformation template",
     "valuesIn": "Values in"
   }
 }

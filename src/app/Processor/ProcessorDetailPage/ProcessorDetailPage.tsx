@@ -1,4 +1,5 @@
 import React from "react";
+import { Link, useParams } from "react-router-dom";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,14 +10,13 @@ import {
   Text,
   TextContent,
 } from "@patternfly/react-core";
-import { Link, useHistory, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import ProcessorEdit from "@app/Processor/ProcessorEdit/ProcessorEdit";
+import { InstanceRouteParams } from "@app/Processor/CreateProcessorPage/CreateProcessorPage";
+import ProcessorDetail from "@app/Processor/ProcessorDetail/ProcessorDetail";
 
-const CreateProcessorPage = () => {
+const ProcessorDetailPage = () => {
   const { instanceId } = useParams<InstanceRouteParams>();
-  const history = useHistory();
-  const goToInstance = () => history.push(`/instance/${instanceId}`);
+
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   return (
@@ -39,25 +39,19 @@ const CreateProcessorPage = () => {
                   </Link>
                 )}
               />
-              <BreadcrumbItem isActive>
-                {t("processor.createProcessor")}
-              </BreadcrumbItem>
+              <BreadcrumbItem isActive>My processor</BreadcrumbItem>
             </Breadcrumb>
           </StackItem>
           <StackItem>
             <TextContent>
-              <Text component="h1">{t("processor.createProcessor")}</Text>
+              <Text component="h1">My processor</Text>
             </TextContent>
           </StackItem>
         </Stack>
       </PageSection>
-      <ProcessorEdit onSave={goToInstance} onCancel={goToInstance} />
+      <ProcessorDetail />
     </>
   );
 };
 
-export type InstanceRouteParams = {
-  instanceId: string;
-};
-
-export default CreateProcessorPage;
+export default ProcessorDetailPage;

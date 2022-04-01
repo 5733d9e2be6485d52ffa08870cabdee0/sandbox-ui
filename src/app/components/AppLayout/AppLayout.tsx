@@ -18,6 +18,7 @@ import { logout } from "../../../Keycloak";
 
 interface AppLayoutProps {
   children: ReactNode;
+  mobileView?: boolean;
 }
 
 export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {

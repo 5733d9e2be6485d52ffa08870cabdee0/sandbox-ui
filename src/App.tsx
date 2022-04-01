@@ -19,9 +19,11 @@ const App = () => {
   useEffect(() => {
     const init = async () => {
       await setKeycloakInstance();
-      setInitialized(true);
     };
-    init();
+    init().then(
+      () => setInitialized(true),
+      () => setInitialized(false)
+    );
   }, []);
 
   return (

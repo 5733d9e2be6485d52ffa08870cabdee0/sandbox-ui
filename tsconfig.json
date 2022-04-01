@@ -10,6 +10,7 @@
   ],
   "compilerOptions": {
     "allowJs": false,
+    "esModuleInterop": true,
     "baseUrl": ".",
     "typeRoots": ["./node_modules/@types", "./types"],
     "paths": {

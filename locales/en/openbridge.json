@@ -1,4 +1,54 @@
 {
+  "common": {
+    "cancel": "Cancel",
+    "create": "Create",
+    "endpoint": "Endpoint",
+    "kafkaTopic": "Kafka Topic",
+    "key": "Key",
+    "selectType": "Select type",
+    "type": "Type",
+    "value": "Value",
+    "webhook": "Webhook"
+  },
   "demoOverview": "Demo Overview",
-  "instancesListTable": "Instances list table"
+  "instancesListTable": "Instances list table",
+  "instance": {
+    "smartEventInstances": "Smart Event Instances",
+    "instanceId": "Instance ID"
+  },
+  "processor": {
+    "action": "Action",
+    "actionConfiguration": "Action configuration",
+    "actionType": "Action type",
+    "addFilter": "Add filter",
+    "addTransformationDescription": "Add a transformation template.",
+    "createProcessor": "Create processor",
+    "deleteFilter": "Delete filter",
+    "filters": "Filters",
+    "generalInformation": "General information",
+    "processorName": "Processor name",
+    "selectAction": "Select an action",
+    "selectActionDescription": "Select an action and provide its configuration.",
+    "selectProcessorType": "Select processor type",
+    "selectSource": "Select a source",
+    "selectSourceProcessorTypeDescription": "Select a source type and provide its configuration.",
+    "sendToKafka": "Send to Kafka",
+    "sendToBridge": "Send to instance",
+    "sendToSlack": "Send to Slack",
+    "sink": "Sink",
+    "sinkProcessor": "Sink processor",
+    "sinkProcessorDescription": "Sink processors help connect events to actions.",
+    "slackChannel": "Slack channel",
+    "slackWebhookUrl": "Slack webhook URL",
+    "source": "Source",
+    "sourceConfiguration": "Source configuration",
+    "sourceProcessor": "Source processor",
+    "sourceProcessorDescription": "Source processors are ready-to-use connectors that allow to connect and stream data from external sources without having to write any code.",
+    "sourceType": "Source type",
+    "stringBeginsWith": "String begins with",
+    "stringContains": "String contains",
+    "stringEquals": "String equals",
+    "transformation": "Transformation",
+    "valuesIn": "Values in"
+  }
 }

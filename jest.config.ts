@@ -3,18 +3,30 @@
  * https://jestjs.io/docs/configuration
  */
 
+import path from "path";
+
 export default {
-  moduleDirectories: ["node_modules"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   moduleNameMapper: {
+    "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$":
+      "<rootDir>/__mocks__/fileMock.js",
     "\\.(css|less|svg)$":
       "<rootDir>/node_modules/@patternfly/react-styles/__mocks__/styleMock.js",
+    "@patternfly/react-code-editor": path.resolve(
+      __dirname,
+      "./__mocks__/react-code-editor.js"
+    ),
+    "^@app/(.*)$": "<rootDir>/src/app/$1",
+    "^@i18n/(.*)$": "<rootDir>/src/i18n/$1",
+    "^@apis/(.*)$": "<rootDir>/src/apis/$1",
+    "^@constants/(.*)$": "<rootDir>/src/constants/$1",
+    "^@utils/(.*)$": "<rootDir>/src/utils/$1",
+    "^@context/(.*)$": "<rootDir>/src/context/$1",
   },
   reporters: ["default"],
-  testEnvironment: "jsdom",
+  testEnvironment: "jest-environment-jsdom",
   testMatch: ["**/*.(spec|steps|test).[jt]s?(x)"],
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "ts-jest",
-  },
+  transformIgnorePatterns: [
+    "node_modules/(?!@patternfly/react-icons|@patternfly/react-tokens|@novnc|@popperjs|lodash|monaco-editor|react-monaco-editor|byte-size)",
+  ],
+  setupFilesAfterEnv: ["<rootDir>/setupJest.ts"],
 };

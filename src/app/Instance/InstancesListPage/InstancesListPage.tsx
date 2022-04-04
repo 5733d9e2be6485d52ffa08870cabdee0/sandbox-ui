@@ -35,6 +35,10 @@ const InstancesListPage = () => {
     {
       accessor: "status",
       label: t("common.status"),
+      formatter: (value: IRowData) => {
+        const statusString = (value as unknown as string) ?? "";
+        return statusString.charAt(0).toUpperCase() + statusString.slice(1);
+      },
     },
     {
       accessor: "submitted_at",

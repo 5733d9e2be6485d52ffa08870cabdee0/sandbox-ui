@@ -156,10 +156,14 @@ const InstancesListPage = () => {
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
 
-  const getPagination = (isCompact: boolean, className: string) => (
+  const getPagination = (
+    itemCount: number,
+    isCompact: boolean,
+    className: string
+  ) => (
     <Pagination
       className={className}
-      itemCount={instances.length}
+      itemCount={itemCount}
       page={1}
       perPage={20}
       isCompact={isCompact}
@@ -193,7 +197,11 @@ const InstancesListPage = () => {
                   onClose={() => setShowCreateInstance(false)}
                   onCreate={() => setShowCreateInstance(false)}
                 />
-                {getPagination(true, "instances-list-page__pagination--top")}
+                {getPagination(
+                  instances.length,
+                  true,
+                  "instances-list-page__pagination--top"
+                )}
               </section>
             }
             actionResolver={actionResolver}
@@ -202,7 +210,11 @@ const InstancesListPage = () => {
             cssClasses="tableInstances"
             rows={instances}
           />
-          {getPagination(false, "instances-list-page__pagination--bottom")}
+          {getPagination(
+            instances.length,
+            false,
+            "instances-list-page__pagination--bottom"
+          )}
         </Card>
       </PageSection>
     </>

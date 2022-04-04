@@ -21,7 +21,7 @@ const InstancesListPage = () => {
   const columnNames = [
     {
       accessor: "name",
-      label: t("instance.name"),
+      label: t("common.name"),
       formatter: (value: IRowData, row?: IRow) => (
         <Link
           data-testid="tableInstances-linkInstance"
@@ -31,14 +31,14 @@ const InstancesListPage = () => {
         </Link>
       ),
     },
-    { accessor: "description", label: t("instance.description") },
+    { accessor: "description", label: t("common.description") },
     {
       accessor: "status",
-      label: t("instance.status"),
+      label: t("common.status"),
     },
     {
       accessor: "submitted_at",
-      label: t("instance.submittedAt"),
+      label: t("common.submittedAt"),
       formatter: (value: IRowData) => {
         const date = new Date(value as unknown as string);
         return formatDistance(date, new Date()) + " " + t("common.ago");

@@ -3,14 +3,17 @@
     "ago": "ago",
     "cancel": "Cancel",
     "create": "Create",
-    "details": "Details",
     "delete": "Delete",
+    "description": "Description",
+    "details": "Details",
     "endpoint": "Endpoint",
     "kafkaTopic": "Kafka Topic",
     "key": "Key",
     "name": "Name",
     "required": "Required",
     "selectType": "Select type",
+    "status": "Status",
+    "submittedAt": "Time created",
     "submittingRequest": "Submitting request",
     "type": "Type",
     "value": "Value",
@@ -21,13 +24,9 @@
   "instance": {
     "createASEInstance": "Create a Smart Events instance",
     "createSEInstance": "Create Smart Events instance",
-    "description": "Description",
     "instanceId": "Instance ID",
     "instanceWillBeAvailableShortly": "Your Smart Events instance will be ready for use shortly after creation.",
-    "name": "Name",
-    "smartEventInstances": "Smart Event Instances",
-    "status": "Status",
-    "submittedAt": "Time created"
+    "smartEventInstances": "Smart Event Instances"
   },
   "processor": {
     "action": "Action",

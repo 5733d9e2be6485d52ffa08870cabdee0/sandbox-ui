@@ -1,9 +1,10 @@
-import React, { CSSProperties, FunctionComponent } from "react";
+import React, { FunctionComponent } from "react";
 
 import { Pagination as PFPagination } from "@patternfly/react-core";
 
 interface PaginationProps {
-  style?: CSSProperties;
+  /** Custom class name */
+  className?: string;
   /** Number of elements */
   itemCount: number;
   /** Current page number */
@@ -17,7 +18,7 @@ interface PaginationProps {
 }
 
 export const Pagination: FunctionComponent<PaginationProps> = ({
-  style = {},
+  className,
   itemCount,
   page,
   perPage,
@@ -25,7 +26,8 @@ export const Pagination: FunctionComponent<PaginationProps> = ({
   isCompact = false,
 }) => (
   <PFPagination
-    style={{ ...style, float: "right" }}
+    className={className}
+    style={{ float: "right" }}
     itemCount={itemCount}
     page={page}
     perPage={perPage}

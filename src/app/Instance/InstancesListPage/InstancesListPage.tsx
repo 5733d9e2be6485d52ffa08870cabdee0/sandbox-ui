@@ -1,4 +1,5 @@
-import React, { CSSProperties, useState } from "react";
+import "./InstancesListPage.css";
+import React, { useState } from "react";
 import { Table } from "@app/components/Table";
 import { useTranslation } from "react-i18next";
 import {
@@ -150,9 +151,9 @@ const InstancesListPage = () => {
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
 
-  const getPagination = (isCompact: boolean, customStyle?: CSSProperties) => (
+  const getPagination = (isCompact: boolean, className: string) => (
     <Pagination
-      style={customStyle}
+      className={className}
       itemCount={instances.length}
       page={1}
       perPage={20}
@@ -173,12 +174,7 @@ const InstancesListPage = () => {
           </Text>
         </TextContent>
       </PageSection>
-      <PageSection
-        style={{
-          backgroundColor: "var(--pf-global--BackgroundColor--100)",
-          backgroundClip: "content-box",
-        }}
-      >
+      <PageSection className="instances-list-page__page-section">
         <Table
           caption={
             <section>
@@ -191,7 +187,7 @@ const InstancesListPage = () => {
                 onClose={() => setShowCreateInstance(false)}
                 onCreate={() => setShowCreateInstance(false)}
               />
-              {getPagination(true)}
+              {getPagination(true, "instances-list-page__pagination--top")}
             </section>
           }
           actionResolver={actionResolver}
@@ -200,10 +196,7 @@ const InstancesListPage = () => {
           cssClasses="tableInstances"
           rows={instances}
         />
-        {getPagination(false, {
-          paddingTop: "var(--pf-global--spacer--md)",
-          paddingBottom: "var(--pf-global--spacer--md)",
-        })}
+        {getPagination(false, "instances-list-page__pagination--bottom")}
       </PageSection>
     </>
   );

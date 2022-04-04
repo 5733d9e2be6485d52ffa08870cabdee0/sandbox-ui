@@ -4,6 +4,7 @@ import { Table } from "@app/components/Table";
 import { useTranslation } from "react-i18next";
 import {
   Button,
+  Card,
   PageSection,
   PageSectionVariants,
   Text,
@@ -178,29 +179,31 @@ const InstancesListPage = () => {
           </Text>
         </TextContent>
       </PageSection>
-      <PageSection className="instances-list-page__page-section">
-        <Table
-          caption={
-            <section>
-              <Button onClick={() => setShowCreateInstance(true)}>
-                {t("instance.createSEInstance")}
-              </Button>
-              <CreateInstance
-                isLoading={false}
-                isModalOpen={showCreateInstance}
-                onClose={() => setShowCreateInstance(false)}
-                onCreate={() => setShowCreateInstance(false)}
-              />
-              {getPagination(true, "instances-list-page__pagination--top")}
-            </section>
-          }
-          actionResolver={actionResolver}
-          ariaLabel={t("openbridgeTempDictionary:instancesListTable")}
-          columns={columnNames}
-          cssClasses="tableInstances"
-          rows={instances}
-        />
-        {getPagination(false, "instances-list-page__pagination--bottom")}
+      <PageSection>
+        <Card>
+          <Table
+            caption={
+              <section>
+                <Button onClick={() => setShowCreateInstance(true)}>
+                  {t("instance.createSEInstance")}
+                </Button>
+                <CreateInstance
+                  isLoading={false}
+                  isModalOpen={showCreateInstance}
+                  onClose={() => setShowCreateInstance(false)}
+                  onCreate={() => setShowCreateInstance(false)}
+                />
+                {getPagination(true, "instances-list-page__pagination--top")}
+              </section>
+            }
+            actionResolver={actionResolver}
+            ariaLabel={t("openbridgeTempDictionary:instancesListTable")}
+            columns={columnNames}
+            cssClasses="tableInstances"
+            rows={instances}
+          />
+          {getPagination(false, "instances-list-page__pagination--bottom")}
+        </Card>
       </PageSection>
     </>
   );

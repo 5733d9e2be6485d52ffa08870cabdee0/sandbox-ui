@@ -1,8 +1,3 @@
-.instances-list-page__page-section {
-    background-color: var(--pf-global--BackgroundColor--100);
-    background-clip: content-box;
-}
-
 .instances-list-page__pagination--bottom {
     padding-top: var(--pf-global--spacer--md);
     padding-bottom: var(--pf-global--spacer--md);

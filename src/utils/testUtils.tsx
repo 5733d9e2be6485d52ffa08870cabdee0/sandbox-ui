@@ -19,10 +19,6 @@ const Providers: FunctionComponent = ({ children }) => {
             import("@rhoas/app-services-ui-components/locales/en/common.json"),
           openbridgeTempDictionary: () =>
             import("../../locales/en/openbridge.json"),
-          "create-kafka-instance": () =>
-            import(
-              "@rhoas/app-services-ui-components/locales/en/create-kafka-instance.json"
-            ),
         },
       }}
       debug={false}

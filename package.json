@@ -24,7 +24,7 @@
     "@patternfly/react-icons": "4.32.1",
     "@patternfly/react-styles": "4.31.1",
     "@patternfly/react-table": "4.50.1",
-    "@rhoas/app-services-ui-components": "1.28.2",
+    "@rhoas/app-services-ui-components": "1.11.8",
     "@rhoas/app-services-ui-shared": "0.15.4",
     "keycloak-js": "15.0.1",
     "monaco-editor": "0.21.3",

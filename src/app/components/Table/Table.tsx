@@ -27,8 +27,8 @@ interface TableProps {
   actionResolver?: (rowData: IRow) => IAction[];
   /** Accessible name for the table */
   ariaLabel?: string;
-  /** Element to be appended after the `tbody` node */
-  children?: React.ReactNode;
+  /** Section to be added as Table caption */
+  caption?: React.ReactNode;
   /** Columns to display */
   columns: TableColumn[];
   /** list of additive css classes */
@@ -42,7 +42,7 @@ interface TableProps {
 export const Table: FunctionComponent<TableProps> = ({
   actionResolver,
   ariaLabel = "Table",
-  children,
+  caption,
   columns,
   cssClasses,
   rows,
@@ -71,6 +71,7 @@ export const Table: FunctionComponent<TableProps> = ({
       variant={variant}
       aria-label={ariaLabel}
     >
+      {caption && <caption> {caption} </caption>}
       <Thead>
         <Tr>
           {transformColumns(columns).map((column) => (
@@ -92,7 +93,6 @@ export const Table: FunctionComponent<TableProps> = ({
           </Tr>
         ))}
       </Tbody>
-      {children}
     </TableComposable>
   );
 };

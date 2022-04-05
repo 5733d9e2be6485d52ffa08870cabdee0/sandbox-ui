@@ -1,6 +1,9 @@
 import React, { FunctionComponent } from "react";
 
-import { Pagination as PFPagination } from "@patternfly/react-core";
+import {
+  Pagination as PFPagination,
+  PaginationVariant,
+} from "@patternfly/react-core";
 
 interface PaginationProps {
   /** Custom class name */
@@ -15,6 +18,8 @@ interface PaginationProps {
   onChange: (page: number, perPage: number) => void;
   /** Indicates if pagination is compact  */
   isCompact?: boolean;
+  /** Pagination variant */
+  variant?: PaginationVariant;
 }
 
 export const Pagination: FunctionComponent<PaginationProps> = ({
@@ -24,6 +29,7 @@ export const Pagination: FunctionComponent<PaginationProps> = ({
   perPage,
   onChange,
   isCompact = false,
+  variant,
 }) => (
   <PFPagination
     className={className}
@@ -48,5 +54,6 @@ export const Pagination: FunctionComponent<PaginationProps> = ({
     onSetPage={(_, page) => onChange(page, perPage)}
     onPerPageSelect={(_, perPage) => onChange(page, perPage)}
     isCompact={isCompact}
+    variant={variant}
   />
 );

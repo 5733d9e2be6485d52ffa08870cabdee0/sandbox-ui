@@ -2,6 +2,7 @@ import React, { FunctionComponent, useState } from "react";
 import {
   Button,
   Card,
+  PaginationVariant,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -46,7 +47,7 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
 
   const getPagination = (
     itemCount: number,
-    isCompact: boolean,
+    isBottom: boolean,
     className: string
   ) => (
     <Pagination
@@ -54,7 +55,8 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
       itemCount={itemCount}
       page={1}
       perPage={20}
-      isCompact={isCompact}
+      isCompact={!isBottom}
+      {...(isBottom ? { variant: PaginationVariant.bottom } : {})}
       onChange={() =>
         // @TODO missing action when changing the page
         {}
@@ -83,7 +85,7 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
           >
             {getPagination(
               instances.length,
-              true,
+              false,
               "instances-list-page__pagination--top"
             )}
           </ToolbarItem>
@@ -98,7 +100,7 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
       />
       {getPagination(
         instances.length,
-        false,
+        true,
         "instances-list-page__pagination--bottom"
       )}
     </Card>

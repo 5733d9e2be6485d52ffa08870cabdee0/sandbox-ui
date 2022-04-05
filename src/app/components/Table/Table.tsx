@@ -13,7 +13,7 @@ import {
 } from "@patternfly/react-table";
 import { css } from "@patternfly/react-styles";
 
-interface TableColumn {
+export interface TableColumn {
   /** Column identifier */
   accessor: string;
   /** Displayed label */

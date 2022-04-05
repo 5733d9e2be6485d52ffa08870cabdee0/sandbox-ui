@@ -1,24 +1,17 @@
 import "./InstancesListPage.css";
-import React, { useState } from "react";
-import { Table } from "@app/components/Table";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Button,
-  Card,
   Label,
   PageSection,
   PageSectionVariants,
   Text,
   TextContent,
-  Toolbar,
-  ToolbarContent,
-  ToolbarItem,
 } from "@patternfly/react-core";
 import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
-import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
 import { formatDistance } from "date-fns";
-import { Pagination } from "@app/components/Pagination/Pagination";
+import { InstancesList } from "@app/Instance/InstancesList/InstancesList";
 
 const InstancesListPage = () => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -145,43 +138,6 @@ const InstancesListPage = () => {
     },
   ];
 
-  const actionResolver = () => {
-    return [
-      {
-        title: t("common.details"),
-        onClick: () =>
-          // @TODO missing action to perform when clicking on details action
-          {},
-      },
-      {
-        title: t("common.delete"),
-        onClick: () =>
-          // @TODO missing action to perform when clicking on delete action
-          {},
-      },
-    ];
-  };
-
-  const [showCreateInstance, setShowCreateInstance] = useState(false);
-
-  const getPagination = (
-    itemCount: number,
-    isCompact: boolean,
-    className: string
-  ) => (
-    <Pagination
-      className={className}
-      itemCount={itemCount}
-      page={1}
-      perPage={20}
-      isCompact={isCompact}
-      onChange={() =>
-        // @TODO missing action when changing the page
-        {}
-      }
-    />
-  );
-
   return (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -192,45 +148,7 @@ const InstancesListPage = () => {
         </TextContent>
       </PageSection>
       <PageSection>
-        <Card>
-          <Toolbar>
-            <ToolbarContent>
-              <ToolbarItem alignment={{ default: "alignLeft" }}>
-                <Button onClick={() => setShowCreateInstance(true)}>
-                  {t("instance.createSEInstance")}
-                </Button>
-                <CreateInstance
-                  isLoading={false}
-                  isModalOpen={showCreateInstance}
-                  onClose={() => setShowCreateInstance(false)}
-                  onCreate={() => setShowCreateInstance(false)}
-                />
-              </ToolbarItem>
-              <ToolbarItem
-                variant="pagination"
-                alignment={{ default: "alignRight" }}
-              >
-                {getPagination(
-                  instances.length,
-                  true,
-                  "instances-list-page__pagination--top"
-                )}
-              </ToolbarItem>
-            </ToolbarContent>
-          </Toolbar>
-          <Table
-            actionResolver={actionResolver}
-            ariaLabel={t("openbridgeTempDictionary:instancesListTable")}
-            columns={columnNames}
-            cssClasses="tableInstances"
-            rows={instances}
-          />
-          {getPagination(
-            instances.length,
-            false,
-            "instances-list-page__pagination--bottom"
-          )}
-        </Card>
+        <InstancesList columnNames={columnNames} instances={instances} />
       </PageSection>
     </>
   );

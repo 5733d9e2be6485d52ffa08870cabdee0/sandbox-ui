@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import {
   Button,
   Card,
+  Label,
   PageSection,
   PageSectionVariants,
   Text,
@@ -38,7 +39,11 @@ const InstancesListPage = () => {
       label: t("common.status"),
       formatter: (value: IRowData) => {
         const statusString = (value as unknown as string) ?? "";
-        return statusString.charAt(0).toUpperCase() + statusString.slice(1);
+        return (
+          <Label>
+            {statusString.charAt(0).toUpperCase() + statusString.slice(1)}
+          </Label>
+        );
       },
     },
     {

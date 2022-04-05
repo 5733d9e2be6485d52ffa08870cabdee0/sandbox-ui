@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table } from "@app/components/Table";
+import { Table, TableColumn } from "@app/components/Table";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -8,23 +8,27 @@ import {
   Text,
   TextContent,
 } from "@patternfly/react-core";
-import { IRow, IRowData } from "@patternfly/react-table";
+import { IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
+import { Instance } from "../../../types/Instance";
 
 const InstancesListPage = () => {
-  const columnNames = [
+  const columnNames: TableColumn[] = [
     {
       accessor: "name",
       label: "Name",
-      formatter: (value: IRowData, row?: IRow) => (
-        <Link
-          data-testid="tableInstances-linkInstance"
-          to={`instance/${row?.id}`}
-        >
-          {value}
-        </Link>
-      ),
+      formatter: (value: IRowData, row?) => {
+        const rowId = (row as Instance)?.id;
+        return (
+          <Link
+            data-testid="tableInstances-linkInstance"
+            to={`instance/${rowId}`}
+          >
+            {value}
+          </Link>
+        );
+      },
     },
     { accessor: "id", label: "ID" },
     { accessor: "status", label: "Status" },
@@ -107,7 +111,7 @@ const InstancesListPage = () => {
   const { t } = useTranslation("openbridgeTempDictionary");
 
   //TODO fake actionResolver
-  const actionResolver = (rowData: IRowData) => {
+  const actionResolver = (rowData?: IRowData) => {
     // noinspection JSUnusedGlobalSymbols
     return [
       {

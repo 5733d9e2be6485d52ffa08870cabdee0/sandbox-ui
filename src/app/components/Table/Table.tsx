@@ -27,8 +27,6 @@ interface TableProps {
   actionResolver?: (rowData: IRow) => IAction[];
   /** Accessible name for the table */
   ariaLabel?: string;
-  /** Section to be added as Table caption */
-  caption?: React.ReactNode;
   /** Columns to display */
   columns: TableColumn[];
   /** list of additive css classes */
@@ -42,7 +40,6 @@ interface TableProps {
 export const Table: FunctionComponent<TableProps> = ({
   actionResolver,
   ariaLabel = "Table",
-  caption,
   columns,
   cssClasses,
   rows,
@@ -71,7 +68,6 @@ export const Table: FunctionComponent<TableProps> = ({
       variant={variant}
       aria-label={ariaLabel}
     >
-      {caption && <caption> {caption} </caption>}
       <Thead>
         <Tr>
           {transformColumns(columns).map((column) => (

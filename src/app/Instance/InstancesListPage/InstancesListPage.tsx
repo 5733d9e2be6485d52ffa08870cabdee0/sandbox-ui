@@ -10,6 +10,9 @@ import {
   PageSectionVariants,
   Text,
   TextContent,
+  Toolbar,
+  ToolbarContent,
+  ToolbarItem,
 } from "@patternfly/react-core";
 import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
@@ -190,9 +193,9 @@ const InstancesListPage = () => {
       </PageSection>
       <PageSection>
         <Card>
-          <Table
-            caption={
-              <section>
+          <Toolbar>
+            <ToolbarContent>
+              <ToolbarItem alignment={{ default: "alignLeft" }}>
                 <Button onClick={() => setShowCreateInstance(true)}>
                   {t("instance.createSEInstance")}
                 </Button>
@@ -202,13 +205,20 @@ const InstancesListPage = () => {
                   onClose={() => setShowCreateInstance(false)}
                   onCreate={() => setShowCreateInstance(false)}
                 />
+              </ToolbarItem>
+              <ToolbarItem
+                variant="pagination"
+                alignment={{ default: "alignRight" }}
+              >
                 {getPagination(
                   instances.length,
                   true,
                   "instances-list-page__pagination--top"
                 )}
-              </section>
-            }
+              </ToolbarItem>
+            </ToolbarContent>
+          </Toolbar>
+          <Table
             actionResolver={actionResolver}
             ariaLabel={t("openbridgeTempDictionary:instancesListTable")}
             columns={columnNames}

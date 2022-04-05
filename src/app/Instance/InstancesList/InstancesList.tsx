@@ -45,13 +45,8 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
 
-  const getPagination = (
-    itemCount: number,
-    isBottom: boolean,
-    className: string
-  ) => (
+  const getPagination = (itemCount: number, isBottom: boolean) => (
     <Pagination
-      className={className}
       itemCount={itemCount}
       page={1}
       perPage={20}
@@ -83,11 +78,7 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
             variant="pagination"
             alignment={{ default: "alignRight" }}
           >
-            {getPagination(
-              instances.length,
-              false,
-              "instances-list-page__pagination--top"
-            )}
+            {getPagination(instances.length, false)}
           </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
@@ -98,11 +89,7 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
         cssClasses="tableInstances"
         rows={instances}
       />
-      {getPagination(
-        instances.length,
-        true,
-        "instances-list-page__pagination--bottom"
-      )}
+      {getPagination(instances.length, true)}
     </Card>
   );
 };

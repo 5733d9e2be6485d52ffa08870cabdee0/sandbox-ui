@@ -8,7 +8,7 @@ import {
   Text,
   TextContent,
 } from "@patternfly/react-core";
-import { IRowData } from "@patternfly/react-table";
+import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
 import { Instance } from "../../../types/Instance";
@@ -18,7 +18,7 @@ const InstancesListPage = () => {
     {
       accessor: "name",
       label: "Name",
-      formatter: (value: IRowData, row?) => {
+      formatter: (value: IRowData, row?: IRow) => {
         const rowId = (row as Instance)?.id;
         return (
           <Link

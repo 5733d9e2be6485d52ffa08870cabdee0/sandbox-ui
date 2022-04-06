@@ -17,13 +17,12 @@ import {
   TextContent,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
-import { InstanceRouteParams } from "@app/Processor/CreateProcessorPage/CreateProcessorPage";
 import ProcessorDetail from "@app/Processor/ProcessorDetail/ProcessorDetail";
 import { CaretDownIcon, CheckCircleIcon } from "@patternfly/react-icons";
 import { Processor } from "@app/Processor/types";
 
 const ProcessorDetailPage = () => {
-  const { instanceId } = useParams<InstanceRouteParams>();
+  const { instanceId } = useParams<ProcessorRouteParams>();
   const history = useHistory();
   const goToInstance = () => history.push(`/instance/${instanceId}`);
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -107,6 +106,8 @@ const ProcessorDetailPage = () => {
                 </TextContent>
               </StackItem>
               <StackItem>
+                {/* @TODO: replace this temp label with component from shared library */}
+                {/* see https://issues.redhat.com/browse/MGDOBR-523 */}
                 <Label color="green" icon={<CheckCircleIcon />}>
                   Ready
                 </Label>
@@ -137,3 +138,8 @@ const ProcessorDetailPage = () => {
 };
 
 export default ProcessorDetailPage;
+
+type ProcessorRouteParams = {
+  instanceId: string;
+  processorId: string;
+};

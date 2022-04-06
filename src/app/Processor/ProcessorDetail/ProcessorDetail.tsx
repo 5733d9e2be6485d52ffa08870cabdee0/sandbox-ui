@@ -25,8 +25,12 @@ import {
   Tr,
 } from "@patternfly/react-table";
 import { Processor } from "@app/Processor/types";
+import "./ProcessorDetail.css";
 
 interface ProcessorDetailProps {
+  /**
+   * The processor to display
+   */
   processor: Processor;
 }
 
@@ -94,7 +98,7 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
             <TableComposable
               variant={"compact"}
               borders={true}
-              style={{ maxWidth: 800 }}
+              className="processor-detail__filters"
             >
               <Thead>
                 <Tr>
@@ -133,10 +137,8 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
             </TextContent>
           </StackItem>
           <StackItem>
-            <CodeBlock style={{ maxWidth: 800 }}>
-              <CodeBlockCode id="code-content">
-                {processor.transformationTemplate}
-              </CodeBlockCode>
+            <CodeBlock className="processor-detail__transformation-template">
+              <CodeBlockCode>{processor.transformationTemplate}</CodeBlockCode>
             </CodeBlock>
           </StackItem>
         </Stack>

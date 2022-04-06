@@ -56,7 +56,7 @@ const CreateProcessorPage = () => {
   );
 };
 
-export type InstanceRouteParams = {
+type InstanceRouteParams = {
   instanceId: string;
 };
 

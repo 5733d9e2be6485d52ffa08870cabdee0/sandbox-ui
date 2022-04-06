@@ -1,5 +1,5 @@
 import React from "react";
-import { customRender, waitForI18n } from "../../../utils/testUtils";
+import { customRender, waitForI18n } from "@utils/testUtils";
 import ProcessorDetail from "./ProcessorDetail";
 import { SinkProcessor, SourceProcessor } from "../types";
 
@@ -13,19 +13,23 @@ describe("ProcessorDetail component", () => {
     expect(comp.getByTestId("processor-type-label")).toHaveTextContent("Sink");
 
     expect(comp.queryByText("Filters")).toBeInTheDocument();
-    expect(comp.queryByText(sinkProcessor.filters![0].key)).toBeInTheDocument();
+    expect(
+      comp.queryByText(sinkProcessor.filters?.[0].key as string)
+    ).toBeInTheDocument();
     expect(comp.queryByText("String contains")).toBeInTheDocument();
     expect(
-      comp.queryByText(sinkProcessor.filters![0].value)
+      comp.queryByText(sinkProcessor.filters?.[0].value as string)
     ).toBeInTheDocument();
-    expect(comp.queryByText(sinkProcessor.filters![1].key)).toBeInTheDocument();
+    expect(
+      comp.queryByText(sinkProcessor.filters?.[1].key as string)
+    ).toBeInTheDocument();
     expect(comp.queryByText("String equals")).toBeInTheDocument();
     expect(
-      comp.queryByText(sinkProcessor.filters![1].value)
+      comp.queryByText(sinkProcessor.filters?.[1].value as string)
     ).toBeInTheDocument();
 
     expect(
-      comp.queryByText(sinkProcessor.transformationTemplate!)
+      comp.queryByText(sinkProcessor.transformationTemplate as string)
     ).toBeInTheDocument();
 
     expect(comp.queryByText("Action")).toBeInTheDocument();
@@ -52,15 +56,15 @@ describe("ProcessorDetail component", () => {
 
     expect(comp.queryByText("Filters")).toBeInTheDocument();
     expect(
-      comp.queryByText(sourceProcessor.filters![0].key)
+      comp.queryByText(sourceProcessor.filters?.[0].key as string)
     ).toBeInTheDocument();
     expect(comp.queryByText("String contains")).toBeInTheDocument();
     expect(
-      comp.queryByText(sourceProcessor.filters![0].value)
+      comp.queryByText(sourceProcessor.filters?.[0].value as string)
     ).toBeInTheDocument();
 
     expect(
-      comp.queryByText(sourceProcessor.transformationTemplate!)
+      comp.queryByText(sourceProcessor.transformationTemplate as string)
     ).toBeInTheDocument();
 
     expect(comp.queryByText("Demo source")).toBeInTheDocument();

@@ -34,21 +34,6 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
   const { processor } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
-  // const transformationTemplate = "Hello, there's a new message: {data.message}";
-  //
-  // const filters = [
-  //   {
-  //     key: "source",
-  //     type: "stringEquals",
-  //     value: "aws.ec2",
-  //   },
-  //   {
-  //     key: "detail-type",
-  //     type: "stringEquals",
-  //     value: "EC2 Instance State-change Notification",
-  //   },
-  // ];
-
   return (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -61,7 +46,9 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
             </TextContent>
           </StackItem>
           <StackItem>
-            <Label color={"blue"}>{t(`processor.${processor.type}`)}</Label>
+            <Label color={"blue"} data-testid="processor-type-label">
+              {t(`processor.${processor.type}`)}
+            </Label>
           </StackItem>
         </Stack>
       </PageSection>
@@ -75,19 +62,17 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
             </StackItem>
             <StackItem>
               <DescriptionList>
-                <DescriptionListGroup>
+                <DescriptionListGroup key="source-type">
                   <DescriptionListTerm>
                     {t("processor.sourceType")}
                   </DescriptionListTerm>
                   <DescriptionListDescription>
-                    {t(`processor.actions.${processor.source.type}`)}
+                    {processor.source.type}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 {Object.keys(processor.source.parameters).map((key) => (
-                  <DescriptionListGroup>
-                    <DescriptionListTerm>
-                      {t(`processor.${key}`)}
-                    </DescriptionListTerm>
+                  <DescriptionListGroup key={key}>
+                    <DescriptionListTerm>Demo parameter</DescriptionListTerm>
                     <DescriptionListDescription>
                       {processor.source.parameters[key]}
                     </DescriptionListDescription>
@@ -166,7 +151,7 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
             </StackItem>
             <StackItem>
               <DescriptionList>
-                <DescriptionListGroup>
+                <DescriptionListGroup key="action-type">
                   <DescriptionListTerm>
                     {t("processor.actionType")}
                   </DescriptionListTerm>
@@ -175,7 +160,7 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 {Object.keys(processor.action.parameters).map((key) => (
-                  <DescriptionListGroup>
+                  <DescriptionListGroup key={key}>
                     <DescriptionListTerm>
                       {t(`processor.${key}`)}
                     </DescriptionListTerm>

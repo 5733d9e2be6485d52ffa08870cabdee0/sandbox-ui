@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -24,6 +24,8 @@ import { Processor } from "@app/Processor/types";
 
 const ProcessorDetailPage = () => {
   const { instanceId } = useParams<InstanceRouteParams>();
+  const history = useHistory();
+  const goToInstance = () => history.push(`/instance/${instanceId}`);
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const [isActionsOpen, setIsActionsOpen] = useState(false);
@@ -37,7 +39,7 @@ const ProcessorDetailPage = () => {
     <DropdownItem
       key="delete"
       component="button"
-      onClick={() => console.log("delete")}
+      onClick={() => goToInstance()}
     >
       {t("common.delete")}
     </DropdownItem>,

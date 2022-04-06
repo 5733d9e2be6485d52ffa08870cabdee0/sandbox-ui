@@ -1,5 +1,5 @@
 import React from "react";
-import { customRender } from "../../../utils/testUtils";
+import { customRender } from "@utils/testUtils";
 import { Pagination } from "./Pagination";
 import { fireEvent } from "@testing-library/react";
 
@@ -8,7 +8,7 @@ const FIRST_PAGE_LABEL = "Go to first page";
 const LAST_PAGE_LABEL = "Go to last page";
 
 describe("Pagination component", () => {
-  it("should display the total number of items", async () => {
+  it("should display the total number of items", () => {
     const itemCount = 50;
     const comp = customRender(
       <Pagination
@@ -24,7 +24,7 @@ describe("Pagination component", () => {
     ).toHaveTextContent(itemCount.toString());
   });
 
-  it("should be displayed in no-compact mode, by default", async () => {
+  it("should be displayed in no-compact mode, by default", () => {
     const itemCount = 50;
     const comp = customRender(
       <Pagination
@@ -40,7 +40,7 @@ describe("Pagination component", () => {
     expect(comp.getByLabelText(LAST_PAGE_LABEL)).toBeInTheDocument();
   });
 
-  it("should be displayed in compact mode, when required", async () => {
+  it("should be displayed in compact mode, when required", () => {
     const itemCount = 50;
     const comp = customRender(
       <Pagination
@@ -57,7 +57,7 @@ describe("Pagination component", () => {
     expect(comp.queryByLabelText(LAST_PAGE_LABEL)).not.toBeInTheDocument();
   });
 
-  it("should trigger onChange function, when the page gets changed", async () => {
+  it("should trigger onChange function, when the page gets changed", () => {
     const itemCount = 50;
     const onChangeMock = jest.fn();
 

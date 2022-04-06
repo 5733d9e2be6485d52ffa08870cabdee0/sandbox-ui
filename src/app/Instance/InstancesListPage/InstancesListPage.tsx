@@ -11,6 +11,7 @@ import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import { InstancesList } from "@app/Instance/InstancesList/InstancesList";
+import { Instance } from "../../../types/Instance";
 
 const InstancesListPage = () => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -19,14 +20,17 @@ const InstancesListPage = () => {
     {
       accessor: "name",
       label: t("common.name"),
-      formatter: (value: IRowData, row?: IRow) => (
-        <Link
-          data-testid="tableInstances-linkInstance"
-          to={`instance/${row?.id}`}
-        >
-          {value}
-        </Link>
-      ),
+      formatter: (value: IRowData, row?: IRow) => {
+        const rowId = (row as Instance)?.id;
+        return (
+          <Link
+            data-testid="tableInstances-linkInstance"
+            to={`instance/${rowId}`}
+          >
+            {value}
+          </Link>
+        );
+      },
     },
     { accessor: "description", label: t("common.description") },
     {

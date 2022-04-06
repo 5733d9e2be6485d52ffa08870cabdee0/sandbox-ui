@@ -18,6 +18,7 @@ import { logout } from "../../../Keycloak";
 
 interface AppLayoutProps {
   children: ReactNode;
+  mobileView?: boolean;
 }
 
 export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
@@ -38,7 +39,7 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
   const HeaderTools = (
     <PageHeaderTools>
       <PageHeaderToolsGroup>
-        <Button variant="tertiary" onClick={() => logout()}>
+        <Button variant="tertiary" onClick={() => void logout()}>
           Logout
         </Button>
       </PageHeaderToolsGroup>
@@ -97,5 +98,7 @@ function LogoImg() {
   function handleClick() {
     history.push("/");
   }
-  return <img src={logo} onClick={handleClick} alt="PatternFly Logo" />;
+  return (
+    <img src={logo as string} onClick={handleClick} alt="PatternFly Logo" />
+  );
 }

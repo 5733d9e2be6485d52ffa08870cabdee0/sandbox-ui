@@ -19,12 +19,17 @@ export interface TableColumn {
   /** Displayed label */
   label: string;
   /** Custom function to be used to render differently all values on this column */
-  formatter?: (value: IRowData, row?: IRow) => string | IRowData;
+  formatter?: (value: IRowData, row?: TableRow) => string | IRowData;
+}
+
+interface TableRow extends IRowData {
+  /** Additive property which stores the entire object row data */
+  originalData?: IRowData;
 }
 
 interface TableProps {
   /** It enables the presence of an action menu on the rows, with the given resolver */
-  actionResolver?: (rowData: IRow) => IAction[];
+  actionResolver?: (rowData?: IRow) => IAction[];
   /** Accessible name for the table */
   ariaLabel?: string;
   /** Columns to display */
@@ -32,7 +37,7 @@ interface TableProps {
   /** list of additive css classes */
   cssClasses?: string | string[];
   /** Collection of cells to render */
-  rows: IRow[];
+  rows: TableRow[];
   /** Style variant for the table */
   variant?: "compact";
 }
@@ -55,7 +60,8 @@ export const Table: FunctionComponent<TableProps> = ({
         cells: columns.map((column) => {
           const accessor = column.accessor;
           const formatter = column.formatter ?? ((value: IRowData) => value);
-          return formatter(objectRow[accessor], objectRow);
+          const objectRowElement = objectRow[accessor] as TableRow;
+          return formatter(objectRowElement, objectRow);
         }),
         originalData: objectRow,
       };
@@ -76,8 +82,8 @@ export const Table: FunctionComponent<TableProps> = ({
         </Tr>
       </Thead>
       <Tbody>
-        {transformRows(rows, columns).map((row, rowIndex) => (
-          <Tr key={row?.originalData?.id ?? rowIndex}>
+        {transformRows(rows, columns).map((row: TableRow, rowIndex) => (
+          <Tr key={(row.originalData?.id as string) ?? rowIndex}>
             {row?.cells?.map((cell, cellIndex) => (
               <Td key={cellIndex}>{cell}</Td>
             ))}

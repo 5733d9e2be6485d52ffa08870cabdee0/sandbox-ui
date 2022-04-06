@@ -21,7 +21,7 @@ const App = () => {
       await setKeycloakInstance();
       setInitialized(true);
     };
-    init();
+    void init();
   }, []);
 
   return (

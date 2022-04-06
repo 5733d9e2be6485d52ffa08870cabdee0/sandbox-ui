@@ -28,9 +28,8 @@ module.exports = {
     //"xstate", cos-ui https://issues.redhat.com/browse/MGDOBR-510
   ],
 
-  // kafka-ui
   rules: {
-    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
     "@typescript-eslint/explicit-function-return-type": "off", // https://issues.redhat.com/browse/MGDOBR-530
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/no-empty-function": "off",

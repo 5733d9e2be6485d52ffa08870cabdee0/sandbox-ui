@@ -11,7 +11,7 @@ describe("AppLayout component", () => {
 
     const { container } = render(
       <BrowserRouter>
-        <AppLayout children={children} />
+        <AppLayout>{children}</AppLayout>
       </BrowserRouter>
     );
 

@@ -11,7 +11,7 @@ const Routes = () => {
       <Route exact path={"/"}>
         <InstancesListPage />
       </Route>
-      <Route path={`/instance/:instanceId/:processorID`}>
+      <Route path={`/instance/:instanceId/processor/:processorId`}>
         <ProcessorDetailPage />
       </Route>
       <Route path={`/instance/:instanceId/create-processor`}>

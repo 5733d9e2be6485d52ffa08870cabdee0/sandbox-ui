@@ -6,6 +6,7 @@ import {
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
+  Label,
   PageSection,
   PageSectionVariants,
   Stack,
@@ -23,44 +24,81 @@ import {
   Thead,
   Tr,
 } from "@patternfly/react-table";
+import { Processor } from "@app/Processor/types";
 
-const ProcessorDetail = () => {
+interface ProcessorDetailProps {
+  processor: Processor;
+}
+
+const ProcessorDetail = (props: ProcessorDetailProps) => {
+  const { processor } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
-  const transformationTemplate =
-    "{\n" +
-    '  "version": "0",\n' +
-    '  "id": "7bf73129-1428-4cd3-a780-95db273d1602",\n' +
-    '  "detail-type": "EC2 Instance State-change Notification",\n' +
-    '  "source": "aws.ec2",\n' +
-    '  "account": "123456789012",\n' +
-    '  "time": "2015-11-11T21:29:54Z",\n' +
-    '  "region": "us-east-1",\n' +
-    '  "resources": [\n' +
-    '    "arn:aws:ec2:us-east-1:123456789012:instance/i-abcd1111"\n' +
-    "  ],\n" +
-    '  "detail": {\n' +
-    '    "instance-id": "i-0123456789",\n' +
-    '    "state": "RUNNING"\n' +
-    "  }\n" +
-    "}";
-
-  const filters = [
-    {
-      key: "source",
-      type: "stringEquals",
-      value: "aws.ec2",
-    },
-    {
-      key: "detail-type",
-      type: "stringEquals",
-      value: "EC2 Instance State-change Notification",
-    },
-  ];
+  // const transformationTemplate = "Hello, there's a new message: {data.message}";
+  //
+  // const filters = [
+  //   {
+  //     key: "source",
+  //     type: "stringEquals",
+  //     value: "aws.ec2",
+  //   },
+  //   {
+  //     key: "detail-type",
+  //     type: "stringEquals",
+  //     value: "EC2 Instance State-change Notification",
+  //   },
+  // ];
 
   return (
     <>
-      <PageSection variant={PageSectionVariants.light} isWidthLimited={true}>
+      <PageSection variant={PageSectionVariants.light}>
+        <Stack hasGutter={true}>
+          <StackItem>
+            <TextContent>
+              <Text component={TextVariants.h2}>
+                {t("processor.processorType")}
+              </Text>
+            </TextContent>
+          </StackItem>
+          <StackItem>
+            <Label color={"blue"}>{t(`processor.${processor.type}`)}</Label>
+          </StackItem>
+        </Stack>
+      </PageSection>
+      {processor.type === "source" && (
+        <PageSection variant={PageSectionVariants.light}>
+          <Stack hasGutter={true}>
+            <StackItem>
+              <TextContent>
+                <Text component={TextVariants.h2}>{t("processor.source")}</Text>
+              </TextContent>
+            </StackItem>
+            <StackItem>
+              <DescriptionList>
+                <DescriptionListGroup>
+                  <DescriptionListTerm>
+                    {t("processor.sourceType")}
+                  </DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {t(`processor.actions.${processor.source.type}`)}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+                {Object.keys(processor.source.parameters).map((key) => (
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>
+                      {t(`processor.${key}`)}
+                    </DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {processor.source.parameters[key]}
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                ))}
+              </DescriptionList>
+            </StackItem>
+          </Stack>
+        </PageSection>
+      )}
+      <PageSection variant={PageSectionVariants.light}>
         <Stack hasGutter={true}>
           <StackItem>
             <TextContent>
@@ -70,7 +108,7 @@ const ProcessorDetail = () => {
           <StackItem>
             <TableComposable
               variant={"compact"}
-              borders={false}
+              borders={true}
               style={{ maxWidth: 800 }}
             >
               <Thead>
@@ -81,7 +119,7 @@ const ProcessorDetail = () => {
                 </Tr>
               </Thead>
               <Tbody>
-                {filters.map((filter) => (
+                {processor.filters?.map((filter) => (
                   <Tr key={filter.key}>
                     <Td>{filter.key}</Td>
                     <Td>{t(`processor.${filter.type}`)}</Td>
@@ -93,7 +131,7 @@ const ProcessorDetail = () => {
           </StackItem>
         </Stack>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light} isWidthLimited={true}>
+      <PageSection variant={PageSectionVariants.light}>
         <Stack hasGutter={true}>
           <StackItem>
             <TextContent>
@@ -112,49 +150,45 @@ const ProcessorDetail = () => {
           <StackItem>
             <CodeBlock style={{ maxWidth: 800 }}>
               <CodeBlockCode id="code-content">
-                {transformationTemplate}
+                {processor.transformationTemplate}
               </CodeBlockCode>
             </CodeBlock>
           </StackItem>
         </Stack>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light} isWidthLimited={true}>
-        <Stack hasGutter={true}>
-          <StackItem>
-            <TextContent>
-              <Text component={TextVariants.h2}>{t("processor.action")}</Text>
-            </TextContent>
-          </StackItem>
-          <StackItem>
-            <DescriptionList>
-              <DescriptionListGroup>
-                <DescriptionListTerm>
-                  {t("processor.actionType")}
-                </DescriptionListTerm>
-                <DescriptionListDescription>
-                  {t("processor.sendToSlack")}
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-              <DescriptionListGroup>
-                <DescriptionListTerm>
-                  {t("processor.slackChannel")}
-                </DescriptionListTerm>
-                <DescriptionListDescription>
-                  Demo Channel
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-              <DescriptionListGroup>
-                <DescriptionListTerm>
-                  {t("processor.slackWebhookUrl")}
-                </DescriptionListTerm>
-                <DescriptionListDescription>
-                  http://demourl.com
-                </DescriptionListDescription>
-              </DescriptionListGroup>
-            </DescriptionList>
-          </StackItem>
-        </Stack>
-      </PageSection>
+      {processor.type === "sink" && (
+        <PageSection variant={PageSectionVariants.light}>
+          <Stack hasGutter={true}>
+            <StackItem>
+              <TextContent>
+                <Text component={TextVariants.h2}>{t("processor.action")}</Text>
+              </TextContent>
+            </StackItem>
+            <StackItem>
+              <DescriptionList>
+                <DescriptionListGroup>
+                  <DescriptionListTerm>
+                    {t("processor.actionType")}
+                  </DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {t(`processor.actions.${processor.action.type}`)}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+                {Object.keys(processor.action.parameters).map((key) => (
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>
+                      {t(`processor.${key}`)}
+                    </DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {processor.action.parameters[key]}
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                ))}
+              </DescriptionList>
+            </StackItem>
+          </Stack>
+        </PageSection>
+      )}
     </>
   );
 };

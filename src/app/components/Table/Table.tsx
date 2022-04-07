@@ -32,8 +32,6 @@ interface TableProps {
   actionResolver?: (rowData?: IRow) => IAction[];
   /** Accessible name for the table */
   ariaLabel?: string;
-  /** Element to be appended after the `tbody` node */
-  children?: React.ReactNode;
   /** Columns to display */
   columns: TableColumn[];
   /** list of additive css classes */
@@ -47,7 +45,6 @@ interface TableProps {
 export const Table: FunctionComponent<TableProps> = ({
   actionResolver,
   ariaLabel = "Table",
-  children,
   columns,
   cssClasses,
   rows,
@@ -76,6 +73,7 @@ export const Table: FunctionComponent<TableProps> = ({
       className={css(cssClasses)}
       variant={variant}
       aria-label={ariaLabel}
+      ouiaId={ariaLabel}
     >
       <Thead>
         <Tr>
@@ -98,7 +96,6 @@ export const Table: FunctionComponent<TableProps> = ({
           </Tr>
         ))}
       </Tbody>
-      {children}
     </TableComposable>
   );
 };

@@ -38,7 +38,6 @@ module.exports = {
     "import/extensions": "off",
     "import/no-unresolved": "off",
 
-    indent: ["error", 2],
     "object-curly-spacing": ["error", "always"],
     semi: ["error", "always"],
 

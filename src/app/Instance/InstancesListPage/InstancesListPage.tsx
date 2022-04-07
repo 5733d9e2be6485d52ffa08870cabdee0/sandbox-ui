@@ -40,7 +40,8 @@ const InstancesListPage = () => {
         const statusString = (value as unknown as string) ?? "";
         return (
           <Label>
-            {statusString.charAt(0).toUpperCase() + statusString.slice(1)}
+            {statusString.charAt(0).toUpperCase() +
+              statusString.slice(1).toLowerCase()}
           </Label>
         );
       },

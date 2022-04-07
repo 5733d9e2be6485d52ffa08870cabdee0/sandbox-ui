@@ -14,7 +14,7 @@ interface PaginationProps {
   page: number;
   /** Number of elements displayed for each page */
   perPage: number;
-  /** Function triggered when the page gets changed */
+  /** Function triggered when the page number, or the number of elements displayed in each page, get changed */
   onChange: (page: number, perPage: number) => void;
   /** Indicates if pagination is compact  */
   isCompact?: boolean;

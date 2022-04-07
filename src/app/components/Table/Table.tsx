@@ -73,6 +73,7 @@ export const Table: FunctionComponent<TableProps> = ({
       className={css(cssClasses)}
       variant={variant}
       aria-label={ariaLabel}
+      ouiaId={ariaLabel}
     >
       <Thead>
         <Tr>

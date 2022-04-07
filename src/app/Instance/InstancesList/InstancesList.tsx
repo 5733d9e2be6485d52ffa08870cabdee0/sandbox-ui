@@ -61,7 +61,7 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
 
   return (
     <Card>
-      <Toolbar>
+      <Toolbar ouiaId="instances-toolbar">
         <ToolbarContent>
           <ToolbarItem alignment={{ default: "alignLeft" }}>
             <Button onClick={() => setShowCreateInstance(true)}>

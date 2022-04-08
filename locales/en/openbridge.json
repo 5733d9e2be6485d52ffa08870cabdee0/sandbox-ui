@@ -1,5 +1,7 @@
 {
   "common": {
+    "access": "Access",
+    "actions": "Actions",
     "ago": "ago",
     "cancel": "Cancel",
     "create": "Create",
@@ -7,9 +9,11 @@
     "description": "Description",
     "details": "Details",
     "endpoint": "Endpoint",
+    "id": "ID",
     "kafkaTopic": "Kafka Topic",
     "key": "Key",
     "name": "Name",
+    "processors": "Processors",
     "required": "Required",
     "selectType": "Select type",
     "status": "Status",
@@ -28,6 +32,7 @@
     "instanceWillBeAvailableShortly": "Your Smart Events instance will be ready for use shortly after creation.",
     "smartEventInstances": "Smart Event Instances"
   },
+  "processorsListTable": "Processors list table",
   "processor": {
     "action": "Action",
     "actionConfiguration": "Action configuration",

@@ -23,11 +23,11 @@ const InstancesListPage = () => {
       accessor: "name",
       label: t("common.name"),
       formatter: (value: IRowData, row?: IRow) => {
-        const rowId = (row as Instance)?.id;
+        const bridgeId = (row as Instance)?.id;
         return (
           <Link
             data-testid="tableInstances-linkInstance"
-            to={`instance/${rowId}`}
+            to={`/instance/${bridgeId}`}
           >
             {value}
           </Link>

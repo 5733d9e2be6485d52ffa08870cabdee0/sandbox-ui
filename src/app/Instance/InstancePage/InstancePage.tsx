@@ -19,7 +19,7 @@ import {
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import { CaretDownIcon } from "@patternfly/react-icons";
@@ -36,6 +36,7 @@ type InstanceParams = {
 const InstancePage = () => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const { instanceId } = useParams<InstanceParams>();
+  const location = useLocation();
 
   const processorsTabRef = React.createRef<HTMLElement>();
   const accessTabRef = React.createRef<HTMLElement>();
@@ -70,7 +71,7 @@ const InstancePage = () => {
         return (
           <Link
             data-testid="tableProcessors-linkProcessor"
-            to={`/instance/${instanceId}/processor/${processorId}`}
+            to={`${location.pathname}/processor/${processorId}`}
           >
             {value}
           </Link>
@@ -209,7 +210,7 @@ const InstancePage = () => {
           <Overview
             columns={processorsOverviewColumns}
             customToolbarElement={
-              <Link to={`/create-processor`}>
+              <Link to={`${location.pathname}/create-processor`}>
                 <Button variant="primary">
                   {t("processor.createProcessor")}
                 </Button>
@@ -228,13 +229,6 @@ const InstancePage = () => {
         >
           Instance Access section
         </TabContent>
-      </PageSection>
-      <PageSection>
-        <Link
-          to={`${location.pathname}/processor/90452443-86cb-42f7-9781-d7a987ba6a3b`}
-        >
-          <Button variant="link">View processor</Button>
-        </Link>
       </PageSection>
     </>
   );

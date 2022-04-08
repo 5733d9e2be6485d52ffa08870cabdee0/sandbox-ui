@@ -1,4 +1,4 @@
-import { BaseAction } from "../../../openapi/generated";
+import { BaseAction } from "../../openapi/generated";
 
 export type Processor = SinkProcessor | SourceProcessor;
 

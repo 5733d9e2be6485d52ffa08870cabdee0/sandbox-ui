@@ -6,7 +6,7 @@ import {
   FormSelectOption,
   TextInput,
 } from "@patternfly/react-core";
-import { BaseSource } from "@app/Processor/types";
+import { BaseSource } from "../../../../types/Processor";
 
 interface SourceEditProps {
   source?: BaseSource;

@@ -24,7 +24,7 @@ import {
   Thead,
   Tr,
 } from "@patternfly/react-table";
-import { Processor } from "@app/Processor/types";
+import { Processor } from "../../../types/Processor";
 import "./ProcessorDetail.css";
 
 interface ProcessorDetailProps {
@@ -99,6 +99,7 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
               variant={"compact"}
               borders={true}
               className="processor-detail__filters"
+              data-ouia-component-id={"filters"}
             >
               <Thead>
                 <Tr>

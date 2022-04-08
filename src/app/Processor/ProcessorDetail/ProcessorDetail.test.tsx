@@ -1,7 +1,7 @@
 import React from "react";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import ProcessorDetail from "./ProcessorDetail";
-import { SinkProcessor, SourceProcessor } from "../types";
+import { SinkProcessor, SourceProcessor } from "../../../types/Processor";
 
 describe("ProcessorDetail component", () => {
   it("should display sink processor information", async () => {
@@ -13,20 +13,20 @@ describe("ProcessorDetail component", () => {
     expect(comp.getByTestId("processor-type-label")).toHaveTextContent("Sink");
 
     expect(comp.queryByText("Filters")).toBeInTheDocument();
-    expect(
-      comp.queryByText(sinkProcessor.filters?.[0].key as string)
-    ).toBeInTheDocument();
-    expect(comp.queryByText("String contains")).toBeInTheDocument();
-    expect(
-      comp.queryByText(sinkProcessor.filters?.[0].value as string)
-    ).toBeInTheDocument();
-    expect(
-      comp.queryByText(sinkProcessor.filters?.[1].key as string)
-    ).toBeInTheDocument();
-    expect(comp.queryByText("String equals")).toBeInTheDocument();
-    expect(
-      comp.queryByText(sinkProcessor.filters?.[1].value as string)
-    ).toBeInTheDocument();
+
+    const filters = comp.container.querySelector(
+      "[data-ouia-component-id='filters']"
+    );
+    expect(filters).toHaveTextContent(sinkProcessor.filters?.[0].key as string);
+    expect(filters).toHaveTextContent("String contains");
+    expect(filters).toHaveTextContent(
+      sinkProcessor.filters?.[0].value as string
+    );
+    expect(filters).toHaveTextContent(sinkProcessor.filters?.[1].key as string);
+    expect(filters).toHaveTextContent("String equals");
+    expect(filters).toHaveTextContent(
+      sinkProcessor.filters?.[1].value as string
+    );
 
     expect(
       comp.queryByText(sinkProcessor.transformationTemplate as string)

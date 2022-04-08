@@ -19,7 +19,7 @@ import {
 import { useTranslation } from "react-i18next";
 import ProcessorDetail from "@app/Processor/ProcessorDetail/ProcessorDetail";
 import { CaretDownIcon, CheckCircleIcon } from "@patternfly/react-icons";
-import { Processor } from "@app/Processor/types";
+import { Processor } from "../../../types/Processor";
 
 const ProcessorDetailPage = () => {
   const { instanceId } = useParams<ProcessorRouteParams>();

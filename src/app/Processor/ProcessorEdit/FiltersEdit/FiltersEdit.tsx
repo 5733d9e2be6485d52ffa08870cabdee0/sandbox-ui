@@ -14,7 +14,7 @@ import {
 } from "@patternfly/react-core";
 import { PlusCircleIcon, TrashAltIcon } from "@patternfly/react-icons";
 import { useTranslation } from "react-i18next";
-import { EventFilter } from "@app/Processor/types";
+import { EventFilter } from "../../../../types/Processor";
 
 interface FiltersEditProps {
   filters: EventFilter[];

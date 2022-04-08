@@ -23,7 +23,7 @@ import ActionEdit from "@app/Processor/ProcessorEdit/ActionEdit/ActionEdit";
 import { BaseAction } from "../../../../openapi/generated";
 import SourceEdit from "@app/Processor/ProcessorEdit/SourceEdit/SourceEdit";
 import "./ProcessorEdit.css";
-import { EventFilter } from "@app/Processor/types";
+import { EventFilter } from "../../../types/Processor";
 
 interface ProcessorEditProps {
   onSave: () => void;

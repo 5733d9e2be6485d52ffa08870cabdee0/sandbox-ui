@@ -29,6 +29,13 @@ const InstancePage = () => {
           <Button variant="primary">Create Processor</Button>
         </Link>
       </PageSection>
+      <PageSection>
+        <Link
+          to={`${location.pathname}/processor/90452443-86cb-42f7-9781-d7a987ba6a3b`}
+        >
+          <Button variant="link">View processor</Button>
+        </Link>
+      </PageSection>
     </>
   );
 };

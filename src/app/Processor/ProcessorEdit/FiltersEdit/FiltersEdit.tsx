@@ -14,6 +14,7 @@ import {
 } from "@patternfly/react-core";
 import { PlusCircleIcon, TrashAltIcon } from "@patternfly/react-icons";
 import { useTranslation } from "react-i18next";
+import { EventFilter } from "../../../../types/Processor";
 
 interface FiltersEditProps {
   filters: EventFilter[];
@@ -178,9 +179,3 @@ const FiltersEdit = (props: FiltersEditProps) => {
 };
 
 export default FiltersEdit;
-
-export interface EventFilter {
-  key: string;
-  type: string;
-  value: string;
-}

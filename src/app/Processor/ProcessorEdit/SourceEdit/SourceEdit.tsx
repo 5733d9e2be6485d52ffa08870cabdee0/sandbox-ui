@@ -6,10 +6,11 @@ import {
   FormSelectOption,
   TextInput,
 } from "@patternfly/react-core";
+import { BaseSource } from "../../../../types/Processor";
 
 interface SourceEditProps {
-  source?: EventSource;
-  onChange: (source: EventSource) => void;
+  source?: BaseSource;
+  onChange: (source: BaseSource) => void;
 }
 
 const SourceEdit = (props: SourceEditProps) => {
@@ -26,7 +27,7 @@ const SourceEdit = (props: SourceEditProps) => {
     });
   };
 
-  const updateParameters = (parameters: EventSource["parameters"]) => {
+  const updateParameters = (parameters: BaseSource["parameters"]) => {
     setParameters(parameters);
     onChange({
       ...source,
@@ -103,10 +104,3 @@ const SourceEdit = (props: SourceEditProps) => {
 };
 
 export default SourceEdit;
-
-export interface EventSource {
-  type: string;
-  parameters: {
-    [key: string]: string;
-  };
-}

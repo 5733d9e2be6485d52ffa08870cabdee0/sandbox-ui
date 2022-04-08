@@ -51,22 +51,22 @@ const ActionEdit = (props: ActionEditProps) => {
     },
     {
       value: "KafkaTopic",
-      label: t("processor.sendToKafka"),
+      label: t("processor.actions.KafkaTopic"),
       isPlaceholder: false,
     },
     {
       value: "Webhook",
-      label: t("common.webhook"),
+      label: t("processor.actions.Webhook"),
       isPlaceholder: false,
     },
     {
       value: "SendToBridge",
-      label: t("processor.sendToBridge"),
+      label: t("processor.actions.SendToBridge"),
       isPlaceholder: false,
     },
     {
       value: "Slack",
-      label: t("processor.sendToSlack"),
+      label: t("processor.actions.Slack"),
       isPlaceholder: false,
     },
   ];
@@ -179,7 +179,7 @@ const ActionEdit = (props: ActionEditProps) => {
         <>
           <FormGroup
             fieldId={`slack-channel`}
-            label={t("processor.slackChannel")}
+            label={t("processor.channel")}
             isRequired={true}
           >
             <TextInput
@@ -199,7 +199,7 @@ const ActionEdit = (props: ActionEditProps) => {
           </FormGroup>
           <FormGroup
             fieldId={`slack-webhook-url`}
-            label={t("processor.slackWebhookUrl")}
+            label={t("processor.webhookUrl")}
             isRequired={true}
           >
             <TextInput

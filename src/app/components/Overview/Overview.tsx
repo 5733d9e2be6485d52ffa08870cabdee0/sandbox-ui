@@ -1,28 +1,37 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent } from "react";
 import {
-  Button,
   Card,
   PaginationVariant,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
 } from "@patternfly/react-core";
-import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
-import { Table, TableColumn } from "@app/components/Table";
-import { Instance } from "../../../types/Instance";
+import { Table, TableColumn, TableRow } from "@app/components/Table";
 import { Pagination } from "@app/components/Pagination/Pagination";
 import { useTranslation } from "react-i18next";
 
-interface InstancesListProps {
-  /** List of columns for the instances table */
-  columnNames: TableColumn[];
-  /** List of instances */
-  instances: Instance[];
+interface OverviewProps {
+  /** List of columns for the table */
+  columns: TableColumn[];
+  /** List of rows for the table */
+  rows: TableRow[];
+  /** Table label */
+  tableLabel: string;
+  /** Custom element you want to be in the toolbar */
+  customToolbarElement?: React.ReactNode;
 }
 
-export const InstancesList: FunctionComponent<InstancesListProps> = ({
-  columnNames,
-  instances,
+/**
+ * The goal of this component is to provide a reusable template composed by:
+ * - Toolbar (with top-pagination)
+ * - Table
+ * - bottom-pagination
+ */
+export const Overview: FunctionComponent<OverviewProps> = ({
+  columns,
+  customToolbarElement,
+  rows,
+  tableLabel,
 }) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
@@ -43,8 +52,6 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
     ];
   };
 
-  const [showCreateInstance, setShowCreateInstance] = useState(false);
-
   const getPagination = (itemCount: number, isBottom: boolean) => (
     <Pagination
       itemCount={itemCount}
@@ -61,35 +68,30 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
 
   return (
     <Card>
-      <Toolbar ouiaId="instances-toolbar">
+      <Toolbar ouiaId="rows-toolbar">
         <ToolbarContent>
-          <ToolbarItem alignment={{ default: "alignLeft" }}>
-            <Button onClick={() => setShowCreateInstance(true)}>
-              {t("instance.createSEInstance")}
-            </Button>
-            <CreateInstance
-              isLoading={false}
-              isModalOpen={showCreateInstance}
-              onClose={() => setShowCreateInstance(false)}
-              onCreate={() => setShowCreateInstance(false)}
-            />
+          <ToolbarItem
+            className="overview__toolbar-custom"
+            alignment={{ default: "alignLeft" }}
+          >
+            {customToolbarElement}
           </ToolbarItem>
           <ToolbarItem
             variant="pagination"
             alignment={{ default: "alignRight" }}
           >
-            {getPagination(instances.length, false)}
+            {getPagination(rows.length, false)}
           </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
       <Table
         actionResolver={actionResolver}
-        ariaLabel={t("openbridgeTempDictionary:instancesListTable")}
-        columns={columnNames}
-        cssClasses="tableInstances"
-        rows={instances}
+        ariaLabel={tableLabel}
+        columns={columns}
+        cssClasses="overview__table"
+        rows={rows}
       />
-      {getPagination(instances.length, true)}
+      {getPagination(rows.length, true)}
     </Card>
   );
 };

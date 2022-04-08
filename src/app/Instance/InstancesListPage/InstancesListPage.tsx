@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  Button,
   Label,
   PageSection,
   PageSectionVariants,
@@ -10,8 +11,9 @@ import {
 import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
-import { InstancesList } from "@app/Instance/InstancesList/InstancesList";
 import { Instance } from "../../../types/Instance";
+import { Overview } from "@app/components/Overview/Overview";
+import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
 
 const InstancesListPage = () => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -142,6 +144,8 @@ const InstancesListPage = () => {
     },
   ];
 
+  const [showCreateInstance, setShowCreateInstance] = useState(false);
+
   return (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -152,7 +156,24 @@ const InstancesListPage = () => {
         </TextContent>
       </PageSection>
       <PageSection>
-        <InstancesList columnNames={columnNames} instances={instances} />
+        <Overview
+          columns={columnNames}
+          customToolbarElement={
+            <React.Fragment>
+              <Button onClick={() => setShowCreateInstance(true)}>
+                {t("instance.createSEInstance")}
+              </Button>
+              <CreateInstance
+                isLoading={false}
+                isModalOpen={showCreateInstance}
+                onClose={() => setShowCreateInstance(false)}
+                onCreate={() => setShowCreateInstance(false)}
+              />
+            </React.Fragment>
+          }
+          rows={instances}
+          tableLabel={t("openbridgeTempDictionary:instancesListTable")}
+        />
       </PageSection>
     </>
   );

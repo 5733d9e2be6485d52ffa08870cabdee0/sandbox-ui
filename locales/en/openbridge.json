@@ -20,8 +20,7 @@
     "submittedAt": "Time created",
     "submittingRequest": "Submitting request",
     "type": "Type",
-    "value": "Value",
-    "webhook": "Webhook"
+    "value": "Value"
   },
   "demoOverview": "Demo Overview",
   "instancesListTable": "Instances list table",
@@ -35,28 +34,31 @@
   "processorsListTable": "Processors list table",
   "processor": {
     "action": "Action",
+    "actions": {
+      "KafkaTopic": "Send to Kafka",
+      "SendToBridge": "Send to Bridge",
+      "Slack": "Send to Slack",
+      "Webhook": "Webhook"
+    },
     "actionConfiguration": "Action configuration",
     "actionType": "Action type",
     "addFilter": "Add filter",
     "addTransformationDescription": "Add a transformation template.",
+    "channel": "Channel",
     "createProcessor": "Create processor",
     "deleteFilter": "Delete filter",
     "filters": "Filters",
     "generalInformation": "General information",
     "processorName": "Processor name",
+    "processorType": "Processor type",
     "selectAction": "Select an action",
     "selectActionDescription": "Select an action and provide its configuration.",
     "selectProcessorType": "Select processor type",
     "selectSource": "Select a source",
     "selectSourceProcessorTypeDescription": "Select a source type and provide its configuration.",
-    "sendToKafka": "Send to Kafka",
-    "sendToBridge": "Send to instance",
-    "sendToSlack": "Send to Slack",
     "sink": "Sink",
     "sinkProcessor": "Sink processor",
     "sinkProcessorDescription": "Sink processors help connect events to actions.",
-    "slackChannel": "Slack channel",
-    "slackWebhookUrl": "Slack webhook URL",
     "source": "Source",
     "sourceConfiguration": "Source configuration",
     "sourceProcessor": "Source processor",
@@ -66,6 +68,8 @@
     "stringContains": "String contains",
     "stringEquals": "String equals",
     "transformation": "Transformation",
-    "valuesIn": "Values in"
+    "transformationTemplate": "Transformation template",
+    "valuesIn": "Values in",
+    "webhookUrl": "Webhook URL"
   }
 }

@@ -17,14 +17,13 @@ import {
   TextInput,
   Tile,
 } from "@patternfly/react-core";
-import FiltersEdit, {
-  EventFilter,
-} from "@app/Processor/ProcessorEdit/FiltersEdit/FiltersEdit";
+import FiltersEdit from "@app/Processor/ProcessorEdit/FiltersEdit/FiltersEdit";
 import { CodeEditor } from "@patternfly/react-code-editor";
 import ActionEdit from "@app/Processor/ProcessorEdit/ActionEdit/ActionEdit";
 import { BaseAction } from "../../../../openapi/generated";
 import SourceEdit from "@app/Processor/ProcessorEdit/SourceEdit/SourceEdit";
 import "./ProcessorEdit.css";
+import { EventFilter } from "../../../types/Processor";
 
 interface ProcessorEditProps {
   onSave: () => void;

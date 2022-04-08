@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
   Dropdown,
   DropdownItem,
   DropdownToggle,
@@ -20,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import ProcessorDetail from "@app/Processor/ProcessorDetail/ProcessorDetail";
 import { CaretDownIcon, CheckCircleIcon } from "@patternfly/react-icons";
 import { Processor } from "../../../types/Processor";
+import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 
 const ProcessorDetailPage = () => {
   const { instanceId } = useParams<ProcessorRouteParams>();
@@ -78,23 +77,13 @@ const ProcessorDetailPage = () => {
         hasShadowBottom={true}
         type="breadcrumb"
       >
-        <Breadcrumb>
-          <BreadcrumbItem
-            render={({ className }) => (
-              <Link to={`/`} className={className}>
-                {t("instance.smartEventInstances")}
-              </Link>
-            )}
-          />
-          <BreadcrumbItem
-            render={({ className }) => (
-              <Link to={`/instance/${instanceId}`} className={className}>
-                My instance
-              </Link>
-            )}
-          />
-          <BreadcrumbItem isActive>My processor</BreadcrumbItem>
-        </Breadcrumb>
+        <Breadcrumb
+          path={[
+            { label: t("instance.smartEventInstances"), linkTo: "/" },
+            { label: "My instance", linkTo: `/instance/${instanceId}` },
+            { label: "My processor" },
+          ]}
+        />
       </PageSection>
       <PageSection variant={PageSectionVariants.light} hasShadowBottom={true}>
         <Split hasGutter={true}>

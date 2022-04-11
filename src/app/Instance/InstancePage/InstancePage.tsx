@@ -78,23 +78,24 @@ const InstancePage = () => {
       accessor: "type",
       label: t("common.type"),
       formatter: (value: IRowData) => {
-        const typeString = (value as unknown as string) ?? "";
-        return (
-          typeString.charAt(0).toUpperCase() + typeString.slice(1).toLowerCase()
-        );
+        const typeString = value as unknown as string;
+        return !typeString || !typeString.length
+          ? ""
+          : typeString.charAt(0).toUpperCase() +
+              typeString.slice(1).toLowerCase();
       },
     },
     {
       accessor: "status",
       label: t("common.status"),
       formatter: (value: IRowData) => {
-        const statusString = (value as unknown as string) ?? "";
-        return (
-          <Label>
-            {statusString.charAt(0).toUpperCase() +
-              statusString.slice(1).toLowerCase()}
-          </Label>
-        );
+        const statusString = value as unknown as string;
+        const label =
+          !statusString || !statusString.length
+            ? ""
+            : statusString.charAt(0).toUpperCase() +
+              statusString.slice(1).toLowerCase();
+        return <Label>{label}</Label>;
       },
     },
     {

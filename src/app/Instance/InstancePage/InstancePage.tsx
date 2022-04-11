@@ -7,6 +7,8 @@ import {
   Label,
   PageSection,
   PageSectionVariants,
+  Split,
+  SplitItem,
   Stack,
   StackItem,
   Tab,
@@ -15,9 +17,6 @@ import {
   TabTitleText,
   Text,
   TextContent,
-  Toolbar,
-  ToolbarGroup,
-  ToolbarItem,
 } from "@patternfly/react-core";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -140,41 +139,39 @@ const InstancePage = () => {
             />
           </StackItem>
           <StackItem>
-            <Toolbar>
-              <ToolbarGroup>
-                <ToolbarItem alignment={{ default: "alignLeft" }}>
-                  <TextContent>
-                    <Text component="h1">{instanceName}</Text>
-                  </TextContent>
-                </ToolbarItem>
-                <ToolbarItem alignment={{ default: "alignRight" }}>
-                  <Dropdown
-                    ouiaId="actions-dropdown"
-                    onSelect={() => setIsDropdownActionOpen(false)}
-                    toggle={
-                      <DropdownToggle
-                        ouiaId="actions-dropdown-toggle"
-                        onToggle={(isOpen: boolean) =>
-                          setIsDropdownActionOpen(isOpen)
-                        }
-                        toggleIndicator={CaretDownIcon}
-                      >
-                        {t("common.actions")}
-                      </DropdownToggle>
-                    }
-                    isOpen={isDropdownActionOpen}
-                    dropdownItems={[
-                      <DropdownItem key="details" onClick={onDetailsClick}>
-                        {t("common.details")}
-                      </DropdownItem>,
-                      <DropdownItem key="delete" onClick={onDeleteClick}>
-                        {t("common.delete")}
-                      </DropdownItem>,
-                    ]}
-                  />
-                </ToolbarItem>
-              </ToolbarGroup>
-            </Toolbar>
+            <Split>
+              <SplitItem isFilled>
+                <TextContent>
+                  <Text component="h1">{instanceName}</Text>
+                </TextContent>
+              </SplitItem>
+              <SplitItem>
+                <Dropdown
+                  ouiaId="actions-dropdown"
+                  onSelect={() => setIsDropdownActionOpen(false)}
+                  toggle={
+                    <DropdownToggle
+                      ouiaId="actions-dropdown-toggle"
+                      onToggle={(isOpen: boolean) =>
+                        setIsDropdownActionOpen(isOpen)
+                      }
+                      toggleIndicator={CaretDownIcon}
+                    >
+                      {t("common.actions")}
+                    </DropdownToggle>
+                  }
+                  isOpen={isDropdownActionOpen}
+                  dropdownItems={[
+                    <DropdownItem key="details" onClick={onDetailsClick}>
+                      {t("common.details")}
+                    </DropdownItem>,
+                    <DropdownItem key="delete" onClick={onDeleteClick}>
+                      {t("common.delete")}
+                    </DropdownItem>,
+                  ]}
+                />
+              </SplitItem>
+            </Split>
           </StackItem>
         </Stack>
       </PageSection>

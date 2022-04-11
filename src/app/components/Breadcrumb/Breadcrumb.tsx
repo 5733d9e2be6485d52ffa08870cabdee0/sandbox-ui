@@ -25,15 +25,15 @@ export const Breadcrumb: FunctionComponent<BreadcrumbProps> = ({ path }) => {
             key={itemIndex}
             isActive={isLastItem}
             render={({ className }) =>
-              pathItem.linkTo && (
+              pathItem.linkTo ? (
                 <Link to={pathItem.linkTo} className={className}>
                   {pathItem.label}
                 </Link>
+              ) : (
+                pathItem.label
               )
             }
-          >
-            {!pathItem.linkTo && pathItem.label}
-          </BreadcrumbItem>
+          />
         );
       })}
     </PFBreadcrumb>

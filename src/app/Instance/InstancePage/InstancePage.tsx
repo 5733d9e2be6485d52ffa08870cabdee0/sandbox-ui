@@ -19,7 +19,7 @@ import {
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
-import { Link, useHistory, useLocation, useParams } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import { CaretDownIcon } from "@patternfly/react-icons";
@@ -29,13 +29,8 @@ import { Instance } from "../../../types/Instance";
 import { formatDistance } from "date-fns";
 import "./InstancePage.css";
 
-type InstanceParams = {
-  instanceId: string;
-};
-
 const InstancePage = () => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
-  const { instanceId } = useParams<InstanceParams>();
   const location = useLocation();
   const history = useHistory();
 
@@ -46,7 +41,7 @@ const InstancePage = () => {
   const [isDropdownActionOpen, setIsDropdownActionOpen] =
     useState<boolean>(false);
 
-  const instanceName = `Instance ${instanceId}`; // @TODO retrieve it from API
+  const instanceName = `My instance`; // @TODO retrieve it from API
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,

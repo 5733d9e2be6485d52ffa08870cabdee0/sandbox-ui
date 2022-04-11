@@ -19,7 +19,7 @@ import {
   ToolbarGroup,
   ToolbarItem,
 } from "@patternfly/react-core";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import { CaretDownIcon } from "@patternfly/react-icons";
@@ -37,6 +37,7 @@ const InstancePage = () => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const { instanceId } = useParams<InstanceParams>();
   const location = useLocation();
+  const history = useHistory();
 
   const processorsTabRef = React.createRef<HTMLElement>();
   const accessTabRef = React.createRef<HTMLElement>();
@@ -60,7 +61,9 @@ const InstancePage = () => {
 
   const onDeleteClick = () =>
     // @TODO missing action to perform when clicking on delete action
-    {};
+    {
+      history.push(`/`);
+    };
 
   const processorsOverviewColumns = [
     {

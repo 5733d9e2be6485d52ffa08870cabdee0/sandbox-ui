@@ -182,7 +182,8 @@ const InstancePage = () => {
       </PageSection>
       <PageSection variant={PageSectionVariants.light} type="tabs">
         <Tabs
-          className="instance-page__tabs pf-u-pl-xl pf-u-pr-xl"
+          className="instance-page__tabs"
+          usePageInsets
           activeKey={activeTabKey}
           onSelect={handleTabClick}
         >

@@ -27,12 +27,9 @@ interface TableWithPaginationProps {
  * - Table
  * - bottom-pagination
  */
-export const TableWithPagination: FunctionComponent<TableWithPaginationProps> = ({
-  columns,
-  customToolbarElement,
-  rows,
-  tableLabel,
-}) => {
+export const TableWithPagination: FunctionComponent<
+  TableWithPaginationProps
+> = ({ columns, customToolbarElement, rows, tableLabel }) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const actionResolver = () => {

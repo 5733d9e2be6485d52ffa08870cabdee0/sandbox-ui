@@ -9,8 +9,6 @@ import {
   PageSectionVariants,
   Split,
   SplitItem,
-  Stack,
-  StackItem,
   Tab,
   TabContent,
   Tabs,
@@ -128,52 +126,48 @@ const InstancePage = () => {
 
   return (
     <>
+      <PageSection variant={PageSectionVariants.light} type="breadcrumb">
+        <Breadcrumb
+          path={[
+            { label: t("instance.smartEventInstances"), linkTo: "/" },
+            { label: instanceName },
+          ]}
+        />
+      </PageSection>
       <PageSection variant={PageSectionVariants.light}>
-        <Stack hasGutter={true}>
-          <StackItem>
-            <Breadcrumb
-              path={[
-                { label: t("instance.smartEventInstances"), linkTo: "/" },
-                { label: instanceName },
+        <Split>
+          <SplitItem isFilled>
+            <TextContent>
+              <Text component="h1">{instanceName}</Text>
+            </TextContent>
+          </SplitItem>
+          <SplitItem>
+            <Dropdown
+              ouiaId="actions-dropdown"
+              onSelect={() => setIsDropdownActionOpen(false)}
+              toggle={
+                <DropdownToggle
+                  ouiaId="actions-dropdown-toggle"
+                  onToggle={(isOpen: boolean) =>
+                    setIsDropdownActionOpen(isOpen)
+                  }
+                  toggleIndicator={CaretDownIcon}
+                >
+                  {t("common.actions")}
+                </DropdownToggle>
+              }
+              isOpen={isDropdownActionOpen}
+              dropdownItems={[
+                <DropdownItem key="details" onClick={onDetailsClick}>
+                  {t("common.details")}
+                </DropdownItem>,
+                <DropdownItem key="delete" onClick={onDeleteClick}>
+                  {t("common.delete")}
+                </DropdownItem>,
               ]}
             />
-          </StackItem>
-          <StackItem>
-            <Split>
-              <SplitItem isFilled>
-                <TextContent>
-                  <Text component="h1">{instanceName}</Text>
-                </TextContent>
-              </SplitItem>
-              <SplitItem>
-                <Dropdown
-                  ouiaId="actions-dropdown"
-                  onSelect={() => setIsDropdownActionOpen(false)}
-                  toggle={
-                    <DropdownToggle
-                      ouiaId="actions-dropdown-toggle"
-                      onToggle={(isOpen: boolean) =>
-                        setIsDropdownActionOpen(isOpen)
-                      }
-                      toggleIndicator={CaretDownIcon}
-                    >
-                      {t("common.actions")}
-                    </DropdownToggle>
-                  }
-                  isOpen={isDropdownActionOpen}
-                  dropdownItems={[
-                    <DropdownItem key="details" onClick={onDetailsClick}>
-                      {t("common.details")}
-                    </DropdownItem>,
-                    <DropdownItem key="delete" onClick={onDeleteClick}>
-                      {t("common.delete")}
-                    </DropdownItem>,
-                  ]}
-                />
-              </SplitItem>
-            </Split>
-          </StackItem>
-        </Stack>
+          </SplitItem>
+        </Split>
       </PageSection>
       <PageSection variant={PageSectionVariants.light} type="tabs">
         <Tabs

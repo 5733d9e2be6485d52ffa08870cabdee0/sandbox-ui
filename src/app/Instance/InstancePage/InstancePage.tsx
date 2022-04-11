@@ -23,7 +23,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import { CaretDownIcon } from "@patternfly/react-icons";
-import { Overview } from "@app/components/Overview/Overview";
+import { TableWithPagination } from "@app/components/TableWithPagination/TableWithPagination";
 import { IRow, IRowData } from "@patternfly/react-table";
 import { Instance } from "../../../types/Instance";
 import { formatDistance } from "date-fns";
@@ -207,7 +207,7 @@ const InstancePage = () => {
           ref={processorsTabRef}
           aria-label="Processors tab"
         >
-          <Overview
+          <TableWithPagination
             columns={processorsOverviewColumns}
             customToolbarElement={
               <Link to={`${location.pathname}/create-processor`}>

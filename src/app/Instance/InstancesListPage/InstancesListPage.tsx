@@ -12,7 +12,7 @@ import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import { Instance } from "../../../types/Instance";
-import { Overview } from "@app/components/Overview/Overview";
+import { TableWithPagination } from "@app/components/TableWithPagination/TableWithPagination";
 import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
 
 const InstancesListPage = () => {
@@ -156,7 +156,7 @@ const InstancesListPage = () => {
         </TextContent>
       </PageSection>
       <PageSection>
-        <Overview
+        <TableWithPagination
           columns={columnNames}
           customToolbarElement={
             <React.Fragment>

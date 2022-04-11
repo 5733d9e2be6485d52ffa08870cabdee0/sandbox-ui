@@ -10,7 +10,7 @@ import { Table, TableColumn, TableRow } from "@app/components/Table";
 import { Pagination } from "@app/components/Pagination/Pagination";
 import { useTranslation } from "react-i18next";
 
-interface OverviewProps {
+interface TableWithPaginationProps {
   /** List of columns for the table */
   columns: TableColumn[];
   /** List of rows for the table */
@@ -27,7 +27,7 @@ interface OverviewProps {
  * - Table
  * - bottom-pagination
  */
-export const Overview: FunctionComponent<OverviewProps> = ({
+export const TableWithPagination: FunctionComponent<TableWithPaginationProps> = ({
   columns,
   customToolbarElement,
   rows,

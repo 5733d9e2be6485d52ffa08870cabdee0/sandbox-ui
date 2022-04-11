@@ -1,11 +1,11 @@
 import { customRender, waitForI18n } from "@utils/testUtils";
-import { Overview } from "@app/components/Overview/Overview";
+import { TableWithPagination } from "@app/components/TableWithPagination/TableWithPagination";
 import React from "react";
 
-describe("Overview component", () => {
+describe("TableWithPagination component", () => {
   it("should display a toolbar with the top-pagination section", async () => {
     const comp = customRender(
-      <Overview columns={[]} rows={[]} tableLabel="table" />
+      <TableWithPagination columns={[]} rows={[]} tableLabel="table" />
     );
     await waitForI18n(comp);
 
@@ -19,7 +19,7 @@ describe("Overview component", () => {
   it("should display a toolbar item, containing to the `customToolbarElement`", async () => {
     const content = "custom";
     const comp = customRender(
-      <Overview
+      <TableWithPagination
         columns={[]}
         rows={[]}
         tableLabel="table"
@@ -37,7 +37,7 @@ describe("Overview component", () => {
 
   it("should display a table", async () => {
     const comp = customRender(
-      <Overview columns={[]} rows={[]} tableLabel="table" />
+      <TableWithPagination columns={[]} rows={[]} tableLabel="table" />
     );
     await waitForI18n(comp);
 
@@ -46,7 +46,7 @@ describe("Overview component", () => {
 
   it("should display a bottom pagination", async () => {
     const comp = customRender(
-      <Overview columns={[]} rows={[]} tableLabel="table" />
+      <TableWithPagination columns={[]} rows={[]} tableLabel="table" />
     );
     await waitForI18n(comp);
 

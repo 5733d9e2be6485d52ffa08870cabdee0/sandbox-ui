@@ -160,7 +160,10 @@ const InstancesListPage = () => {
           columns={columnNames}
           customToolbarElement={
             <React.Fragment>
-              <Button onClick={() => setShowCreateInstance(true)}>
+              <Button
+                ouiaId="create-smart-event-instance"
+                onClick={() => setShowCreateInstance(true)}
+              >
                 {t("instance.createSEInstance")}
               </Button>
               <CreateInstance

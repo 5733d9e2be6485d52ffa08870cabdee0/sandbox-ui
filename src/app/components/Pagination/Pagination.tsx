@@ -20,6 +20,8 @@ interface PaginationProps {
   isCompact?: boolean;
   /** Pagination variant */
   variant?: PaginationVariant;
+  /** data-ouia-component-id identifier for automated UI testing */
+  ouiaId?: string;
 }
 
 export const Pagination: FunctionComponent<PaginationProps> = ({
@@ -30,8 +32,11 @@ export const Pagination: FunctionComponent<PaginationProps> = ({
   onChange,
   isCompact = false,
   variant,
+  ouiaId,
 }) => (
   <PFPagination
+    data-ouia-component-type="pagination-control"
+    ouiaId={ouiaId}
     className={className}
     style={{ float: "right" }}
     itemCount={itemCount}

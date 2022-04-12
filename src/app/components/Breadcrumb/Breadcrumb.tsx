@@ -22,6 +22,8 @@ export const Breadcrumb: FunctionComponent<BreadcrumbProps> = ({ path }) => {
         const isLastItem = itemIndex === path.length - 1;
         return (
           <BreadcrumbItem
+            data-ouia-component-type="breadcrumb-item"
+            data-ouia-component-id={pathItem.label}
             key={itemIndex}
             isActive={isLastItem}
             render={({ className }) =>

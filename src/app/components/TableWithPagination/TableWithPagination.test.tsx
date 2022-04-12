@@ -9,11 +9,20 @@ describe("TableWithPagination component", () => {
     );
     await waitForI18n(comp);
 
-    const toolbar = comp.container.querySelector(".pf-c-toolbar");
+    const toolbar = comp.container.querySelector(
+      "[data-ouia-component-id='rows-toolbar']"
+    );
     expect(toolbar).toBeInTheDocument();
     expect(
-      toolbar?.querySelector(".pf-c-toolbar__item.pf-m-pagination")
+      toolbar?.querySelector(
+        "[data-ouia-component-type='pagination-control'][data-ouia-component-id='rows-top']"
+      )
     ).toBeInTheDocument();
+    expect(
+      toolbar?.querySelector(
+        "[data-ouia-component-type='pagination-control'][data-ouia-component-id='rows-bottom']"
+      )
+    ).not.toBeInTheDocument();
   });
 
   it("should display a toolbar item, containing to the `customToolbarElement`", async () => {
@@ -51,7 +60,9 @@ describe("TableWithPagination component", () => {
     await waitForI18n(comp);
 
     expect(
-      comp.container.querySelector(".pf-c-pagination.pf-m-bottom")
+      comp.container.querySelector(
+        "[data-ouia-component-type='pagination-control'][data-ouia-component-id='rows-bottom']"
+      )
     ).toBeInTheDocument();
   });
 });

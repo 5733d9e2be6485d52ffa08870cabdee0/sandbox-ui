@@ -90,4 +90,8 @@ module.exports = {
     console: "readonly",
     document: "readonly",
   },
+  env: {
+    browser: true,
+    node: true,
+  },
 };

@@ -12,6 +12,7 @@ import {
   I18nProvider,
 } from "@rhoas/app-services-ui-components";
 import { KeycloakAuthProvider, setKeycloakInstance } from "./Keycloak";
+import { SetupWorkerApi } from "msw/lib/types/setupWorker/glossary";
 
 const App = () => {
   const [initialized, setInitialized] = useState(false);
@@ -23,6 +24,15 @@ const App = () => {
     };
     void init();
   }, []);
+
+  if (process.env.NODE_ENV === "development") {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires,jest/no-mocks-import
+    const { worker } = require("./../__mocks__/msw/browser") as {
+      worker: SetupWorkerApi;
+    };
+
+    void worker.start();
+  }
 
   return (
     <KeycloakAuthProvider>

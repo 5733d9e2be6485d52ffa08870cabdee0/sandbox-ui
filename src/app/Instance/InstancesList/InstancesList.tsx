@@ -1,8 +1,12 @@
-import React, { FunctionComponent, useState } from "react";
+import React, { FunctionComponent, useEffect, useState } from "react";
 import {
+  Bullseye,
   Button,
   Card,
+  CodeBlock,
+  CodeBlockCode,
   PaginationVariant,
+  Spinner,
   Toolbar,
   ToolbarContent,
   ToolbarItem,
@@ -25,7 +29,8 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
   instances,
 }) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
-
+  const [data, setData] = useState<unknown>();
+  const [dataIsLoading, setDataIsLoading] = useState(true);
   const actionResolver = () => {
     return [
       {
@@ -59,6 +64,46 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
     />
   );
 
+  const handleCreate = (name: string) => {
+    setShowCreateInstance(false);
+    fetch("bridges", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        update();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const update = () => {
+    setDataIsLoading(true);
+    fetch("/bridges")
+      .then((res) => res.json())
+      .then((data: unknown) => {
+        console.log(data);
+        setData(JSON.stringify(data, null, 2));
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setDataIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    update();
+  }, []);
+
   return (
     <Card>
       <Toolbar ouiaId="instances-toolbar">
@@ -71,7 +116,7 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
               isLoading={false}
               isModalOpen={showCreateInstance}
               onClose={() => setShowCreateInstance(false)}
-              onCreate={() => setShowCreateInstance(false)}
+              onCreate={handleCreate}
             />
           </ToolbarItem>
           <ToolbarItem
@@ -82,6 +127,24 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
           </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
+      <br />
+      <br />
+      <CodeBlock>
+        <CodeBlockCode id="code-content">
+          {dataIsLoading ? (
+            <Bullseye style={{ margin: "2em 0" }}>
+              <Spinner
+                isSVG
+                size="lg"
+                aria-label="Contents of the medium example"
+              />
+            </Bullseye>
+          ) : (
+            (data as string)
+          )}
+        </CodeBlockCode>
+      </CodeBlock>
+      <br />
       <Table
         actionResolver={actionResolver}
         ariaLabel={t("openbridgeTempDictionary:instancesListTable")}

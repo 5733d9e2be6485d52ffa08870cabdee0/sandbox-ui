@@ -1,6 +1,7 @@
 const { merge } = require("webpack-merge");
 const common = require("./webpack.common.js");
 const webpack = require("webpack");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = merge(common("development"), {
   mode: "development",
@@ -30,6 +31,9 @@ module.exports = merge(common("development"), {
       __BASE_PATH__: JSON.stringify(
         process.env.BASE_PATH || "https://api.stage.openshift.com"
       ),
+    }),
+    new CopyPlugin({
+      patterns: [{ from: "./public/mockServiceWorker.js" }],
     }),
   ],
 });

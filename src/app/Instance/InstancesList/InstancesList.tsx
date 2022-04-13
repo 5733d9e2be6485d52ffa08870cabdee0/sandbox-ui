@@ -31,6 +31,7 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const [data, setData] = useState<unknown>();
   const [dataIsLoading, setDataIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const actionResolver = () => {
     return [
       {
@@ -97,7 +98,13 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
       })
       .finally(() => {
         setDataIsLoading(false);
+        setIsRefreshing(false);
       });
+  };
+
+  const refresh = () => {
+    setIsRefreshing(true);
+    update();
   };
 
   useEffect(() => {
@@ -118,6 +125,15 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
               onClose={() => setShowCreateInstance(false)}
               onCreate={handleCreate}
             />
+          </ToolbarItem>
+          <ToolbarItem>
+            <Button
+              onClick={refresh}
+              isDisabled={dataIsLoading}
+              isLoading={isRefreshing}
+            >
+              Refresh
+            </Button>
           </ToolbarItem>
           <ToolbarItem
             variant="pagination"

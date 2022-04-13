@@ -25,7 +25,7 @@ const App = () => {
     void init();
   }, []);
 
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.MOCKED_API) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires,jest/no-mocks-import
     const { worker } = require("./../__mocks__/msw/browser") as {
       worker: SetupWorkerApi;

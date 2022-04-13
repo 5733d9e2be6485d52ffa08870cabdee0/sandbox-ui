@@ -2,7 +2,9 @@ import { rest } from "msw";
 import { factory, primaryKey } from "@mswjs/data";
 import { BridgeRequest } from "../../openapi/generated";
 import { v4 as uuid } from "uuid";
+import { instancesData } from "./data";
 
+// set up the model
 const db = factory({
   bridge: {
     id: primaryKey(String),
@@ -16,33 +18,14 @@ const db = factory({
   },
 });
 
-db.bridge.create({
-  kind: "Bridge",
-  id: "3543edaa-1851-4ad7-96be-ebde7d20d717",
-  name: "re-test-01",
-  href: "/api/v1/bridges/3543edaa-1851-4ad7-96be-ebde7d20d717",
-  submitted_at: "2022-04-12T12:04:43.044590+0000",
-  published_at: "2022-04-12T12:06:22.881959+0000",
-  status: "ready",
-  endpoint:
-    "https://ob-3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-});
-
-db.bridge.create({
-  kind: "Bridge",
-  id: "3af03c9c-ba8a-11ec-8422-0242ac120002",
-  name: "re-test-02",
-  href: "/api/v1/bridges/3af03c9c-ba8a-11ec-8422-0242ac120002",
-  submitted_at: "2022-04-12T12:36:43.044590+0000",
-  published_at: "2022-04-12T12:38:22.881959+0000",
-  status: "ready",
-  endpoint:
-    "https://ob-3af03c9c-ba8a-11ec-8422-0242ac120002.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
+// load demo data
+instancesData.map((instance) => {
+  db.bridge.create(instance);
 });
 
 export const handlers = [
   rest.get("/bridges", (_req, res, ctx) => {
-    return res(ctx.status(200), ctx.delay(2000), ctx.json(db.bridge.getAll()));
+    return res(ctx.status(200), ctx.delay(1000), ctx.json(db.bridge.getAll()));
   }),
 
   rest.post("/bridges", (req, res, ctx) => {
@@ -54,10 +37,12 @@ export const handlers = [
       name,
       href: `/api/v1/bridges/${id}`,
       submitted_at: new Date().toISOString(),
-      status: "accepted",
+      status: "ACCEPTED",
     };
 
     db.bridge.create(bridge);
+
+    instanceStatusFlow(id);
 
     return res(
       ctx.status(200),
@@ -74,3 +59,31 @@ export const handlers = [
     );
   }),
 ];
+
+const instanceStatusFlow = (id: string) => {
+  setTimeout(() => {
+    updateInstance(id, "PROVISIONING");
+  }, 8000);
+
+  setTimeout(() => {
+    updateInstance(id, "READY");
+  }, 12000);
+
+  const updateInstance = (id: string, status: string) => {
+    db.bridge.update({
+      where: {
+        id: {
+          equals: id,
+        },
+      },
+      data: {
+        status: status,
+        endpoint:
+          status === "READY"
+            ? `https://ob-${id}.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events`
+            : "",
+        published_at: status === "READY" ? new Date().toISOString() : "",
+      },
+    });
+  };
+};

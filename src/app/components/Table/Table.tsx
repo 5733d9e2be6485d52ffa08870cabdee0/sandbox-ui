@@ -22,7 +22,7 @@ export interface TableColumn {
   formatter?: (value: IRowData, row?: TableRow) => string | IRowData;
 }
 
-interface TableRow extends IRowData {
+export interface TableRow extends IRowData {
   /** Additive property which stores the entire object row data */
   originalData?: IRowData;
 }

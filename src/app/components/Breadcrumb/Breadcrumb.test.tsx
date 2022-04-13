@@ -11,18 +11,13 @@ describe("Breadcrumb component", () => {
     const path = [{ label: item1 }, { label: item2 }, { label: item3 }];
     const comp = customRender(<Breadcrumb path={path} />);
 
-    expect(
-      comp.container.querySelectorAll("li.pf-c-breadcrumb__item")
-    ).toHaveLength(path.length);
-    expect(
-      comp.container.querySelectorAll("li.pf-c-breadcrumb__item")[0]
-    ).toHaveTextContent(item1);
-    expect(
-      comp.container.querySelectorAll("li.pf-c-breadcrumb__item")[1]
-    ).toHaveTextContent(item2);
-    expect(
-      comp.container.querySelectorAll("li.pf-c-breadcrumb__item")[2]
-    ).toHaveTextContent(item3);
+    const breadcrumbs = comp.container.querySelectorAll(
+      "[data-ouia-component-type='breadcrumb-item']"
+    );
+    expect(breadcrumbs).toHaveLength(path.length);
+    expect(breadcrumbs[0]).toHaveTextContent(item1);
+    expect(breadcrumbs[1]).toHaveTextContent(item2);
+    expect(breadcrumbs[2]).toHaveTextContent(item3);
   });
 
   it("should display a link for all items in the path, where `linkTo` property is configured", () => {

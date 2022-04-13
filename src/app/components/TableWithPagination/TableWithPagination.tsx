@@ -60,6 +60,7 @@ export const TableWithPagination: FunctionComponent<
         // @TODO missing action when changing the page
         {}
       }
+      ouiaId={!isBottom ? "rows-top" : "rows-bottom"}
     />
   );
 

@@ -202,7 +202,7 @@ const InstancePage = () => {
             columns={processorsOverviewColumns}
             customToolbarElement={
               <Link to={`${location.pathname}/create-processor`}>
-                <Button variant="primary">
+                <Button ouiaId="create-processor-instance" variant="primary">
                   {t("processor.createProcessor")}
                 </Button>
               </Link>

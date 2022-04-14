@@ -9,6 +9,20 @@ Sandbox UI for the smartevents application.
 - Node 16
 - npm 7
 
+### Code formatting
+
+The project requires the code to be formatted by `prettier`. This is done automatically as a `pre-commit` hook. To activate the hook, please initialize the project with the command below.
+
+```
+npm install
+```
+
+If you would like to format code manually, you can do it as:
+
+```
+npm run format
+```
+
 ## Run the UI as a standalone application
 
 ```sh

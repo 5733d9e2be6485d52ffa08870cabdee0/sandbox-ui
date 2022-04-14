@@ -1,9 +1,13 @@
 import React from "react";
 import ProcessorEdit from "./ProcessorEdit";
 import { customRender, waitForI18n } from "../../../utils/testUtils";
-import { fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 
-const setupProcessorEdit = () => {
+const setupProcessorEdit = (): {
+  comp: RenderResult;
+  onSave: () => void;
+  onCancel: () => void;
+} => {
   const onSave = jest.fn();
   const onCancel = jest.fn();
   const comp = customRender(

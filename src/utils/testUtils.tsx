@@ -33,9 +33,9 @@ const Providers: FunctionComponent = ({ children }) => {
 const customRender = (
   ui: ReactElement,
   options?: Omit<RenderOptions, "wrapper">
-) => render(ui, { wrapper: Providers, ...options });
+): RenderResult => render(ui, { wrapper: Providers, ...options });
 
-async function waitForI18n(r: RenderResult) {
+async function waitForI18n(r: RenderResult): Promise<void> {
   await waitFor(() => {
     expect(r.queryByTestId(suspenseTestId)).not.toBeInTheDocument();
   });

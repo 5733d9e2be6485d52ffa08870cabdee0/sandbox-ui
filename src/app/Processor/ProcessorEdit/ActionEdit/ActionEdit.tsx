@@ -13,12 +13,12 @@ interface ActionEditProps {
   onChange: (action: BaseAction) => void;
 }
 
-const ActionEdit = (props: ActionEditProps) => {
+const ActionEdit = (props: ActionEditProps): JSX.Element => {
   const { action, onChange } = props;
   const [type, setType] = useState(action?.type ?? "");
   const [parameters, setParameters] = useState(action?.parameters ?? {});
 
-  const updateType = (type: string) => {
+  const updateType = (type: string): void => {
     setType(type);
     onChange({
       type,
@@ -26,7 +26,7 @@ const ActionEdit = (props: ActionEditProps) => {
     });
   };
 
-  const updateConfiguration = (parameters: BaseAction["parameters"]) => {
+  const updateConfiguration = (parameters: BaseAction["parameters"]): void => {
     setParameters(parameters);
     onChange({
       type,
@@ -83,7 +83,7 @@ const ActionEdit = (props: ActionEditProps) => {
           aria-label={t("processor.actionType")}
           isRequired={true}
           value={type}
-          onChange={(type) => updateType(type)}
+          onChange={(type: string): void => updateType(type)}
         >
           {actionTypes.map((option, index) => (
             <FormSelectOption
@@ -122,7 +122,7 @@ const ActionEdit = (props: ActionEditProps) => {
             aria-describedby="kafka-topic"
             isRequired={true}
             value={parameters.topic}
-            onChange={(value) => {
+            onChange={(value: string): void => {
               updateConfiguration({
                 ...parameters,
                 topic: value,
@@ -144,7 +144,7 @@ const ActionEdit = (props: ActionEditProps) => {
             aria-describedby="webhook-endpoint"
             isRequired={true}
             value={parameters.endpoint}
-            onChange={(value) => {
+            onChange={(value: string): void => {
               updateConfiguration({
                 ...parameters,
                 endpoint: value,
@@ -166,7 +166,7 @@ const ActionEdit = (props: ActionEditProps) => {
             aria-describedby="bridge-id"
             isRequired={true}
             value={parameters.bridgeId}
-            onChange={(value) => {
+            onChange={(value: string): void => {
               updateConfiguration({
                 ...parameters,
                 bridgeId: value,
@@ -189,7 +189,7 @@ const ActionEdit = (props: ActionEditProps) => {
               aria-describedby="slack-channel"
               isRequired={true}
               value={parameters.channel}
-              onChange={(value) => {
+              onChange={(value: string): void => {
                 updateConfiguration({
                   ...parameters,
                   channel: value,
@@ -209,7 +209,7 @@ const ActionEdit = (props: ActionEditProps) => {
               aria-describedby="slack-webhook-url"
               isRequired={true}
               value={parameters.webhookUrl}
-              onChange={(value) => {
+              onChange={(value: string): void => {
                 updateConfiguration({
                   ...parameters,
                   webhookUrl: value,

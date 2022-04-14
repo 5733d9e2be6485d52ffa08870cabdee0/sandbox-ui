@@ -30,7 +30,7 @@ interface ProcessorEditProps {
   onCancel: () => void;
 }
 
-const ProcessorEdit = (props: ProcessorEditProps) => {
+const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
   const { onSave, onCancel } = props;
   const [processorType, setProcessorType] = useState("");
   const [filters, setFilters] = useState<EventFilter[]>([
@@ -91,7 +91,7 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
                               title={t("processor.sourceProcessor")}
                               isSelected={processorType === "source"}
                               style={{ height: "100%" }}
-                              onClick={() => setProcessorType("source")}
+                              onClick={(): void => setProcessorType("source")}
                             >
                               {t("processor.sourceProcessorDescription")}
                             </Tile>
@@ -101,7 +101,7 @@ const ProcessorEdit = (props: ProcessorEditProps) => {
                               title={t("processor.sinkProcessor")}
                               style={{ width: "100%", height: "100%" }}
                               isSelected={processorType === "sink"}
-                              onClick={() => setProcessorType("sink")}
+                              onClick={(): void => setProcessorType("sink")}
                             >
                               {t("processor.sinkProcessorDescription")}
                             </Tile>

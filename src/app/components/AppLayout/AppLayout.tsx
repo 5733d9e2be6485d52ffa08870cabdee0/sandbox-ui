@@ -26,20 +26,23 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
   const [isMobileView, setIsMobileView] = useState(true);
   const [isNavOpenMobile, setIsNavOpenMobile] = useState(false);
 
-  const onNavToggleMobile = () => {
+  const onNavToggleMobile = (): void => {
     setIsNavOpenMobile(!isNavOpenMobile);
   };
-  const onNavToggle = () => {
+  const onNavToggle = (): void => {
     setIsNavOpen(!isNavOpen);
   };
-  const onPageResize = (props: { mobileView: boolean; windowSize: number }) => {
+  const onPageResize = (props: {
+    mobileView: boolean;
+    windowSize: number;
+  }): void => {
     setIsMobileView(props.mobileView);
   };
 
   const HeaderTools = (
     <PageHeaderTools>
       <PageHeaderToolsGroup>
-        <Button variant="tertiary" onClick={() => void logout()}>
+        <Button variant="tertiary" onClick={(): void => void logout()}>
           Logout
         </Button>
       </PageHeaderToolsGroup>
@@ -93,9 +96,9 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
   );
 };
 
-function LogoImg() {
+function LogoImg(): JSX.Element {
   const history = useHistory();
-  function handleClick() {
+  function handleClick(): void {
     history.push("/");
   }
   return (

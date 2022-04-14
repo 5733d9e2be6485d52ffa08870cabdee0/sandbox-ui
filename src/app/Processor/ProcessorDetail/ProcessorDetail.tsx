@@ -34,7 +34,7 @@ interface ProcessorDetailProps {
   processor: Processor;
 }
 
-const ProcessorDetail = (props: ProcessorDetailProps) => {
+const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
   const { processor } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
@@ -74,14 +74,16 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
                     {processor.source.type}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
-                {Object.keys(processor.source.parameters).map((key) => (
-                  <DescriptionListGroup key={key}>
-                    <DescriptionListTerm>Demo parameter</DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {processor.source.parameters[key]}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                ))}
+                {Object.keys(processor.source.parameters).map(
+                  (key): JSX.Element => (
+                    <DescriptionListGroup key={key}>
+                      <DescriptionListTerm>Demo parameter</DescriptionListTerm>
+                      <DescriptionListDescription>
+                        {processor.source.parameters[key]}
+                      </DescriptionListDescription>
+                    </DescriptionListGroup>
+                  )
+                )}
               </DescriptionList>
             </StackItem>
           </Stack>
@@ -109,13 +111,15 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
                 </Tr>
               </Thead>
               <Tbody>
-                {processor.filters?.map((filter) => (
-                  <Tr key={filter.key}>
-                    <Td>{filter.key}</Td>
-                    <Td>{t(`processor.${filter.type}`)}</Td>
-                    <Td>{filter.value}</Td>
-                  </Tr>
-                ))}
+                {processor.filters?.map(
+                  (filter): JSX.Element => (
+                    <Tr key={filter.key}>
+                      <Td>{filter.key}</Td>
+                      <Td>{t(`processor.${filter.type}`)}</Td>
+                      <Td>{filter.value}</Td>
+                    </Tr>
+                  )
+                )}
               </Tbody>
             </TableComposable>
           </StackItem>
@@ -162,16 +166,18 @@ const ProcessorDetail = (props: ProcessorDetailProps) => {
                     {t(`processor.actions.${processor.action.type}`)}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
-                {Object.keys(processor.action.parameters).map((key) => (
-                  <DescriptionListGroup key={key}>
-                    <DescriptionListTerm>
-                      {t(`processor.${key}`)}
-                    </DescriptionListTerm>
-                    <DescriptionListDescription>
-                      {processor.action.parameters[key]}
-                    </DescriptionListDescription>
-                  </DescriptionListGroup>
-                ))}
+                {Object.keys(processor.action.parameters).map(
+                  (key): JSX.Element => (
+                    <DescriptionListGroup key={key}>
+                      <DescriptionListTerm>
+                        {t(`processor.${key}`)}
+                      </DescriptionListTerm>
+                      <DescriptionListDescription>
+                        {processor.action.parameters[key]}
+                      </DescriptionListDescription>
+                    </DescriptionListGroup>
+                  )
+                )}
               </DescriptionList>
             </StackItem>
           </Stack>

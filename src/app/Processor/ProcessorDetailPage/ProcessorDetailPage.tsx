@@ -20,24 +20,24 @@ import { CaretDownIcon, CheckCircleIcon } from "@patternfly/react-icons";
 import { Processor } from "../../../types/Processor";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 
-const ProcessorDetailPage = () => {
+const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId } = useParams<ProcessorRouteParams>();
   const history = useHistory();
-  const goToInstance = () => history.push(`/instance/${instanceId}`);
+  const goToInstance = (): void => history.push(`/instance/${instanceId}`);
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const [isActionsOpen, setIsActionsOpen] = useState(false);
-  const actionsToggle = (isOpen: boolean) => {
+  const actionsToggle = (isOpen: boolean): void => {
     setIsActionsOpen(isOpen);
   };
-  const actionsSelect = () => {
+  const actionsSelect = (): void => {
     setIsActionsOpen(!isActionsOpen);
   };
   const actionItems = [
     <DropdownItem
       key="delete"
       component="button"
-      onClick={() => goToInstance()}
+      onClick={(): void => goToInstance()}
     >
       {t("common.delete")}
     </DropdownItem>,

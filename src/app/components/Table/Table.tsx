@@ -50,16 +50,20 @@ export const Table: FunctionComponent<TableProps> = ({
   rows,
   variant,
 }) => {
-  const transformColumns = (columns: TableColumn[]) => {
+  const transformColumns = (columns: TableColumn[]): string[] => {
     return columns.map((column) => column.label);
   };
 
-  const transformRows = (rows: IRowData[], columns: TableColumn[]) => {
+  const transformRows = (
+    rows: IRowData[],
+    columns: TableColumn[]
+  ): { cells: (string | IRowData)[]; originalData: IRowData }[] => {
     return rows.map((objectRow) => {
       return {
         cells: columns.map((column) => {
           const accessor = column.accessor;
-          const formatter = column.formatter ?? ((value: IRowData) => value);
+          const formatter =
+            column.formatter ?? ((value: IRowData): IRowData => value);
           const objectRowElement = objectRow[accessor] as TableRow;
           return formatter(objectRowElement, objectRow);
         }),

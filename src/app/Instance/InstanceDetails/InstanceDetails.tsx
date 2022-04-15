@@ -19,18 +19,14 @@ import {
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 
-interface InstanceDetailsProps extends Instance {
+interface InstanceDetailsProps {
+  instance: Instance;
   onClosingDetails: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export const InstanceDetails: React.FunctionComponent<InstanceDetailsProps> = ({
-  id,
-  endpoint,
-  name,
-  owner,
+  instance,
   onClosingDetails,
-  published_at,
-  submitted_at,
 }) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
@@ -48,7 +44,7 @@ export const InstanceDetails: React.FunctionComponent<InstanceDetailsProps> = ({
           <StackItem>
             <TextContent>
               <Text ouiaId="instance-details-name" component="h2">
-                {name}
+                {instance.name}
               </Text>
             </TextContent>
           </StackItem>
@@ -62,13 +58,13 @@ export const InstanceDetails: React.FunctionComponent<InstanceDetailsProps> = ({
           <DescriptionListGroup>
             <DescriptionListTerm>{t("common.id")}</DescriptionListTerm>
             <DescriptionListDescription data-ouia-component-id="instance-details-id">
-              {id}
+              {instance.id}
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
             <DescriptionListTerm>{t("common.owner")}</DescriptionListTerm>
             <DescriptionListDescription data-ouia-component-id="instance-details-owner">
-              {owner}
+              {instance.owner}
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
@@ -80,20 +76,20 @@ export const InstanceDetails: React.FunctionComponent<InstanceDetailsProps> = ({
                 hoverTip={t("common.copy")}
                 clickTip={t("common.copied")}
               >
-                {endpoint}
+                {instance.endpoint}
               </ClipboardCopy>
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
             <DescriptionListTerm>{t("common.submittedAt")}</DescriptionListTerm>
             <DescriptionListDescription data-ouia-component-id="instance-details-submitted-date">
-              {formatDate(submitted_at)}
+              {formatDate(instance.submitted_at)}
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
-            <DescriptionListTerm>{t("common.updatedAt")}</DescriptionListTerm>
+            <DescriptionListTerm>{t("common.publishedAt")}</DescriptionListTerm>
             <DescriptionListDescription data-ouia-component-id="instance-details-published-date">
-              {formatDate(published_at)}
+              {formatDate(instance.published_at)}
             </DescriptionListDescription>
           </DescriptionListGroup>
         </DescriptionList>

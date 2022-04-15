@@ -132,13 +132,16 @@ const InstancePage = () => {
         panelContent={
           <InstanceDetails
             onClosingDetails={() => setShowInstanceDrawer(false)}
-            id="3543edaa-1851-4ad7-96be-ebde7d20d717"
-            endpoint="https://ob-3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events"
-            name={instanceName}
-            owner="bebianco@redhat.com"
-            published_at="2022-04-12T12:06:22.881959+0000"
-            status="READY"
-            submitted_at="2022-04-12T12:04:43.044590+0000"
+            instance={{
+              id: "3543edaa-1851-4ad7-96be-ebde7d20d717",
+              endpoint:
+                "https://ob-3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
+              name: instanceName,
+              owner: "bebianco@redhat.com",
+              published_at: "2022-04-12T12:06:22.881959+0000",
+              status: "READY",
+              submitted_at: "2022-04-12T12:04:43.044590+0000",
+            }}
           />
         }
       >

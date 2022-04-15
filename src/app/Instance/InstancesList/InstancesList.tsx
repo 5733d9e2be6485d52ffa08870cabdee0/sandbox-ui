@@ -1,4 +1,9 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import {
   Bullseye,
   Button,
@@ -65,9 +70,11 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
     />
   );
 
+  const baseUrl = process.env.BASE_URL || "";
+
   const handleCreate = (name: string) => {
     setShowCreateInstance(false);
-    fetch("bridges", {
+    fetch(`${baseUrl}bridges`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -85,9 +92,9 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
       });
   };
 
-  const update = () => {
+  const update = useCallback(() => {
     setDataIsLoading(true);
-    fetch("/bridges")
+    fetch(`${baseUrl}bridges`)
       .then((res) => res.json())
       .then((data: unknown) => {
         console.log(data);
@@ -100,7 +107,7 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
         setDataIsLoading(false);
         setIsRefreshing(false);
       });
-  };
+  }, [baseUrl]);
 
   const refresh = () => {
     setIsRefreshing(true);
@@ -109,7 +116,7 @@ export const InstancesList: FunctionComponent<InstancesListProps> = ({
 
   useEffect(() => {
     update();
-  }, []);
+  }, [update]);
 
   return (
     <Card>

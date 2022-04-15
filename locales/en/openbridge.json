@@ -27,16 +27,15 @@
     "url": "URL",
     "value": "Value"
   },
-  "demoOverview": "Demo Overview",
-  "instancesListTable": "Instances list table",
   "instance": {
     "createASEInstance": "Create a Smart Events instance",
     "createSEInstance": "Create Smart Events instance",
     "instanceId": "Instance ID",
+    "instancesListPageTitle": "Smart Events Instances",
+    "instancesListTable": "Instances list table",
     "instanceWillBeAvailableShortly": "Your Smart Events instance will be ready for use shortly after creation.",
     "smartEventInstances": "Smart Event Instances"
   },
-  "processorsListTable": "Processors list table",
   "processor": {
     "action": "Action",
     "actions": {
@@ -55,6 +54,7 @@
     "filters": "Filters",
     "generalInformation": "General information",
     "processorName": "Processor name",
+    "processorsListTable": "Processors list table",
     "processorType": "Processor type",
     "selectAction": "Select an action",
     "selectActionDescription": "Select an action and provide its configuration.",

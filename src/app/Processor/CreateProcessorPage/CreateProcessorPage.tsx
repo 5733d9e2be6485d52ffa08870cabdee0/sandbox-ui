@@ -2,8 +2,6 @@ import React from "react";
 import {
   PageSection,
   PageSectionVariants,
-  Stack,
-  StackItem,
   Text,
   TextContent,
 } from "@patternfly/react-core";
@@ -20,23 +18,19 @@ const CreateProcessorPage = (): JSX.Element => {
 
   return (
     <>
+      <PageSection type="breadcrumb">
+        <Breadcrumb
+          path={[
+            { label: t("instance.smartEventInstances"), linkTo: "/" },
+            { label: "Instance one", linkTo: `/instance/${instanceId}` },
+            { label: t("processor.createProcessor") },
+          ]}
+        />
+      </PageSection>
       <PageSection variant={PageSectionVariants.light} hasShadowBottom={true}>
-        <Stack hasGutter={true}>
-          <StackItem>
-            <Breadcrumb
-              path={[
-                { label: t("instance.smartEventInstances"), linkTo: "/" },
-                { label: "My instance", linkTo: `/instance/${instanceId}` },
-                { label: t("processor.createProcessor") },
-              ]}
-            />
-          </StackItem>
-          <StackItem>
-            <TextContent>
-              <Text component="h1">{t("processor.createProcessor")}</Text>
-            </TextContent>
-          </StackItem>
-        </Stack>
+        <TextContent>
+          <Text component="h1">{t("processor.createProcessor")}</Text>
+        </TextContent>
       </PageSection>
       <ProcessorEdit onSave={goToInstance} onCancel={goToInstance} />
     </>

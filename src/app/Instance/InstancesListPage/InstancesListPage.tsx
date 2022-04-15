@@ -4,7 +4,6 @@ import {
   Button,
   Drawer,
   DrawerContent,
-  Label,
   PageSection,
   PageSectionVariants,
   Text,
@@ -17,6 +16,7 @@ import { Instance } from "../../../types/Instance";
 import { TableWithPagination } from "@app/components/TableWithPagination/TableWithPagination";
 import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
+import StatusLabel from "@app/components/StatusLabel/StatusLabel";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -46,12 +46,7 @@ const InstancesListPage = (): JSX.Element => {
       label: t("common.status"),
       formatter: (value: IRowData): JSX.Element => {
         const statusString = (value as unknown as string) ?? "";
-        return (
-          <Label>
-            {statusString.charAt(0).toUpperCase() +
-              statusString.slice(1).toLowerCase()}
-          </Label>
-        );
+        return <StatusLabel status={statusString} />;
       },
     },
     {
@@ -68,7 +63,7 @@ const InstancesListPage = (): JSX.Element => {
       description: "Description for the instance one",
       id: "87508471-ee0f-4f53-b574-da8a61285986",
       name: "Instance one",
-      status: "accepted",
+      status: "ready",
       submitted_at: "2022-02-24T13:34:00Z",
       published_at: "2022-02-24T13:35:00Z",
       endpoint:
@@ -193,7 +188,7 @@ const InstancesListPage = (): JSX.Element => {
       <PageSection variant={PageSectionVariants.light}>
         <TextContent>
           <Text component="h1">
-            {t("openbridgeTempDictionary:demoOverview")}
+            {t("openbridgeTempDictionary:instance.instancesListPageTitle")}
           </Text>
         </TextContent>
       </PageSection>
@@ -221,7 +216,7 @@ const InstancesListPage = (): JSX.Element => {
             setShowInstanceDrawer(true);
           }}
           rows={instances}
-          tableLabel={t("openbridgeTempDictionary:instancesListTable")}
+          tableLabel={t("openbridgeTempDictionary:instance.instancesListTable")}
         />
       </PageSection>
     </>

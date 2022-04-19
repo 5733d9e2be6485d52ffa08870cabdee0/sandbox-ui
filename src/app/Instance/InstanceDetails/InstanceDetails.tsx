@@ -24,13 +24,14 @@ interface InstanceDetailsProps {
   onClosingDetails: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export const InstanceDetails: React.FunctionComponent<InstanceDetailsProps> = ({
+export const InstanceDetails = ({
   instance,
   onClosingDetails,
-}) => {
+}: InstanceDetailsProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
-  const formatDate = (dateStr: string) => format(new Date(dateStr), "PPPP p");
+  const formatDate = (dateStr: string): string =>
+    format(new Date(dateStr), "PPPP p");
 
   return (
     <DrawerPanelContent widths={{ default: "width_33" }}>

@@ -131,7 +131,7 @@ const InstancePage = (): JSX.Element => {
         data-ouia-component-id="instance-drawer"
         panelContent={
           <InstanceDetails
-            onClosingDetails={() => setShowInstanceDrawer(false)}
+            onClosingDetails={(): void => setShowInstanceDrawer(false)}
             instance={{
               id: "3543edaa-1851-4ad7-96be-ebde7d20d717",
               endpoint:
@@ -163,11 +163,11 @@ const InstancePage = (): JSX.Element => {
             <SplitItem>
               <Dropdown
                 ouiaId="actions-dropdown"
-                onSelect={() => setIsDropdownActionOpen(false)}
+                onSelect={(): void => setIsDropdownActionOpen(false)}
                 toggle={
                   <DropdownToggle
                     ouiaId="actions-dropdown-toggle"
-                    onToggle={(isOpen: boolean) =>
+                    onToggle={(isOpen: boolean): void =>
                       setIsDropdownActionOpen(isOpen)
                     }
                     toggleIndicator={CaretDownIcon}
@@ -180,7 +180,7 @@ const InstancePage = (): JSX.Element => {
                   <DropdownItem
                     key="details"
                     ouiaId="action-details"
-                    onClick={() => {
+                    onClick={(): void => {
                       setShowInstanceDrawer(true);
                     }}
                   >

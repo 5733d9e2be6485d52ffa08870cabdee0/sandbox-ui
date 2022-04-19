@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
+  Drawer,
+  DrawerContent,
   Label,
   PageSection,
   PageSectionVariants,
@@ -14,9 +16,13 @@ import { formatDistance } from "date-fns";
 import { Instance } from "../../../types/Instance";
 import { TableWithPagination } from "@app/components/TableWithPagination/TableWithPagination";
 import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
+import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
+
+  const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
+  const [selectedInstance, setSelectedInstance] = useState<Instance>();
 
   const columnNames = [
     {
@@ -64,6 +70,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance one",
       status: "accepted",
       submitted_at: "2022-02-24T13:34:00Z",
+      published_at: "2022-02-24T13:35:00Z",
+      endpoint:
+        "https://87508471-ee0f-4f53-b574-da8a61285986.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance two",
@@ -71,6 +80,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance two",
       status: "ready",
       submitted_at: "2022-02-20T11:23:00Z",
+      published_at: "2022-02-20T11:24:00Z",
+      endpoint:
+        "https://830c8f0d-c677-492f-8d7e-0f81893fbba6.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance three",
@@ -78,6 +90,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance three",
       status: "ready",
       submitted_at: "2022-02-15T12:03:00Z",
+      published_at: "2022-02-15T12:04:00Z",
+      endpoint:
+        "https://ee22ce62-1f23-4dd7-b106-e4158baf8228.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance four",
@@ -85,6 +100,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance four",
       status: "ready",
       submitted_at: "2022-02-10T16:34:00Z",
+      published_at: "2022-02-10T16:35:00Z",
+      endpoint:
+        "https://21ac90ba-76d2-4f88-b08b-2547ef359bae.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance five",
@@ -92,6 +110,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance five",
       status: "ready",
       submitted_at: "2022-02-05T13:58:00Z",
+      published_at: "2022-02-05T13:59:00Z",
+      endpoint:
+        "https://d4de4dd9-42fe-48ec-8ac7-42163e6e971a.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance six",
@@ -99,6 +120,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance six",
       status: "ready",
       submitted_at: "2022-02-01T12:02:00Z",
+      published_at: "2022-02-01T12:03:00Z",
+      endpoint:
+        "https://d7e13602-b046-4120-b377-15d61e21c31a.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance seven",
@@ -106,6 +130,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance seven",
       status: "ready",
       submitted_at: "2021-12-25T21:46:00Z",
+      published_at: "2021-12-25T21:47:00Z",
+      endpoint:
+        "https://3a7efbed-3562-4a95-9c32-f49d12d8cab2.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance eight",
@@ -113,6 +140,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance eight",
       status: "ready",
       submitted_at: "2021-12-20T12:21:00Z",
+      published_at: "2021-12-20T12:22:00Z",
+      endpoint:
+        "https://fa648473-3662-4bbc-99ba-158d9ab95ccc.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance nine",
@@ -120,6 +150,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance nine",
       status: "ready",
       submitted_at: "2021-12-15T16:09:00Z",
+      published_at: "2021-12-15T16:10:00Z",
+      endpoint:
+        "https://04f131c3-b34c-4ee2-b153-fbff0bb91ece.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance ten",
@@ -127,6 +160,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance ten",
       status: "ready",
       submitted_at: "2021-12-10T11:34:00Z",
+      published_at: "2021-12-10T11:35:00Z",
+      endpoint:
+        "https://c28da8c0-05e4-42f3-a3fd-615cc7fbb382.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance eleven",
@@ -134,6 +170,9 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance eleven",
       status: "ready",
       submitted_at: "2021-12-05T11:34:00Z",
+      published_at: "2021-12-05T11:35:00Z",
+      endpoint:
+        "https://a8c1cb57-0ab3-4ccb-8c55-ef8a8b166846.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
     {
       description: "Description for the instance twelve",
@@ -141,12 +180,15 @@ const InstancesListPage = (): JSX.Element => {
       name: "Instance twelve",
       status: "ready",
       submitted_at: "2021-12-01T11:34:00Z",
+      published_at: "2021-12-01T11:35:00Z",
+      endpoint:
+        "https://e176d63b-6fdc-43ce-afc8-45160f456502.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     },
   ];
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
 
-  return (
+  const pageContent = (
     <>
       <PageSection variant={PageSectionVariants.light}>
         <TextContent>
@@ -174,11 +216,32 @@ const InstancesListPage = (): JSX.Element => {
               />
             </React.Fragment>
           }
+          onDetailsClick={(rowData): void => {
+            setSelectedInstance(rowData as unknown as Instance);
+            setShowInstanceDrawer(true);
+          }}
           rows={instances}
           tableLabel={t("openbridgeTempDictionary:instancesListTable")}
         />
       </PageSection>
     </>
+  );
+  return selectedInstance ? (
+    <Drawer isExpanded={showInstanceDrawer}>
+      <DrawerContent
+        data-ouia-component-id="instance-drawer"
+        panelContent={
+          <InstanceDetails
+            onClosingDetails={(): void => setShowInstanceDrawer(false)}
+            instance={selectedInstance}
+          />
+        }
+      >
+        {pageContent}
+      </DrawerContent>
+    </Drawer>
+  ) : (
+    <>{pageContent}</>
   );
 };
 

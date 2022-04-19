@@ -21,20 +21,20 @@ interface FiltersEditProps {
   onChange: (filters: EventFilter[]) => void;
 }
 
-const FiltersEdit = (props: FiltersEditProps) => {
+const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
   const { filters, onChange } = props;
 
-  const addFilter = () => {
+  const addFilter = (): void => {
     onChange([...filters, { key: "", type: "", value: "" }]);
   };
 
-  const deleteFilter = (index: number) => {
+  const deleteFilter = (index: number): void => {
     onChange(filters.filter((_event, eventIndex) => eventIndex !== index));
   };
 
-  const updateFilter = (filter: EventFilter, index: number) => {
+  const updateFilter = (filter: EventFilter, index: number): void => {
     onChange(
-      filters.map((_event, eventIndex) => {
+      filters.map((_event, eventIndex): EventFilter => {
         if (eventIndex === index) {
           return filter;
         }
@@ -94,7 +94,7 @@ const FiltersEdit = (props: FiltersEditProps) => {
                       name={`filter-key-${index}`}
                       aria-describedby={`filter-key-${index}`}
                       value={filter.key}
-                      onChange={(key) =>
+                      onChange={(key): void =>
                         updateFilter({ ...filter, key }, index)
                       }
                     />
@@ -109,7 +109,7 @@ const FiltersEdit = (props: FiltersEditProps) => {
                       id={`filter-type-${index}`}
                       aria-label={t("common.type")}
                       value={filter.type}
-                      onChange={(type) =>
+                      onChange={(type): void =>
                         updateFilter({ ...filter, type }, index)
                       }
                     >
@@ -135,7 +135,7 @@ const FiltersEdit = (props: FiltersEditProps) => {
                       name={`filter-value-${index}`}
                       aria-describedby={`filter-value-${index}`}
                       value={filter.value}
-                      onChange={(value) =>
+                      onChange={(value): void =>
                         updateFilter({ ...filter, value }, index)
                       }
                     />
@@ -151,7 +151,7 @@ const FiltersEdit = (props: FiltersEditProps) => {
                       <Button
                         variant="plain"
                         aria-label={t("processor.deleteFilter")}
-                        onClick={() => deleteFilter(index)}
+                        onClick={(): void => deleteFilter(index)}
                         isDisabled={filters.length === 1}
                       >
                         <TrashAltIcon />

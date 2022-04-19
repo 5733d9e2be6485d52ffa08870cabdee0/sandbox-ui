@@ -13,12 +13,12 @@ interface SourceEditProps {
   onChange: (source: BaseSource) => void;
 }
 
-const SourceEdit = (props: SourceEditProps) => {
+const SourceEdit = (props: SourceEditProps): JSX.Element => {
   const { source, onChange } = props;
   const [type, setType] = useState(source?.type ?? "");
   const [parameters, setParameters] = useState(source?.parameters ?? {});
 
-  const updateType = (type: string) => {
+  const updateType = (type: string): void => {
     setType(type);
     onChange({
       ...source,
@@ -27,7 +27,7 @@ const SourceEdit = (props: SourceEditProps) => {
     });
   };
 
-  const updateParameters = (parameters: BaseSource["parameters"]) => {
+  const updateParameters = (parameters: BaseSource["parameters"]): void => {
     setParameters(parameters);
     onChange({
       ...source,
@@ -47,7 +47,7 @@ const SourceEdit = (props: SourceEditProps) => {
     { value: "demoSource", label: "Demo Source", isPlaceholder: false },
   ];
 
-  useEffect(() => {
+  useEffect((): void => {
     if (source) {
       setType(source.type);
       setParameters(source.parameters);
@@ -66,16 +66,18 @@ const SourceEdit = (props: SourceEditProps) => {
           aria-label={t("processor.sourceType")}
           isRequired={true}
           value={type}
-          onChange={(type) => updateType(type)}
+          onChange={(type: string): void => updateType(type)}
         >
-          {sourceTypes.map((option, index) => (
-            <FormSelectOption
-              key={index}
-              value={option.value}
-              label={option.label}
-              isPlaceholder={option.isPlaceholder}
-            />
-          ))}
+          {sourceTypes.map(
+            (option, index): JSX.Element => (
+              <FormSelectOption
+                key={index}
+                value={option.value}
+                label={option.label}
+                isPlaceholder={option.isPlaceholder}
+              />
+            )
+          )}
         </FormSelect>
       </FormGroup>
       <FormGroup
@@ -91,7 +93,7 @@ const SourceEdit = (props: SourceEditProps) => {
           isRequired={type !== ""}
           isDisabled={type === ""}
           value={parameters.config}
-          onChange={(value) => {
+          onChange={(value: string): void => {
             updateParameters({
               ...parameters,
               config: value,

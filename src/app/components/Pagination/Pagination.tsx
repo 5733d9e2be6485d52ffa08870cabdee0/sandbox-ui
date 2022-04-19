@@ -56,8 +56,8 @@ export const Pagination: FunctionComponent<PaginationProps> = ({
         value: 10,
       },
     ]}
-    onSetPage={(_, page) => onChange(page, perPage)}
-    onPerPageSelect={(_, perPage) => onChange(page, perPage)}
+    onSetPage={(_, page): void => onChange(page, perPage)}
+    onPerPageSelect={(_, perPage): void => onChange(page, perPage)}
     isCompact={isCompact}
     variant={variant}
   />

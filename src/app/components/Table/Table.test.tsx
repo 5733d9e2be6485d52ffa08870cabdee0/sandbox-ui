@@ -34,7 +34,7 @@ describe("Table component", () => {
   });
 
   test("should render action cells, when `actionResolver` is configured", () => {
-    const actionResolver = () => [
+    const actionResolver = (): { title: string; onClick: () => void }[] => [
       {
         title: "actions...",
         onClick: jest.fn(),

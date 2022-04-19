@@ -7,7 +7,7 @@ import {
 import { BrowserRouter } from "react-router-dom";
 import Routes from "@app/Routes/Routes";
 
-const AppFederated = () => {
+const AppFederated = (): JSX.Element => {
   const basename = useBasename();
   /* The i18n provider is necessary to consume the open bridge dictionary
         during initial local development. When the first OB UI release will be ready, the

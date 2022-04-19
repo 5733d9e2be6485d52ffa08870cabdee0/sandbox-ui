@@ -18,7 +18,7 @@ const TOKEN_MIN_VALIDITY_SECONDS = 50;
  * if keycloak isn't configured
  *
  */
-export const setKeycloakInstance = async () => {
+export const setKeycloakInstance = async (): Promise<void> => {
   if (!keycloak) await init();
 };
 
@@ -29,7 +29,7 @@ export const setKeycloakInstance = async () => {
  * keycloak isn't configured
  *
  */
-export const init = async () => {
+export const init = async (): Promise<void> => {
   try {
     /* Keycloak configuration using OB authentication.
      * These params will change after sso is implemented.
@@ -89,14 +89,14 @@ export const getParsedKeyCloakToken =
  * logout of keycloak, clear cache and offline store then redirect to
  * keycloak login page
  */
-export const logout = async () => {
+export const logout = async (): Promise<void> => {
   if (keycloak) {
     await keycloak.logout();
   }
 };
 
 export const KeycloakAuthProvider: React.FunctionComponent = (props) => {
-  const getUsername = () => {
+  const getUsername = (): Promise<string> => {
     return getParsedKeyCloakToken().then(
       (token: unknown) =>
         (

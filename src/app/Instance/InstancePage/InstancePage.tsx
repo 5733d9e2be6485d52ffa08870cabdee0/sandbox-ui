@@ -29,7 +29,7 @@ import { formatDistance } from "date-fns";
 import "./InstancePage.css";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
 
-const InstancePage = () => {
+const InstancePage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const location = useLocation();
   const history = useHistory();
@@ -47,11 +47,11 @@ const InstancePage = () => {
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,
     eventKey: number | string
-  ) => {
+  ): void => {
     setActiveTabKey(eventKey);
   };
 
-  const onDeleteClick = () =>
+  const onDeleteClick = (): void =>
     // @TODO missing action to perform when clicking on delete action
     {
       history.push(`/`);
@@ -61,7 +61,7 @@ const InstancePage = () => {
     {
       accessor: "name",
       label: t("common.name"),
-      formatter: (value: IRowData, row?: IRow) => {
+      formatter: (value: IRowData, row?: IRow): JSX.Element => {
         const processorId = (row as Instance)?.id;
         return (
           <Link
@@ -77,7 +77,7 @@ const InstancePage = () => {
     {
       accessor: "type",
       label: t("common.type"),
-      formatter: (value: IRowData) => {
+      formatter: (value: IRowData): string => {
         const typeString = value as unknown as string;
         return !typeString || !typeString.length
           ? ""
@@ -88,7 +88,7 @@ const InstancePage = () => {
     {
       accessor: "status",
       label: t("common.status"),
-      formatter: (value: IRowData) => {
+      formatter: (value: IRowData): JSX.Element => {
         const statusString = value as unknown as string;
         const label =
           !statusString || !statusString.length
@@ -101,7 +101,7 @@ const InstancePage = () => {
     {
       accessor: "submitted_at",
       label: t("common.submittedAt"),
-      formatter: (value: IRowData) => {
+      formatter: (value: IRowData): string => {
         const date = new Date(value as unknown as string);
         return formatDistance(date, new Date()) + " " + t("common.ago");
       },

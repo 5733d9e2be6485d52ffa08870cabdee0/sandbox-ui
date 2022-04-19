@@ -32,31 +32,31 @@ export const TableWithPagination: FunctionComponent<
 > = ({ columns, customToolbarElement, rows, tableLabel }) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
-  const actionResolver = () => {
+  const actionResolver = (): { title: string; onClick: () => void }[] => {
     return [
       {
         title: t("common.details"),
-        onClick: () =>
+        onClick: (): void =>
           // @TODO missing action to perform when clicking on details action
           {},
       },
       {
         title: t("common.delete"),
-        onClick: () =>
+        onClick: (): void =>
           // @TODO missing action to perform when clicking on delete action
           {},
       },
     ];
   };
 
-  const getPagination = (itemCount: number, isBottom: boolean) => (
+  const getPagination = (itemCount: number, isBottom: boolean): JSX.Element => (
     <Pagination
       itemCount={itemCount}
       page={1}
       perPage={20}
       isCompact={!isBottom}
       {...(isBottom ? { variant: PaginationVariant.bottom } : {})}
-      onChange={() =>
+      onChange={(): void =>
         // @TODO missing action when changing the page
         {}
       }

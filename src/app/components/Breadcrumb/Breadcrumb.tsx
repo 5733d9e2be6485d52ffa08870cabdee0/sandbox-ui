@@ -26,7 +26,7 @@ export const Breadcrumb: FunctionComponent<BreadcrumbProps> = ({ path }) => {
             data-ouia-component-id={pathItem.label}
             key={itemIndex}
             isActive={isLastItem}
-            render={({ className }) =>
+            render={({ className }): React.ReactNode =>
               pathItem.linkTo ? (
                 <Link to={pathItem.linkTo} className={className}>
                   {pathItem.label}

@@ -1,9 +1,11 @@
 import React from "react";
 import { customRender, waitForI18n } from "../../../utils/testUtils";
 import CreateInstance, { CreateInstanceProps } from "./CreateInstance";
-import { fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 
-const setupCreateInstance = (props: Partial<CreateInstanceProps>) => {
+const setupCreateInstance = (
+  props: Partial<CreateInstanceProps>
+): { comp: RenderResult } => {
   const {
     onClose = jest.fn(),
     onCreate = jest.fn(),

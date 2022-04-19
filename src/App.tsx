@@ -13,11 +13,11 @@ import {
 } from "@rhoas/app-services-ui-components";
 import { KeycloakAuthProvider, setKeycloakInstance } from "./Keycloak";
 
-const App = () => {
+const App = (): JSX.Element => {
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
+    const init = async (): Promise<void> => {
       await setKeycloakInstance();
       setInitialized(true);
     };

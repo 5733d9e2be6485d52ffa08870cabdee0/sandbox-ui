@@ -30,7 +30,7 @@ module.exports = {
 
   rules: {
     "@typescript-eslint/no-unused-vars": ["error"],
-    "@typescript-eslint/explicit-function-return-type": "off", // https://issues.redhat.com/browse/MGDOBR-530
+    "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "warn",
@@ -89,5 +89,6 @@ module.exports = {
   globals: {
     console: "readonly",
     document: "readonly",
+    JSX: "readonly",
   },
 };

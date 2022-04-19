@@ -5,7 +5,7 @@ import InstancesListPage from "@app/Instance/InstancesListPage/InstancesListPage
 import CreateProcessorPage from "@app/Processor/CreateProcessorPage/CreateProcessorPage";
 import ProcessorDetailPage from "@app/Processor/ProcessorDetailPage/ProcessorDetailPage";
 
-const Routes = () => {
+const Routes = (): JSX.Element => {
   return (
     <Switch>
       <Route exact path={"/"}>

@@ -12,10 +12,10 @@ import { useTranslation } from "react-i18next";
 import ProcessorEdit from "@app/Processor/ProcessorEdit/ProcessorEdit";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 
-const CreateProcessorPage = () => {
+const CreateProcessorPage = (): JSX.Element => {
   const { instanceId } = useParams<InstanceRouteParams>();
   const history = useHistory();
-  const goToInstance = () => history.push(`/instance/${instanceId}`);
+  const goToInstance = (): void => history.push(`/instance/${instanceId}`);
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   return (

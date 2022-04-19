@@ -29,7 +29,7 @@ export interface CreateInstanceProps {
   onCreate: (name: string) => void;
 }
 
-const CreateInstance = (props: CreateInstanceProps) => {
+const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   const { isLoading, isModalOpen, onClose, onCreate } = props;
   const [name, setName] = useState("");
   // @TODO Basic temporary error management. To be integrated with APIs errors.

@@ -15,14 +15,14 @@ import { Instance } from "../../../types/Instance";
 import { TableWithPagination } from "@app/components/TableWithPagination/TableWithPagination";
 import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
 
-const InstancesListPage = () => {
+const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const columnNames = [
     {
       accessor: "name",
       label: t("common.name"),
-      formatter: (value: IRowData, row?: IRow) => {
+      formatter: (value: IRowData, row?: IRow): JSX.Element => {
         const bridgeId = (row as Instance)?.id;
         return (
           <Link
@@ -38,7 +38,7 @@ const InstancesListPage = () => {
     {
       accessor: "status",
       label: t("common.status"),
-      formatter: (value: IRowData) => {
+      formatter: (value: IRowData): JSX.Element => {
         const statusString = (value as unknown as string) ?? "";
         return (
           <Label>
@@ -51,7 +51,7 @@ const InstancesListPage = () => {
     {
       accessor: "submitted_at",
       label: t("common.submittedAt"),
-      formatter: (value: IRowData) => {
+      formatter: (value: IRowData): string => {
         const date = new Date(value as unknown as string);
         return formatDistance(date, new Date()) + " " + t("common.ago");
       },
@@ -162,15 +162,15 @@ const InstancesListPage = () => {
             <React.Fragment>
               <Button
                 ouiaId="create-smart-event-instance"
-                onClick={() => setShowCreateInstance(true)}
+                onClick={(): void => setShowCreateInstance(true)}
               >
                 {t("instance.createSEInstance")}
               </Button>
               <CreateInstance
                 isLoading={false}
                 isModalOpen={showCreateInstance}
-                onClose={() => setShowCreateInstance(false)}
-                onCreate={() => setShowCreateInstance(false)}
+                onClose={(): void => setShowCreateInstance(false)}
+                onCreate={(): void => setShowCreateInstance(false)}
               />
             </React.Fragment>
           }

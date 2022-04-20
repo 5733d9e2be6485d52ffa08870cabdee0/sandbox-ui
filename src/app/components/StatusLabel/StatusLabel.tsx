@@ -9,7 +9,7 @@ interface StatusLabelProps {
   status: string;
 }
 
-const StatusLabel = (props: StatusLabelProps) => {
+const StatusLabel = (props: StatusLabelProps): JSX.Element => {
   const { status } = props;
 
   return (

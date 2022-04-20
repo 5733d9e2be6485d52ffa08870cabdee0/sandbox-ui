@@ -72,7 +72,7 @@ export const handlers = [
   }),
 ];
 
-const instanceStatusFlow = (id: string) => {
+const instanceStatusFlow = (id: string): void => {
   setTimeout(() => {
     updateInstance(id, "PROVISIONING");
   }, 8000);
@@ -81,7 +81,7 @@ const instanceStatusFlow = (id: string) => {
     updateInstance(id, "READY");
   }, 12000);
 
-  const updateInstance = (id: string, status: string) => {
+  const updateInstance = (id: string, status: string): void => {
     db.bridge.update({
       where: {
         id: {

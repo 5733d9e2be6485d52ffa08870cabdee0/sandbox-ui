@@ -9,6 +9,7 @@ import {
 import { Table, TableColumn, TableRow } from "@app/components/Table";
 import { Pagination } from "@app/components/Pagination/Pagination";
 import { useTranslation } from "react-i18next";
+import { IRow } from "@patternfly/react-table";
 
 interface TableWithPaginationProps {
   /** List of columns for the table */
@@ -19,6 +20,8 @@ interface TableWithPaginationProps {
   tableLabel: string;
   /** Custom element you want to be in the toolbar */
   customToolbarElement?: React.ReactNode;
+  /** Function executed when clicking on the "Details" action */
+  onDetailsClick?: (rowData?: IRow) => void;
 }
 
 /**
@@ -29,16 +32,16 @@ interface TableWithPaginationProps {
  */
 export const TableWithPagination: FunctionComponent<
   TableWithPaginationProps
-> = ({ columns, customToolbarElement, rows, tableLabel }) => {
+> = ({ columns, customToolbarElement, onDetailsClick, rows, tableLabel }) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
-  const actionResolver = (): { title: string; onClick: () => void }[] => {
+  const actionResolver = (
+    rowData?: IRow
+  ): { title: string; onClick: () => void }[] => {
     return [
       {
         title: t("common.details"),
-        onClick: (): void =>
-          // @TODO missing action to perform when clicking on details action
-          {},
+        onClick: (): void => onDetailsClick?.(rowData),
       },
       {
         title: t("common.delete"),

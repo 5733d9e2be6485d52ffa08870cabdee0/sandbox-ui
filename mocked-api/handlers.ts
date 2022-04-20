@@ -1,6 +1,6 @@
 import { rest } from "msw";
 import { factory, primaryKey } from "@mswjs/data";
-import { BridgeRequest } from "../../openapi/generated";
+import { BridgeRequest } from "../openapi/generated";
 import { v4 as uuid } from "uuid";
 import { instancesData } from "./data";
 

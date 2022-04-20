@@ -1,4 +1,4 @@
-import { BridgeResponse } from "../../openapi/generated";
+import { BridgeResponse } from "../openapi/generated";
 
 export const instancesData: BridgeResponse[] = [
   {

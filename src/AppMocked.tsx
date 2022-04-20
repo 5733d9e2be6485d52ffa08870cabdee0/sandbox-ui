@@ -17,7 +17,7 @@ import { SetupWorkerApi } from "msw/lib/types/setupWorker/glossary";
 
 // App using mocked apis trough msw
 
-const AppMocked = () => {
+const AppMocked = (): JSX.Element => {
   // starting mock service worker
   // eslint-disable-next-line @typescript-eslint/no-var-requires,jest/no-mocks-import
   const { worker } = require("./../__mocks__/msw/browser") as {

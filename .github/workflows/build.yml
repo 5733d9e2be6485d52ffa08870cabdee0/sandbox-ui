@@ -1,5 +1,5 @@
-name: "Smart Events UI :: Quality Checks"
-on: [pull_request, push]
+name: "Smart Events UI :: Build"
+on: [pull_request]
 jobs:
   run-all-checks:
     runs-on: ubuntu-latest
@@ -10,6 +10,4 @@ jobs:
           node-version: "14"
           cache: "npm"
       - run: npm install
-      - run: npm run format:check
-      - run: npm run lint
-      - run: npm run test
+      - run: npm run build

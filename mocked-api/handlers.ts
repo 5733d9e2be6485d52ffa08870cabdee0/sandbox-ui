@@ -155,9 +155,10 @@ export const handlers = [
     // if the name contains "fail"
     resourceStatusFlow(
       "bridge",
+      "create",
       id,
       name.includes("wait"),
-      name.includes("fail")
+      name.includes("fail-create")
     );
 
     return res(ctx.status(200), ctx.delay(apiDelay), ctx.json(newBridge));
@@ -198,15 +199,13 @@ export const handlers = [
       },
     });
 
-    setTimeout(() => {
-      db.bridge.delete({
-        where: {
-          id: {
-            equals: bridgeId as string,
-          },
-        },
-      });
-    }, 20000);
+    resourceStatusFlow(
+      "bridge",
+      "delete",
+      bridgeId as string,
+      existingBridge.name.includes("wait"),
+      existingBridge.name.includes("fail-delete")
+    );
 
     return res(ctx.status(202), ctx.delay(apiDelay), ctx.json({}));
   }),
@@ -218,6 +217,27 @@ export const handlers = [
 
     const page = parseInt(req.url.searchParams.get("page") ?? "0");
     const size = parseInt(req.url.searchParams.get("size") ?? "10");
+
+    const bridge = db.bridge.findFirst({
+      where: {
+        id: {
+          equals: bridgeId as string,
+        },
+      },
+    });
+
+    if (!bridge) {
+      return res(
+        ctx.status(404),
+        ctx.delay(apiDelay),
+        ctx.json({
+          ...error_not_found,
+          reason: `Bridge with id '${
+            bridgeId as string
+          }' for customer 'XXXXXXXX' does not exist`,
+        })
+      );
+    }
 
     const query = {
       where: {
@@ -260,7 +280,28 @@ export const handlers = [
   rest.get(
     `${apiUrl}/bridges/:bridgeId/processors/:processorId`,
     (req, res, ctx) => {
-      const { processorId } = req.params;
+      const { bridgeId, processorId } = req.params;
+
+      const bridge = db.bridge.findFirst({
+        where: {
+          id: {
+            equals: bridgeId as string,
+          },
+        },
+      });
+
+      if (!bridge) {
+        return res(
+          ctx.status(404),
+          ctx.delay(apiDelay),
+          ctx.json({
+            ...error_not_found,
+            reason: `Bridge with id '${
+              bridgeId as string
+            }' for customer 'XXXXXXXX' does not exist`,
+          })
+        );
+      }
 
       const processor = db.processor.findFirst({
         where: {
@@ -365,9 +406,10 @@ export const handlers = [
     // if the name contains "fail"
     resourceStatusFlow(
       "processor",
+      "create",
       id,
       name.includes("wait"),
-      name.includes("fail")
+      name.includes("fail-create")
     );
 
     return res(ctx.status(200), ctx.delay(apiDelay), ctx.json(newProcessor));
@@ -436,15 +478,13 @@ export const handlers = [
         },
       });
 
-      setTimeout(() => {
-        db.processor.delete({
-          where: {
-            id: {
-              equals: processorId as string,
-            },
-          },
-        });
-      }, 20000);
+      resourceStatusFlow(
+        "processor",
+        "delete",
+        processorId as string,
+        existingProcessor.name.includes("wait"),
+        existingProcessor.name.includes("fail-delete")
+      );
 
       return res(ctx.status(202), ctx.delay(apiDelay), ctx.json({}));
     }
@@ -455,12 +495,14 @@ export const handlers = [
  * Resource status flow
  *
  * @param type Resource type: "bridge" or "processor"
+ * @param mode Flow mode: "create" or "delete"
  * @param id Resource id
  * @param wait Make the creation process slower (~1,3m)
  * @param fail Make the creation process fail
  */
 const resourceStatusFlow = (
   type: "processor" | "bridge",
+  mode: "create" | "delete",
   id: string,
   wait: boolean,
   fail: boolean
@@ -475,8 +517,12 @@ const resourceStatusFlow = (
         },
       },
       data: {
-        status: status,
-        published_at: status === "ready" ? new Date().toISOString() : "",
+        status() {
+          return status;
+        },
+        published_at(published_at) {
+          return status === "ready" ? new Date().toISOString() : published_at;
+        },
       },
     });
   };
@@ -489,33 +535,62 @@ const resourceStatusFlow = (
         },
       },
       data: {
-        status: status,
-        endpoint:
-          status === "ready"
+        status() {
+          return status;
+        },
+        endpoint(endpoint) {
+          return status === "ready"
             ? `https://ob-${id}.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events`
-            : "",
-        published_at: status === "ready" ? new Date().toISOString() : "",
+            : endpoint;
+        },
+        published_at(published_at) {
+          return status === "ready" ? new Date().toISOString() : published_at;
+        },
+      },
+    });
+  };
+
+  const deleteBridge = (id: string): void => {
+    db.bridge.delete({
+      where: {
+        id: {
+          equals: id,
+        },
+      },
+    });
+  };
+
+  const deleteProcessor = (id: string): void => {
+    db.processor.delete({
+      where: {
+        id: {
+          equals: id,
+        },
       },
     });
   };
 
   const updateResource = type === "processor" ? updateProcessor : updateBridge;
 
-  if (fail) {
-    setTimeout(() => {
-      updateResource(id, "provisioning");
-    }, waitTime);
-    setTimeout(() => {
-      updateResource(id, "failed");
-    }, waitTime * 2);
-  } else {
-    setTimeout(() => {
-      updateResource(id, "provisioning");
-    }, waitTime);
+  const stepOne = mode === "create" ? "provisioning" : "deleting";
+  const stepTwo = mode === "create" ? "ready" : "deleted";
 
+  setTimeout(() => {
+    updateResource(id, stepOne);
+  }, waitTime);
+
+  setTimeout(() => {
+    updateResource(id, fail ? "failed" : stepTwo);
+  }, waitTime * 2);
+
+  if (mode === "delete" && !fail) {
     setTimeout(() => {
-      updateResource(id, "ready");
-    }, waitTime * 2);
+      if (type === "processor") {
+        deleteProcessor(id);
+      } else {
+        deleteBridge(id);
+      }
+    }, waitTime * 2.2);
   }
 };
 

@@ -12,10 +12,10 @@ module.exports = {
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    // "plugin:xstate/all", cos-ui // https://issues.redhat.com/browse/MGDOBR-510
     // "plugin:storybook/recommended", app-services-ui-components
     "eslint:recommended",
     "prettier",
+    "plugin:prettier/recommended",
   ],
   plugins: [
     "@typescript-eslint",
@@ -25,7 +25,6 @@ module.exports = {
     "react",
     "react-hooks",
     "testing-library",
-    //"xstate", cos-ui https://issues.redhat.com/browse/MGDOBR-510
   ],
 
   rules: {

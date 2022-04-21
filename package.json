@@ -13,7 +13,6 @@
     "test:watch": "jest --watch --verbose",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
     "fetch-openapi": "./scripts/fetch_openapi.sh",
     "generate-openapi": "./scripts/generate_openapi_client.sh"
   },

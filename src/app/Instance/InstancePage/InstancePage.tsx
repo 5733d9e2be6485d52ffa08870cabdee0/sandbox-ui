@@ -6,7 +6,6 @@ import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
-  Label,
   PageSection,
   PageSectionVariants,
   Split,
@@ -28,6 +27,7 @@ import { Instance } from "../../../types/Instance";
 import { formatDistance } from "date-fns";
 import "./InstancePage.css";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
+import StatusLabel from "@app/components/StatusLabel/StatusLabel";
 
 const InstancePage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -42,7 +42,7 @@ const InstancePage = (): JSX.Element => {
     useState<boolean>(false);
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
 
-  const instanceName = `My instance`; // @TODO retrieve it from API
+  const instanceName = `Instance one`; // @TODO retrieve it from API
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -89,13 +89,8 @@ const InstancePage = (): JSX.Element => {
       accessor: "status",
       label: t("common.status"),
       formatter: (value: IRowData): JSX.Element => {
-        const statusString = value as unknown as string;
-        const label =
-          !statusString || !statusString.length
-            ? ""
-            : statusString.charAt(0).toUpperCase() +
-              statusString.slice(1).toLowerCase();
-        return <Label>{label}</Label>;
+        const statusString = (value as unknown as string) ?? "";
+        return <StatusLabel status={statusString} />;
       },
     },
     {
@@ -110,18 +105,18 @@ const InstancePage = (): JSX.Element => {
 
   const processorsOverviewRows = [
     {
-      id: "da508471-ee0f-4f53-b574-da8a61285986",
-      type: "source",
-      name: "Organic pour-over",
-      status: "accepted",
-      submitted_at: "2022-02-24T13:34:00Z",
-    },
-    {
       id: "ab65ec62-1f23-4dd7-b106-e4158baf8228",
       type: "sink",
-      name: "Processor ABC",
-      status: "accepted",
+      name: "Processor one",
+      status: "ready",
       submitted_at: "2022-03-15T20:10:00Z",
+    },
+    {
+      id: "da508471-ee0f-4f53-b574-da8a61285986",
+      type: "source",
+      name: "Processor two",
+      status: "accepted",
+      submitted_at: "2022-02-24T13:34:00Z",
     },
   ];
 
@@ -232,7 +227,9 @@ const InstancePage = (): JSX.Element => {
                 </Link>
               }
               rows={processorsOverviewRows}
-              tableLabel={t("openbridgeTempDictionary:processorsListTable")}
+              tableLabel={t(
+                "openbridgeTempDictionary:processor.processorsListTable"
+              )}
             />
           </TabContent>
           <TabContent

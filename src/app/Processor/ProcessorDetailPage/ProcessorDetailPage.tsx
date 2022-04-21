@@ -4,7 +4,6 @@ import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
-  Label,
   PageSection,
   PageSectionVariants,
   Split,
@@ -16,9 +15,10 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import ProcessorDetail from "@app/Processor/ProcessorDetail/ProcessorDetail";
-import { CaretDownIcon, CheckCircleIcon } from "@patternfly/react-icons";
+import { CaretDownIcon } from "@patternfly/react-icons";
 import { Processor } from "../../../types/Processor";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
+import StatusLabel from "@app/components/StatusLabel/StatusLabel";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId } = useParams<ProcessorRouteParams>();
@@ -80,8 +80,8 @@ const ProcessorDetailPage = (): JSX.Element => {
         <Breadcrumb
           path={[
             { label: t("instance.smartEventInstances"), linkTo: "/" },
-            { label: "My instance", linkTo: `/instance/${instanceId}` },
-            { label: "My processor" },
+            { label: "Instance one", linkTo: `/instance/${instanceId}` },
+            { label: "Processor one" },
           ]}
         />
       </PageSection>
@@ -91,15 +91,11 @@ const ProcessorDetailPage = (): JSX.Element => {
             <Stack hasGutter={true}>
               <StackItem>
                 <TextContent>
-                  <Text component="h1">My processor</Text>
+                  <Text component="h1">Processor one</Text>
                 </TextContent>
               </StackItem>
               <StackItem>
-                {/* @TODO: replace this temp label with component from shared library */}
-                {/* see https://issues.redhat.com/browse/MGDOBR-523 */}
-                <Label color="green" icon={<CheckCircleIcon />}>
-                  Ready
-                </Label>
+                <StatusLabel status="ready" />
               </StackItem>
             </Stack>
           </SplitItem>

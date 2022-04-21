@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Red Hat Openshift Smart Events Fleet Manager
- * The api exposed by the fleet manager of the RHOSE service.
+ * Red Hat Openshift SmartEvents Fleet Manager
+ * The api exposed by the fleet manager of the SmartEvents service.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: openbridge-dev@redhat.com
@@ -22,12 +22,12 @@
 
 export const ManagedResourceStatus = {
     Accepted: 'ACCEPTED',
-    Deleted: 'DELETED',
-    Deleting: 'DELETING',
-    Deprovision: 'DEPROVISION',
-    Failed: 'FAILED',
     Provisioning: 'PROVISIONING',
-    Ready: 'READY'
+    Ready: 'READY',
+    Deprovision: 'DEPROVISION',
+    Deleting: 'DELETING',
+    Deleted: 'DELETED',
+    Failed: 'FAILED'
 } as const;
 
 export type ManagedResourceStatus = typeof ManagedResourceStatus[keyof typeof ManagedResourceStatus];

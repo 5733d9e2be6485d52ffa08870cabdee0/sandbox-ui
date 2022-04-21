@@ -25,5 +25,6 @@ echo "Generating source code based on ${openapi_filename}"
 
 npx --yes @openapitools/openapi-generator-cli generate -g typescript-axios -i \
 "$openapi_filename" -o "$output_path" \
+--remove-operation-id-prefix \
 --package-name=$package_name \
 --additional-properties=$additional_properties

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/await-thenable */
 import Keycloak from "keycloak-js";
 import React from "react";
 
@@ -21,7 +22,6 @@ const TOKEN_MIN_VALIDITY_SECONDS = 50;
 export const setKeycloakInstance = async (): Promise<void> => {
   if (!keycloak) await init();
 };
-
 /**
  * Initiate keycloak instance.
  *
@@ -36,13 +36,14 @@ export const init = async (): Promise<void> => {
      * See https://issues.redhat.com/browse/MGDOBR-466
      */
     keycloak = Keycloak({
-      realm: "event-bridge-fm",
-      url: "https://keycloak-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com/auth/",
-      clientId: "event-bridge",
+      realm: "redhat-external",
+      url: "https://sso.redhat.com/auth/",
+      clientId: "cloud-services",
     });
     if (keycloak) {
       await keycloak.init({
         onLoad: "login-required",
+        promiseType: "native",
       });
     }
   } catch (e) {

@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Red Hat Openshift Smart Events Fleet Manager
- * The api exposed by the fleet manager of the RHOSE service.
+ * Red Hat Openshift SmartEvents Fleet Manager
+ * The api exposed by the fleet manager of the SmartEvents service.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: openbridge-dev@redhat.com
@@ -36,7 +36,7 @@ export const ShardApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        shardBridgesSyncAPIGetBridges: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getBridges: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/shard/bridges`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -70,7 +70,7 @@ export const ShardApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        shardBridgesSyncAPIGetProcessors: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getProcessors: async (options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/shard/bridges/processors`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -105,7 +105,7 @@ export const ShardApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        shardBridgesSyncAPIUpdateBridge: async (bridgeDTO?: BridgeDTO, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateBridge: async (bridgeDTO?: BridgeDTO, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/shard/bridges`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -143,7 +143,7 @@ export const ShardApiAxiosParamCreator = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        shardBridgesSyncAPIUpdateProcessorStatus: async (processorDTO?: ProcessorDTO, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateProcessorStatus: async (processorDTO?: ProcessorDTO, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/shard/bridges/processors`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -190,8 +190,8 @@ export const ShardApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async shardBridgesSyncAPIGetBridges(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<BridgeDTO>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.shardBridgesSyncAPIGetBridges(options);
+        async getBridges(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<BridgeDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getBridges(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -200,8 +200,8 @@ export const ShardApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async shardBridgesSyncAPIGetProcessors(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProcessorDTO>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.shardBridgesSyncAPIGetProcessors(options);
+        async getProcessors(options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ProcessorDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProcessors(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -211,8 +211,8 @@ export const ShardApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async shardBridgesSyncAPIUpdateBridge(bridgeDTO?: BridgeDTO, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.shardBridgesSyncAPIUpdateBridge(bridgeDTO, options);
+        async updateBridge(bridgeDTO?: BridgeDTO, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateBridge(bridgeDTO, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -222,8 +222,8 @@ export const ShardApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async shardBridgesSyncAPIUpdateProcessorStatus(processorDTO?: ProcessorDTO, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.shardBridgesSyncAPIUpdateProcessorStatus(processorDTO, options);
+        async updateProcessorStatus(processorDTO?: ProcessorDTO, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateProcessorStatus(processorDTO, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -242,8 +242,8 @@ export const ShardApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        shardBridgesSyncAPIGetBridges(options?: any): AxiosPromise<Array<BridgeDTO>> {
-            return localVarFp.shardBridgesSyncAPIGetBridges(options).then((request) => request(axios, basePath));
+        getBridges(options?: any): AxiosPromise<Array<BridgeDTO>> {
+            return localVarFp.getBridges(options).then((request) => request(axios, basePath));
         },
         /**
          * Get Processors to be processed by a shard.
@@ -251,8 +251,8 @@ export const ShardApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        shardBridgesSyncAPIGetProcessors(options?: any): AxiosPromise<Array<ProcessorDTO>> {
-            return localVarFp.shardBridgesSyncAPIGetProcessors(options).then((request) => request(axios, basePath));
+        getProcessors(options?: any): AxiosPromise<Array<ProcessorDTO>> {
+            return localVarFp.getProcessors(options).then((request) => request(axios, basePath));
         },
         /**
          * Update a Bridge instance.
@@ -261,8 +261,8 @@ export const ShardApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        shardBridgesSyncAPIUpdateBridge(bridgeDTO?: BridgeDTO, options?: any): AxiosPromise<void> {
-            return localVarFp.shardBridgesSyncAPIUpdateBridge(bridgeDTO, options).then((request) => request(axios, basePath));
+        updateBridge(bridgeDTO?: BridgeDTO, options?: any): AxiosPromise<void> {
+            return localVarFp.updateBridge(bridgeDTO, options).then((request) => request(axios, basePath));
         },
         /**
          * Update a Processor.
@@ -271,8 +271,8 @@ export const ShardApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        shardBridgesSyncAPIUpdateProcessorStatus(processorDTO?: ProcessorDTO, options?: any): AxiosPromise<void> {
-            return localVarFp.shardBridgesSyncAPIUpdateProcessorStatus(processorDTO, options).then((request) => request(axios, basePath));
+        updateProcessorStatus(processorDTO?: ProcessorDTO, options?: any): AxiosPromise<void> {
+            return localVarFp.updateProcessorStatus(processorDTO, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -290,7 +290,7 @@ export interface ShardApiInterface {
      * @throws {RequiredError}
      * @memberof ShardApiInterface
      */
-    shardBridgesSyncAPIGetBridges(options?: AxiosRequestConfig): AxiosPromise<Array<BridgeDTO>>;
+    getBridges(options?: AxiosRequestConfig): AxiosPromise<Array<BridgeDTO>>;
 
     /**
      * Get Processors to be processed by a shard.
@@ -299,7 +299,7 @@ export interface ShardApiInterface {
      * @throws {RequiredError}
      * @memberof ShardApiInterface
      */
-    shardBridgesSyncAPIGetProcessors(options?: AxiosRequestConfig): AxiosPromise<Array<ProcessorDTO>>;
+    getProcessors(options?: AxiosRequestConfig): AxiosPromise<Array<ProcessorDTO>>;
 
     /**
      * Update a Bridge instance.
@@ -309,7 +309,7 @@ export interface ShardApiInterface {
      * @throws {RequiredError}
      * @memberof ShardApiInterface
      */
-    shardBridgesSyncAPIUpdateBridge(bridgeDTO?: BridgeDTO, options?: AxiosRequestConfig): AxiosPromise<void>;
+    updateBridge(bridgeDTO?: BridgeDTO, options?: AxiosRequestConfig): AxiosPromise<void>;
 
     /**
      * Update a Processor.
@@ -319,7 +319,7 @@ export interface ShardApiInterface {
      * @throws {RequiredError}
      * @memberof ShardApiInterface
      */
-    shardBridgesSyncAPIUpdateProcessorStatus(processorDTO?: ProcessorDTO, options?: AxiosRequestConfig): AxiosPromise<void>;
+    updateProcessorStatus(processorDTO?: ProcessorDTO, options?: AxiosRequestConfig): AxiosPromise<void>;
 
 }
 
@@ -337,8 +337,8 @@ export class ShardApi extends BaseAPI implements ShardApiInterface {
      * @throws {RequiredError}
      * @memberof ShardApi
      */
-    public shardBridgesSyncAPIGetBridges(options?: AxiosRequestConfig) {
-        return ShardApiFp(this.configuration).shardBridgesSyncAPIGetBridges(options).then((request) => request(this.axios, this.basePath));
+    public getBridges(options?: AxiosRequestConfig) {
+        return ShardApiFp(this.configuration).getBridges(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -348,8 +348,8 @@ export class ShardApi extends BaseAPI implements ShardApiInterface {
      * @throws {RequiredError}
      * @memberof ShardApi
      */
-    public shardBridgesSyncAPIGetProcessors(options?: AxiosRequestConfig) {
-        return ShardApiFp(this.configuration).shardBridgesSyncAPIGetProcessors(options).then((request) => request(this.axios, this.basePath));
+    public getProcessors(options?: AxiosRequestConfig) {
+        return ShardApiFp(this.configuration).getProcessors(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -360,8 +360,8 @@ export class ShardApi extends BaseAPI implements ShardApiInterface {
      * @throws {RequiredError}
      * @memberof ShardApi
      */
-    public shardBridgesSyncAPIUpdateBridge(bridgeDTO?: BridgeDTO, options?: AxiosRequestConfig) {
-        return ShardApiFp(this.configuration).shardBridgesSyncAPIUpdateBridge(bridgeDTO, options).then((request) => request(this.axios, this.basePath));
+    public updateBridge(bridgeDTO?: BridgeDTO, options?: AxiosRequestConfig) {
+        return ShardApiFp(this.configuration).updateBridge(bridgeDTO, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -372,7 +372,7 @@ export class ShardApi extends BaseAPI implements ShardApiInterface {
      * @throws {RequiredError}
      * @memberof ShardApi
      */
-    public shardBridgesSyncAPIUpdateProcessorStatus(processorDTO?: ProcessorDTO, options?: AxiosRequestConfig) {
-        return ShardApiFp(this.configuration).shardBridgesSyncAPIUpdateProcessorStatus(processorDTO, options).then((request) => request(this.axios, this.basePath));
+    public updateProcessorStatus(processorDTO?: ProcessorDTO, options?: AxiosRequestConfig) {
+        return ShardApiFp(this.configuration).updateProcessorStatus(processorDTO, options).then((request) => request(this.axios, this.basePath));
     }
 }

@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Red Hat Openshift Smart Events Fleet Manager
- * The api exposed by the fleet manager of the RHOSE service.
+ * Red Hat Openshift SmartEvents Fleet Manager
+ * The api exposed by the fleet manager of the SmartEvents service.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: openbridge-dev@redhat.com
@@ -21,8 +21,8 @@
  */
 
 export const BridgeErrorType = {
-    Platform: 'PLATFORM',
-    User: 'USER'
+    User: 'USER',
+    Platform: 'PLATFORM'
 } as const;
 
 export type BridgeErrorType = typeof BridgeErrorType[keyof typeof BridgeErrorType];

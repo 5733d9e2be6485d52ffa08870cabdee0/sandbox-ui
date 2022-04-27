@@ -2,7 +2,7 @@
 
 This project contains Cypress test suites to verify UI of RHOSE.
 
-All steps should be performed from the root folder (it means `cd ..`).
+All steps should be performed from the sandbox-ui root folder (it means `cd ..`).
 
 ### Run integration tests with mocked data
 

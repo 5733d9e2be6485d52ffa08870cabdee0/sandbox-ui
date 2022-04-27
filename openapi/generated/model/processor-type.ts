@@ -17,20 +17,15 @@
 /**
  * 
  * @export
- * @interface BaseAction
+ * @enum {string}
  */
-export interface BaseAction {
-    /**
-     * 
-     * @type {string}
-     * @memberof BaseAction
-     */
-    'type': string;
-    /**
-     * 
-     * @type {{ [key: string]: string; }}
-     * @memberof BaseAction
-     */
-    'parameters': { [key: string]: string; };
-}
+
+export const ProcessorType = {
+    Source: 'SOURCE',
+    Sink: 'SINK'
+} as const;
+
+export type ProcessorType = typeof ProcessorType[keyof typeof ProcessorType];
+
+
 

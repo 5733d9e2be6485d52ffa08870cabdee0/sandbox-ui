@@ -6,11 +6,11 @@ import {
   FormSelectOption,
   TextInput,
 } from "@patternfly/react-core";
-import { BaseAction } from "../../../../../openapi/generated";
+import { Action } from "../../../../../openapi/generated";
 
 interface ActionEditProps {
-  action?: BaseAction;
-  onChange: (action: BaseAction) => void;
+  action?: Action;
+  onChange: (action: Action) => void;
 }
 
 const ActionEdit = (props: ActionEditProps): JSX.Element => {
@@ -26,7 +26,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
     });
   };
 
-  const updateConfiguration = (parameters: BaseAction["parameters"]): void => {
+  const updateConfiguration = (parameters: Action["parameters"]): void => {
     setParameters(parameters);
     onChange({
       type,

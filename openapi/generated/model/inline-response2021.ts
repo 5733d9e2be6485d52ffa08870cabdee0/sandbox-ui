@@ -13,9 +13,11 @@
  */
 
 
-import { BaseAction } from './base-action';
+import { Action } from './action';
 import { BaseFilter } from './base-filter';
 import { ManagedResourceStatus } from './managed-resource-status';
+import { ProcessorType } from './processor-type';
+import { Source } from './source';
 
 /**
  * 
@@ -49,6 +51,12 @@ export interface InlineResponse2021 {
     'href'?: string;
     /**
      * 
+     * @type {ProcessorType}
+     * @memberof InlineResponse2021
+     */
+    'type'?: ProcessorType;
+    /**
+     * 
      * @type {string}
      * @memberof InlineResponse2021
      */
@@ -79,9 +87,15 @@ export interface InlineResponse2021 {
     'transformationTemplate'?: string;
     /**
      * 
-     * @type {BaseAction}
+     * @type {Action}
      * @memberof InlineResponse2021
      */
-    'action'?: BaseAction;
+    'action'?: Action;
+    /**
+     * 
+     * @type {Source}
+     * @memberof InlineResponse2021
+     */
+    'source'?: Source;
 }
 

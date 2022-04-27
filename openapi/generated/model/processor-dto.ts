@@ -16,6 +16,7 @@
 import { KafkaConnectionDTO } from './kafka-connection-dto';
 import { ManagedResourceStatus } from './managed-resource-status';
 import { ProcessorDefinition } from './processor-definition';
+import { ProcessorType } from './processor-type';
 
 /**
  * 
@@ -23,6 +24,12 @@ import { ProcessorDefinition } from './processor-definition';
  * @interface ProcessorDTO
  */
 export interface ProcessorDTO {
+    /**
+     * 
+     * @type {ProcessorType}
+     * @memberof ProcessorDTO
+     */
+    'type'?: ProcessorType;
     /**
      * 
      * @type {string}

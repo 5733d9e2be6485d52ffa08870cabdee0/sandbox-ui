@@ -28,7 +28,7 @@
     "@patternfly/react-table": "4.50.1",
     "@rhoas/app-services-ui-components": "1.11.8",
     "@rhoas/app-services-ui-shared": "0.15.4",
-    "keycloak-js": "15.0.1",
+    "keycloak-js": "9.0.0",
     "monaco-editor": "0.21.3",
     "monaco-editor-webpack-plugin": "2.1.0",
     "react": "17.0.2",

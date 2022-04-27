@@ -121,7 +121,7 @@ module.exports = (env, argv) => {
           isProduction ? "[chunkhash:8]" : ""
         }.js`,
         exposes: {
-          "./SmartEventsOverview": "./src/AppFederated",
+          "./SmartEventsApp": "./src/AppFederated",
         },
         shared: {
           ...dependencies,

@@ -1,7 +1,7 @@
 {
   "name": "smartevents-ui",
   "version": "0.0.1",
-  "federatedModuleName": "smartevents",
+  "federatedModuleName": "smart_events",
   "private": true,
   "scripts": {
     "prepare": "husky install",

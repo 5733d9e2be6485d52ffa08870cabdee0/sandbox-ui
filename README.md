@@ -41,7 +41,7 @@ npm install
 npm run start:federate
 ```
 
-This will run a dev server on http://localhost:9006 that will serve a federated module named `smartevents`.
+This will run a dev server on http://localhost:9006 that will serve a federated module named `smart_events`.
 
 ## OpenAPI TS SDK
 

@@ -5,7 +5,7 @@
   "screenshotsFolder": "screenshots",
   "videosFolder": "videos",
   "supportFile": "support/index.ts",
-  "baseUrl": "https://prod.foo.redhat.com:1337",
+  "baseUrl": "http://localhost:8080",
   "chromeWebSecurity": false,
   "reporter": "junit",
   "reporterOptions": {

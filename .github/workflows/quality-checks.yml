@@ -13,10 +13,7 @@ jobs:
       - run: npm run format:check
       - run: npm run lint
       - run: npm run test
-      - name: Run UI Integration tests
-        run: |
-          sudo echo "127.0.0.1 prod.foo.redhat.com" | sudo tee -a /etc/hosts
-          npm run test:it
+      - run: npm run test:it
       - name: "Upload artifacts"
         uses: actions/upload-artifact@v2
         if: always() && !cancelled()

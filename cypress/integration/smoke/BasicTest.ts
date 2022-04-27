@@ -25,7 +25,7 @@ describe("Basic Elements", () => {
     cy.ouiaId("create-smart-event-instance", "PF4/Button").should("be.visible");
   });
 
-  it("The navigation panel is vis ible", () => {
+  it("The navigation panel is visible", () => {
     cy.ouiaId("OUIA-Generated-NavItem-1", "PF4/NavItem").then(($item) => {
       //toggle menu side bar - both directions
       if ($item.is(":visible")) {

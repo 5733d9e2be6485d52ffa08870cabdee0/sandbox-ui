@@ -15,7 +15,7 @@ Follow steps from the root README how to set up the environment to run RHOSE UI.
 To run Cypress test suite with mocked data
 
 ```
-npm test:it
+npm run test:it
 ```
 
 ### Run integration tests with real data

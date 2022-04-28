@@ -3,21 +3,14 @@ import {
   BridgesApi,
   Configuration,
   InlineResponse202,
-} from "../../../openapi/generated";
-import { useEffect, useState } from "react";
-
-interface BridgeApiBaseProps {
-  accessToken: () => Promise<string>;
-  basePath: string;
-}
-
-interface BridgeApiCreationProps extends BridgeApiBaseProps {
-  bridgeRequest: BridgeRequest;
-}
+} from "@openapi/generated";
+import { useState } from "react";
 
 export function useCreateBridgeApi(
-  bridgeApiCreationProps: BridgeApiCreationProps
+  accessToken: string,
+  basePath: string
 ): {
+  createBridge: (bridgeRequest: BridgeRequest) => Promise<void>;
   bridge?: InlineResponse202;
   isLoading: boolean;
   error: unknown;
@@ -26,15 +19,7 @@ export function useCreateBridgeApi(
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    void createBridge(bridgeApiCreationProps);
-  }, [bridgeApiCreationProps]);
-
-  const createBridge = async ({
-    accessToken,
-    basePath,
-    bridgeRequest,
-  }: BridgeApiCreationProps): Promise<void> => {
+  const createBridge = async (bridgeRequest: BridgeRequest): Promise<void> => {
     const bridgeApi = new BridgesApi(
       new Configuration({
         accessToken,
@@ -48,5 +33,5 @@ export function useCreateBridgeApi(
       .finally(() => setIsLoading(false));
   };
 
-  return { isLoading, bridge, error };
+  return { createBridge, isLoading, bridge, error };
 }

@@ -11,10 +11,16 @@ export function useGetErrorsApi(
 ): {
   getErrors: () => Promise<void>;
   errors?: ErrorResponse[];
+  page?: number;
+  size?: number;
+  total?: number;
   // Error thrown during API call
   caughtError?: unknown;
   isLoading: boolean;
 } {
+  const [page, setPage] = useState<number>();
+  const [size, setSize] = useState<number>();
+  const [total, setTotal] = useState<number>();
   const [errors, setErrors] = useState<ErrorResponse[]>();
   const [caughtError, setCaughtError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
@@ -28,10 +34,15 @@ export function useGetErrorsApi(
     );
     await errorCatalogApi
       .getErrors()
-      .then((response) => setErrors(response.data.items))
+      .then((response) => {
+        setPage(response.data.page);
+        setSize(response.data.size);
+        setTotal(response.data.total);
+        setErrors(response.data.items);
+      })
       .catch((err) => setCaughtError(err))
       .finally(() => setIsLoading(false));
   };
 
-  return { getErrors, isLoading, errors, caughtError };
+  return { getErrors, isLoading, errors, page, size, total, caughtError };
 }

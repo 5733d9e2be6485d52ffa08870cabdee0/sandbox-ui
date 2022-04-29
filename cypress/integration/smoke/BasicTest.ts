@@ -1,14 +1,17 @@
 describe("Basic Elements", () => {
   beforeEach(() => {
     cy.visit("/");
-    //wait rutine - not sure why the page is loading so long
-    cy.get("button#nav-toggle", { timeout: 60000 }).should("be.visible");
   });
 
   it("The Create SE Instance button is visible", () => {
     cy.ouiaId("create-smart-event-instance", "PF4/Button").should("be.visible");
   });
 
+  /**
+   * The sidebar and the header are not part of the SE UI we export.
+   * So only the page content is relevant to report bugs.
+   * This test is relevant only for developing/demoing purposes.
+   */
   it("The navigation panel is visible", () => {
     cy.ouiaId("OUIA-Generated-NavItem-1", "PF4/NavItem").then(($item) => {
       //toggle menu side bar - both directions

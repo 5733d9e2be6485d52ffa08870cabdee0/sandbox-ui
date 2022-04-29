@@ -1,10 +1,10 @@
-import { BaseAction } from "../../openapi/generated";
+import { Action } from "../../openapi/generated";
 
 export type Processor = SinkProcessor | SourceProcessor;
 
 export interface SinkProcessor extends BaseProcessor {
   type: "sink";
-  action: BaseAction;
+  action: Action;
 }
 
 export interface SourceProcessor extends BaseProcessor {

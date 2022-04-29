@@ -337,6 +337,8 @@ paths:
                     type: string
                   href:
                     type: string
+                  type:
+                    $ref: '#/components/schemas/ProcessorType'
                   submitted_at:
                     format: date-time
                     type: string
@@ -353,7 +355,9 @@ paths:
                   transformationTemplate:
                     type: string
                   action:
-                    $ref: '#/components/schemas/BaseAction'
+                    $ref: '#/components/schemas/Action'
+                  source:
+                    $ref: '#/components/schemas/Source'
         "400":
           description: Bad request.
           content:
@@ -410,6 +414,8 @@ paths:
                     type: string
                   href:
                     type: string
+                  type:
+                    $ref: '#/components/schemas/ProcessorType'
                   submitted_at:
                     format: date-time
                     type: string
@@ -426,7 +432,9 @@ paths:
                   transformationTemplate:
                     type: string
                   action:
-                    $ref: '#/components/schemas/BaseAction'
+                    $ref: '#/components/schemas/Action'
+                  source:
+                    $ref: '#/components/schemas/Source'
         "400":
           description: Bad request.
           content:
@@ -488,6 +496,8 @@ paths:
                     type: string
                   href:
                     type: string
+                  type:
+                    $ref: '#/components/schemas/ProcessorType'
                   submitted_at:
                     format: date-time
                     type: string
@@ -504,7 +514,9 @@ paths:
                   transformationTemplate:
                     type: string
                   action:
-                    $ref: '#/components/schemas/BaseAction'
+                    $ref: '#/components/schemas/Action'
+                  source:
+                    $ref: '#/components/schemas/Source'
         "400":
           description: Bad request.
           content:
@@ -780,7 +792,7 @@ paths:
       - bearer: []
 components:
   schemas:
-    BaseAction:
+    Action:
       required:
       - type
       - parameters
@@ -896,6 +908,8 @@ components:
     ProcessorDTO:
       type: object
       properties:
+        type:
+          $ref: '#/components/schemas/ProcessorType'
         id:
           type: string
         name:
@@ -921,13 +935,14 @@ components:
         transformationTemplate:
           type: string
         requestedAction:
-          $ref: '#/components/schemas/BaseAction'
+          $ref: '#/components/schemas/Action'
+        requestedSource:
+          $ref: '#/components/schemas/Source'
         resolvedAction:
-          $ref: '#/components/schemas/BaseAction'
+          $ref: '#/components/schemas/Action'
     ProcessorRequest:
       required:
       - name
-      - action
       type: object
       properties:
         name:
@@ -942,11 +957,9 @@ components:
         transformationTemplate:
           type: string
         action:
-          allOf:
-          - $ref: '#/components/schemas/BaseAction'
-          - allOf:
-            - $ref: '#/components/schemas/BaseAction'
-            - nullable: false
+          $ref: '#/components/schemas/Action'
+        source:
+          $ref: '#/components/schemas/Source'
     ProcessorResponse:
       type: object
       properties:
@@ -958,6 +971,8 @@ components:
           type: string
         href:
           type: string
+        type:
+          $ref: '#/components/schemas/ProcessorType'
         submitted_at:
           format: date-time
           type: string
@@ -974,7 +989,28 @@ components:
         transformationTemplate:
           type: string
         action:
-          $ref: '#/components/schemas/BaseAction'
+          $ref: '#/components/schemas/Action'
+        source:
+          $ref: '#/components/schemas/Source'
+    ProcessorType:
+      enum:
+      - SOURCE
+      - SINK
+      type: string
+    Source:
+      required:
+      - type
+      - parameters
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: false
+        parameters:
+          minProperties: 1
+          type: object
+          additionalProperties:
+            type: string
   securitySchemes:
     bearer:
       type: http

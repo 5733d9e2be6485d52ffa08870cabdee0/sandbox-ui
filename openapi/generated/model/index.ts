@@ -1,4 +1,4 @@
-export * from './base-action';
+export * from './action';
 export * from './base-filter';
 export * from './bridge-dto';
 export * from './bridge-error-type';
@@ -17,3 +17,5 @@ export * from './processor-dto';
 export * from './processor-definition';
 export * from './processor-request';
 export * from './processor-response';
+export * from './processor-type';
+export * from './source';

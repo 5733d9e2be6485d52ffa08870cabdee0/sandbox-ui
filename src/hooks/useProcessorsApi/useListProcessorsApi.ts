@@ -1,16 +1,20 @@
 import {
-  BridgesApi,
   Configuration,
-  InlineResponse202,
+  InlineResponse2021,
+  ProcessorsApi,
 } from "@openapi/generated";
 import { useState } from "react";
 
-export function useGetBridgesApi(
+export function useListProcessorsApi(
   accessToken: string,
   basePath: string
 ): {
-  getBridges: (pageReq?: number, sizeReq?: number) => Promise<void>;
-  bridges?: InlineResponse202[];
+  listProcessors: (
+    bridgeId: string,
+    pageReq?: number,
+    sizeReq?: number
+  ) => Promise<void>;
+  processors?: InlineResponse2021[];
   page?: number;
   size?: number;
   total?: number;
@@ -20,31 +24,32 @@ export function useGetBridgesApi(
   const [page, setPage] = useState<number>();
   const [size, setSize] = useState<number>();
   const [total, setTotal] = useState<number>();
-  const [bridges, setBridges] = useState<InlineResponse202[]>();
+  const [processors, setProcessors] = useState<InlineResponse2021[]>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 
-  const getBridges = async (
+  const listProcessors = async (
+    bridgeId: string,
     pageReq?: number,
     sizeReq?: number
   ): Promise<void> => {
-    const bridgeApi = new BridgesApi(
+    const processorsApi = new ProcessorsApi(
       new Configuration({
         accessToken,
         basePath,
       })
     );
-    await bridgeApi
-      .getBridges(pageReq, sizeReq)
+    await processorsApi
+      .listProcessors(bridgeId, pageReq, sizeReq)
       .then((response) => {
         setPage(response.data.page);
         setSize(response.data.size);
         setTotal(response.data.total);
-        setBridges(response.data.items);
+        setProcessors(response.data.items);
       })
       .catch((err) => setError(err))
       .finally(() => setIsLoading(false));
   };
 
-  return { getBridges, isLoading, bridges, page, size, total, error };
+  return { listProcessors, isLoading, processors, page, size, total, error };
 }

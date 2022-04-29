@@ -28,7 +28,6 @@ describe("Basic Elements", () => {
   it("The navigation panel is visible", () => {
     cy.ouiaId("OUIA-Generated-NavItem-1", "PF4/NavItem").then(($item) => {
       //toggle menu side bar - both directions
-      //TODO: how to retype it from Element into JQuery<Element>
       if ($item.is(":visible")) {
         cy.get("button#nav-toggle").click();
         cy.ouiaId("OUIA-Generated-NavItem-1", "PF4/NavItem").should(

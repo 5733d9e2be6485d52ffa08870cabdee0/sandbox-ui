@@ -26,20 +26,23 @@ declare namespace Cypress {
       id: string,
       type?: string,
       opts?: Record<string, any>
-    ): Chainable<Element>;
+    ): Chainable<JQuery<Element>>;
 
     /**
      * Search elements by data-ouia component-type attribute. Behaves as get/find depending on if is chained or not.
      * @param type string
      * @param opts optional - config object
      */
-    ouiaType(type: string, opts?: Record<string, any>): Chainable<Element>;
+    ouiaType(
+      type: string,
+      opts?: Record<string, any>
+    ): Chainable<JQuery<Element>>;
 
     /**
      * Filter element based on data-ouia-safe attribute
      * @param opts optional - config object
      */
-    ouiaSafe(opts?: Record<string, any>): Chainable<Element>;
+    ouiaSafe(opts?: Record<string, any>): Chainable<JQuery<Element>>;
 
     /**
      *
@@ -49,6 +52,6 @@ declare namespace Cypress {
     ouiaNavigationName(
       value?: string,
       opts?: Record<string, any>
-    ): Chainable<Element>;
+    ): Chainable<JQuery<Element>>;
   }
 }

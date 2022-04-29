@@ -13,3 +13,14 @@ jobs:
       - run: npm run format:check
       - run: npm run lint
       - run: npm run test
+      - run: npm run test:it
+      - name: "Upload artifacts"
+        uses: actions/upload-artifact@v2
+        if: always() && !cancelled()
+        with:
+          name: ui-artifacts
+          if-no-files-found: warn
+          path: |
+            **/*.log
+            **/cypress/screenshots/**
+            **/cypress/videos/**

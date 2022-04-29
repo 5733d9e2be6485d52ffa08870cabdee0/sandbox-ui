@@ -13,42 +13,42 @@
  */
 
 
-import { ErrorResponse } from './error-response';
+import { ProcessorResponse } from './processor-response';
 
 /**
  * 
  * @export
- * @interface InlineResponse2002
+ * @interface ProcessorListResponse
  */
-export interface InlineResponse2002 {
+export interface ProcessorListResponse {
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse2002
+     * @memberof ProcessorListResponse
      */
     'kind'?: string;
     /**
      * 
-     * @type {Array<ErrorResponse>}
-     * @memberof InlineResponse2002
+     * @type {Array<ProcessorResponse>}
+     * @memberof ProcessorListResponse
      */
-    'items'?: Array<ErrorResponse>;
+    'items'?: Array<ProcessorResponse>;
     /**
      * 
      * @type {number}
-     * @memberof InlineResponse2002
+     * @memberof ProcessorListResponse
      */
     'page'?: number;
     /**
      * 
      * @type {number}
-     * @memberof InlineResponse2002
+     * @memberof ProcessorListResponse
      */
     'size'?: number;
     /**
      * 
      * @type {number}
-     * @memberof InlineResponse2002
+     * @memberof ProcessorListResponse
      */
     'total'?: number;
 }

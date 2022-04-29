@@ -13,8 +13,9 @@
  */
 
 
-import { BaseAction } from './base-action';
+import { Action } from './action';
 import { BaseFilter } from './base-filter';
+import { Source } from './source';
 
 /**
  * 
@@ -42,9 +43,15 @@ export interface ProcessorRequest {
     'transformationTemplate'?: string;
     /**
      * 
-     * @type {BaseAction}
+     * @type {Action}
      * @memberof ProcessorRequest
      */
-    'action': BaseAction;
+    'action'?: Action;
+    /**
+     * 
+     * @type {Source}
+     * @memberof ProcessorRequest
+     */
+    'source'?: Source;
 }
 

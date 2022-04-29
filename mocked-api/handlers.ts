@@ -1,10 +1,15 @@
 /* tslint:disable @typescript-eslint/no-unsafe-call */
 
 import { rest } from "msw";
-import { factory, primaryKey } from "@mswjs/data";
-import { BridgeRequest } from "../openapi/generated";
+import { factory, oneOf, primaryKey } from "@mswjs/data";
+import {
+  BridgeRequest,
+  ProcessorRequest,
+  ProcessorResponse,
+} from "../openapi/generated";
 import { v4 as uuid } from "uuid";
-import { instancesData } from "./data";
+import { instancesData, processorData } from "./data";
+import { omit } from "lodash";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
@@ -26,14 +31,43 @@ const db = factory({
     status: String,
     endpoint: String,
   },
+  processor: {
+    id: primaryKey(String),
+    bridge: oneOf("bridge"),
+    kind: String,
+    name: String,
+    href: String,
+    submitted_at: String,
+    published_at: String,
+    status: String,
+    filters: Array,
+    transformationTemplate: String,
+    action: {
+      type: String,
+      parameters: {
+        channel: String,
+        webhookUrl: String,
+      },
+    },
+  },
 });
 
 // load demo data
-instancesData.map((instance) => {
-  db.bridge.create(instance);
+instancesData.map((instance, index) => {
+  const bridge = db.bridge.create(instance);
+  // adding processors to first bridge
+  if (index === 0) {
+    processorData.map((processorItem) => {
+      db.processor.create({
+        ...processorItem,
+        bridge: bridge,
+      });
+    });
+  }
 });
 
 export const handlers = [
+  // bridges
   // get all bridges
   rest.get(`${apiUrl}/bridges`, (req, res, ctx) => {
     const page = parseInt(req.url.searchParams.get("page") ?? "0");
@@ -76,10 +110,7 @@ export const handlers = [
       ctx.status(404),
       ctx.delay(apiDelay),
       ctx.json({
-        kind: "Error",
-        id: "4",
-        href: "/api/v1/errors/4",
-        code: "OPENBRIDGE-4",
+        ...error_not_found,
         reason: `Bridge with id '${
           bridgeId as string
         }' for customer 'XXXXXXXX' does not exist`,
@@ -102,11 +133,8 @@ export const handlers = [
       return res(
         ctx.status(400),
         ctx.json({
-          kind: "Error",
-          id: "1",
-          href: "/api/v1/errors/1",
-          code: "OPENBRIDGE-1",
-          reason: `Bridge with name '${name}' already exists for customer with id '${existingBridge.id}'`,
+          ...error_duplicated_resource,
+          reason: `Bridge with name '${name}' already exists for customer with id 'XXXXXXXX'`,
         })
       );
     }
@@ -125,7 +153,13 @@ export const handlers = [
 
     // make the process slower if the instance name contains "wait" and make it fail
     // if the name contains "fail"
-    instanceStatusFlow(id, name.includes("wait"), name.includes("fail"));
+    resourceStatusFlow(
+      "bridge",
+      "create",
+      id,
+      name.includes("wait"),
+      name.includes("fail-create")
+    );
 
     return res(ctx.status(200), ctx.delay(apiDelay), ctx.json(newBridge));
   }),
@@ -146,10 +180,7 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          kind: "Error",
-          id: "4",
-          href: "/api/v1/errors/4",
-          code: "OPENBRIDGE-4",
+          ...error_not_found,
           reason: `Bridge with id '${
             bridgeId as string
           }' for customer 'XXXXXXXX' does not exist`,
@@ -168,48 +199,335 @@ export const handlers = [
       },
     });
 
-    setTimeout(() => {
-      db.bridge.delete({
+    resourceStatusFlow(
+      "bridge",
+      "delete",
+      bridgeId as string,
+      existingBridge.name.includes("wait"),
+      existingBridge.name.includes("fail-delete")
+    );
+
+    return res(ctx.status(202), ctx.delay(apiDelay), ctx.json({}));
+  }),
+
+  // processors
+  // get all processors of a bridge
+  rest.get(`${apiUrl}/bridges/:bridgeId/processors`, (req, res, ctx) => {
+    const { bridgeId } = req.params;
+
+    const page = parseInt(req.url.searchParams.get("page") ?? "0");
+    const size = parseInt(req.url.searchParams.get("size") ?? "10");
+
+    const bridge = db.bridge.findFirst({
+      where: {
+        id: {
+          equals: bridgeId as string,
+        },
+      },
+    });
+
+    if (!bridge) {
+      return res(
+        ctx.status(404),
+        ctx.delay(apiDelay),
+        ctx.json({
+          ...error_not_found,
+          reason: `Bridge with id '${
+            bridgeId as string
+          }' for customer 'XXXXXXXX' does not exist`,
+        })
+      );
+    }
+
+    const query = {
+      where: {
+        bridge: {
+          id: {
+            equals: bridgeId as string,
+          },
+        },
+      },
+    };
+
+    const count = db.processor.count(query);
+
+    return res(
+      ctx.status(200),
+      ctx.delay(apiDelay),
+      ctx.json({
+        kind: "ProcessorList",
+        items: db.processor
+          .findMany({
+            take: size,
+            skip: page * size,
+            orderBy: {
+              submitted_at: "desc",
+            },
+            ...query,
+          })
+          .map((item) =>
+            cleanupProcessor(
+              item as unknown as Record<string | number | symbol, unknown>
+            )
+          ),
+        page: page,
+        size: size,
+        total: count,
+      })
+    );
+  }),
+  // get a single processor
+  rest.get(
+    `${apiUrl}/bridges/:bridgeId/processors/:processorId`,
+    (req, res, ctx) => {
+      const { bridgeId, processorId } = req.params;
+
+      const bridge = db.bridge.findFirst({
         where: {
           id: {
             equals: bridgeId as string,
           },
         },
       });
-    }, 20000);
 
-    return res(ctx.status(202), ctx.delay(apiDelay), ctx.json({}));
+      if (!bridge) {
+        return res(
+          ctx.status(404),
+          ctx.delay(apiDelay),
+          ctx.json({
+            ...error_not_found,
+            reason: `Bridge with id '${
+              bridgeId as string
+            }' for customer 'XXXXXXXX' does not exist`,
+          })
+        );
+      }
+
+      const processor = db.processor.findFirst({
+        where: {
+          id: {
+            equals: processorId as string,
+          },
+        },
+      });
+
+      if (processor) {
+        return res(
+          ctx.status(200),
+          ctx.delay(apiDelay),
+          ctx.json(
+            cleanupProcessor(
+              processor as unknown as Record<string | number | symbol, unknown>
+            )
+          )
+        );
+      }
+      return res(
+        ctx.status(404),
+        ctx.delay(apiDelay),
+        ctx.json({
+          ...error_not_found,
+          reason: `Processor with id '${
+            processorId as string
+          }' for customer 'XXXXXXXX' does not exist`,
+        })
+      );
+    }
+  ),
+  // create a processor
+  rest.post(`${apiUrl}/bridges/:bridgeId/processors`, (req, res, ctx) => {
+    const { bridgeId } = req.params;
+    const { name, transformationTemplate, filters, action } =
+      req.body as MockProcessorRequest;
+
+    const bridge = db.bridge.findFirst({
+      where: {
+        id: {
+          equals: bridgeId as string,
+        },
+      },
+    });
+
+    if (!bridge) {
+      return res(
+        ctx.status(404),
+        ctx.delay(apiDelay),
+        ctx.json({
+          ...error_not_found,
+          reason: `Bridge with id '${
+            bridgeId as string
+          }' for customer 'XXXXXXXX' does not exist`,
+        })
+      );
+    }
+
+    const existingProcessor = db.processor.findFirst({
+      where: {
+        name: {
+          equals: name,
+        },
+        bridge: {
+          id: {
+            equals: bridgeId as string,
+          },
+        },
+      },
+    });
+
+    if (existingProcessor) {
+      return res(
+        ctx.status(400),
+        ctx.json({
+          ...error_duplicated_resource,
+          reason: `Processor with name '${name}' already exists for bridge with id ${
+            bridgeId as string
+          } for customer with id 'XXXXXXXXXX'`,
+        })
+      );
+    }
+
+    const id = uuid();
+    const processor = {
+      kind: "Processor",
+      id,
+      name,
+      href: `/api/v1/bridges/${bridge?.id ?? ""}/processors/${id}`,
+      submitted_at: new Date().toISOString(),
+      status: "accepted",
+      filters: filters,
+      transformationTemplate,
+      action,
+      bridge,
+    };
+
+    const newProcessor = db.processor.create(processor);
+
+    // make the process slower if the resource name contains "wait" and make it fail
+    // if the name contains "fail"
+    resourceStatusFlow(
+      "processor",
+      "create",
+      id,
+      name.includes("wait"),
+      name.includes("fail-create")
+    );
+
+    return res(ctx.status(200), ctx.delay(apiDelay), ctx.json(newProcessor));
   }),
+  // delete a processor
+  rest.delete(
+    `${apiUrl}/bridges/:bridgeId/processors/:processorId`,
+    (req, res, ctx) => {
+      const { bridgeId, processorId } = req.params;
+
+      const existingBridge = db.bridge.findFirst({
+        where: {
+          id: {
+            equals: bridgeId as string,
+          },
+        },
+      });
+
+      if (!existingBridge) {
+        return res(
+          ctx.status(404),
+          ctx.delay(apiDelay),
+          ctx.json({
+            ...error_not_found,
+            reason: `Bridge with id '${
+              bridgeId as string
+            }' for customer 'XXXXXXXX' does not exist`,
+          })
+        );
+      }
+
+      const existingProcessor = db.processor.findFirst({
+        where: {
+          id: {
+            equals: processorId as string,
+          },
+          bridge: {
+            id: {
+              equals: bridgeId as string,
+            },
+          },
+        },
+      });
+
+      if (!existingProcessor) {
+        return res(
+          ctx.status(404),
+          ctx.delay(apiDelay),
+          ctx.json({
+            ...error_not_found,
+            reason: `Processor with id '${
+              bridgeId as string
+            }' for customer 'XXXXXXXX' does not exist`,
+          })
+        );
+      }
+
+      db.processor.update({
+        where: {
+          id: {
+            equals: processorId as string,
+          },
+        },
+        data: {
+          status: "deprovision",
+        },
+      });
+
+      resourceStatusFlow(
+        "processor",
+        "delete",
+        processorId as string,
+        existingProcessor.name.includes("wait"),
+        existingProcessor.name.includes("fail-delete")
+      );
+
+      return res(ctx.status(202), ctx.delay(apiDelay), ctx.json({}));
+    }
+  ),
 ];
 
 /**
- * Instance status flow
+ * Resource status flow
  *
- * @param id Bridge id
+ * @param type Resource type: "bridge" or "processor"
+ * @param mode Flow mode: "create" or "delete"
+ * @param id Resource id
  * @param wait Make the creation process slower (~1,3m)
  * @param fail Make the creation process fail
  */
-const instanceStatusFlow = (id: string, wait: boolean, fail: boolean): void => {
+const resourceStatusFlow = (
+  type: "processor" | "bridge",
+  mode: "create" | "delete",
+  id: string,
+  wait: boolean,
+  fail: boolean
+): void => {
   const waitTime = wait ? 45000 : 8000;
 
-  if (fail) {
-    setTimeout(() => {
-      updateInstance(id, "provisioning");
-    }, waitTime);
-    setTimeout(() => {
-      updateInstance(id, "failed");
-    }, waitTime * 2);
-  } else {
-    setTimeout(() => {
-      updateInstance(id, "provisioning");
-    }, waitTime);
+  const updateProcessor = (id: string, status: string): void => {
+    db.processor.update({
+      where: {
+        id: {
+          equals: id,
+        },
+      },
+      data: {
+        status() {
+          return status;
+        },
+        published_at(published_at) {
+          return status === "ready" ? new Date().toISOString() : published_at;
+        },
+      },
+    });
+  };
 
-    setTimeout(() => {
-      updateInstance(id, "ready");
-    }, waitTime * 2);
-  }
-
-  const updateInstance = (id: string, status: string): void => {
+  const updateBridge = (id: string, status: string): void => {
     db.bridge.update({
       where: {
         id: {
@@ -217,13 +535,100 @@ const instanceStatusFlow = (id: string, wait: boolean, fail: boolean): void => {
         },
       },
       data: {
-        status: status,
-        endpoint:
-          status === "ready"
+        status() {
+          return status;
+        },
+        endpoint(endpoint) {
+          return status === "ready"
             ? `https://ob-${id}.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events`
-            : "",
-        published_at: status === "ready" ? new Date().toISOString() : "",
+            : endpoint;
+        },
+        published_at(published_at) {
+          return status === "ready" ? new Date().toISOString() : published_at;
+        },
       },
     });
   };
+
+  const deleteBridge = (id: string): void => {
+    db.bridge.delete({
+      where: {
+        id: {
+          equals: id,
+        },
+      },
+    });
+  };
+
+  const deleteProcessor = (id: string): void => {
+    db.processor.delete({
+      where: {
+        id: {
+          equals: id,
+        },
+      },
+    });
+  };
+
+  const updateResource = type === "processor" ? updateProcessor : updateBridge;
+
+  const stepOne = mode === "create" ? "provisioning" : "deleting";
+  const stepTwo = mode === "create" ? "ready" : "deleted";
+
+  setTimeout(() => {
+    updateResource(id, stepOne);
+  }, waitTime);
+
+  setTimeout(() => {
+    updateResource(id, fail ? "failed" : stepTwo);
+  }, waitTime * 2);
+
+  if (mode === "delete" && !fail) {
+    setTimeout(() => {
+      if (type === "processor") {
+        deleteProcessor(id);
+      } else {
+        deleteBridge(id);
+      }
+    }, waitTime * 2.2);
+  }
 };
+
+/**
+ * Cleanup processor
+ *
+ * @param processor Processor to clean from unwanted properties before response
+ */
+const cleanupProcessor = (
+  processor: Record<string, unknown>
+): ProcessorResponse => {
+  // removing properties not needed for the response
+  const omitProperties = ["bridge"];
+
+  if (!(processor.filters as Array<Record<string, unknown>>).length) {
+    omitProperties.push("filters");
+  }
+  if (processor.transformationTemplate === "") {
+    omitProperties.push("transformationTemplate");
+  }
+
+  return omit(processor, omitProperties);
+};
+
+const error_not_found = {
+  kind: "Error",
+  id: "4",
+  href: "/api/v1/errors/4",
+  code: "OPENBRIDGE-4",
+};
+
+const error_duplicated_resource = {
+  kind: "Error",
+  id: "1",
+  href: "/api/v1/errors/1",
+  code: "OPENBRIDGE-1",
+};
+
+interface MockProcessorRequest extends Omit<ProcessorRequest, "filters"> {
+  filters: unknown[];
+}

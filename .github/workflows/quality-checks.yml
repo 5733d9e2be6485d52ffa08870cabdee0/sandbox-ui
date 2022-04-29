@@ -18,7 +18,7 @@ jobs:
         uses: actions/upload-artifact@v2
         if: always() && !cancelled()
         with:
-          name: ui-artifacts-${{ matrix.os }}
+          name: ui-artifacts
           if-no-files-found: warn
           path: |
             **/*.log

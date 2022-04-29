@@ -11,5 +11,7 @@
   "reporterOptions": {
     "mochaFile": "target/surefire-reports/TEST-it-[hash].xml",
     "toConsole": false
-  }
+  },
+  "viewportWidth": 1920,
+  "viewportHeight": 1080
 }

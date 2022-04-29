@@ -13,7 +13,7 @@
     "test:watch": "jest --watch --verbose",
     "cypress:open:it": "cypress open --project cypress --config-file cypress.it.json",
     "cypress:run:it": "cypress run --project cypress --config-file cypress.it.json",
-    "test:it": "start-server-and-test 'start:mocked' http://localhost:8080 'cypress:run:it' && echo",
+    "test:it": "start-server-and-test 'start:mocked' http://localhost:8080 'cypress:run:it'",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

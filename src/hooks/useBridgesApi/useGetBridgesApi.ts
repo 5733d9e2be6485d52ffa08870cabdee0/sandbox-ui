@@ -1,7 +1,7 @@
 import {
   BridgesApi,
   Configuration,
-  InlineResponse202,
+  InlineResponse200,
 } from "@openapi/generated";
 import { useState } from "react";
 
@@ -10,7 +10,7 @@ export function useGetBridgesApi(
   basePath: string
 ): {
   getBridges: (pageReq?: number, sizeReq?: number) => Promise<void>;
-  bridges?: InlineResponse202[];
+  bridges?: InlineResponse200[];
   page?: number;
   size?: number;
   total?: number;
@@ -20,7 +20,7 @@ export function useGetBridgesApi(
   const [page, setPage] = useState<number>();
   const [size, setSize] = useState<number>();
   const [total, setTotal] = useState<number>();
-  const [bridges, setBridges] = useState<InlineResponse202[]>();
+  const [bridges, setBridges] = useState<InlineResponse200[]>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 

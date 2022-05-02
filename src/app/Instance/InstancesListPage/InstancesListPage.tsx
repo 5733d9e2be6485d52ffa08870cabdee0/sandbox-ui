@@ -135,7 +135,7 @@ const InstancesListPage = (): JSX.Element => {
     <>
       <PageSection variant={PageSectionVariants.light}>
         <TextContent>
-          <Text component="h1">
+          <Text ouiaId="instances-page-title" component="h1">
             {t("openbridgeTempDictionary:instance.instancesListPageTitle")}
           </Text>
         </TextContent>

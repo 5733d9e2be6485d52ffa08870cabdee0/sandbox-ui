@@ -83,7 +83,7 @@ export const Table: FunctionComponent<TableProps> = ({
       ouiaId={ariaLabel}
     >
       <Thead>
-        <Tr>
+        <Tr ouiaId="table-head">
           {transformColumns(columns).map((column) => (
             <Th key={column}>{column}</Th>
           ))}
@@ -91,14 +91,17 @@ export const Table: FunctionComponent<TableProps> = ({
       </Thead>
       {!rows.length && children ? (
         <Tbody>
-          <Tr>
+          <Tr ouiaId="no-data">
             <Td colSpan={columns.length}>{children}</Td>
           </Tr>
         </Tbody>
       ) : (
         <Tbody>
           {transformRows(rows, columns).map((row: TableRow, rowIndex) => (
-            <Tr key={(row.originalData?.id as string) ?? rowIndex}>
+            <Tr
+              ouiaId={row.originalData?.id as string}
+              key={(row.originalData?.id as string) ?? rowIndex}
+            >
               {row?.cells?.map((cell, cellIndex) => (
                 <Td key={cellIndex}>{cell}</Td>
               ))}

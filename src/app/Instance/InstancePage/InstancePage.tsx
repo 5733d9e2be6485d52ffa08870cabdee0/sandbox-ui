@@ -156,7 +156,9 @@ const InstancePage = (): JSX.Element => {
           <Split>
             <SplitItem isFilled>
               <TextContent>
-                <Text component="h1">{instanceName}</Text>
+                <Text ouiaId="instance-name" component="h1">
+                  {instanceName}
+                </Text>
               </TextContent>
             </SplitItem>
             <SplitItem>
@@ -185,7 +187,11 @@ const InstancePage = (): JSX.Element => {
                   >
                     {t("common.details")}
                   </DropdownItem>,
-                  <DropdownItem key="delete" onClick={onDeleteClick}>
+                  <DropdownItem
+                    key="delete"
+                    ouiaId="action-delete"
+                    onClick={onDeleteClick}
+                  >
                     {t("common.delete")}
                   </DropdownItem>,
                 ]}
@@ -202,12 +208,14 @@ const InstancePage = (): JSX.Element => {
           >
             <Tab
               eventKey={0}
+              ouiaId="processors-overview"
               tabContentId="instance-page__tabs-processors"
               tabContentRef={processorsTabRef}
               title={<TabTitleText>{t("common.processors")}</TabTitleText>}
             />
             <Tab
               eventKey={1}
+              ouiaId="access-overview"
               tabContentId="instance-page__tabs-access"
               tabContentRef={accessTabRef}
               title={<TabTitleText>{t("common.access")}</TabTitleText>}
@@ -218,6 +226,7 @@ const InstancePage = (): JSX.Element => {
           <TabContent
             eventKey={0}
             id="instance-page__tabs-processors"
+            ouiaId="processors-content"
             ref={processorsTabRef}
             aria-label="Processors tab"
           >
@@ -243,6 +252,7 @@ const InstancePage = (): JSX.Element => {
           <TabContent
             eventKey={1}
             id="instance-page__tabs-access"
+            ouiaId="access-content"
             ref={accessTabRef}
             aria-label="Access tab"
             hidden

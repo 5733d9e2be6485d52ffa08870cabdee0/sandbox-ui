@@ -6,7 +6,7 @@ import {
 import { useState } from "react";
 
 export function useGetProcessorsApi(
-  accessToken: string,
+  getToken: () => Promise<string>,
   basePath: string
 ): {
   listProcessors: (
@@ -35,7 +35,7 @@ export function useGetProcessorsApi(
   ): Promise<void> => {
     const processorsApi = new ProcessorsApi(
       new Configuration({
-        accessToken,
+        accessToken: getToken,
         basePath,
       })
     );

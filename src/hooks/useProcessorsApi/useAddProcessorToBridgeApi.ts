@@ -7,7 +7,7 @@ import {
 import { useState } from "react";
 
 export function useAddProcessorToBridgeApi(
-  accessToken: string,
+  getToken: () => Promise<string>,
   basePath: string
 ): {
   addProcessorToBridge: (
@@ -28,7 +28,7 @@ export function useAddProcessorToBridgeApi(
   ): Promise<void> => {
     const processorsApi = new ProcessorsApi(
       new Configuration({
-        accessToken,
+        accessToken: getToken,
         basePath,
       })
     );

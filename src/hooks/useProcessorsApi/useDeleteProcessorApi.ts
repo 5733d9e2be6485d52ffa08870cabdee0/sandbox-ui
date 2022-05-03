@@ -2,7 +2,7 @@ import { Configuration, ProcessorsApi } from "@openapi/generated";
 import { useState } from "react";
 
 export function useDeleteProcessorApi(
-  accessToken: string,
+  getToken: () => Promise<string>,
   basePath: string
 ): {
   deleteProcessor: (bridgeId: string, processorId: string) => Promise<void>;
@@ -18,7 +18,7 @@ export function useDeleteProcessorApi(
   ): Promise<void> => {
     const processorsApi = new ProcessorsApi(
       new Configuration({
-        accessToken,
+        accessToken: getToken,
         basePath,
       })
     );

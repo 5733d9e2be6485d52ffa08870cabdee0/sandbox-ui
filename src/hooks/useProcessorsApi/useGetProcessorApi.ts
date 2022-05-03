@@ -6,7 +6,7 @@ import {
 import { useState } from "react";
 
 export function useGetProcessorApi(
-  accessToken: string,
+  getToken: () => Promise<string>,
   basePath: string
 ): {
   getProcessor: (bridgeId: string, processorId: string) => Promise<void>;
@@ -24,7 +24,7 @@ export function useGetProcessorApi(
   ): Promise<void> => {
     const processorsApi = new ProcessorsApi(
       new Configuration({
-        accessToken,
+        accessToken: getToken,
         basePath,
       })
     );

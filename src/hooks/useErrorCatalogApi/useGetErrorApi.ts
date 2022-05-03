@@ -6,7 +6,7 @@ import {
 import { useState } from "react";
 
 export function useGetErrorApi(
-  accessToken: string,
+  getToken: () => Promise<string>,
   basePath: string
 ): {
   getError: (errorId: number) => Promise<void>;
@@ -22,7 +22,7 @@ export function useGetErrorApi(
   const getError = async (errorId: number): Promise<void> => {
     const errorCatalogApi = new ErrorCatalogApi(
       new Configuration({
-        accessToken,
+        accessToken: getToken,
         basePath,
       })
     );

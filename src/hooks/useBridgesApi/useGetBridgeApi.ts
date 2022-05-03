@@ -6,7 +6,7 @@ import {
 import { useState } from "react";
 
 export function useGetBridgeApi(
-  accessToken: string,
+  getToken: () => Promise<string>,
   basePath: string
 ): {
   getBridge: (bridgeId: string) => Promise<void>;
@@ -21,7 +21,7 @@ export function useGetBridgeApi(
   const getBridge = async (bridgeId: string): Promise<void> => {
     const bridgeApi = new BridgesApi(
       new Configuration({
-        accessToken,
+        accessToken: getToken,
         basePath,
       })
     );

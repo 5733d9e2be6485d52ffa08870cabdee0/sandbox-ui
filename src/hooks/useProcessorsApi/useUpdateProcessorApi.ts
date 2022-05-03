@@ -7,7 +7,7 @@ import {
 import { useState } from "react";
 
 export function useUpdateProcessorApi(
-  accessToken: string,
+  getToken: () => Promise<string>,
   basePath: string
 ): {
   updateProcessor: (
@@ -30,7 +30,7 @@ export function useUpdateProcessorApi(
   ): Promise<void> => {
     const processorsApi = new ProcessorsApi(
       new Configuration({
-        accessToken,
+        accessToken: getToken,
         basePath,
       })
     );

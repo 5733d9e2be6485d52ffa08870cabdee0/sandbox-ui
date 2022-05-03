@@ -2,7 +2,7 @@ import { BridgesApi, Configuration } from "@openapi/generated";
 import { useState } from "react";
 
 export function useDeleteBridgeApi(
-  accessToken: string,
+  getToken: () => Promise<string>,
   basePath: string
 ): {
   deleteBridge: (bridgeId: string) => Promise<void>;
@@ -15,7 +15,7 @@ export function useDeleteBridgeApi(
   const deleteBridge = async (bridgeId: string): Promise<void> => {
     const bridgeApi = new BridgesApi(
       new Configuration({
-        accessToken,
+        accessToken: getToken,
         basePath,
       })
     );

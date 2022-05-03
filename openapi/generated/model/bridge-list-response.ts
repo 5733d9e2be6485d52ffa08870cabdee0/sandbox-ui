@@ -18,37 +18,37 @@ import { BridgeResponse } from './bridge-response';
 /**
  * 
  * @export
- * @interface InlineResponse200
+ * @interface BridgeListResponse
  */
-export interface InlineResponse200 {
+export interface BridgeListResponse {
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse200
+     * @memberof BridgeListResponse
      */
     'kind'?: string;
     /**
      * 
      * @type {Array<BridgeResponse>}
-     * @memberof InlineResponse200
+     * @memberof BridgeListResponse
      */
     'items'?: Array<BridgeResponse>;
     /**
      * 
      * @type {number}
-     * @memberof InlineResponse200
+     * @memberof BridgeListResponse
      */
     'page'?: number;
     /**
      * 
      * @type {number}
-     * @memberof InlineResponse200
+     * @memberof BridgeListResponse
      */
     'size'?: number;
     /**
      * 
      * @type {number}
-     * @memberof InlineResponse200
+     * @memberof BridgeListResponse
      */
     'total'?: number;
 }

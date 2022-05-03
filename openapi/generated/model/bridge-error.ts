@@ -18,31 +18,31 @@ import { BridgeErrorType } from './bridge-error-type';
 /**
  * 
  * @export
- * @interface InlineResponse2003
+ * @interface BridgeError
  */
-export interface InlineResponse2003 {
+export interface BridgeError {
     /**
      * 
      * @type {number}
-     * @memberof InlineResponse2003
+     * @memberof BridgeError
      */
     'id'?: number;
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse2003
+     * @memberof BridgeError
      */
     'code'?: string;
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse2003
+     * @memberof BridgeError
      */
     'reason'?: string;
     /**
      * 
      * @type {BridgeErrorType}
-     * @memberof InlineResponse2003
+     * @memberof BridgeError
      */
     'type'?: BridgeErrorType;
 }

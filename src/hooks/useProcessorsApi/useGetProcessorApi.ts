@@ -3,7 +3,7 @@ import {
   ProcessorResponse,
   ProcessorsApi,
 } from "@openapi/generated";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export function useGetProcessorApi(
   getToken: () => Promise<string>,
@@ -18,22 +18,22 @@ export function useGetProcessorApi(
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 
-  const getProcessor = async (
-    bridgeId: string,
-    processorId: string
-  ): Promise<void> => {
-    const processorsApi = new ProcessorsApi(
-      new Configuration({
-        accessToken: getToken,
-        basePath,
-      })
-    );
-    await processorsApi
-      .getProcessor(bridgeId, processorId)
-      .then((response) => setProcessor(response.data))
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
-  };
+  const getProcessor = useCallback(
+    async (bridgeId: string, processorId: string): Promise<void> => {
+      const processorsApi = new ProcessorsApi(
+        new Configuration({
+          accessToken: getToken,
+          basePath,
+        })
+      );
+      await processorsApi
+        .getProcessor(bridgeId, processorId)
+        .then((response) => setProcessor(response.data))
+        .catch((err) => setError(err))
+        .finally(() => setIsLoading(false));
+    },
+    [getToken, basePath]
+  );
 
   return { getProcessor, isLoading, processor, error };
 }

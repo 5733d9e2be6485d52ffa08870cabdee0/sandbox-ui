@@ -105,7 +105,7 @@ const InstancePage = (): JSX.Element => {
 
   const processorsOverviewRows = [
     {
-      id: "ab65ec62-1f23-4dd7-b106-e4158baf8228",
+      id: "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
       type: "sink",
       name: "Processor one",
       status: "ready",

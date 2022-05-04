@@ -77,7 +77,9 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                 {Object.keys(processor.source.parameters).map(
                   (key): JSX.Element => (
                     <DescriptionListGroup key={key}>
-                      <DescriptionListTerm>Demo parameter</DescriptionListTerm>
+                      <DescriptionListTerm>
+                        {t(`processor.${key}`)}
+                      </DescriptionListTerm>
                       <DescriptionListDescription>
                         {processor.source.parameters[key]}
                       </DescriptionListDescription>
@@ -97,31 +99,39 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
             </TextContent>
           </StackItem>
           <StackItem>
-            <TableComposable
-              variant={"compact"}
-              borders={true}
-              className="processor-detail__filters"
-              data-ouia-component-id={"filters"}
-            >
-              <Thead>
-                <Tr>
-                  <Th>{t("common.key")}</Th>
-                  <Th>{t("common.type")}</Th>
-                  <Th>{t("common.value")}</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {processor.filters?.map(
-                  (filter): JSX.Element => (
-                    <Tr key={filter.key}>
-                      <Td>{filter.key}</Td>
-                      <Td>{t(`processor.${filter.type}`)}</Td>
-                      <Td>{filter.value}</Td>
-                    </Tr>
-                  )
-                )}
-              </Tbody>
-            </TableComposable>
+            {processor.filters?.length ? (
+              <TableComposable
+                variant={"compact"}
+                borders={true}
+                className="processor-detail__filters"
+                data-ouia-component-id={"filters"}
+              >
+                <Thead>
+                  <Tr>
+                    <Th>{t("common.key")}</Th>
+                    <Th>{t("common.type")}</Th>
+                    <Th>{t("common.value")}</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {processor.filters?.map(
+                    (filter): JSX.Element => (
+                      <Tr key={filter.key}>
+                        <Td>{filter.key}</Td>
+                        <Td>{t(`processor.${filter.type}`)}</Td>
+                        <Td>{filter.value}</Td>
+                      </Tr>
+                    )
+                  )}
+                </Tbody>
+              </TableComposable>
+            ) : (
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  {t("processor.noFilters")}
+                </Text>
+              </TextContent>
+            )}
           </StackItem>
         </Stack>
       </PageSection>
@@ -134,18 +144,32 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
               </Text>
             </TextContent>
           </StackItem>
-          <StackItem>
-            <TextContent>
-              <Text component={TextVariants.p}>
-                {t("processor.transformationTemplate")}
-              </Text>
-            </TextContent>
-          </StackItem>
-          <StackItem>
-            <CodeBlock className="processor-detail__transformation-template">
-              <CodeBlockCode>{processor.transformationTemplate}</CodeBlockCode>
-            </CodeBlock>
-          </StackItem>
+          {processor.transformationTemplate ? (
+            <>
+              <StackItem>
+                <TextContent>
+                  <Text component={TextVariants.p}>
+                    {t("processor.transformationTemplate")}
+                  </Text>
+                </TextContent>
+              </StackItem>
+              <StackItem>
+                <CodeBlock className="processor-detail__transformation-template">
+                  <CodeBlockCode>
+                    {processor.transformationTemplate}
+                  </CodeBlockCode>
+                </CodeBlock>
+              </StackItem>
+            </>
+          ) : (
+            <StackItem>
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  {t("processor.noTransformationTemplate")}
+                </Text>
+              </TextContent>
+            </StackItem>
+          )}
         </Stack>
       </PageSection>
       {processor.type === "sink" && (

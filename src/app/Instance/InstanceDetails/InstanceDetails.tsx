@@ -39,14 +39,14 @@ export const InstanceDetails = ({
         <Stack>
           <StackItem>
             <TextContent>
-              <Text ouiaId="detail-label" component="small">
+              <Text ouiaId="instance-details-name-label" component="small">
                 {t("common.name")}
               </Text>
             </TextContent>
           </StackItem>
           <StackItem>
             <TextContent>
-              <Text ouiaId="instance-name" component="h2">
+              <Text ouiaId="instance-details-name" component="h2">
                 {instance.name}
               </Text>
             </TextContent>
@@ -55,7 +55,7 @@ export const InstanceDetails = ({
         <DrawerActions>
           <DrawerCloseButton
             onClick={onClosingDetails}
-            data-ouia-component-id="close-detail"
+            data-ouia-component-id="close-instance-details"
           />
         </DrawerActions>
       </DrawerHead>

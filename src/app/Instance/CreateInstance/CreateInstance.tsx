@@ -87,7 +87,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         </Button>,
         <Button
           key="cancel"
-          ouiaId="cancel-modal"
+          ouiaId="cancel-instance-modal"
           variant="link"
           onClick={onClose}
         >
@@ -105,7 +105,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         >
           <TextInput
             isRequired
-            ouiaId="instance-name"
+            ouiaId="new-instance-name"
             type="text"
             maxLength={255}
             id="instance-name"
@@ -119,7 +119,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         <AlertGroup>
           <Alert
             variant="info"
-            ouiaId="info-available-soon"
+            ouiaId="info-instance-available-soon"
             isInline={true}
             isPlain={true}
             title={t("instance.instanceWillBeAvailableShortly")}

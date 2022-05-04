@@ -180,7 +180,7 @@ const InstancePage = (): JSX.Element => {
                 dropdownItems={[
                   <DropdownItem
                     key="details"
-                    ouiaId="action-details"
+                    ouiaId="instance-details"
                     onClick={(): void => {
                       setShowInstanceDrawer(true);
                     }}
@@ -189,7 +189,7 @@ const InstancePage = (): JSX.Element => {
                   </DropdownItem>,
                   <DropdownItem
                     key="delete"
-                    ouiaId="action-delete"
+                    ouiaId="delete-instance"
                     onClick={onDeleteClick}
                   >
                     {t("common.delete")}
@@ -202,20 +202,21 @@ const InstancePage = (): JSX.Element => {
         <PageSection variant={PageSectionVariants.light} type="tabs">
           <Tabs
             className="instance-page__tabs"
+            ouiaId="instance-details"
             usePageInsets
             activeKey={activeTabKey}
             onSelect={handleTabClick}
           >
             <Tab
               eventKey={0}
-              ouiaId="processors-overview"
+              ouiaId="processors"
               tabContentId="instance-page__tabs-processors"
               tabContentRef={processorsTabRef}
               title={<TabTitleText>{t("common.processors")}</TabTitleText>}
             />
             <Tab
               eventKey={1}
-              ouiaId="access-overview"
+              ouiaId="access"
               tabContentId="instance-page__tabs-access"
               tabContentRef={accessTabRef}
               title={<TabTitleText>{t("common.access")}</TabTitleText>}

@@ -1,6 +1,6 @@
 import {
   Configuration,
-  InlineResponse2021,
+  ProcessorResponse,
   ProcessorRequest,
   ProcessorsApi,
 } from "@openapi/generated";
@@ -15,11 +15,11 @@ export function useUpdateProcessorApi(
     processorId: string,
     processorRequest: ProcessorRequest
   ) => Promise<void>;
-  processor?: InlineResponse2021;
+  processor?: ProcessorResponse;
   isLoading: boolean;
   error: unknown;
 } {
-  const [processor, setProcessor] = useState<InlineResponse2021>();
+  const [processor, setProcessor] = useState<ProcessorResponse>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 

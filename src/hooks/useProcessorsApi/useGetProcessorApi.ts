@@ -1,6 +1,6 @@
 import {
   Configuration,
-  InlineResponse2021,
+  ProcessorResponse,
   ProcessorsApi,
 } from "@openapi/generated";
 import { useState } from "react";
@@ -10,11 +10,11 @@ export function useGetProcessorApi(
   basePath: string
 ): {
   getProcessor: (bridgeId: string, processorId: string) => Promise<void>;
-  processor?: InlineResponse2021;
+  processor?: ProcessorResponse;
   isLoading: boolean;
   error: unknown;
 } {
-  const [processor, setProcessor] = useState<InlineResponse2021>();
+  const [processor, setProcessor] = useState<ProcessorResponse>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 

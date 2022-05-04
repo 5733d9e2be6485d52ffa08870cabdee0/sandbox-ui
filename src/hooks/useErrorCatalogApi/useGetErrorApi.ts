@@ -1,7 +1,7 @@
 import {
+  BridgeError,
   Configuration,
   ErrorCatalogApi,
-  InlineResponse2003,
 } from "@openapi/generated";
 import { useState } from "react";
 
@@ -10,12 +10,12 @@ export function useGetErrorApi(
   basePath: string
 ): {
   getError: (errorId: number) => Promise<void>;
-  error?: InlineResponse2003;
+  error?: BridgeError;
   // Error thrown during API call
   caughtError?: unknown;
   isLoading: boolean;
 } {
-  const [error, setError] = useState<InlineResponse2003>();
+  const [error, setError] = useState<BridgeError>();
   const [caughtError, setCaughtError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 

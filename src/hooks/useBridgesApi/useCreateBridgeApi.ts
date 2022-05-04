@@ -2,7 +2,7 @@ import {
   BridgeRequest,
   BridgesApi,
   Configuration,
-  InlineResponse202,
+  BridgeResponse,
 } from "@openapi/generated";
 import { useState } from "react";
 
@@ -11,11 +11,11 @@ export function useCreateBridgeApi(
   basePath: string
 ): {
   createBridge: (bridgeRequest: BridgeRequest) => Promise<void>;
-  bridge?: InlineResponse202;
+  bridge?: BridgeResponse;
   isLoading: boolean;
   error: unknown;
 } {
-  const [bridge, setBridge] = useState<InlineResponse202>();
+  const [bridge, setBridge] = useState<BridgeResponse>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 

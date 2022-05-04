@@ -1,8 +1,4 @@
-import {
-  BridgesApi,
-  Configuration,
-  BridgeListResponse,
-} from "@openapi/generated";
+import { BridgesApi, Configuration, BridgeResponse } from "@openapi/generated";
 import { useState } from "react";
 
 export function useGetBridgesApi(
@@ -10,7 +6,7 @@ export function useGetBridgesApi(
   basePath: string
 ): {
   getBridges: (pageReq?: number, sizeReq?: number) => Promise<void>;
-  bridges?: BridgeListResponse[];
+  bridges?: BridgeResponse[];
   page?: number;
   size?: number;
   total?: number;
@@ -20,7 +16,7 @@ export function useGetBridgesApi(
   const [page, setPage] = useState<number>();
   const [size, setSize] = useState<number>();
   const [total, setTotal] = useState<number>();
-  const [bridges, setBridges] = useState<BridgeListResponse[]>();
+  const [bridges, setBridges] = useState<BridgeResponse[]>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 

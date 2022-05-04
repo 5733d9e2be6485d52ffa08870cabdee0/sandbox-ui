@@ -1,6 +1,6 @@
 import {
   Configuration,
-  ProcessorListResponse,
+  ProcessorResponse,
   ProcessorsApi,
 } from "@openapi/generated";
 import { useState } from "react";
@@ -14,7 +14,7 @@ export function useGetProcessorsApi(
     pageReq?: number,
     sizeReq?: number
   ) => Promise<void>;
-  processors?: ProcessorListResponse[];
+  processors?: ProcessorResponse[];
   page?: number;
   size?: number;
   total?: number;
@@ -24,7 +24,7 @@ export function useGetProcessorsApi(
   const [page, setPage] = useState<number>();
   const [size, setSize] = useState<number>();
   const [total, setTotal] = useState<number>();
-  const [processors, setProcessors] = useState<ProcessorListResponse[]>();
+  const [processors, setProcessors] = useState<ProcessorResponse[]>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 

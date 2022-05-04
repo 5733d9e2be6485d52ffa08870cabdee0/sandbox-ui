@@ -6,7 +6,7 @@ import {
   BridgeRequest,
   ProcessorRequest,
   ProcessorResponse,
-} from "../openapi/generated";
+} from "@openapi/generated";
 import { v4 as uuid } from "uuid";
 import { instancesData, processorData } from "./data";
 import { omit } from "lodash";
@@ -34,6 +34,7 @@ const db = factory({
   processor: {
     id: primaryKey(String),
     bridge: oneOf("bridge"),
+    type: String,
     kind: String,
     name: String,
     href: String,
@@ -47,6 +48,13 @@ const db = factory({
       parameters: {
         channel: String,
         webhookUrl: String,
+      },
+    },
+    source: {
+      type: String,
+      parameters: {
+        channel: String,
+        token: String,
       },
     },
   },
@@ -337,7 +345,7 @@ export const handlers = [
   // create a processor
   rest.post(`${apiUrl}/bridges/:bridgeId/processors`, (req, res, ctx) => {
     const { bridgeId } = req.params;
-    const { name, transformationTemplate, filters, action } =
+    const { name, transformationTemplate, filters, action, source } =
       req.body as MockProcessorRequest;
 
     const bridge = db.bridge.findFirst({
@@ -396,7 +404,8 @@ export const handlers = [
       status: "accepted",
       filters: filters,
       transformationTemplate,
-      action,
+      ...(action ? { action } : {}),
+      ...(source ? { source } : {}),
       bridge,
     };
 
@@ -610,6 +619,12 @@ const cleanupProcessor = (
   }
   if (processor.transformationTemplate === "") {
     omitProperties.push("transformationTemplate");
+  }
+
+  if (processor.type === "source") {
+    omitProperties.push("action");
+  } else {
+    omitProperties.push("source");
   }
 
   return omit(processor, omitProperties);

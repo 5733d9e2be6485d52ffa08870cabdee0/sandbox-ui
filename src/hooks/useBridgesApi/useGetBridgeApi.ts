@@ -1,5 +1,5 @@
 import { BridgesApi, Configuration, BridgeResponse } from "@openapi/generated";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export function useGetBridgeApi(
   getToken: () => Promise<string>,
@@ -14,19 +14,22 @@ export function useGetBridgeApi(
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
 
-  const getBridge = async (bridgeId: string): Promise<void> => {
-    const bridgeApi = new BridgesApi(
-      new Configuration({
-        accessToken: getToken,
-        basePath,
-      })
-    );
-    await bridgeApi
-      .getBridge(bridgeId)
-      .then((response) => setBridge(response.data))
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
-  };
+  const getBridge = useCallback(
+    async (bridgeId: string): Promise<void> => {
+      const bridgeApi = new BridgesApi(
+        new Configuration({
+          accessToken: getToken,
+          basePath,
+        })
+      );
+      await bridgeApi
+        .getBridge(bridgeId)
+        .then((response) => setBridge(response.data))
+        .catch((err) => setError(err))
+        .finally(() => setIsLoading(false));
+    },
+    [getToken, basePath]
+  );
 
   return { getBridge, isLoading, bridge, error };
 }

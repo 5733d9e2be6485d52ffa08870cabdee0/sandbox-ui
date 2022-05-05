@@ -135,77 +135,81 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
           </StackItem>
         </Stack>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light}>
-        <Stack hasGutter={true}>
-          <StackItem>
-            <TextContent>
-              <Text component={TextVariants.h2}>
-                {t("processor.transformation")}
-              </Text>
-            </TextContent>
-          </StackItem>
-          {processor.transformationTemplate ? (
-            <>
+      {processor.type === "sink" && (
+        <>
+          <PageSection variant={PageSectionVariants.light}>
+            <Stack hasGutter={true}>
               <StackItem>
                 <TextContent>
-                  <Text component={TextVariants.p}>
-                    {t("processor.transformationTemplate")}
+                  <Text component={TextVariants.h2}>
+                    {t("processor.transformation")}
+                  </Text>
+                </TextContent>
+              </StackItem>
+              {processor.transformationTemplate ? (
+                <>
+                  <StackItem>
+                    <TextContent>
+                      <Text component={TextVariants.p}>
+                        {t("processor.transformationTemplate")}
+                      </Text>
+                    </TextContent>
+                  </StackItem>
+                  <StackItem>
+                    <CodeBlock className="processor-detail__transformation-template">
+                      <CodeBlockCode>
+                        {processor.transformationTemplate}
+                      </CodeBlockCode>
+                    </CodeBlock>
+                  </StackItem>
+                </>
+              ) : (
+                <StackItem>
+                  <TextContent>
+                    <Text component={TextVariants.p}>
+                      {t("processor.noTransformationTemplate")}
+                    </Text>
+                  </TextContent>
+                </StackItem>
+              )}
+            </Stack>
+          </PageSection>
+          <PageSection variant={PageSectionVariants.light}>
+            <Stack hasGutter={true}>
+              <StackItem>
+                <TextContent>
+                  <Text component={TextVariants.h2}>
+                    {t("processor.action")}
                   </Text>
                 </TextContent>
               </StackItem>
               <StackItem>
-                <CodeBlock className="processor-detail__transformation-template">
-                  <CodeBlockCode>
-                    {processor.transformationTemplate}
-                  </CodeBlockCode>
-                </CodeBlock>
+                <DescriptionList>
+                  <DescriptionListGroup key="action-type">
+                    <DescriptionListTerm>
+                      {t("processor.actionType")}
+                    </DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {t(`processor.actions.${processor.action.type}`)}
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                  {Object.keys(processor.action.parameters).map(
+                    (key): JSX.Element => (
+                      <DescriptionListGroup key={key}>
+                        <DescriptionListTerm>
+                          {t(`processor.${key}`)}
+                        </DescriptionListTerm>
+                        <DescriptionListDescription>
+                          {processor.action.parameters[key]}
+                        </DescriptionListDescription>
+                      </DescriptionListGroup>
+                    )
+                  )}
+                </DescriptionList>
               </StackItem>
-            </>
-          ) : (
-            <StackItem>
-              <TextContent>
-                <Text component={TextVariants.p}>
-                  {t("processor.noTransformationTemplate")}
-                </Text>
-              </TextContent>
-            </StackItem>
-          )}
-        </Stack>
-      </PageSection>
-      {processor.type === "sink" && (
-        <PageSection variant={PageSectionVariants.light}>
-          <Stack hasGutter={true}>
-            <StackItem>
-              <TextContent>
-                <Text component={TextVariants.h2}>{t("processor.action")}</Text>
-              </TextContent>
-            </StackItem>
-            <StackItem>
-              <DescriptionList>
-                <DescriptionListGroup key="action-type">
-                  <DescriptionListTerm>
-                    {t("processor.actionType")}
-                  </DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {t(`processor.actions.${processor.action.type}`)}
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-                {Object.keys(processor.action.parameters).map(
-                  (key): JSX.Element => (
-                    <DescriptionListGroup key={key}>
-                      <DescriptionListTerm>
-                        {t(`processor.${key}`)}
-                      </DescriptionListTerm>
-                      <DescriptionListDescription>
-                        {processor.action.parameters[key]}
-                      </DescriptionListDescription>
-                    </DescriptionListGroup>
-                  )
-                )}
-              </DescriptionList>
-            </StackItem>
-          </Stack>
-        </PageSection>
+            </Stack>
+          </PageSection>
+        </>
       )}
     </>
   );

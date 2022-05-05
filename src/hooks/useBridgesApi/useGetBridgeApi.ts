@@ -1,11 +1,10 @@
 import { BridgesApi, Configuration, BridgeResponse } from "@openapi/generated";
 import { useCallback, useState } from "react";
+import { useAuth } from "@rhoas/app-services-ui-shared";
+import config from "../../../config/config";
 
-export function useGetBridgeApi(
-  getToken: () => Promise<string>,
-  basePath: string
-): {
-  getBridge: (bridgeId: string) => Promise<void>;
+export function useGetBridgeApi(): {
+  getBridge: (bridgeId: string) => void;
   bridge?: BridgeResponse;
   isLoading: boolean;
   error: unknown;
@@ -13,22 +12,27 @@ export function useGetBridgeApi(
   const [bridge, setBridge] = useState<BridgeResponse>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
+  const auth = useAuth();
+
+  const getToken = useCallback(async (): Promise<string> => {
+    return (await auth.kas.getToken()) || "";
+  }, [auth]);
 
   const getBridge = useCallback(
-    async (bridgeId: string): Promise<void> => {
+    (bridgeId: string): void => {
       const bridgeApi = new BridgesApi(
         new Configuration({
           accessToken: getToken,
-          basePath,
+          basePath: config.apiBasePath,
         })
       );
-      await bridgeApi
+      bridgeApi
         .getBridge(bridgeId)
         .then((response) => setBridge(response.data))
         .catch((err) => setError(err))
         .finally(() => setIsLoading(false));
     },
-    [getToken, basePath]
+    [getToken]
   );
 
   return { getBridge, isLoading, bridge, error };

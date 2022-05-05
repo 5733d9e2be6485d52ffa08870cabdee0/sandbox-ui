@@ -69,7 +69,7 @@ describe("ProcessorDetail component", () => {
 
     expect(
       comp.queryByText(sourceProcessor.transformationTemplate as string)
-    ).toBeInTheDocument();
+    ).not.toBeInTheDocument();
 
     expect(comp.queryByText("Demo source")).toBeInTheDocument();
     expect(

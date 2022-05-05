@@ -18,13 +18,11 @@ import ProcessorDetail from "@app/Processor/ProcessorDetail/ProcessorDetail";
 import { CaretDownIcon } from "@patternfly/react-icons";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import StatusLabel from "@app/components/StatusLabel/StatusLabel";
-import { useAuth } from "@rhoas/app-services-ui-shared";
 import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
 import { useGetProcessorApi } from "../../../hooks/useProcessorsApi/useGetProcessorApi";
 import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
 import { Processor } from "../../../types/Processor";
 import ProcessorDetailSkeleton from "@app/Processor/ProcessorDetail/ProcessorDetailSkeleton";
-import config from "../../../../config/config";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
@@ -54,20 +52,15 @@ const ProcessorDetailPage = (): JSX.Element => {
     </DropdownItem>,
   ];
 
-  const auth = useAuth();
-  const getToken = useCallback(async (): Promise<string> => {
-    return (await auth.kas.getToken()) || "";
-  }, [auth]);
-
   const {
     getBridge,
     bridge,
     isLoading: isBridgeLoading,
     error: bridgeError,
-  } = useGetBridgeApi(getToken, config.apiBasePath);
+  } = useGetBridgeApi();
 
   useEffect(() => {
-    void getBridge(instanceId);
+    getBridge(instanceId);
   }, [getBridge, instanceId]);
 
   const {
@@ -75,10 +68,10 @@ const ProcessorDetailPage = (): JSX.Element => {
     processor,
     isLoading: isProcessorLoading,
     error: processorError,
-  } = useGetProcessorApi(getToken, config.apiBasePath);
+  } = useGetProcessorApi();
 
   useEffect(() => {
-    void getProcessor(instanceId, processorId);
+    getProcessor(instanceId, processorId);
   }, [getProcessor, instanceId, processorId]);
 
   useEffect(() => {

@@ -10,14 +10,20 @@ import {
   Stack,
   StackItem,
 } from "@patternfly/react-core";
+import { useTranslation } from "react-i18next";
 
 const ProcessorDetailSkeleton = (): JSX.Element => {
+  const { t } = useTranslation(["openbridgeTempDictionary"]);
+
   return (
     <>
       <PageSection variant={PageSectionVariants.light}>
         <Stack hasGutter={true}>
           <StackItem>
-            <Skeleton width="150px" screenreaderText="Loading processor type" />
+            <Skeleton
+              width="150px"
+              screenreaderText={t("processor.loadingProcessorType")}
+            />
           </StackItem>
           <StackItem>
             <Skeleton width="80px" />

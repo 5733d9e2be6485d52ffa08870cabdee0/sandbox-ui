@@ -54,6 +54,7 @@
     "filters": "Filters",
     "generalInformation": "General information",
     "loadingProcessor": "Loading processor",
+    "loadingProcessorType": "Loading processor type",
     "noFilters": "No filters configured",
     "noTransformationTemplate": "No template configured",
     "processorName": "Processor name",

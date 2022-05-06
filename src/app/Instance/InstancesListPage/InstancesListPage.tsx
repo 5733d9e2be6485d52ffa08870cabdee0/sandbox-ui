@@ -1,14 +1,18 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
   Drawer,
   DrawerContent,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
   PageSection,
   PageSectionVariants,
   Skeleton,
   Text,
   TextContent,
+  Title,
 } from "@patternfly/react-core";
 import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
@@ -24,6 +28,7 @@ import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
 import StatusLabel from "@app/components/StatusLabel/StatusLabel";
 import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
+import { PlusCircleIcon } from "@patternfly/react-icons";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -70,25 +75,22 @@ const InstancesListPage = (): JSX.Element => {
     },
   ];
 
-  const { bridges, isLoading, getBridges, error } = useGetBridgesApi();
+  const { bridgeListResponse, isLoading, getBridges, error } =
+    useGetBridgesApi();
 
-  const callGetBridges = useCallback(() => {
-    getBridges(currentPage, currentPageSize)
-      .then((result) => {
-        if (result) {
-          setCurrentPageSize(result.size);
-          setCurrentPage(result.page);
-          setTotalRows(result.total);
-        }
-      })
-      .catch((error) => console.error(error));
-  }, [currentPage, currentPageSize, getBridges]);
-
-  usePolling(() => callGetBridges(), 10000);
+  usePolling(() => getBridges(currentPage, currentPageSize), 10000);
 
   useEffect(() => {
-    callGetBridges();
-  }, [callGetBridges]);
+    getBridges(FIRST_PAGE, DEFAULT_PAGE_SIZE);
+  }, [getBridges]);
+
+  useEffect(() => {
+    if (bridgeListResponse) {
+      setCurrentPageSize(bridgeListResponse.size ?? DEFAULT_PAGE_SIZE);
+      setCurrentPage(bridgeListResponse.page ?? FIRST_PAGE);
+      setTotalRows(bridgeListResponse.total ?? 0);
+    }
+  }, [bridgeListResponse]);
 
   useEffect(() => {
     if (error) {
@@ -101,7 +103,7 @@ const InstancesListPage = (): JSX.Element => {
   const pageContent = (
     <>
       {isLoading && <Skeleton />}
-      {bridges && (
+      {!isLoading && bridgeListResponse?.items && (
         <>
           <PageSection variant={PageSectionVariants.light}>
             <TextContent>
@@ -133,20 +135,31 @@ const InstancesListPage = (): JSX.Element => {
                 setSelectedInstance(rowData as unknown as Instance);
                 setShowInstanceDrawer(true);
               }}
-              rows={bridges}
+              rows={bridgeListResponse.items}
               totalRows={totalRows}
               pageNumber={currentPage}
               pageSize={currentPageSize}
               onPaginationChange={(pageNumber, pageSize): void => {
-                setCurrentPage(
-                  pageSize === currentPageSize ? pageNumber : FIRST_PAGE
+                getBridges(
+                  pageSize === currentPageSize ? pageNumber : FIRST_PAGE,
+                  pageSize
                 );
-                setCurrentPageSize(pageSize);
               }}
               tableLabel={t(
                 "openbridgeTempDictionary:instance.instancesListTable"
               )}
-            />
+            >
+              <EmptyState variant="large">
+                <EmptyStateIcon icon={PlusCircleIcon} />
+                <Title headingLevel="h4" size="lg">
+                  {t("instance.noInstances")}
+                </Title>
+                <EmptyStateBody>
+                  {/* @TODO Quick start guide link missing */}
+                  {t("common.quickStartAccess")}
+                </EmptyStateBody>
+              </EmptyState>
+            </TableWithPagination>
           </PageSection>
         </>
       )}

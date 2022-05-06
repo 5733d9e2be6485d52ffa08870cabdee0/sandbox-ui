@@ -30,6 +30,8 @@ interface TableWithPaginationProps {
   customToolbarElement?: React.ReactNode;
   /** Function executed when clicking on the "Details" action */
   onDetailsClick?: (rowData?: IRow) => void;
+  /** Element to be rendered when there are no rows to display */
+  children?: JSX.Element;
 }
 
 export const FIRST_PAGE = 0;
@@ -53,6 +55,7 @@ export const TableWithPagination: FunctionComponent<
   pageSize,
   onPaginationChange,
   tableLabel,
+  children,
 }) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
@@ -109,7 +112,9 @@ export const TableWithPagination: FunctionComponent<
         columns={columns}
         cssClasses="overview__table"
         rows={rows}
-      />
+      >
+        {children}
+      </Table>
       {getPagination(true)}
     </Card>
   );

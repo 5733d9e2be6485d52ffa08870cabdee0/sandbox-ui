@@ -34,12 +34,14 @@ interface TableProps {
   ariaLabel?: string;
   /** Columns to display */
   columns: TableColumn[];
-  /** list of additive css classes */
+  /** List of additive css classes */
   cssClasses?: string | string[];
   /** Collection of cells to render */
   rows: TableRow[];
   /** Style variant for the table */
   variant?: "compact";
+  /** Element to be rendered when there are no rows to display */
+  children?: JSX.Element;
 }
 
 export const Table: FunctionComponent<TableProps> = ({
@@ -49,6 +51,7 @@ export const Table: FunctionComponent<TableProps> = ({
   cssClasses,
   rows,
   variant,
+  children,
 }) => {
   const transformColumns = (columns: TableColumn[]): string[] => {
     return columns.map((column) => column.label);
@@ -86,20 +89,28 @@ export const Table: FunctionComponent<TableProps> = ({
           ))}
         </Tr>
       </Thead>
-      <Tbody>
-        {transformRows(rows, columns).map((row: TableRow, rowIndex) => (
-          <Tr key={(row.originalData?.id as string) ?? rowIndex}>
-            {row?.cells?.map((cell, cellIndex) => (
-              <Td key={cellIndex}>{cell}</Td>
-            ))}
-            {actionResolver && (
-              <Td className="pf-c-table__action">
-                <ActionsColumn items={actionResolver(row?.originalData)} />
-              </Td>
-            )}
+      {!rows.length && children ? (
+        <Tbody>
+          <Tr>
+            <Td colSpan={columns.length}>{children}</Td>
           </Tr>
-        ))}
-      </Tbody>
+        </Tbody>
+      ) : (
+        <Tbody>
+          {transformRows(rows, columns).map((row: TableRow, rowIndex) => (
+            <Tr key={(row.originalData?.id as string) ?? rowIndex}>
+              {row?.cells?.map((cell, cellIndex) => (
+                <Td key={cellIndex}>{cell}</Td>
+              ))}
+              {actionResolver && (
+                <Td className="pf-c-table__action">
+                  <ActionsColumn items={actionResolver(row?.originalData)} />
+                </Td>
+              )}
+            </Tr>
+          ))}
+        </Tbody>
+      )}
     </TableComposable>
   );
 };

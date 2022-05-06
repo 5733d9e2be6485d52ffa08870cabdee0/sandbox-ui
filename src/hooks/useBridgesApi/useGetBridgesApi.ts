@@ -13,9 +13,6 @@ export function useGetBridgesApi(): {
     sizeReq?: number
   ) => Promise<void | { page: number; size: number; total: number }>;
   bridges?: BridgeResponse[];
-  page?: number;
-  size?: number;
-  total?: number;
   isLoading: boolean;
   error: unknown;
 } {

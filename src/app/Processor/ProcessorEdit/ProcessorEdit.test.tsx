@@ -1,6 +1,6 @@
 import React from "react";
 import ProcessorEdit from "./ProcessorEdit";
-import { customRender, waitForI18n } from "../../../utils/testUtils";
+import { customRender, waitForI18n } from "@utils/testUtils";
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 
 const setupProcessorEdit = (): {
@@ -11,7 +11,7 @@ const setupProcessorEdit = (): {
   const onSave = jest.fn();
   const onCancel = jest.fn();
   const comp = customRender(
-    <ProcessorEdit onSave={onSave} onCancel={onCancel} />
+    <ProcessorEdit onSave={onSave} onCancel={onCancel} isLoading={false} />
   );
   return { comp, onSave, onCancel };
 };
@@ -107,14 +107,15 @@ describe("ProcessorEdit component", () => {
     expect(comp.queryByLabelText("Source configuration")).toBeInTheDocument();
     expect(comp.getByLabelText("Source configuration")).toBeDisabled();
     fireEvent.change(comp.getByLabelText("Source type"), {
-      target: { value: "demoSource" },
+      target: { value: "Slack" },
     });
 
     expect(
       (comp.getByLabelText("Source type") as HTMLSelectElement).value
-    ).toBe("demoSource");
+    ).toBe("Slack");
 
-    expect(comp.getByLabelText("Source configuration *")).toBeEnabled();
+    expect(comp.getByLabelText("Channel *")).toBeEnabled();
+    expect(comp.getByLabelText("Token *")).toBeEnabled();
   });
 
   it("displays action configuration parameters after action selection", async () => {

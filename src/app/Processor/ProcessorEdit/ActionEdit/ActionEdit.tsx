@@ -6,25 +6,23 @@ import {
   FormSelectOption,
   TextInput,
 } from "@patternfly/react-core";
-import { Action } from "../../../../../openapi/generated";
+import { Action } from "@openapi/generated";
+import { useValidationBase } from "@app/Processor/ProcessorEdit/useValidationBase";
+import { useValidateConfigParams } from "@app/Processor/ProcessorEdit/useValidateConfigParams";
+import { ConfigType } from "../../../../types/Processor";
 
 interface ActionEditProps {
   action?: Action;
   onChange: (action: Action) => void;
+  registerValidation: (validationFunction: () => boolean) => void;
 }
 
 const ActionEdit = (props: ActionEditProps): JSX.Element => {
-  const { action, onChange } = props;
+  const { action, onChange, registerValidation } = props;
   const [type, setType] = useState(action?.type ?? "");
   const [parameters, setParameters] = useState(action?.parameters ?? {});
-
-  const updateType = (type: string): void => {
-    setType(type);
-    onChange({
-      type,
-      parameters,
-    });
-  };
+  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { isRequired, isHTTPUrl } = useValidationBase();
 
   const updateConfiguration = (parameters: Action["parameters"]): void => {
     setParameters(parameters);
@@ -34,6 +32,104 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
     });
   };
 
+  const actionTypes: ConfigType[] = [
+    {
+      value: "",
+      label: t("processor.selectAction"),
+      isPlaceholder: true,
+      fields: [],
+    },
+    {
+      value: "KafkaTopic",
+      label: t("processor.actions.KafkaTopic"),
+      isPlaceholder: false,
+      fields: [
+        {
+          name: "topic",
+          label: t("common.kafkaTopic"),
+          validate: isRequired,
+        },
+      ],
+    },
+    {
+      value: "Webhook",
+      label: t("processor.actions.Webhook"),
+      isPlaceholder: false,
+      fields: [
+        {
+          name: "endpoint",
+          label: t("common.endpoint"),
+          validate: isHTTPUrl,
+        },
+      ],
+    },
+    {
+      value: "SendToBridge",
+      label: t("processor.actions.SendToBridge"),
+      isPlaceholder: false,
+      fields: [
+        {
+          name: "bridgeId",
+          label: t("instance.instanceId"),
+          validate: isRequired,
+        },
+      ],
+    },
+    {
+      value: "Slack",
+      label: t("processor.actions.Slack"),
+      isPlaceholder: false,
+      fields: [
+        {
+          name: "channel",
+          label: t("processor.channel"),
+          validate: isRequired,
+        },
+        {
+          name: "webhookUrl",
+          label: t("processor.webhookUrl"),
+          validate: isHTTPUrl,
+        },
+      ],
+    },
+  ];
+
+  const { validate, validation, resetValidation, validateField } =
+    useValidateConfigParams(action, actionTypes);
+
+  const updateType = (type: string): void => {
+    setType(type);
+    const emptyParameters: { [key: string]: string } = {};
+    switch (type) {
+      case "KafkaTopic":
+        emptyParameters.topic = "";
+        break;
+      case "Webhook":
+        emptyParameters.endpoint = "";
+        break;
+      case "SendToBridge":
+        emptyParameters.bridgeId = "";
+        break;
+      case "Slack":
+        emptyParameters.channel = "";
+        emptyParameters.webhookUrl = "";
+        break;
+    }
+    onChange({
+      type,
+      parameters: emptyParameters,
+    });
+    if (type) {
+      resetValidation("type");
+    }
+  };
+
+  useEffect(() => {
+    if (registerValidation) {
+      registerValidation(validate);
+    }
+  }, [validate, registerValidation]);
+
   useEffect(() => {
     if (action) {
       setType(action.type);
@@ -41,42 +137,15 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
     }
   }, [action]);
 
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
-
-  const actionTypes = [
-    {
-      value: "",
-      label: t("processor.selectAction"),
-      isPlaceholder: true,
-    },
-    {
-      value: "KafkaTopic",
-      label: t("processor.actions.KafkaTopic"),
-      isPlaceholder: false,
-    },
-    {
-      value: "Webhook",
-      label: t("processor.actions.Webhook"),
-      isPlaceholder: false,
-    },
-    {
-      value: "SendToBridge",
-      label: t("processor.actions.SendToBridge"),
-      isPlaceholder: false,
-    },
-    {
-      value: "Slack",
-      label: t("processor.actions.Slack"),
-      isPlaceholder: false,
-    },
-  ];
-
   return (
     <>
       <FormGroup
         fieldId={`action-type`}
         label={t("processor.actionType")}
         isRequired={true}
+        helperTextInvalid={validation.errors.type}
+        validated={validation.errors.type ? "error" : "default"}
+        className={validation.errors.type && "processor-field-error"}
       >
         <FormSelect
           id={`action-type`}
@@ -84,6 +153,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
           isRequired={true}
           value={type}
           onChange={(type: string): void => updateType(type)}
+          validated={validation.errors.type ? "error" : "default"}
         >
           {actionTypes.map((option, index) => (
             <FormSelectOption
@@ -109,114 +179,48 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
           />
         </FormGroup>
       )}
-      {type === "KafkaTopic" && (
-        <FormGroup
-          fieldId={`kafka-topic`}
-          label={t("common.kafkaTopic")}
-          isRequired={true}
-        >
-          <TextInput
-            type="text"
-            id="kafka-topic"
-            name="kafka-topic"
-            aria-describedby="kafka-topic"
-            isRequired={true}
-            value={parameters.topic}
-            onChange={(value: string): void => {
-              updateConfiguration({
-                ...parameters,
-                topic: value,
-              });
-            }}
-          />
-        </FormGroup>
-      )}
-      {type === "Webhook" && (
-        <FormGroup
-          fieldId={`webhook-endpoint`}
-          label={t("common.endpoint")}
-          isRequired={true}
-        >
-          <TextInput
-            type="url"
-            id="webhook-endpoint"
-            name="webhook-endpoint"
-            aria-describedby="webhook-endpoint"
-            isRequired={true}
-            value={parameters.endpoint}
-            onChange={(value: string): void => {
-              updateConfiguration({
-                ...parameters,
-                endpoint: value,
-              });
-            }}
-          />
-        </FormGroup>
-      )}
-      {type === "SendToBridge" && (
-        <FormGroup
-          fieldId={`bridge-id`}
-          label={t("instance.instanceId")}
-          isRequired={true}
-        >
-          <TextInput
-            type="text"
-            id="bridge-id"
-            name="bridge-id"
-            aria-describedby="bridge-id"
-            isRequired={true}
-            value={parameters.bridgeId}
-            onChange={(value: string): void => {
-              updateConfiguration({
-                ...parameters,
-                bridgeId: value,
-              });
-            }}
-          />
-        </FormGroup>
-      )}
-      {type === "Slack" && (
+      {type !== "" && (
         <>
-          <FormGroup
-            fieldId={`slack-channel`}
-            label={t("processor.channel")}
-            isRequired={true}
-          >
-            <TextInput
-              type="text"
-              id="slack-channel"
-              name="slack-channel"
-              aria-describedby="slack-channel"
-              isRequired={true}
-              value={parameters.channel}
-              onChange={(value: string): void => {
-                updateConfiguration({
-                  ...parameters,
-                  channel: value,
-                });
-              }}
-            />
-          </FormGroup>
-          <FormGroup
-            fieldId={`slack-webhook-url`}
-            label={t("processor.webhookUrl")}
-            isRequired={true}
-          >
-            <TextInput
-              type="url"
-              id="slack-webhook-url"
-              name="slack-webhook-url"
-              aria-describedby="slack-webhook-url"
-              isRequired={true}
-              value={parameters.webhookUrl}
-              onChange={(value: string): void => {
-                updateConfiguration({
-                  ...parameters,
-                  webhookUrl: value,
-                });
-              }}
-            />
-          </FormGroup>
+          {actionTypes
+            .find((actionType) => actionType.value === type)
+            ?.fields.map((field) => {
+              return (
+                <FormGroup
+                  key={field.name}
+                  fieldId={field.name}
+                  label={field.label}
+                  isRequired={true}
+                  helperTextInvalid={validation.errors[field.name]}
+                  validated={
+                    validation.errors[field.name] ? "error" : "default"
+                  }
+                  className={
+                    validation.errors[field.name] && "processor-field-error"
+                  }
+                >
+                  <TextInput
+                    type="text"
+                    id={field.name}
+                    name={field.name}
+                    aria-describedby={field.name}
+                    isRequired={true}
+                    value={parameters[field.name] ?? ""}
+                    validated={
+                      validation.errors[field.name] ? "error" : "default"
+                    }
+                    onChange={(value: string): void => {
+                      updateConfiguration({
+                        ...parameters,
+                        [field.name]: value,
+                      });
+                    }}
+                    onBlur={(): void => {
+                      validateField(type, field.name);
+                    }}
+                  />
+                </FormGroup>
+              );
+            })}
         </>
       )}
     </>

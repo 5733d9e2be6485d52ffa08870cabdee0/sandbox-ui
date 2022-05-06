@@ -1,4 +1,4 @@
-import { Action } from "../../openapi/generated";
+import { Action, Source } from "@openapi/generated";
 
 export type Processor = SinkProcessor | SourceProcessor;
 
@@ -9,7 +9,7 @@ export interface SinkProcessor extends BaseProcessor {
 
 export interface SourceProcessor extends BaseProcessor {
   type: "source";
-  source: BaseSource;
+  source: Source;
 }
 
 interface BaseProcessor {
@@ -25,9 +25,40 @@ export interface EventFilter {
   value: string;
 }
 
-export interface BaseSource {
+export interface ProcessorRequestData {
+  name: string;
   type: string;
-  parameters: {
+  action: Action;
+  transformationTemplate?: string;
+  filters?: EventFilter[];
+  source?: Source;
+}
+
+export interface ProcessorValidation {
+  isValid: boolean | undefined;
+  errors: {
     [key: string]: string;
   };
+}
+
+export interface ConfigType {
+  value: string;
+  label: string;
+  isPlaceholder: boolean;
+  fields: ConfigField[];
+}
+
+interface ConfigField {
+  name: string;
+  label: string;
+  validate: FieldValidateFunction;
+}
+
+interface FieldValidateFunction {
+  (value: string): FieldValidation;
+}
+
+export interface FieldValidation {
+  isValid: boolean;
+  errorMessage: string;
 }

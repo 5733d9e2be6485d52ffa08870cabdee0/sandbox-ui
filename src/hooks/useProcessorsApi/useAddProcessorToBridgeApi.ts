@@ -4,35 +4,40 @@ import {
   ProcessorRequest,
   ProcessorsApi,
 } from "@openapi/generated";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useAuth } from "@rhoas/app-services-ui-shared";
+import config from "../../../config/config";
 
-export function useAddProcessorToBridgeApi(
-  getToken: () => Promise<string>,
-  basePath: string
-): {
+export function useAddProcessorToBridgeApi(): {
   addProcessorToBridge: (
     bridgeId: string,
     processorRequest: ProcessorRequest
-  ) => Promise<void>;
+  ) => void;
   processor?: ProcessorResponse;
   isLoading: boolean;
   error: unknown;
 } {
   const [processor, setProcessor] = useState<ProcessorResponse>();
   const [error, setError] = useState<unknown>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const auth = useAuth();
 
-  const addProcessorToBridge = async (
+  const getToken = useCallback(async (): Promise<string> => {
+    return (await auth.kas.getToken()) || "";
+  }, [auth]);
+
+  const addProcessorToBridge = (
     bridgeId: string,
     processorRequest: ProcessorRequest
-  ): Promise<void> => {
+  ): void => {
     const processorsApi = new ProcessorsApi(
       new Configuration({
         accessToken: getToken,
-        basePath,
+        basePath: config.apiBasePath,
       })
     );
-    await processorsApi
+    setIsLoading(true);
+    processorsApi
       .addProcessorToBridge(bridgeId, processorRequest)
       .then((response) => setProcessor(response.data))
       .catch((err) => setError(err))

@@ -1,11 +1,17 @@
 import { BridgesApi, Configuration, BridgeResponse } from "@openapi/generated";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useAuth } from "@rhoas/app-services-ui-shared";
+import config from "config/config";
+import {
+  DEFAULT_PAGE_SIZE,
+  FIRST_PAGE,
+} from "@app/components/TableWithPagination/TableWithPagination";
 
-export function useGetBridgesApi(
-  getToken: () => Promise<string>,
-  basePath: string
-): {
-  getBridges: (pageReq?: number, sizeReq?: number) => Promise<void>;
+export function useGetBridgesApi(): {
+  getBridges: (
+    pageReq?: number,
+    sizeReq?: number
+  ) => Promise<void | { page: number; size: number; total: number }>;
   bridges?: BridgeResponse[];
   page?: number;
   size?: number;
@@ -13,34 +19,42 @@ export function useGetBridgesApi(
   isLoading: boolean;
   error: unknown;
 } {
-  const [page, setPage] = useState<number>();
-  const [size, setSize] = useState<number>();
-  const [total, setTotal] = useState<number>();
   const [bridges, setBridges] = useState<BridgeResponse[]>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
+  const auth = useAuth();
 
-  const getBridges = async (
-    pageReq?: number,
-    sizeReq?: number
-  ): Promise<void> => {
-    const bridgeApi = new BridgesApi(
-      new Configuration({
-        accessToken: getToken,
-        basePath,
-      })
-    );
-    await bridgeApi
-      .getBridges(pageReq, sizeReq)
-      .then((response) => {
-        setPage(response.data.page);
-        setSize(response.data.size);
-        setTotal(response.data.total);
-        setBridges(response.data.items);
-      })
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
-  };
+  const getToken = useCallback(async (): Promise<string> => {
+    return (await auth.kas.getToken()) || "";
+  }, [auth]);
 
-  return { getBridges, isLoading, bridges, page, size, total, error };
+  const getBridges = useCallback(
+    (
+      pageReq?: number,
+      sizeReq?: number
+    ): Promise<void | { page: number; size: number; total: number }> => {
+      const bridgeApi = new BridgesApi(
+        new Configuration({
+          accessToken: getToken,
+          basePath: config.apiBasePath,
+        })
+      );
+      return bridgeApi
+        .getBridges(pageReq, sizeReq)
+        .then((response) => {
+          const data = response.data;
+          setBridges(data.items);
+          return {
+            page: data.page ?? FIRST_PAGE,
+            size: data.size ?? DEFAULT_PAGE_SIZE,
+            total: data.total ?? 0,
+          };
+        })
+        .catch((err) => setError(err))
+        .finally(() => setIsLoading(false));
+    },
+    [getToken]
+  );
+
+  return { getBridges, isLoading, bridges, error };
 }

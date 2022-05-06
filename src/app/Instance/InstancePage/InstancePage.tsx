@@ -21,7 +21,11 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import { CaretDownIcon } from "@patternfly/react-icons";
-import { TableWithPagination } from "@app/components/TableWithPagination/TableWithPagination";
+import {
+  DEFAULT_PAGE_SIZE,
+  FIRST_PAGE,
+  TableWithPagination,
+} from "@app/components/TableWithPagination/TableWithPagination";
 import { IRow, IRowData } from "@patternfly/react-table";
 import { Instance } from "../../../types/Instance";
 import { formatDistance } from "date-fns";
@@ -230,6 +234,10 @@ const InstancePage = (): JSX.Element => {
               tableLabel={t(
                 "openbridgeTempDictionary:processor.processorsListTable"
               )}
+              onPaginationChange={(): void => {}} // @TODO MGDOBR-673
+              pageNumber={FIRST_PAGE} // @TODO MGDOBR-673
+              pageSize={DEFAULT_PAGE_SIZE} // @TODO MGDOBR-673
+              totalRows={DEFAULT_PAGE_SIZE} // @TODO MGDOBR-673
             />
           </TabContent>
           <TabContent

@@ -163,11 +163,11 @@ const InstancePage = (): JSX.Element => {
             </SplitItem>
             <SplitItem>
               <Dropdown
-                ouiaId="actions-dropdown"
+                ouiaId="actions"
                 onSelect={(): void => setIsDropdownActionOpen(false)}
                 toggle={
                   <DropdownToggle
-                    ouiaId="actions-dropdown-toggle"
+                    ouiaId="actions"
                     onToggle={(isOpen: boolean): void =>
                       setIsDropdownActionOpen(isOpen)
                     }
@@ -180,7 +180,7 @@ const InstancePage = (): JSX.Element => {
                 dropdownItems={[
                   <DropdownItem
                     key="details"
-                    ouiaId="instance-details"
+                    ouiaId="details"
                     onClick={(): void => {
                       setShowInstanceDrawer(true);
                     }}
@@ -189,7 +189,7 @@ const InstancePage = (): JSX.Element => {
                   </DropdownItem>,
                   <DropdownItem
                     key="delete"
-                    ouiaId="delete-instance"
+                    ouiaId="delete"
                     onClick={onDeleteClick}
                   >
                     {t("common.delete")}
@@ -227,7 +227,7 @@ const InstancePage = (): JSX.Element => {
           <TabContent
             eventKey={0}
             id="instance-page__tabs-processors"
-            ouiaId="processors-content"
+            ouiaId="processors"
             ref={processorsTabRef}
             aria-label="Processors tab"
           >
@@ -235,7 +235,7 @@ const InstancePage = (): JSX.Element => {
               columns={processorsOverviewColumns}
               customToolbarElement={
                 <Link to={`${location.pathname}/create-processor`}>
-                  <Button ouiaId="create-processor-instance" variant="primary">
+                  <Button ouiaId="create-processor" variant="primary">
                     {t("processor.createProcessor")}
                   </Button>
                 </Link>
@@ -253,7 +253,7 @@ const InstancePage = (): JSX.Element => {
           <TabContent
             eventKey={1}
             id="instance-page__tabs-access"
-            ouiaId="access-content"
+            ouiaId="access"
             ref={accessTabRef}
             aria-label="Access tab"
             hidden

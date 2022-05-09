@@ -34,7 +34,10 @@ export const InstanceDetails = ({
     format(new Date(dateStr), "PPPP p");
 
   return (
-    <DrawerPanelContent widths={{ default: "width_33" }}>
+    <DrawerPanelContent
+      widths={{ default: "width_33" }}
+      data-ouia-component-id="instance-details-panel"
+    >
       <DrawerHead>
         <Stack>
           <StackItem>

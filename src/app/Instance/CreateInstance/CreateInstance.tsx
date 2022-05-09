@@ -69,13 +69,13 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
     <Modal
       isOpen={isModalOpen}
       title={t("instance.createASEInstance")}
-      ouiaId="create-instance-modal"
+      ouiaId="create-instance"
       width={640}
       onClose={onClose}
       actions={[
         <Button
           key="submit"
-          ouiaId="create-instance"
+          ouiaId="submit"
           variant="primary"
           type="submit"
           form={FORM_ID}
@@ -85,12 +85,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         >
           {t("instance.createSEInstance")}
         </Button>,
-        <Button
-          key="cancel"
-          ouiaId="cancel-instance-modal"
-          variant="link"
-          onClick={onClose}
-        >
+        <Button key="cancel" ouiaId="cancel" variant="link" onClick={onClose}>
           {t("common.cancel")}
         </Button>,
       ]}
@@ -105,7 +100,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         >
           <TextInput
             isRequired
-            ouiaId="new-instance-name"
+            ouiaId="new-name"
             type="text"
             maxLength={255}
             id="instance-name"

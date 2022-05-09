@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -9,7 +9,6 @@ import {
   EmptyStateIcon,
   PageSection,
   PageSectionVariants,
-  Skeleton,
   Text,
   TextContent,
   Title,
@@ -29,6 +28,7 @@ import StatusLabel from "@app/components/StatusLabel/StatusLabel";
 import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { PlusCircleIcon } from "@patternfly/react-icons";
+import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -39,6 +39,7 @@ const InstancesListPage = (): JSX.Element => {
   const [totalRows, setTotalRows] = useState<number>(DEFAULT_PAGE_SIZE);
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
   const [selectedInstance, setSelectedInstance] = useState<Instance>();
+  const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
 
   const columnNames = [
     {
@@ -78,10 +79,17 @@ const InstancesListPage = (): JSX.Element => {
   const { bridgeListResponse, isLoading, getBridges, error } =
     useGetBridgesApi();
 
-  usePolling(() => getBridges(currentPage, currentPageSize), 10000);
+  const triggerGetBridges = useCallback(
+    (): void => void getBridges(currentPage, currentPageSize, true),
+    [currentPage, currentPageSize, getBridges]
+  );
+
+  usePolling(() => triggerGetBridges(), 10000);
 
   useEffect(() => {
-    getBridges(FIRST_PAGE, DEFAULT_PAGE_SIZE);
+    void getBridges(FIRST_PAGE, DEFAULT_PAGE_SIZE).then(() =>
+      setIsFirstLoad(false)
+    );
   }, [getBridges]);
 
   useEffect(() => {
@@ -100,69 +108,77 @@ const InstancesListPage = (): JSX.Element => {
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
 
+  const customToolbarElement = (
+    <>
+      <Button
+        ouiaId="create-smart-event-instance"
+        onClick={(): void => setShowCreateInstance(true)}
+      >
+        {t("instance.createSEInstance")}
+      </Button>
+      <CreateInstance
+        isLoading={false}
+        isModalOpen={showCreateInstance}
+        onClose={(): void => setShowCreateInstance(false)}
+        onCreate={(): void => setShowCreateInstance(false)}
+      />
+    </>
+  );
   const pageContent = (
     <>
-      {isLoading && <Skeleton />}
-      {!isLoading && bridgeListResponse?.items && (
-        <>
-          <PageSection variant={PageSectionVariants.light}>
-            <TextContent>
-              <Text component="h1">
-                {t("openbridgeTempDictionary:instance.instancesListPageTitle")}
-              </Text>
-            </TextContent>
-          </PageSection>
-          <PageSection>
-            <TableWithPagination
-              columns={columnNames}
-              customToolbarElement={
-                <React.Fragment>
-                  <Button
-                    ouiaId="create-smart-event-instance"
-                    onClick={(): void => setShowCreateInstance(true)}
-                  >
-                    {t("instance.createSEInstance")}
-                  </Button>
-                  <CreateInstance
-                    isLoading={false}
-                    isModalOpen={showCreateInstance}
-                    onClose={(): void => setShowCreateInstance(false)}
-                    onCreate={(): void => setShowCreateInstance(false)}
-                  />
-                </React.Fragment>
-              }
-              onDetailsClick={(rowData): void => {
-                setSelectedInstance(rowData as unknown as Instance);
-                setShowInstanceDrawer(true);
-              }}
-              rows={bridgeListResponse.items}
-              totalRows={totalRows}
-              pageNumber={currentPage}
-              pageSize={currentPageSize}
-              onPaginationChange={(pageNumber, pageSize): void => {
-                getBridges(
-                  pageSize === currentPageSize ? pageNumber : FIRST_PAGE,
-                  pageSize
-                );
-              }}
-              tableLabel={t(
-                "openbridgeTempDictionary:instance.instancesListTable"
-              )}
-            >
-              <EmptyState variant="large">
-                <EmptyStateIcon icon={PlusCircleIcon} />
-                <Title headingLevel="h4" size="lg">
-                  {t("instance.noInstances")}
-                </Title>
-                <EmptyStateBody>
-                  {/* @TODO Quick start guide link missing */}
-                  {t("common.quickStartAccess")}
-                </EmptyStateBody>
-              </EmptyState>
-            </TableWithPagination>
-          </PageSection>
-        </>
-      )}
+      <PageSection variant={PageSectionVariants.light}>
+        <TextContent>
+          <Text component="h1">
+            {t("openbridgeTempDictionary:instance.instancesListPageTitle")}
+          </Text>
+        </TextContent>
+      </PageSection>
+      <PageSection>
+        {isFirstLoad && isLoading && (
+          <TableWithPaginationSkeleton
+            columns={columnNames}
+            customToolbarElement={customToolbarElement}
+            totalRows={currentPageSize}
+            hasActionColumn={true}
+          />
+        )}
+        {bridgeListResponse?.items && (
+          <TableWithPagination
+            columns={columnNames}
+            customToolbarElement={customToolbarElement}
+            onDetailsClick={(rowData): void => {
+              setSelectedInstance(rowData as unknown as Instance);
+              setShowInstanceDrawer(true);
+            }}
+            isLoading={isLoading}
+            rows={bridgeListResponse.items}
+            totalRows={totalRows}
+            pageNumber={currentPage}
+            pageSize={currentPageSize}
+            onPaginationChange={(pageNumber, pageSize): void => {
+              const correctPageNumber =
+                pageSize === currentPageSize ? pageNumber : FIRST_PAGE;
+              setCurrentPage(correctPageNumber);
+              setCurrentPageSize(pageSize);
+              void getBridges(correctPageNumber, pageSize);
+            }}
+            tableLabel={t(
+              "openbridgeTempDictionary:instance.instancesListTable"
+            )}
+          >
+            <EmptyState variant="large">
+              <EmptyStateIcon icon={PlusCircleIcon} />
+              <Title headingLevel="h4" size="lg">
+                {t("instance.noInstances")}
+              </Title>
+              <EmptyStateBody>
+                {/* @TODO Quick start guide link missing */}
+                {t("common.quickStartAccess")}
+              </EmptyStateBody>
+            </EmptyState>
+          </TableWithPagination>
+        )}
+      </PageSection>
     </>
   );
 

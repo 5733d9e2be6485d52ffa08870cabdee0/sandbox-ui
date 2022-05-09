@@ -121,6 +121,18 @@ const InstancesListPage = (): JSX.Element => {
       />
     </>
   );
+
+  const onPaginationChange = useCallback(
+    (pageNumber: number, pageSize: number): void => {
+      const correctPageNumber =
+        pageSize === currentPageSize ? pageNumber : FIRST_PAGE;
+      setCurrentPage(correctPageNumber);
+      setCurrentPageSize(pageSize);
+      getBridges(correctPageNumber, pageSize);
+    },
+    [currentPageSize, getBridges]
+  );
+
   const pageContent = (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -152,13 +164,7 @@ const InstancesListPage = (): JSX.Element => {
             totalRows={totalRows ?? 0}
             pageNumber={currentPage}
             pageSize={currentPageSize}
-            onPaginationChange={(pageNumber, pageSize): void => {
-              const correctPageNumber =
-                pageSize === currentPageSize ? pageNumber : FIRST_PAGE;
-              setCurrentPage(correctPageNumber);
-              setCurrentPageSize(pageSize);
-              getBridges(correctPageNumber, pageSize);
-            }}
+            onPaginationChange={onPaginationChange}
             tableLabel={t(
               "openbridgeTempDictionary:instance.instancesListTable"
             )}

@@ -3,12 +3,17 @@ import {
   BridgesApi,
   Configuration,
 } from "@openapi/generated";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useAuth } from "@rhoas/app-services-ui-shared";
+import axios, { CancelTokenSource } from "axios";
 import config from "config/config";
 
 export function useGetBridgesApi(): {
-  getBridges: (pageReq?: number, sizeReq?: number) => void;
+  getBridges: (
+    pageReq?: number,
+    sizeReq?: number,
+    isPolling?: boolean
+  ) => Promise<void>;
   bridgeListResponse?: BridgeListResponse;
   isLoading: boolean;
   error: unknown;
@@ -17,6 +22,7 @@ export function useGetBridgesApi(): {
     useState<BridgeListResponse>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
+  const prevCallTokenSource = useRef<CancelTokenSource>();
   const auth = useAuth();
 
   const getToken = useCallback(async (): Promise<string> => {
@@ -24,18 +30,30 @@ export function useGetBridgesApi(): {
   }, [auth]);
 
   const getBridges = useCallback(
-    (pageReq?: number, sizeReq?: number): void => {
-      setIsLoading(true);
+    (pageReq?: number, sizeReq?: number, isPolling = false): Promise<void> => {
+      setIsLoading(!isPolling); // no loading, when the call is generated from a polling
+      prevCallTokenSource.current?.cancel();
+
+      const CancelToken = axios.CancelToken;
+      const source = CancelToken.source();
+      prevCallTokenSource.current = source;
+
       const bridgeApi = new BridgesApi(
         new Configuration({
           accessToken: getToken,
           basePath: config.apiBasePath,
         })
       );
-      bridgeApi
-        .getBridges(pageReq, sizeReq)
+      return bridgeApi
+        .getBridges(pageReq, sizeReq, {
+          cancelToken: source.token,
+        })
         .then((response) => setBridgeListResponse(response.data))
-        .catch((err) => setError(err))
+        .catch((err) => {
+          if (!axios.isCancel(err)) {
+            setError(err);
+          }
+        })
         .finally(() => setIsLoading(false));
     },
     [getToken]

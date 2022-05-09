@@ -21,13 +21,14 @@
  */
 
 export const ManagedResourceStatus = {
-    Accepted: 'ACCEPTED',
-    Provisioning: 'PROVISIONING',
-    Ready: 'READY',
-    Deprovision: 'DEPROVISION',
-    Deleting: 'DELETING',
-    Deleted: 'DELETED',
-    Failed: 'FAILED'
+    Accepted: 'accepted',
+    Preparing: 'preparing',
+    Provisioning: 'provisioning',
+    Ready: 'ready',
+    Deprovision: 'deprovision',
+    Deleting: 'deleting',
+    Deleted: 'deleted',
+    Failed: 'failed'
 } as const;
 
 export type ManagedResourceStatus = typeof ManagedResourceStatus[keyof typeof ManagedResourceStatus];

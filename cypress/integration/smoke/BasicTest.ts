@@ -13,26 +13,18 @@ describe("Basic Elements", () => {
    * This test is relevant only for developing/demoing purposes.
    */
   it("The navigation panel is visible", () => {
-    cy.ouiaId("OUIA-Generated-NavItem-1", "PF4/NavItem").then(($item) => {
+    cy.ouiaId("smart-events", "PF4/NavItem").then(($item) => {
       //toggle menu side bar - both directions
       if ($item.is(":visible")) {
         cy.get("button#nav-toggle").click();
-        cy.ouiaId("OUIA-Generated-NavItem-1", "PF4/NavItem").should(
-          "not.be.visible"
-        );
+        cy.ouiaId("smart-events", "PF4/NavItem").should("not.be.visible");
         cy.get("button#nav-toggle").click();
-        cy.ouiaId("OUIA-Generated-NavItem-1", "PF4/NavItem").should(
-          "be.visible"
-        );
+        cy.ouiaId("smart-events", "PF4/NavItem").should("be.visible");
       } else {
         cy.get("button#nav-toggle").click();
-        cy.ouiaId("OUIA-Generated-NavItem-1", "PF4/NavItem").should(
-          "be.visible"
-        );
+        cy.ouiaId("smart-events", "PF4/NavItem").should("be.visible");
         cy.get("button#nav-toggle").click();
-        cy.ouiaId("OUIA-Generated-NavItem-1", "PF4/NavItem").should(
-          "not.be.visible"
-        );
+        cy.ouiaId("smart-events", "PF4/NavItem").should("not.be.visible");
       }
     });
   });

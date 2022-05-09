@@ -68,7 +68,7 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
       aria-label={"global"}
     >
       <NavList id="nav-list-simple">
-        <NavItem id={"connectors"}>
+        <NavItem id={"connectors"} ouiaId="smart-events">
           <NavLink to={"/"} activeClassName="pf-m-current">
             SmartEvents
           </NavLink>

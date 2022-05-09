@@ -21,8 +21,8 @@
  */
 
 export const ProcessorType = {
-    Source: 'SOURCE',
-    Sink: 'SINK'
+    Source: 'source',
+    Sink: 'sink'
 } as const;
 
 export type ProcessorType = typeof ProcessorType[keyof typeof ProcessorType];

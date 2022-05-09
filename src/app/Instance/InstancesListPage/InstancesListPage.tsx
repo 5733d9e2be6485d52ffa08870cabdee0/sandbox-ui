@@ -36,10 +36,9 @@ const InstancesListPage = (): JSX.Element => {
   const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
   const [currentPageSize, setCurrentPageSize] =
     useState<number>(DEFAULT_PAGE_SIZE);
-  const [totalRows, setTotalRows] = useState<number>(DEFAULT_PAGE_SIZE);
+  const [totalRows, setTotalRows] = useState<number>();
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
   const [selectedInstance, setSelectedInstance] = useState<Instance>();
-  const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true);
 
   const columnNames = [
     {
@@ -80,16 +79,14 @@ const InstancesListPage = (): JSX.Element => {
     useGetBridgesApi();
 
   const triggerGetBridges = useCallback(
-    (): void => void getBridges(currentPage, currentPageSize, true),
+    (): void => getBridges(currentPage, currentPageSize, true),
     [currentPage, currentPageSize, getBridges]
   );
 
   usePolling(() => triggerGetBridges(), 10000);
 
   useEffect(() => {
-    void getBridges(FIRST_PAGE, DEFAULT_PAGE_SIZE).then(() =>
-      setIsFirstLoad(false)
-    );
+    getBridges(FIRST_PAGE, DEFAULT_PAGE_SIZE);
   }, [getBridges]);
 
   useEffect(() => {
@@ -134,7 +131,7 @@ const InstancesListPage = (): JSX.Element => {
         </TextContent>
       </PageSection>
       <PageSection>
-        {isFirstLoad && isLoading && (
+        {totalRows === undefined && isLoading && (
           <TableWithPaginationSkeleton
             columns={columnNames}
             customToolbarElement={customToolbarElement}
@@ -152,7 +149,7 @@ const InstancesListPage = (): JSX.Element => {
             }}
             isLoading={isLoading}
             rows={bridgeListResponse.items}
-            totalRows={totalRows}
+            totalRows={totalRows ?? 0}
             pageNumber={currentPage}
             pageSize={currentPageSize}
             onPaginationChange={(pageNumber, pageSize): void => {
@@ -160,7 +157,7 @@ const InstancesListPage = (): JSX.Element => {
                 pageSize === currentPageSize ? pageNumber : FIRST_PAGE;
               setCurrentPage(correctPageNumber);
               setCurrentPageSize(pageSize);
-              void getBridges(correctPageNumber, pageSize);
+              getBridges(correctPageNumber, pageSize);
             }}
             tableLabel={t(
               "openbridgeTempDictionary:instance.instancesListTable"

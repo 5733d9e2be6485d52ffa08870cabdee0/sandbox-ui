@@ -9,11 +9,7 @@ import axios, { CancelTokenSource } from "axios";
 import config from "config/config";
 
 export function useGetBridgesApi(): {
-  getBridges: (
-    pageReq?: number,
-    sizeReq?: number,
-    isPolling?: boolean
-  ) => Promise<void>;
+  getBridges: (pageReq?: number, sizeReq?: number, isPolling?: boolean) => void;
   bridgeListResponse?: BridgeListResponse;
   isLoading: boolean;
   error: unknown;
@@ -30,7 +26,7 @@ export function useGetBridgesApi(): {
   }, [auth]);
 
   const getBridges = useCallback(
-    (pageReq?: number, sizeReq?: number, isPolling = false): Promise<void> => {
+    (pageReq?: number, sizeReq?: number, isPolling = false): void => {
       setIsLoading(!isPolling); // no loading, when the call is generated from a polling
       prevCallTokenSource.current?.cancel();
 
@@ -44,7 +40,7 @@ export function useGetBridgesApi(): {
           basePath: config.apiBasePath,
         })
       );
-      return bridgeApi
+      bridgeApi
         .getBridges(pageReq, sizeReq, {
           cancelToken: source.token,
         })

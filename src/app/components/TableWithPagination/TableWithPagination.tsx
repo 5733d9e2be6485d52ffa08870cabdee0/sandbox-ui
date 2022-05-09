@@ -10,6 +10,7 @@ import { Table, TableColumn, TableRow } from "@app/components/Table";
 import { Pagination } from "@app/components/Pagination/Pagination";
 import { useTranslation } from "react-i18next";
 import { IRow } from "@patternfly/react-table";
+import { TableSkeleton } from "@app/components/TableSkeleton/TableSkeleton";
 
 interface TableWithPaginationProps {
   /** List of columns for the table */
@@ -30,6 +31,8 @@ interface TableWithPaginationProps {
   customToolbarElement?: React.ReactNode;
   /** Function executed when clicking on the "Details" action */
   onDetailsClick?: (rowData?: IRow) => void;
+  /** True, when table data is loading */
+  isLoading?: boolean;
   /** Element to be rendered when there are no rows to display */
   children?: JSX.Element;
 }
@@ -49,6 +52,7 @@ export const TableWithPagination: FunctionComponent<
   columns,
   customToolbarElement,
   onDetailsClick,
+  isLoading,
   rows,
   totalRows,
   pageNumber,
@@ -106,15 +110,23 @@ export const TableWithPagination: FunctionComponent<
           </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <Table
-        actionResolver={actionResolver}
-        ariaLabel={tableLabel}
-        columns={columns}
-        cssClasses="overview__table"
-        rows={rows}
-      >
-        {children}
-      </Table>
+      {isLoading ? (
+        <TableSkeleton
+          columns={columns}
+          totalRows={pageSize}
+          hasActionColumn={true}
+        />
+      ) : (
+        <Table
+          actionResolver={actionResolver}
+          ariaLabel={tableLabel}
+          columns={columns}
+          cssClasses="overview__table"
+          rows={rows}
+        >
+          {children}
+        </Table>
+      )}
       {getPagination(true)}
     </Card>
   );

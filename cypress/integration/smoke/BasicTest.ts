@@ -29,17 +29,16 @@ describe("Basic Elements", () => {
     });
   });
 
-  it("Mocked instances are visible", async () => {
-    cy.intercept("/bridges/*").as("getBridges");
-    cy.wait("@getBridges").then(() => {
-      cy.ouiaType("PF4/TableRow")
-        .should("have.length", 11)
-        .eq(1)
-        .find("td")
-        .eq(0)
-        .should("have.text", "Instance one")
-        .find("a[data-testid='tableInstances-linkInstance']")
-        .should("be.visible");
-    });
+  it("Mocked instances are visible", () => {
+    //TODO: MGDOBR-710
+    cy.wait(10000);
+    cy.ouiaType("PF4/TableRow")
+      .should("have.length", 11)
+      .eq(1)
+      .find("td")
+      .eq(0)
+      .should("have.text", "Instance one")
+      .find("a[data-testid='tableInstances-linkInstance']")
+      .should("be.visible");
   });
 });

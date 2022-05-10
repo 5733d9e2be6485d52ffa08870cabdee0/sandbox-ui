@@ -30,7 +30,7 @@ describe("Basic Elements", () => {
   });
 
   it("Mocked instances are visible", async () => {
-    cy.route("/bridges/*").as("getBridges");
+    cy.intercept("/bridges/*").as("getBridges");
     cy.wait("@getBridges").then(() => {
       cy.ouiaType("PF4/TableRow")
         .should("have.length", 11)

@@ -214,28 +214,4 @@ export const processorData = [
       },
     },
   },
-  {
-    kind: "Processor",
-    id: "f8f34af4-caed-11ec-9d64-0242ac120002",
-    name: "Processor three",
-    type: "source",
-    href: "/api/v1/bridges/3543edaa-1851-4ad7-96be-ebde7d20d717/processors/f8f34af4-caed-11ec-9d64-0242ac120002",
-    submitted_at: "2022-04-15T12:10:46.029400+0000",
-    published_at: "2022-04-15T12:12:52.416527+0000",
-    filters: [
-      {
-        type: "StringEquals",
-        key: "data.name",
-        value: "John",
-      },
-    ],
-    status: "accepted",
-    source: {
-      type: "Slack",
-      parameters: {
-        channel: "test",
-        token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-      },
-    },
-  },
 ];

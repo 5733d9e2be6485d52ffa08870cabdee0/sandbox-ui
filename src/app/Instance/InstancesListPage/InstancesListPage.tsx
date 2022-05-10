@@ -61,7 +61,7 @@ const InstancesListPage = (): JSX.Element => {
   const instances = [
     {
       description: "Description for the instance one",
-      id: "87508471-ee0f-4f53-b574-da8a61285986",
+      id: "3543edaa-1851-4ad7-96be-ebde7d20d717",
       name: "Instance one",
       status: "ready",
       submitted_at: "2022-02-24T13:34:00Z",

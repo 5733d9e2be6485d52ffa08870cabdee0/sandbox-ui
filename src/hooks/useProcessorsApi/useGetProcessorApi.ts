@@ -3,13 +3,12 @@ import {
   ProcessorResponse,
   ProcessorsApi,
 } from "@openapi/generated";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useAuth } from "@rhoas/app-services-ui-shared";
+import config from "../../../config/config";
 
-export function useGetProcessorApi(
-  getToken: () => Promise<string>,
-  basePath: string
-): {
-  getProcessor: (bridgeId: string, processorId: string) => Promise<void>;
+export function useGetProcessorApi(): {
+  getProcessor: (bridgeId: string, processorId: string) => void;
   processor?: ProcessorResponse;
   isLoading: boolean;
   error: unknown;
@@ -17,23 +16,28 @@ export function useGetProcessorApi(
   const [processor, setProcessor] = useState<ProcessorResponse>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
+  const auth = useAuth();
 
-  const getProcessor = async (
-    bridgeId: string,
-    processorId: string
-  ): Promise<void> => {
-    const processorsApi = new ProcessorsApi(
-      new Configuration({
-        accessToken: getToken,
-        basePath,
-      })
-    );
-    await processorsApi
-      .getProcessor(bridgeId, processorId)
-      .then((response) => setProcessor(response.data))
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
-  };
+  const getToken = useCallback(async (): Promise<string> => {
+    return (await auth.kas.getToken()) || "";
+  }, [auth]);
+
+  const getProcessor = useCallback(
+    (bridgeId: string, processorId: string) => {
+      const processorsApi = new ProcessorsApi(
+        new Configuration({
+          accessToken: getToken,
+          basePath: config.apiBasePath,
+        })
+      );
+      processorsApi
+        .getProcessor(bridgeId, processorId)
+        .then((response) => setProcessor(response.data))
+        .catch((err) => setError(err))
+        .finally(() => setIsLoading(false));
+    },
+    [getToken]
+  );
 
   return { getProcessor, isLoading, processor, error };
 }

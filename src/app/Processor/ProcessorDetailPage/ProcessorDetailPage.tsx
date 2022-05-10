@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import {
   Dropdown,
@@ -16,15 +16,24 @@ import {
 import { useTranslation } from "react-i18next";
 import ProcessorDetail from "@app/Processor/ProcessorDetail/ProcessorDetail";
 import { CaretDownIcon } from "@patternfly/react-icons";
-import { Processor } from "../../../types/Processor";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import StatusLabel from "@app/components/StatusLabel/StatusLabel";
+import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
+import { useGetProcessorApi } from "../../../hooks/useProcessorsApi/useGetProcessorApi";
+import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
+import { Processor } from "../../../types/Processor";
+import ProcessorDetailSkeleton from "@app/Processor/ProcessorDetail/ProcessorDetailSkeleton";
 
 const ProcessorDetailPage = (): JSX.Element => {
-  const { instanceId } = useParams<ProcessorRouteParams>();
+  const { instanceId, processorId } = useParams<ProcessorRouteParams>();
   const history = useHistory();
-  const goToInstance = (): void => history.push(`/instance/${instanceId}`);
   const { t } = useTranslation(["openbridgeTempDictionary"]);
+
+  const goToInstance = useCallback(
+    (): void => history.push(`/instance/${instanceId}`),
+    [history, instanceId]
+  );
+  const goToHome = useCallback((): void => history.push(`/`), [history]);
 
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const actionsToggle = (isOpen: boolean): void => {
@@ -43,81 +52,104 @@ const ProcessorDetailPage = (): JSX.Element => {
     </DropdownItem>,
   ];
 
-  const processor: Processor = {
-    name: "My processor",
-    status: "ready",
-    type: "sink",
-    filters: [
-      {
-        key: "source",
-        type: "stringEquals",
-        value: "aws.ec2",
-      },
-      {
-        key: "detail-type",
-        type: "stringEquals",
-        value: "EC2 Instance State-change Notification",
-      },
-    ],
-    transformationTemplate: "Hello, there's a new message: {data.message}",
-    action: {
-      type: "Slack",
-      parameters: {
-        channel: "Demo Channel",
-        webhookUrl:
-          "https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX",
-      },
-    },
-  };
+  const {
+    getBridge,
+    bridge,
+    isLoading: isBridgeLoading,
+    error: bridgeError,
+  } = useGetBridgeApi();
+
+  useEffect(() => {
+    getBridge(instanceId);
+  }, [getBridge, instanceId]);
+
+  const {
+    getProcessor,
+    processor,
+    isLoading: isProcessorLoading,
+    error: processorError,
+  } = useGetProcessorApi();
+
+  useEffect(() => {
+    getProcessor(instanceId, processorId);
+  }, [getProcessor, instanceId, processorId]);
+
+  useEffect(() => {
+    if (bridgeError) {
+      console.error(bridgeError);
+      goToHome();
+    }
+    if (processorError) {
+      console.error(processorError);
+      goToInstance();
+    }
+  }, [bridgeError, processorError, goToHome, goToInstance]);
 
   return (
     <>
-      <PageSection
-        variant={PageSectionVariants.light}
-        hasShadowBottom={true}
-        type="breadcrumb"
-      >
-        <Breadcrumb
-          path={[
-            { label: t("instance.smartEventInstances"), linkTo: "/" },
-            { label: "Instance one", linkTo: `/instance/${instanceId}` },
-            { label: "Processor one" },
-          ]}
-        />
-      </PageSection>
-      <PageSection variant={PageSectionVariants.light} hasShadowBottom={true}>
-        <Split hasGutter={true}>
-          <SplitItem isFilled={true}>
-            <Stack hasGutter={true}>
-              <StackItem>
-                <TextContent>
-                  <Text component="h1">Processor one</Text>
-                </TextContent>
-              </StackItem>
-              <StackItem>
-                <StatusLabel status="ready" />
-              </StackItem>
-            </Stack>
-          </SplitItem>
-          <SplitItem>
-            <Dropdown
-              onSelect={actionsSelect}
-              toggle={
-                <DropdownToggle
-                  id="toggle-id"
-                  onToggle={actionsToggle}
-                  toggleIndicator={CaretDownIcon}
-                >
-                  {t("common.actions")}
-                </DropdownToggle>
-              }
-              isOpen={isActionsOpen}
-              dropdownItems={actionItems}
+      {(isBridgeLoading || isProcessorLoading) && (
+        <>
+          <PageHeaderSkeleton
+            pageTitle={t("processor.loadingProcessor")}
+            hasActionDropdown={true}
+            hasLabel={true}
+          />
+          <ProcessorDetailSkeleton />
+        </>
+      )}
+      {bridge && processor && (
+        <>
+          <PageSection
+            variant={PageSectionVariants.light}
+            hasShadowBottom={true}
+            type="breadcrumb"
+          >
+            <Breadcrumb
+              path={[
+                { label: t("instance.smartEventInstances"), linkTo: "/" },
+                { label: bridge.name ?? "", linkTo: `/instance/${instanceId}` },
+                { label: processor.name ?? "" },
+              ]}
             />
-          </SplitItem>
-        </Split>
-      </PageSection>
-      <ProcessorDetail processor={processor} />
+          </PageSection>
+          <PageSection
+            variant={PageSectionVariants.light}
+            hasShadowBottom={true}
+          >
+            <Split hasGutter={true}>
+              <SplitItem isFilled={true}>
+                <Stack hasGutter={true}>
+                  <StackItem>
+                    <TextContent>
+                      <Text component="h1">{processor.name}</Text>
+                    </TextContent>
+                  </StackItem>
+                  <StackItem>
+                    <StatusLabel status={processor.status ?? ""} />
+                  </StackItem>
+                </Stack>
+              </SplitItem>
+              <SplitItem>
+                <Dropdown
+                  onSelect={actionsSelect}
+                  toggle={
+                    <DropdownToggle
+                      id="toggle-id"
+                      onToggle={actionsToggle}
+                      toggleIndicator={CaretDownIcon}
+                    >
+                      {t("common.actions")}
+                    </DropdownToggle>
+                  }
+                  isOpen={isActionsOpen}
+                  dropdownItems={actionItems}
+                />
+              </SplitItem>
+            </Split>
+          </PageSection>
+          <ProcessorDetail processor={processor as unknown as Processor} />
+        </>
+      )}
     </>
   );
 };

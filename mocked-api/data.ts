@@ -83,7 +83,7 @@ export const processorData = [
         value: "John",
       },
     ],
-    status: "ready",
+    status: "accepted",
     source: {
       type: "Slack",
       parameters: {

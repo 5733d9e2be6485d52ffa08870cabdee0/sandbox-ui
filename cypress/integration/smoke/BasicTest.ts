@@ -40,4 +40,21 @@ describe("Basic Elements", () => {
     //TODO: fix the name of the instance. It seems that the application contains some dummy data
     cy.ouiaId("instance-name", "PF4/Text").should("have.text", "Instance one");
   });
+
+  it("Instance header details are available", () => {
+    const instanceHeaderDetails = [
+      "Name",
+      "Description",
+      "Status",
+      "Time created",
+    ];
+    cy.get(
+      "table[data-ouia-component-id='Instances list table'] thead tr th"
+    ).should("have.length", 4);
+    cy.get(
+      "table[data-ouia-component-id='Instances list table'] thead tr th"
+    ).each((item, index) => {
+      cy.wrap(item).should("contain.text", instanceHeaderDetails[index]);
+    });
+  });
 });

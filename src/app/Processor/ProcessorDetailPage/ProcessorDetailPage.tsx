@@ -90,7 +90,7 @@ const ProcessorDetailPage = (): JSX.Element => {
       {(isBridgeLoading || isProcessorLoading) && (
         <>
           <PageHeaderSkeleton
-            pageTitle={t("instance.processor.loadingProcessor")}
+            pageTitle={t("processor.loadingProcessor")}
             hasActionDropdown={true}
             hasLabel={true}
           />

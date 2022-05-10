@@ -116,11 +116,11 @@ const InstancePage = (): JSX.Element => {
       submitted_at: "2022-03-15T20:10:00Z",
     },
     {
-      id: "da508471-ee0f-4f53-b574-da8a61285986",
+      id: "f8f34af4-caed-11ec-9d64-0242ac120002",
       type: "source",
-      name: "Processor two",
+      name: "Processor three",
       status: "accepted",
-      submitted_at: "2022-02-24T13:34:00Z",
+      submitted_at: "2022-04-15T12:10:46Z",
     },
   ];
 

@@ -9,7 +9,7 @@ export const instancesData = [
     submitted_at: "2022-02-24T13:34:00Z",
     published_at: "2022-02-24T13:35:00Z",
     endpoint:
-      "https://87508471-ee0f-4f53-b574-da8a61285986.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
+      "https://3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
   },
   {
     kind: "Bridge",
@@ -205,7 +205,7 @@ export const processorData = [
         value: "John",
       },
     ],
-    status: "ready",
+    status: "accepted",
     source: {
       type: "Slack",
       parameters: {

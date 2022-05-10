@@ -28,7 +28,7 @@ export interface EventFilter {
 export interface ProcessorRequestData {
   name: string;
   type: string;
-  action: Action;
+  action?: Action;
   transformationTemplate?: string;
   filters?: EventFilter[];
   source?: Source;
@@ -42,7 +42,7 @@ export interface ProcessorValidation {
 }
 
 export interface ConfigType {
-  value: string;
+  name: string;
   label: string;
   isPlaceholder: boolean;
   fields: ConfigField[];

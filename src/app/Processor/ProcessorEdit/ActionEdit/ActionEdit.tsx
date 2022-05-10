@@ -34,13 +34,13 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
 
   const actionTypes: ConfigType[] = [
     {
-      value: "",
+      name: "",
       label: t("processor.selectAction"),
       isPlaceholder: true,
       fields: [],
     },
     {
-      value: "KafkaTopic",
+      name: "KafkaTopic",
       label: t("processor.actions.KafkaTopic"),
       isPlaceholder: false,
       fields: [
@@ -52,7 +52,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
       ],
     },
     {
-      value: "Webhook",
+      name: "Webhook",
       label: t("processor.actions.Webhook"),
       isPlaceholder: false,
       fields: [
@@ -64,7 +64,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
       ],
     },
     {
-      value: "SendToBridge",
+      name: "SendToBridge",
       label: t("processor.actions.SendToBridge"),
       isPlaceholder: false,
       fields: [
@@ -76,7 +76,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
       ],
     },
     {
-      value: "Slack",
+      name: "Slack",
       label: t("processor.actions.Slack"),
       isPlaceholder: false,
       fields: [
@@ -158,7 +158,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
           {actionTypes.map((option, index) => (
             <FormSelectOption
               key={index}
-              value={option.value}
+              value={option.name}
               label={option.label}
               isPlaceholder={option.isPlaceholder}
             />
@@ -182,7 +182,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
       {type !== "" && (
         <>
           {actionTypes
-            .find((actionType) => actionType.value === type)
+            .find((actionType) => actionType.name === type)
             ?.fields.map((field) => {
               return (
                 <FormGroup

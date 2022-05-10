@@ -56,13 +56,13 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
 
   const sourceTypes: ConfigType[] = [
     {
-      value: "",
+      name: "",
       label: t("processor.selectSource"),
       isPlaceholder: true,
       fields: [],
     },
     {
-      value: "Slack",
+      name: "Slack",
       label: t("processor.sources.Slack"),
       isPlaceholder: false,
       fields: [
@@ -118,7 +118,7 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
             (option, index): JSX.Element => (
               <FormSelectOption
                 key={index}
-                value={option.value}
+                value={option.name}
                 label={option.label}
                 isPlaceholder={option.isPlaceholder}
               />
@@ -143,7 +143,7 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
       {type !== "" && (
         <>
           {sourceTypes
-            .find((sourceType) => sourceType.value === type)
+            .find((sourceType) => sourceType.name === type)
             ?.fields.map((field) => {
               return (
                 <FormGroup

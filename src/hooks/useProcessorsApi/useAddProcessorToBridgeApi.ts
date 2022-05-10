@@ -30,13 +30,15 @@ export function useAddProcessorToBridgeApi(): {
     bridgeId: string,
     processorRequest: ProcessorRequest
   ): void => {
+    setProcessor(undefined);
+    setError(undefined);
+    setIsLoading(true);
     const processorsApi = new ProcessorsApi(
       new Configuration({
         accessToken: getToken,
         basePath: config.apiBasePath,
       })
     );
-    setIsLoading(true);
     processorsApi
       .addProcessorToBridge(bridgeId, processorRequest)
       .then((response) => setProcessor(response.data))

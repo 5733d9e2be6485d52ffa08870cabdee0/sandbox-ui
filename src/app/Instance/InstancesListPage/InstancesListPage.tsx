@@ -29,6 +29,9 @@ import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi"
 import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
+import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
+import axios from "axios";
+import { ResponseError } from "../../../types/Error";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -102,6 +105,51 @@ const InstancesListPage = (): JSX.Element => {
   }, [error]);
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
+  const [newBridgeName, setNewBridgeName] = useState("");
+  const [existingBridgeName, setExistingBridgeName] = useState("");
+
+  const {
+    error: createBridgeError,
+    isLoading: createBridgeLoading,
+    createBridge,
+    bridge,
+  } = useCreateBridgeApi();
+
+  const handleCreateBridge = useCallback(
+    (name: string) => {
+      setNewBridgeName(name);
+      createBridge({ name });
+    },
+    [createBridge]
+  );
+
+  useEffect(() => {
+    if (bridge) {
+      closeCreateInstanceDialog();
+      getBridges(currentPage, currentPageSize);
+    }
+  }, [bridge, getBridges, currentPage, currentPageSize]);
+
+  useEffect(() => {
+    if (createBridgeError) {
+      if (axios.isAxiosError(createBridgeError)) {
+        // TODO: replace error code string with a value coming from an error catalog
+        //  See https://issues.redhat.com/browse/MGDOBR-669 for more details.
+        if (
+          (createBridgeError.response?.data as ResponseError).code ===
+          "OPENBRIDGE-1"
+        ) {
+          setExistingBridgeName(newBridgeName);
+        }
+      }
+    }
+  }, [createBridgeError, newBridgeName]);
+
+  const closeCreateInstanceDialog = (): void => {
+    setShowCreateInstance(false);
+    setNewBridgeName("");
+    setExistingBridgeName("");
+  };
 
   const customToolbarElement = (
     <>
@@ -112,10 +160,11 @@ const InstancesListPage = (): JSX.Element => {
         {t("instance.createSEInstance")}
       </Button>
       <CreateInstance
-        isLoading={false}
+        isLoading={createBridgeLoading}
         isModalOpen={showCreateInstance}
-        onClose={(): void => setShowCreateInstance(false)}
-        onCreate={(): void => setShowCreateInstance(false)}
+        onClose={closeCreateInstanceDialog}
+        onCreate={handleCreateBridge}
+        existingInstanceName={existingBridgeName}
       />
     </>
   );

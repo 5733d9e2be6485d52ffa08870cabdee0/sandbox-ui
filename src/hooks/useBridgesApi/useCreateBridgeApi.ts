@@ -4,29 +4,36 @@ import {
   Configuration,
   BridgeResponse,
 } from "@openapi/generated";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useAuth } from "@rhoas/app-services-ui-shared";
+import config from "../../../config/config";
 
-export function useCreateBridgeApi(
-  getToken: () => Promise<string>,
-  basePath: string
-): {
-  createBridge: (bridgeRequest: BridgeRequest) => Promise<void>;
+export function useCreateBridgeApi(): {
+  createBridge: (bridgeRequest: BridgeRequest) => void;
   bridge?: BridgeResponse;
   isLoading: boolean;
   error: unknown;
 } {
   const [bridge, setBridge] = useState<BridgeResponse>();
   const [error, setError] = useState<unknown>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const auth = useAuth();
 
-  const createBridge = async (bridgeRequest: BridgeRequest): Promise<void> => {
+  const getToken = useCallback(async (): Promise<string> => {
+    return (await auth.kas.getToken()) || "";
+  }, [auth]);
+
+  const createBridge = (bridgeRequest: BridgeRequest): void => {
+    setIsLoading(true);
+    setBridge(undefined);
+    setError(undefined);
     const bridgeApi = new BridgesApi(
       new Configuration({
         accessToken: getToken,
-        basePath,
+        basePath: config.apiBasePath,
       })
     );
-    await bridgeApi
+    bridgeApi
       .createBridge(bridgeRequest)
       .then((response) => setBridge(response.data))
       .catch((err) => setError(err))

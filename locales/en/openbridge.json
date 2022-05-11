@@ -31,6 +31,9 @@
   "instance": {
     "createASEInstance": "Create a Smart Events instance",
     "createSEInstance": "Create Smart Events instance",
+    "errors": {
+      "invalidName": "A Smart Events Instance with this name already exists in your account."
+    },
     "instanceId": "Instance ID",
     "instancesListPageTitle": "Smart Events Instances",
     "instancesListTable": "Instances list table",

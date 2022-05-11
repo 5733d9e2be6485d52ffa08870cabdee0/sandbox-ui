@@ -30,8 +30,10 @@ describe("Basic Elements", () => {
   });
 
   it("Mocked instances are visible", () => {
+    //TODO: MGDOBR-710
+    cy.wait(10000);
     cy.ouiaType("PF4/TableRow")
-      .should("have.length", 13)
+      .should("have.length", 11)
       .eq(1)
       .find("td")
       .eq(0)

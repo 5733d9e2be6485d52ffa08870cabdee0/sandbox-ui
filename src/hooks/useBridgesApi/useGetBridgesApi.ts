@@ -1,46 +1,62 @@
-import { BridgesApi, Configuration, BridgeResponse } from "@openapi/generated";
-import { useState } from "react";
+import {
+  BridgeListResponse,
+  BridgesApi,
+  Configuration,
+} from "@openapi/generated";
+import { useCallback, useRef, useState } from "react";
+import { useAuth } from "@rhoas/app-services-ui-shared";
+import axios, { CancelTokenSource } from "axios";
+import config from "config/config";
 
-export function useGetBridgesApi(
-  getToken: () => Promise<string>,
-  basePath: string
-): {
-  getBridges: (pageReq?: number, sizeReq?: number) => Promise<void>;
-  bridges?: BridgeResponse[];
-  page?: number;
-  size?: number;
-  total?: number;
+export function useGetBridgesApi(): {
+  getBridges: (pageReq?: number, sizeReq?: number, isPolling?: boolean) => void;
+  bridgeListResponse?: BridgeListResponse;
   isLoading: boolean;
   error: unknown;
 } {
-  const [page, setPage] = useState<number>();
-  const [size, setSize] = useState<number>();
-  const [total, setTotal] = useState<number>();
-  const [bridges, setBridges] = useState<BridgeResponse[]>();
+  const [bridgeListResponse, setBridgeListResponse] =
+    useState<BridgeListResponse>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
+  const prevCallTokenSource = useRef<CancelTokenSource>();
+  const auth = useAuth();
 
-  const getBridges = async (
-    pageReq?: number,
-    sizeReq?: number
-  ): Promise<void> => {
-    const bridgeApi = new BridgesApi(
-      new Configuration({
-        accessToken: getToken,
-        basePath,
-      })
-    );
-    await bridgeApi
-      .getBridges(pageReq, sizeReq)
-      .then((response) => {
-        setPage(response.data.page);
-        setSize(response.data.size);
-        setTotal(response.data.total);
-        setBridges(response.data.items);
-      })
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
-  };
+  const getToken = useCallback(async (): Promise<string> => {
+    return (await auth.kas.getToken()) || "";
+  }, [auth]);
 
-  return { getBridges, isLoading, bridges, page, size, total, error };
+  const getBridges = useCallback(
+    (pageReq?: number, sizeReq?: number, isPolling = false): void => {
+      setIsLoading(!isPolling); // no loading, when the call is generated from a polling
+      prevCallTokenSource.current?.cancel();
+
+      const CancelToken = axios.CancelToken;
+      const source = CancelToken.source();
+      prevCallTokenSource.current = source;
+
+      const bridgeApi = new BridgesApi(
+        new Configuration({
+          accessToken: getToken,
+          basePath: config.apiBasePath,
+        })
+      );
+      bridgeApi
+        .getBridges(pageReq, sizeReq, {
+          cancelToken: source.token,
+        })
+        .then((response) => {
+          setBridgeListResponse(response.data);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          if (!axios.isCancel(err)) {
+            setError(err);
+            setIsLoading(false);
+          }
+        });
+    },
+    [getToken]
+  );
+
+  return { getBridges, isLoading, bridgeListResponse, error };
 }

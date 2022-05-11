@@ -10,19 +10,35 @@ import { Table, TableColumn, TableRow } from "@app/components/Table";
 import { Pagination } from "@app/components/Pagination/Pagination";
 import { useTranslation } from "react-i18next";
 import { IRow } from "@patternfly/react-table";
+import { TableSkeleton } from "@app/components/TableSkeleton/TableSkeleton";
 
 interface TableWithPaginationProps {
   /** List of columns for the table */
   columns: TableColumn[];
   /** List of rows for the table */
   rows: TableRow[];
+  /** The total number of rows for the table */
+  totalRows: number;
+  /** The current page number (0-based) */
+  pageNumber: number;
+  /** The page size */
+  pageSize: number;
+  /** Called when pagination params are changed by the user */
+  onPaginationChange: (pageNumber: number, pageSize: number) => void;
   /** Table label */
   tableLabel: string;
   /** Custom element you want to be in the toolbar */
   customToolbarElement?: React.ReactNode;
   /** Function executed when clicking on the "Details" action */
   onDetailsClick?: (rowData?: IRow) => void;
+  /** True, when table data is loading */
+  isLoading?: boolean;
+  /** Element to be rendered when there are no rows to display */
+  children?: JSX.Element;
 }
+
+export const FIRST_PAGE = 0;
+export const DEFAULT_PAGE_SIZE = 10;
 
 /**
  * The goal of this component is to provide a reusable template composed by:
@@ -32,7 +48,19 @@ interface TableWithPaginationProps {
  */
 export const TableWithPagination: FunctionComponent<
   TableWithPaginationProps
-> = ({ columns, customToolbarElement, onDetailsClick, rows, tableLabel }) => {
+> = ({
+  columns,
+  customToolbarElement,
+  onDetailsClick,
+  isLoading,
+  rows,
+  totalRows,
+  pageNumber,
+  pageSize,
+  onPaginationChange,
+  tableLabel,
+  children,
+}) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const actionResolver = (
@@ -52,17 +80,14 @@ export const TableWithPagination: FunctionComponent<
     ];
   };
 
-  const getPagination = (itemCount: number, isBottom: boolean): JSX.Element => (
+  const getPagination = (isBottom: boolean): JSX.Element => (
     <Pagination
-      itemCount={itemCount}
-      page={1}
-      perPage={20}
+      itemCount={totalRows}
+      page={pageNumber + 1}
+      perPage={pageSize}
       isCompact={!isBottom}
       {...(isBottom ? { variant: PaginationVariant.bottom } : {})}
-      onChange={(): void =>
-        // @TODO missing action when changing the page
-        {}
-      }
+      onChange={(page, perPage): void => onPaginationChange(page - 1, perPage)}
       ouiaId={!isBottom ? "rows-top" : "rows-bottom"}
     />
   );
@@ -81,18 +106,28 @@ export const TableWithPagination: FunctionComponent<
             variant="pagination"
             alignment={{ default: "alignRight" }}
           >
-            {getPagination(rows.length, false)}
+            {getPagination(false)}
           </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <Table
-        actionResolver={actionResolver}
-        ariaLabel={tableLabel}
-        columns={columns}
-        cssClasses="overview__table"
-        rows={rows}
-      />
-      {getPagination(rows.length, true)}
+      {isLoading ? (
+        <TableSkeleton
+          columns={columns}
+          totalRows={pageSize}
+          hasActionColumn={true}
+        />
+      ) : (
+        <Table
+          actionResolver={actionResolver}
+          ariaLabel={tableLabel}
+          columns={columns}
+          cssClasses="overview__table"
+          rows={rows}
+        >
+          {children}
+        </Table>
+      )}
+      {getPagination(true)}
     </Card>
   );
 };

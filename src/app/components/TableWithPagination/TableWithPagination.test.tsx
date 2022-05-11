@@ -5,7 +5,15 @@ import React from "react";
 describe("TableWithPagination component", () => {
   it("should display a toolbar with the top-pagination section", async () => {
     const comp = customRender(
-      <TableWithPagination columns={[]} rows={[]} tableLabel="table" />
+      <TableWithPagination
+        columns={[]}
+        rows={[]}
+        tableLabel="table"
+        pageNumber={0}
+        pageSize={0}
+        totalRows={0}
+        onPaginationChange={jest.fn}
+      />
     );
     await waitForI18n(comp);
 
@@ -33,6 +41,10 @@ describe("TableWithPagination component", () => {
         rows={[]}
         tableLabel="table"
         customToolbarElement={<div>{content}</div>}
+        pageNumber={0}
+        pageSize={0}
+        totalRows={0}
+        onPaginationChange={jest.fn}
       />
     );
     await waitForI18n(comp);
@@ -46,7 +58,15 @@ describe("TableWithPagination component", () => {
 
   it("should display a table", async () => {
     const comp = customRender(
-      <TableWithPagination columns={[]} rows={[]} tableLabel="table" />
+      <TableWithPagination
+        columns={[]}
+        rows={[]}
+        tableLabel="table"
+        pageNumber={0}
+        pageSize={0}
+        totalRows={0}
+        onPaginationChange={jest.fn}
+      />
     );
     await waitForI18n(comp);
 
@@ -55,7 +75,15 @@ describe("TableWithPagination component", () => {
 
   it("should display a bottom pagination", async () => {
     const comp = customRender(
-      <TableWithPagination columns={[]} rows={[]} tableLabel="table" />
+      <TableWithPagination
+        columns={[]}
+        rows={[]}
+        tableLabel="table"
+        pageNumber={0}
+        pageSize={0}
+        totalRows={0}
+        onPaginationChange={jest.fn}
+      />
     );
     await waitForI18n(comp);
 

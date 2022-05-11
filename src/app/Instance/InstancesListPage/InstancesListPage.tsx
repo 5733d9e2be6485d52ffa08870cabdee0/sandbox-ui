@@ -1,26 +1,42 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
   Drawer,
   DrawerContent,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
   PageSection,
   PageSectionVariants,
   Text,
   TextContent,
+  Title,
 } from "@patternfly/react-core";
 import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import { Instance } from "../../../types/Instance";
-import { TableWithPagination } from "@app/components/TableWithPagination/TableWithPagination";
+import {
+  DEFAULT_PAGE_SIZE,
+  FIRST_PAGE,
+  TableWithPagination,
+} from "@app/components/TableWithPagination/TableWithPagination";
 import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
 import StatusLabel from "@app/components/StatusLabel/StatusLabel";
+import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi";
+import { usePolling } from "../../../hooks/usePolling/usePolling";
+import { PlusCircleIcon } from "@patternfly/react-icons";
+import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
+  const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
+  const [currentPageSize, setCurrentPageSize] =
+    useState<number>(DEFAULT_PAGE_SIZE);
+  const [totalRows, setTotalRows] = useState<number>();
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
   const [selectedInstance, setSelectedInstance] = useState<Instance>();
 
@@ -40,7 +56,6 @@ const InstancesListPage = (): JSX.Element => {
         );
       },
     },
-    { accessor: "description", label: t("common.description") },
     {
       accessor: "status",
       label: t("common.status"),
@@ -58,130 +73,64 @@ const InstancesListPage = (): JSX.Element => {
       },
     },
   ];
-  const instances = [
-    {
-      description: "Description for the instance one",
-      id: "3543edaa-1851-4ad7-96be-ebde7d20d717",
-      name: "Instance one",
-      status: "ready",
-      submitted_at: "2022-02-24T13:34:00Z",
-      published_at: "2022-02-24T13:35:00Z",
-      endpoint:
-        "https://87508471-ee0f-4f53-b574-da8a61285986.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance two",
-      id: "830c8f0d-c677-492f-8d7e-0f81893fbba6",
-      name: "Instance two",
-      status: "ready",
-      submitted_at: "2022-02-20T11:23:00Z",
-      published_at: "2022-02-20T11:24:00Z",
-      endpoint:
-        "https://830c8f0d-c677-492f-8d7e-0f81893fbba6.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance three",
-      id: "ee22ce62-1f23-4dd7-b106-e4158baf8228",
-      name: "Instance three",
-      status: "ready",
-      submitted_at: "2022-02-15T12:03:00Z",
-      published_at: "2022-02-15T12:04:00Z",
-      endpoint:
-        "https://ee22ce62-1f23-4dd7-b106-e4158baf8228.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance four",
-      id: "21ac90ba-76d2-4f88-b08b-2547ef359bae",
-      name: "Instance four",
-      status: "ready",
-      submitted_at: "2022-02-10T16:34:00Z",
-      published_at: "2022-02-10T16:35:00Z",
-      endpoint:
-        "https://21ac90ba-76d2-4f88-b08b-2547ef359bae.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance five",
-      id: "d4de4dd9-42fe-48ec-8ac7-42163e6e971a",
-      name: "Instance five",
-      status: "ready",
-      submitted_at: "2022-02-05T13:58:00Z",
-      published_at: "2022-02-05T13:59:00Z",
-      endpoint:
-        "https://d4de4dd9-42fe-48ec-8ac7-42163e6e971a.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance six",
-      id: "d7e13602-b046-4120-b377-15d61e21c31a",
-      name: "Instance six",
-      status: "ready",
-      submitted_at: "2022-02-01T12:02:00Z",
-      published_at: "2022-02-01T12:03:00Z",
-      endpoint:
-        "https://d7e13602-b046-4120-b377-15d61e21c31a.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance seven",
-      id: "3a7efbed-3562-4a95-9c32-f49d12d8cab2",
-      name: "Instance seven",
-      status: "ready",
-      submitted_at: "2021-12-25T21:46:00Z",
-      published_at: "2021-12-25T21:47:00Z",
-      endpoint:
-        "https://3a7efbed-3562-4a95-9c32-f49d12d8cab2.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance eight",
-      id: "fa648473-3662-4bbc-99ba-158d9ab95ccc",
-      name: "Instance eight",
-      status: "ready",
-      submitted_at: "2021-12-20T12:21:00Z",
-      published_at: "2021-12-20T12:22:00Z",
-      endpoint:
-        "https://fa648473-3662-4bbc-99ba-158d9ab95ccc.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance nine",
-      id: "04f131c3-b34c-4ee2-b153-fbff0bb91ece",
-      name: "Instance nine",
-      status: "ready",
-      submitted_at: "2021-12-15T16:09:00Z",
-      published_at: "2021-12-15T16:10:00Z",
-      endpoint:
-        "https://04f131c3-b34c-4ee2-b153-fbff0bb91ece.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance ten",
-      id: "c28da8c0-05e4-42f3-a3fd-615cc7fbb382",
-      name: "Instance ten",
-      status: "ready",
-      submitted_at: "2021-12-10T11:34:00Z",
-      published_at: "2021-12-10T11:35:00Z",
-      endpoint:
-        "https://c28da8c0-05e4-42f3-a3fd-615cc7fbb382.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance eleven",
-      id: "a8c1cb57-0ab3-4ccb-8c55-ef8a8b166846",
-      name: "Instance eleven",
-      status: "ready",
-      submitted_at: "2021-12-05T11:34:00Z",
-      published_at: "2021-12-05T11:35:00Z",
-      endpoint:
-        "https://a8c1cb57-0ab3-4ccb-8c55-ef8a8b166846.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-    {
-      description: "Description for the instance twelve",
-      id: "e176d63b-6fdc-43ce-afc8-45160f456502",
-      name: "Instance twelve",
-      status: "ready",
-      submitted_at: "2021-12-01T11:34:00Z",
-      published_at: "2021-12-01T11:35:00Z",
-      endpoint:
-        "https://e176d63b-6fdc-43ce-afc8-45160f456502.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-    },
-  ];
+
+  const { bridgeListResponse, isLoading, getBridges, error } =
+    useGetBridgesApi();
+
+  const triggerGetBridges = useCallback(
+    (): void => getBridges(currentPage, currentPageSize, true),
+    [currentPage, currentPageSize, getBridges]
+  );
+
+  usePolling(() => triggerGetBridges(), 10000);
+
+  useEffect(() => {
+    getBridges(FIRST_PAGE, DEFAULT_PAGE_SIZE);
+  }, [getBridges]);
+
+  useEffect(() => {
+    if (bridgeListResponse) {
+      setCurrentPageSize(bridgeListResponse.size ?? DEFAULT_PAGE_SIZE);
+      setCurrentPage(bridgeListResponse.page ?? FIRST_PAGE);
+      setTotalRows(bridgeListResponse.total ?? 0);
+    }
+  }, [bridgeListResponse]);
+
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
+
+  const customToolbarElement = (
+    <>
+      <Button
+        ouiaId="create-smart-event-instance"
+        onClick={(): void => setShowCreateInstance(true)}
+      >
+        {t("instance.createSEInstance")}
+      </Button>
+      <CreateInstance
+        isLoading={false}
+        isModalOpen={showCreateInstance}
+        onClose={(): void => setShowCreateInstance(false)}
+        onCreate={(): void => setShowCreateInstance(false)}
+      />
+    </>
+  );
+
+  const onPaginationChange = useCallback(
+    (pageNumber: number, pageSize: number): void => {
+      const correctPageNumber =
+        pageSize === currentPageSize ? pageNumber : FIRST_PAGE;
+      setCurrentPage(correctPageNumber);
+      setCurrentPageSize(pageSize);
+      getBridges(correctPageNumber, pageSize);
+    },
+    [currentPageSize, getBridges]
+  );
 
   const pageContent = (
     <>
@@ -193,34 +142,48 @@ const InstancesListPage = (): JSX.Element => {
         </TextContent>
       </PageSection>
       <PageSection>
-        <TableWithPagination
-          columns={columnNames}
-          customToolbarElement={
-            <React.Fragment>
-              <Button
-                ouiaId="create-smart-event-instance"
-                onClick={(): void => setShowCreateInstance(true)}
-              >
-                {t("instance.createSEInstance")}
-              </Button>
-              <CreateInstance
-                isLoading={false}
-                isModalOpen={showCreateInstance}
-                onClose={(): void => setShowCreateInstance(false)}
-                onCreate={(): void => setShowCreateInstance(false)}
-              />
-            </React.Fragment>
-          }
-          onDetailsClick={(rowData): void => {
-            setSelectedInstance(rowData as unknown as Instance);
-            setShowInstanceDrawer(true);
-          }}
-          rows={instances}
-          tableLabel={t("openbridgeTempDictionary:instance.instancesListTable")}
-        />
+        {totalRows === undefined && isLoading && (
+          <TableWithPaginationSkeleton
+            columns={columnNames}
+            customToolbarElement={customToolbarElement}
+            totalRows={currentPageSize}
+            hasActionColumn={true}
+          />
+        )}
+        {bridgeListResponse?.items && (
+          <TableWithPagination
+            columns={columnNames}
+            customToolbarElement={customToolbarElement}
+            onDetailsClick={(rowData): void => {
+              setSelectedInstance(rowData as unknown as Instance);
+              setShowInstanceDrawer(true);
+            }}
+            isLoading={isLoading}
+            rows={bridgeListResponse.items}
+            totalRows={totalRows ?? 0}
+            pageNumber={currentPage}
+            pageSize={currentPageSize}
+            onPaginationChange={onPaginationChange}
+            tableLabel={t(
+              "openbridgeTempDictionary:instance.instancesListTable"
+            )}
+          >
+            <EmptyState variant="large">
+              <EmptyStateIcon icon={PlusCircleIcon} />
+              <Title headingLevel="h4" size="lg">
+                {t("instance.noInstances")}
+              </Title>
+              <EmptyStateBody>
+                {/* @TODO Quick start guide link missing */}
+                {t("common.quickStartAccess")}
+              </EmptyStateBody>
+            </EmptyState>
+          </TableWithPagination>
+        )}
       </PageSection>
     </>
   );
+
   return selectedInstance ? (
     <Drawer isExpanded={showInstanceDrawer}>
       <DrawerContent

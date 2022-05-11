@@ -44,13 +44,16 @@ export function useGetBridgesApi(): {
         .getBridges(pageReq, sizeReq, {
           cancelToken: source.token,
         })
-        .then((response) => setBridgeListResponse(response.data))
+        .then((response) => {
+          setBridgeListResponse(response.data);
+          setIsLoading(false);
+        })
         .catch((err) => {
           if (!axios.isCancel(err)) {
             setError(err);
+            setIsLoading(false);
           }
-        })
-        .finally(() => setIsLoading(false));
+        });
     },
     [getToken]
   );

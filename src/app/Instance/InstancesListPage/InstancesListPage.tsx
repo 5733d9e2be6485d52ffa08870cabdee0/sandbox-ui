@@ -56,7 +56,6 @@ const InstancesListPage = (): JSX.Element => {
         );
       },
     },
-    { accessor: "description", label: t("common.description") },
     {
       accessor: "status",
       label: t("common.status"),

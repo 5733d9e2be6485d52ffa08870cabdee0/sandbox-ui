@@ -1,7 +1,6 @@
 export const instancesData = [
   {
     kind: "Bridge",
-    description: "Description for the instance one",
     id: "3543edaa-1851-4ad7-96be-ebde7d20d717",
     name: "Instance one",
     href: "/api/v1/bridges/3543edaa-1851-4ad7-96be-ebde7d20d717",
@@ -13,7 +12,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance two",
     id: "830c8f0d-c677-492f-8d7e-0f81893fbba6",
     name: "Instance two",
     href: "/api/v1/bridges/830c8f0d-c677-492f-8d7e-0f81893fbba6",
@@ -25,7 +23,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance three",
     id: "ee22ce62-1f23-4dd7-b106-e4158baf8228",
     name: "Instance three",
     href: "/api/v1/bridges/ee22ce62-1f23-4dd7-b106-e4158baf8228",
@@ -37,7 +34,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance four",
     id: "21ac90ba-76d2-4f88-b08b-2547ef359bae",
     name: "Instance four",
     href: "/api/v1/bridges/21ac90ba-76d2-4f88-b08b-2547ef359bae",
@@ -49,7 +45,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance five",
     id: "d4de4dd9-42fe-48ec-8ac7-42163e6e971a",
     name: "Instance five",
     href: "/api/v1/bridges/d4de4dd9-42fe-48ec-8ac7-42163e6e971a",
@@ -61,7 +56,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance six",
     id: "d7e13602-b046-4120-b377-15d61e21c31a",
     name: "Instance six",
     href: "/api/v1/bridges/d7e13602-b046-4120-b377-15d61e21c31a",
@@ -73,7 +67,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance seven",
     id: "3a7efbed-3562-4a95-9c32-f49d12d8cab2",
     name: "Instance seven",
     href: "/api/v1/bridges/3a7efbed-3562-4a95-9c32-f49d12d8cab2",
@@ -85,7 +78,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance eight",
     id: "fa648473-3662-4bbc-99ba-158d9ab95ccc",
     name: "Instance eight",
     href: "/api/v1/bridges/fa648473-3662-4bbc-99ba-158d9ab95ccc",
@@ -97,7 +89,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance nine",
     id: "04f131c3-b34c-4ee2-b153-fbff0bb91ece",
     name: "Instance nine",
     href: "/api/v1/bridges/04f131c3-b34c-4ee2-b153-fbff0bb91ece",
@@ -109,7 +100,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance ten",
     id: "c28da8c0-05e4-42f3-a3fd-615cc7fbb382",
     name: "Instance ten",
     href: "/api/v1/bridges/c28da8c0-05e4-42f3-a3fd-615cc7fbb382",
@@ -121,7 +111,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance eleven",
     id: "a8c1cb57-0ab3-4ccb-8c55-ef8a8b166846",
     name: "Instance eleven",
     href: "/api/v1/bridges/a8c1cb57-0ab3-4ccb-8c55-ef8a8b166846",
@@ -133,7 +122,6 @@ export const instancesData = [
   },
   {
     kind: "Bridge",
-    description: "Description for the instance twelve",
     id: "e176d63b-6fdc-43ce-afc8-45160f456502",
     name: "Instance twelve",
     href: "/api/v1/bridges/e176d63b-6fdc-43ce-afc8-45160f456502",

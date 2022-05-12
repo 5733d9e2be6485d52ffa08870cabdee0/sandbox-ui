@@ -93,7 +93,7 @@ export const TableWithPagination: FunctionComponent<
   );
 
   return (
-    <Card>
+    <Card ouiaId={tableLabel}>
       <Toolbar ouiaId="rows-toolbar">
         <ToolbarContent>
           <ToolbarItem

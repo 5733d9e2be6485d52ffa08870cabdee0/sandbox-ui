@@ -156,16 +156,18 @@ const InstancePage = (): JSX.Element => {
           <Split>
             <SplitItem isFilled>
               <TextContent>
-                <Text component="h1">{instanceName}</Text>
+                <Text ouiaId="instance-name" component="h1">
+                  {instanceName}
+                </Text>
               </TextContent>
             </SplitItem>
             <SplitItem>
               <Dropdown
-                ouiaId="actions-dropdown"
+                ouiaId="actions"
                 onSelect={(): void => setIsDropdownActionOpen(false)}
                 toggle={
                   <DropdownToggle
-                    ouiaId="actions-dropdown-toggle"
+                    ouiaId="actions"
                     onToggle={(isOpen: boolean): void =>
                       setIsDropdownActionOpen(isOpen)
                     }
@@ -178,14 +180,18 @@ const InstancePage = (): JSX.Element => {
                 dropdownItems={[
                   <DropdownItem
                     key="details"
-                    ouiaId="action-details"
+                    ouiaId="details"
                     onClick={(): void => {
                       setShowInstanceDrawer(true);
                     }}
                   >
                     {t("common.details")}
                   </DropdownItem>,
-                  <DropdownItem key="delete" onClick={onDeleteClick}>
+                  <DropdownItem
+                    key="delete"
+                    ouiaId="delete"
+                    onClick={onDeleteClick}
+                  >
                     {t("common.delete")}
                   </DropdownItem>,
                 ]}
@@ -196,18 +202,21 @@ const InstancePage = (): JSX.Element => {
         <PageSection variant={PageSectionVariants.light} type="tabs">
           <Tabs
             className="instance-page__tabs"
+            ouiaId="instance-details"
             usePageInsets
             activeKey={activeTabKey}
             onSelect={handleTabClick}
           >
             <Tab
               eventKey={0}
+              ouiaId="processors"
               tabContentId="instance-page__tabs-processors"
               tabContentRef={processorsTabRef}
               title={<TabTitleText>{t("common.processors")}</TabTitleText>}
             />
             <Tab
               eventKey={1}
+              ouiaId="access"
               tabContentId="instance-page__tabs-access"
               tabContentRef={accessTabRef}
               title={<TabTitleText>{t("common.access")}</TabTitleText>}
@@ -218,6 +227,7 @@ const InstancePage = (): JSX.Element => {
           <TabContent
             eventKey={0}
             id="instance-page__tabs-processors"
+            ouiaId="processors"
             ref={processorsTabRef}
             aria-label="Processors tab"
           >
@@ -225,7 +235,7 @@ const InstancePage = (): JSX.Element => {
               columns={processorsOverviewColumns}
               customToolbarElement={
                 <Link to={`${location.pathname}/create-processor`}>
-                  <Button ouiaId="create-processor-instance" variant="primary">
+                  <Button ouiaId="create-processor" variant="primary">
                     {t("processor.createProcessor")}
                   </Button>
                 </Link>
@@ -243,6 +253,7 @@ const InstancePage = (): JSX.Element => {
           <TabContent
             eventKey={1}
             id="instance-page__tabs-access"
+            ouiaId="access"
             ref={accessTabRef}
             aria-label="Access tab"
             hidden

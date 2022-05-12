@@ -34,12 +34,17 @@ export const InstanceDetails = ({
     format(new Date(dateStr), "PPPP p");
 
   return (
-    <DrawerPanelContent widths={{ default: "width_33" }}>
+    <DrawerPanelContent
+      widths={{ default: "width_33" }}
+      data-ouia-component-id="instance-details-panel"
+    >
       <DrawerHead>
         <Stack>
           <StackItem>
             <TextContent>
-              <Text component="small">{t("common.name")}</Text>
+              <Text ouiaId="instance-details-name-label" component="small">
+                {t("common.name")}
+              </Text>
             </TextContent>
           </StackItem>
           <StackItem>
@@ -51,7 +56,10 @@ export const InstanceDetails = ({
           </StackItem>
         </Stack>
         <DrawerActions>
-          <DrawerCloseButton onClick={onClosingDetails} />
+          <DrawerCloseButton
+            onClick={onClosingDetails}
+            data-ouia-component-id="close-instance-details"
+          />
         </DrawerActions>
       </DrawerHead>
       <DrawerContentBody>

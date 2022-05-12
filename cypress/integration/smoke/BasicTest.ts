@@ -32,13 +32,12 @@ describe("Basic Elements", () => {
   it("Mocked instances are visible", () => {
     //TODO: MGDOBR-710
     cy.wait(10000);
-    cy.ouiaType("PF4/TableRow")
-      .should("have.length", 11)
-      .eq(1)
-      .find("td")
-      .eq(0)
-      .should("have.text", "Instance one")
+    cy.ouiaType("PF4/TableRow").should("have.length", 11);
+    cy.ouiaId("ee22ce62-1f23-4dd7-b106-e4158baf8228", "PF4/TableRow")
       .find("a[data-testid='tableInstances-linkInstance']")
-      .should("be.visible");
+      .should("be.visible")
+      .click();
+    //TODO: fix the name of the instance. It seems that the application contains some dummy data
+    cy.ouiaId("instance-name", "PF4/Text").should("have.text", "Instance one");
   });
 });

@@ -1,13 +1,13 @@
 import { useCallback, useRef, useState } from "react";
 import {
-  ProcessorRequestData,
+  ProcessorFormData,
   ProcessorValidation,
 } from "../../../types/Processor";
 import { omit } from "lodash";
 import { useTranslation } from "react-i18next";
 
 export function useValidateProcessor(
-  processor: ProcessorRequestData,
+  processor: ProcessorFormData,
   existingProcessorName?: string
 ): {
   validate: () => boolean;

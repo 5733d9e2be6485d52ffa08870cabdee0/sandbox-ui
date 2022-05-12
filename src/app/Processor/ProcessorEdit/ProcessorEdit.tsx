@@ -24,7 +24,7 @@ import { CodeEditor } from "@patternfly/react-code-editor";
 import ActionEdit from "@app/Processor/ProcessorEdit/ActionEdit/ActionEdit";
 import { Action, ProcessorRequest } from "@openapi/generated";
 import SourceEdit from "@app/Processor/ProcessorEdit/SourceEdit/SourceEdit";
-import { EventFilter, ProcessorRequestData } from "../../../types/Processor";
+import { EventFilter, ProcessorFormData } from "../../../types/Processor";
 import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidateProcessor";
 import "./ProcessorEdit.css";
 
@@ -52,7 +52,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     type: "",
     parameters: {},
   });
-  const [request, setRequest] = useState<ProcessorRequestData>({
+  const [request, setRequest] = useState<ProcessorFormData>({
     name,
     type: processorType,
     filters,
@@ -81,31 +81,36 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     });
   }, [name, processorType, filters, transformation, action, source]);
 
+  const prepareRequest = (formData: ProcessorFormData): ProcessorRequest => {
+    const requestData: ProcessorRequest = { name: formData.name };
+    if (formData.type === "sink") {
+      requestData.action = formData.action;
+    } else {
+      requestData.source = formData.source;
+    }
+    if (formData.filters && formData.filters.length > 0) {
+      const filtersData = formData.filters.filter(
+        (filter) => filter.type && filter.value && filter.key
+      );
+      if (filtersData.length > 0) {
+        requestData.filters =
+          filtersData as unknown as ProcessorRequest["filters"];
+      }
+    }
+    if (
+      formData.transformationTemplate &&
+      formData.transformationTemplate.trim().length > 0
+    ) {
+      requestData.transformationTemplate =
+        formData.transformationTemplate.trim();
+    }
+    return requestData;
+  };
+
   const handleSubmit = (): void => {
     setIsSubmitted(true);
     if (validate() && request) {
-      const requestData: ProcessorRequest = { name: request.name };
-      if (request.type === "sink") {
-        requestData.action = request.action;
-      } else {
-        requestData.source = request.source;
-      }
-      if (request.filters && request.filters.length > 0) {
-        const filtersData = request.filters.filter(
-          (filter) => filter.type && filter.value && filter.key
-        );
-        if (filtersData.length > 0) {
-          requestData.filters =
-            filtersData as unknown as ProcessorRequest["filters"];
-        }
-      }
-      if (
-        request.transformationTemplate &&
-        request.transformationTemplate.trim().length > 0
-      ) {
-        requestData.transformationTemplate =
-          request.transformationTemplate.trim();
-      }
+      const requestData = prepareRequest(request);
       onSave(requestData);
     }
   };

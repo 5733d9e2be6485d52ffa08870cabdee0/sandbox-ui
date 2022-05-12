@@ -25,7 +25,7 @@ export interface EventFilter {
   value: string;
 }
 
-export interface ProcessorRequestData {
+export interface ProcessorFormData {
   name: string;
   type: string;
   action?: Action;

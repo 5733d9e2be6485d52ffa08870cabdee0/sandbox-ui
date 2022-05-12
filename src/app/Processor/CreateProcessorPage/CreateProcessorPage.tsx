@@ -68,6 +68,8 @@ const CreateProcessorPage = (): JSX.Element => {
 
   useEffect(() => {
     if (processorError && axios.isAxiosError(processorError)) {
+      // TODO: replace error code string with a value coming from an error catalog
+      //  See https://issues.redhat.com/browse/MGDOBR-669 for more details.
       if (
         (processorError.response?.data as ResponseError).code === "OPENBRIDGE-1"
       ) {

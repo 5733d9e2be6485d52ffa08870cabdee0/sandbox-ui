@@ -82,12 +82,12 @@ export const handlers = [
     const size = parseInt(req.url.searchParams.get("size") ?? "10");
 
     const items = db.bridge.findMany({
-        take: size,
-        skip: page * size,
-        orderBy: {
-          submitted_at: "desc",
-        },
-      });
+      take: size,
+      skip: page * size,
+      orderBy: {
+        submitted_at: "desc",
+      },
+    });
 
     return res(
       ctx.status(200),

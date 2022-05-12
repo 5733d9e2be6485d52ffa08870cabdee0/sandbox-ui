@@ -259,27 +259,28 @@ export const handlers = [
 
     const count = db.processor.count(query);
 
+    const items = db.processor
+      .findMany({
+        take: size,
+        skip: page * size,
+        orderBy: {
+          submitted_at: "desc",
+        },
+        ...query,
+      })
+      .map((item) =>
+        cleanupProcessor(
+          item as unknown as Record<string | number | symbol, unknown>
+        )
+      );
     return res(
       ctx.status(200),
       ctx.delay(apiDelay),
       ctx.json({
         kind: "ProcessorList",
-        items: db.processor
-          .findMany({
-            take: size,
-            skip: page * size,
-            orderBy: {
-              submitted_at: "desc",
-            },
-            ...query,
-          })
-          .map((item) =>
-            cleanupProcessor(
-              item as unknown as Record<string | number | symbol, unknown>
-            )
-          ),
-        page: page,
-        size: size,
+        items,
+        page,
+        size: items.length,
         total: count,
       })
     );

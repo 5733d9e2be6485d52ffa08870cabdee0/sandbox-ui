@@ -90,7 +90,6 @@ const InstancesListPage = (): JSX.Element => {
 
   useEffect(() => {
     if (bridgeListResponse) {
-      setCurrentPageSize(bridgeListResponse.size ?? DEFAULT_PAGE_SIZE);
       setCurrentPage(bridgeListResponse.page ?? FIRST_PAGE);
       setTotalRows(bridgeListResponse.total ?? 0);
     }

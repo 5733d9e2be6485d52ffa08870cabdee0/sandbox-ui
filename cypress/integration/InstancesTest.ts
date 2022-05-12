@@ -121,7 +121,6 @@ describe("Instances Test", () => {
             );
             expect($cells.eq(2)).have.text("Source");
             expect($cells.eq(3)).have.text("accepted");
-            expect($cells.eq(4)).have.text("27 days ago");
             cy.wrap($cells.eq(5)).ouiaType("PF4/Dropdown").should("be.visible");
           });
       });

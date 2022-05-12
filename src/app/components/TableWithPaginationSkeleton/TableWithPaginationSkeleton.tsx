@@ -20,7 +20,7 @@ export const TableWithPaginationSkeleton = (
   props: TableSkeletonProps & TableWithPaginationSkeletonProps
 ): JSX.Element => {
   return (
-    <Card>
+    <Card ouiaId="loading-table">
       <Toolbar>
         <ToolbarContent>
           <ToolbarItem alignment={{ default: "alignLeft" }}>

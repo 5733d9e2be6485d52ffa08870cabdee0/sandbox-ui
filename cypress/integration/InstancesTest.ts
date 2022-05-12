@@ -8,6 +8,7 @@ describe("Instances Test", () => {
       const newInstanceName: string = "Some new instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
       cy.ouiaId("create-instance", "PF4/ModalContent")
+        .should("be.visible")
         .within(() => {
           cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
           cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
@@ -70,6 +71,7 @@ describe("Instances Test", () => {
           cy.ouiaId("actions", "PF4/DropdownToggle").click();
           cy.ouiaId("details", "PF4/DropdownItem").click();
         });
+      //The InstanceDetails.tsx contains dummy data which are not related to this instance
       cy.ouiaId("instance-details-panel")
         .within(() => {
           cy.ouiaId("instance-details-name", "PF4/Text")
@@ -109,17 +111,17 @@ describe("Instances Test", () => {
           .ouiaId("create-processor", "PF4/Button")
           .should("be.visible");
         cy.ouiaId("Processors list table", "PF4/Table")
-          .ouiaId("Processor two", "PF4/TableRow")
+          .ouiaId("f8f34af4-caed-11ec-9d64-0242ac120002", "PF4/TableRow")
           .find("td")
           .then(($cells) => {
             expect($cells).have.length(6);
-            expect($cells.eq(0)).have.text("Processor two");
+            expect($cells.eq(0)).have.text("Processor three");
             expect($cells.eq(1)).have.text(
-              "da508471-ee0f-4f53-b574-da8a61285986"
+              "f8f34af4-caed-11ec-9d64-0242ac120002"
             );
             expect($cells.eq(2)).have.text("Source");
             expect($cells.eq(3)).have.text("accepted");
-            expect($cells.eq(4)).have.text("2 months ago");
+            expect($cells.eq(4)).have.text("27 days ago");
             cy.wrap($cells.eq(5)).ouiaType("PF4/Dropdown").should("be.visible");
           });
       });

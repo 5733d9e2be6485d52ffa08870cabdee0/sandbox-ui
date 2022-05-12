@@ -81,20 +81,22 @@ export const handlers = [
     const page = parseInt(req.url.searchParams.get("page") ?? "0");
     const size = parseInt(req.url.searchParams.get("size") ?? "10");
 
+    const items = db.bridge.findMany({
+        take: size,
+        skip: page * size,
+        orderBy: {
+          submitted_at: "desc",
+        },
+      });
+
     return res(
       ctx.status(200),
       ctx.delay(apiDelay),
       ctx.json({
         kind: "BridgeList",
-        items: db.bridge.findMany({
-          take: size,
-          skip: page * size,
-          orderBy: {
-            submitted_at: "desc",
-          },
-        }),
-        page: page,
-        size: size,
+        items,
+        page,
+        size: items.length,
         total: db.bridge.count(),
       })
     );

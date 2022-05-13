@@ -54,6 +54,11 @@
     "channel": "Channel",
     "createProcessor": "Create processor",
     "deleteFilter": "Delete filter",
+    "errors": {
+      "missingProcessorType": "Please select a processor type.",
+      "invalidName": "A processor with this name already exists in this instance.",
+      "invalidUrl": "Please enter a valid URL with http or https protocol."
+    },
     "filters": "Filters",
     "generalInformation": "General information",
     "loadingProcessor": "Loading processor",
@@ -63,6 +68,7 @@
     "processorName": "Processor name",
     "processorsListTable": "Processors list table",
     "processorType": "Processor type",
+    "processorWillBeAvailableShortly": "Your Processor will be ready for use shortly after creation.",
     "selectAction": "Select an action",
     "selectActionDescription": "Select an action and provide its configuration.",
     "selectProcessorType": "Select processor type",
@@ -72,6 +78,9 @@
     "sinkProcessor": "Sink processor",
     "sinkProcessorDescription": "Sink processors help connect events to actions.",
     "source": "Source",
+    "sources": {
+      "Slack": "Slack"
+    },
     "sourceConfiguration": "Source configuration",
     "sourceProcessor": "Source processor",
     "sourceProcessorDescription": "Source processors are ready-to-use connectors that allow to connect and stream data from external sources without having to write any code.",

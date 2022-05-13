@@ -32,6 +32,10 @@
   padding: var(--processor-edit--spacing);
 }
 
+.processor-edit__form__notice {
+  margin-top: var(--pf-global--spacer--3xl);
+}
+
 .processor-edit__form .pf-c-tile:active,
 .pf-c-tile.pf-m-selected {
   --pf-c-tile--TranslateY: 0;

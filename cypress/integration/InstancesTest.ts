@@ -1,3 +1,8 @@
+import { format } from "date-fns";
+
+const formatDate = (dateStr: string): string =>
+  format(new Date(dateStr), "PPPP p");
+
 describe("Instances Test", () => {
   describe("the 'Create a SE instance' Modal", () => {
     beforeEach(() => {
@@ -66,8 +71,7 @@ describe("Instances Test", () => {
         });
     });
 
-    it.skip("Details", () => {
-      //This test is skipped because of MGDOBR-726
+    it("Details", () => {
       cy.ouiaId("actions", "PF4/Dropdown")
         .should("be.visible")
         .within(() => {
@@ -94,10 +98,10 @@ describe("Instances Test", () => {
             )
             .should("be.visible");
           cy.ouiaId("instance-details-submitted-date")
-            .should("have.text", "Tuesday, April 12th, 2022 12:04 PM")
+            .should("have.text", formatDate("2022-04-12T12:04:43.044590+0000"))
             .should("be.visible");
           cy.ouiaId("instance-details-published-date")
-            .should("have.text", "Tuesday, April 12th, 2022 12:06 PM")
+            .should("have.text", formatDate("2022-04-12T12:06:22.881959+0000"))
             .should("be.visible");
           cy.ouiaId("close-instance-details").click();
         })

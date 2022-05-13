@@ -4,7 +4,8 @@ describe("Instances Test", () => {
       cy.visit("/");
     });
 
-    it("Submit", () => {
+    it.skip("Submit", () => {
+      //This test is skipped because of MGDOBR-725
       const newInstanceName: string = "Some new instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
       cy.ouiaId("create-instance", "PF4/ModalContent")
@@ -26,7 +27,8 @@ describe("Instances Test", () => {
       */
     });
 
-    it("Cancel", () => {
+    it.skip("Cancel", () => {
+      //This test is skipped because of MGDOBR-725
       const newInstanceName: string = "Canceled instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
       cy.ouiaId("create-instance", "PF4/ModalContent")
@@ -64,7 +66,8 @@ describe("Instances Test", () => {
         });
     });
 
-    it("Details", () => {
+    it.skip("Details", () => {
+      //This test is skipped because of MGDOBR-726
       cy.ouiaId("actions", "PF4/Dropdown")
         .should("be.visible")
         .within(() => {

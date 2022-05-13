@@ -49,7 +49,7 @@ describe("Instances Test", () => {
 
   describe("Instance Page - Instance six", () => {
     beforeEach(() => {
-      cy.visit("/instance/d7e13602-b046-4120-b377-15d61e21c31");
+      cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
     });
 
     it("Header", () => {
@@ -127,16 +127,6 @@ describe("Instances Test", () => {
             cy.wrap($cells.eq(5)).ouiaType("PF4/Dropdown").should("be.visible");
           });
       });
-    });
-
-    it("Access Content", () => {
-      cy.ouiaId("instance-details", "PF4/Tabs")
-        .ouiaId("access", "PF4/TabButton")
-        .click();
-      cy.ouiaId("access", "PF4/TabContent").should(
-        "have.text",
-        "Instance Access section"
-      );
     });
   });
 });

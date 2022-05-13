@@ -35,6 +35,7 @@
     "instancesListPageTitle": "Smart Events Instances",
     "instancesListTable": "Instances list table",
     "instanceWillBeAvailableShortly": "Your Smart Events instance will be ready for use shortly after creation.",
+    "loadingInstance": "Loading instance",
     "noInstances": "No Smart Event instances",
     "smartEventInstances": "Smart Event Instances"
   },

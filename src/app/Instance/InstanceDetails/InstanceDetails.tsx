@@ -92,13 +92,13 @@ export const InstanceDetails = ({
           <DescriptionListGroup>
             <DescriptionListTerm>{t("common.submittedAt")}</DescriptionListTerm>
             <DescriptionListDescription data-ouia-component-id="instance-details-submitted-date">
-              {formatDate(instance.submitted_at)}
+              {instance.submitted_at && formatDate(instance.submitted_at)}
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
             <DescriptionListTerm>{t("common.publishedAt")}</DescriptionListTerm>
             <DescriptionListDescription data-ouia-component-id="instance-details-published-date">
-              {formatDate(instance.published_at)}
+              {instance.published_at && formatDate(instance.published_at)}
             </DescriptionListDescription>
           </DescriptionListGroup>
         </DescriptionList>

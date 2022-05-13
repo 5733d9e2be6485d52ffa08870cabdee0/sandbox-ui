@@ -126,11 +126,11 @@ const InstancePage = (): JSX.Element => {
       accessor: "name",
       label: t("common.name"),
       formatter: (value: IRowData, row?: IRow): JSX.Element => {
-        const processorId = (row as Instance)?.id;
+        const processorId = (row as Instance)?.id ?? "";
         return (
           <Link
             data-testid="tableProcessors-linkProcessor"
-            to={`${location.pathname}/processor/${processorId ?? ""}`}
+            to={`${location.pathname}/processor/${processorId}`}
           >
             {value}
           </Link>

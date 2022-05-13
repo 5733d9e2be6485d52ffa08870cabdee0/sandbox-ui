@@ -1,55 +1,72 @@
 import {
   Configuration,
-  ProcessorResponse,
+  ProcessorListResponse,
   ProcessorsApi,
 } from "@openapi/generated";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import axios, { CancelTokenSource } from "axios";
+import { useAuth } from "@rhoas/app-services-ui-shared";
+import config from "../../../config/config";
 
-export function useGetProcessorsApi(
-  getToken: () => Promise<string>,
-  basePath: string
-): {
-  listProcessors: (
+export function useGetProcessorsApi(): {
+  getProcessors: (
     bridgeId: string,
     pageReq?: number,
-    sizeReq?: number
-  ) => Promise<void>;
-  processors?: ProcessorResponse[];
-  page?: number;
-  size?: number;
-  total?: number;
+    sizeReq?: number,
+    isPolling?: boolean
+  ) => void;
+  processorListResponse?: ProcessorListResponse;
   isLoading: boolean;
   error: unknown;
 } {
-  const [page, setPage] = useState<number>();
-  const [size, setSize] = useState<number>();
-  const [total, setTotal] = useState<number>();
-  const [processors, setProcessors] = useState<ProcessorResponse[]>();
+  const [processorListResponse, setProcessorListResponse] =
+    useState<ProcessorListResponse>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
+  const prevCallTokenSource = useRef<CancelTokenSource>();
+  const auth = useAuth();
 
-  const listProcessors = async (
-    bridgeId: string,
-    pageReq?: number,
-    sizeReq?: number
-  ): Promise<void> => {
-    const processorsApi = new ProcessorsApi(
-      new Configuration({
-        accessToken: getToken,
-        basePath,
-      })
-    );
-    await processorsApi
-      .listProcessors(bridgeId, pageReq, sizeReq)
-      .then((response) => {
-        setPage(response.data.page);
-        setSize(response.data.size);
-        setTotal(response.data.total);
-        setProcessors(response.data.items);
-      })
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
-  };
+  const getToken = useCallback(async (): Promise<string> => {
+    return (await auth.kas.getToken()) || "";
+  }, [auth]);
 
-  return { listProcessors, isLoading, processors, page, size, total, error };
+  const getProcessors = useCallback(
+    (
+      bridgeId: string,
+      pageReq?: number,
+      sizeReq?: number,
+      isPolling?: boolean
+    ): void => {
+      setIsLoading(!isPolling); // no loading, when the call is generated from a polling
+      prevCallTokenSource.current?.cancel();
+
+      const CancelToken = axios.CancelToken;
+      const source = CancelToken.source();
+      prevCallTokenSource.current = source;
+
+      const processorsApi = new ProcessorsApi(
+        new Configuration({
+          accessToken: getToken,
+          basePath: config.apiBasePath,
+        })
+      );
+      processorsApi
+        .listProcessors(bridgeId, pageReq, sizeReq, {
+          cancelToken: source.token,
+        })
+        .then((response) => {
+          setProcessorListResponse(response.data);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          if (!axios.isCancel(err)) {
+            setError(err);
+            setIsLoading(false);
+          }
+        });
+    },
+    [getToken]
+  );
+
+  return { getProcessors, isLoading, processorListResponse, error };
 }

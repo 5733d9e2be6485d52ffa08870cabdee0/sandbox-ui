@@ -35,6 +35,8 @@ import StatusLabel from "@app/components/StatusLabel/StatusLabel";
 import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
 import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
+import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
+import { usePolling } from "../../../hooks/usePolling/usePolling";
 
 interface InstanceRouteParams {
   instanceId: string;
@@ -49,6 +51,10 @@ const InstancePage = (): JSX.Element => {
 
   const processorsTabRef = React.createRef<HTMLElement>();
 
+  const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
+  const [currentPageSize, setCurrentPageSize] =
+    useState<number>(DEFAULT_PAGE_SIZE);
+  const [totalRows, setTotalRows] = useState<number>();
   const [activeTabKey, setActiveTabKey] = useState<number | string>(0);
   const [isDropdownActionOpen, setIsDropdownActionOpen] =
     useState<boolean>(false);
@@ -65,12 +71,42 @@ const InstancePage = (): JSX.Element => {
     getBridge(instanceId);
   }, [getBridge, instanceId]);
 
+  const {
+    getProcessors,
+    processorListResponse,
+    isLoading: areProcessorsLoading,
+    error: processorsError,
+  } = useGetProcessorsApi();
+
+  const triggerGetProcessors = useCallback(
+    (): void => getProcessors(instanceId, currentPage, currentPageSize, true),
+    [currentPage, currentPageSize, getProcessors, instanceId]
+  );
+
+  usePolling(() => triggerGetProcessors(), 10000);
+
+  useEffect(
+    () => getProcessors(instanceId, FIRST_PAGE, DEFAULT_PAGE_SIZE),
+    [getProcessors, instanceId]
+  );
+
+  useEffect(() => {
+    if (processorListResponse) {
+      setCurrentPage(processorListResponse.page ?? FIRST_PAGE);
+      setTotalRows(processorListResponse.total ?? 0);
+    }
+  }, [processorListResponse]);
+
   useEffect(() => {
     if (bridgeError) {
       console.error(bridgeError);
       goToHome();
     }
-  }, [bridgeError, goToHome]);
+
+    if (processorsError) {
+      console.error(processorsError);
+    }
+  }, [bridgeError, goToHome, processorsError]);
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -131,23 +167,6 @@ const InstancePage = (): JSX.Element => {
     },
   ];
 
-  const processorsOverviewRows = [
-    {
-      id: "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
-      type: "sink",
-      name: "Processor one",
-      status: "ready",
-      submitted_at: "2022-03-15T20:10:00Z",
-    },
-    {
-      id: "f8f34af4-caed-11ec-9d64-0242ac120002",
-      type: "source",
-      name: "Processor three",
-      status: "accepted",
-      submitted_at: "2022-04-15T12:10:46Z",
-    },
-  ];
-
   const customToolbarElement = (
     <Link to={`${location.pathname}/create-processor`}>
       <Button ouiaId="create-processor" variant="primary">
@@ -155,9 +174,22 @@ const InstancePage = (): JSX.Element => {
       </Button>
     </Link>
   );
+
+  const onPaginationChange = useCallback(
+    (pageNumber: number, pageSize: number): void => {
+      const correctPageNumber =
+        pageSize === currentPageSize ? pageNumber : FIRST_PAGE;
+      setCurrentPage(correctPageNumber);
+      setCurrentPageSize(pageSize);
+      getProcessors(instanceId, correctPageNumber, pageSize);
+    },
+    [currentPageSize, getProcessors, instanceId]
+  );
+
   return (
     <>
-      {isBridgeLoading && (
+      {(isBridgeLoading ||
+        (totalRows === undefined && areProcessorsLoading)) && (
         <>
           <PageHeaderSkeleton
             pageTitle={t("instance.loadingInstance")}
@@ -170,14 +202,14 @@ const InstancePage = (): JSX.Element => {
               <TableWithPaginationSkeleton
                 hasActionColumn={true}
                 columns={processorsOverviewColumns}
-                totalRows={processorsOverviewRows.length}
+                totalRows={currentPageSize}
                 customToolbarElement={customToolbarElement}
               />
             </TabContent>
           </PageSection>
         </>
       )}
-      {bridge && (
+      {bridge && processorListResponse?.items && (
         <Drawer isExpanded={showInstanceDrawer}>
           <DrawerContent
             data-ouia-component-id="instance-drawer"
@@ -271,14 +303,15 @@ const InstancePage = (): JSX.Element => {
                 <TableWithPagination
                   columns={processorsOverviewColumns}
                   customToolbarElement={customToolbarElement}
-                  rows={processorsOverviewRows}
+                  rows={processorListResponse.items}
                   tableLabel={t(
                     "openbridgeTempDictionary:processor.processorsListTable"
                   )}
-                  onPaginationChange={(): void => {}} // @TODO MGDOBR-673
-                  pageNumber={FIRST_PAGE} // @TODO MGDOBR-673
-                  pageSize={DEFAULT_PAGE_SIZE} // @TODO MGDOBR-673
-                  totalRows={DEFAULT_PAGE_SIZE} // @TODO MGDOBR-673
+                  isLoading={areProcessorsLoading}
+                  onPaginationChange={onPaginationChange}
+                  pageNumber={currentPage}
+                  pageSize={currentPageSize}
+                  totalRows={totalRows ?? 0}
                 />
               </TabContent>
             </PageSection>

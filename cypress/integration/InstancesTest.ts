@@ -7,10 +7,12 @@ describe("Instances Test", () => {
   describe("the 'Create a SE instance' Modal", () => {
     beforeEach(() => {
       cy.visit("/");
+      cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
+        "not.exist"
+      );
     });
 
-    it.skip("Submit", () => {
-      //This test is skipped because of MGDOBR-725
+    it("Submit", () => {
       const newInstanceName: string = "Some new instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
       cy.ouiaId("create-instance", "PF4/ModalContent")
@@ -32,8 +34,7 @@ describe("Instances Test", () => {
       */
     });
 
-    it.skip("Cancel", () => {
-      //This test is skipped because of MGDOBR-725
+    it("Cancel", () => {
       const newInstanceName: string = "Canceled instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
       cy.ouiaId("create-instance", "PF4/ModalContent")

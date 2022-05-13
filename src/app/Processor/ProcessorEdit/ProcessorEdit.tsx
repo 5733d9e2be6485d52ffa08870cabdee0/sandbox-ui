@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActionGroup,
+  Alert,
+  AlertGroup,
   Button,
   Flex,
   FlexItem,
@@ -20,19 +22,24 @@ import {
 import FiltersEdit from "@app/Processor/ProcessorEdit/FiltersEdit/FiltersEdit";
 import { CodeEditor } from "@patternfly/react-code-editor";
 import ActionEdit from "@app/Processor/ProcessorEdit/ActionEdit/ActionEdit";
-import { Action } from "../../../../openapi/generated";
+import { Action, ProcessorRequest } from "@openapi/generated";
 import SourceEdit from "@app/Processor/ProcessorEdit/SourceEdit/SourceEdit";
+import { EventFilter, ProcessorFormData } from "../../../types/Processor";
+import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidateProcessor";
 import "./ProcessorEdit.css";
-import { EventFilter } from "../../../types/Processor";
 
 interface ProcessorEditProps {
-  onSave: () => void;
+  existingProcessorName?: string;
+  isLoading: boolean;
+  onSave: (requestData: ProcessorRequest) => void;
   onCancel: () => void;
 }
 
 const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
-  const { onSave, onCancel } = props;
+  const { existingProcessorName, isLoading, onSave, onCancel } = props;
+  const { t } = useTranslation(["openbridgeTempDictionary"]);
   const [processorType, setProcessorType] = useState("");
+  const [name, setName] = useState("");
   const [filters, setFilters] = useState<EventFilter[]>([
     { key: "", type: "", value: "" },
   ]);
@@ -45,8 +52,86 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     type: "",
     parameters: {},
   });
+  const [request, setRequest] = useState<ProcessorFormData>({
+    name,
+    type: processorType,
+    filters,
+    transformationTemplate: transformation,
+    action,
+    source,
+  });
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const {
+    registerValidateConfig,
+    validateName,
+    validation,
+    validate,
+    resetValidation,
+  } = useValidateProcessor(request, existingProcessorName);
+
+  useEffect(() => {
+    setRequest({
+      name,
+      type: processorType,
+      filters,
+      transformationTemplate: transformation,
+      action,
+      source,
+    });
+  }, [name, processorType, filters, transformation, action, source]);
+
+  const prepareRequest = (formData: ProcessorFormData): ProcessorRequest => {
+    const requestData: ProcessorRequest = { name: formData.name };
+    if (formData.type === "sink") {
+      requestData.action = formData.action;
+    } else {
+      requestData.source = formData.source;
+    }
+    if (formData.filters && formData.filters.length > 0) {
+      const filtersData = formData.filters.filter(
+        (filter) => filter.type && filter.value && filter.key
+      );
+      if (filtersData.length > 0) {
+        requestData.filters =
+          filtersData as unknown as ProcessorRequest["filters"];
+      }
+    }
+    if (
+      formData.transformationTemplate &&
+      formData.transformationTemplate.trim().length > 0
+    ) {
+      requestData.transformationTemplate =
+        formData.transformationTemplate.trim();
+    }
+    return requestData;
+  };
+
+  const handleSubmit = (): void => {
+    setIsSubmitted(true);
+    if (validate() && request) {
+      const requestData = prepareRequest(request);
+      onSave(requestData);
+    }
+  };
+
+  useEffect(() => {
+    if (existingProcessorName) {
+      setIsSubmitted(true);
+      validate();
+    }
+  }, [existingProcessorName, validate]);
+
+  useEffect(() => {
+    if (isSubmitted) {
+      document.querySelector(".processor-field-error")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+      setIsSubmitted(false);
+    }
+  }, [isSubmitted]);
 
   return (
     <>
@@ -81,6 +166,14 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                         label={t("processor.selectProcessorType")}
                         fieldId={"processor-type"}
                         isRequired
+                        helperTextInvalid={validation.errors.processorType}
+                        validated={
+                          validation.errors.processorType ? "error" : "default"
+                        }
+                        className={
+                          validation.errors.processorType &&
+                          "processor-field-error"
+                        }
                       >
                         <Grid
                           hasGutter={true}
@@ -91,7 +184,10 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                               title={t("processor.sourceProcessor")}
                               isSelected={processorType === "source"}
                               style={{ height: "100%" }}
-                              onClick={(): void => setProcessorType("source")}
+                              onClick={(): void => {
+                                setProcessorType("source");
+                                resetValidation("processorType");
+                              }}
                             >
                               {t("processor.sourceProcessorDescription")}
                             </Tile>
@@ -101,7 +197,10 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                               title={t("processor.sinkProcessor")}
                               style={{ width: "100%", height: "100%" }}
                               isSelected={processorType === "sink"}
-                              onClick={(): void => setProcessorType("sink")}
+                              onClick={(): void => {
+                                setProcessorType("sink");
+                                resetValidation("processorType");
+                              }}
                             >
                               {t("processor.sinkProcessorDescription")}
                             </Tile>
@@ -112,6 +211,11 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                         fieldId={"processor-name"}
                         label={t("processor.processorName")}
                         isRequired={true}
+                        helperTextInvalid={validation.errors.name}
+                        validated={validation.errors.name ? "error" : "default"}
+                        className={
+                          validation.errors.name && "processor-field-error"
+                        }
                       >
                         <TextInput
                           type="text"
@@ -120,6 +224,14 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                           aria-describedby="processor-name"
                           isRequired={true}
                           maxLength={255}
+                          value={name}
+                          onChange={setName}
+                          validated={
+                            validation.errors.name ? "error" : "default"
+                          }
+                          onBlur={(): void => {
+                            validateName();
+                          }}
                         />
                       </FormGroup>
                     </FormSection>
@@ -134,7 +246,11 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 )}
                               </Text>
                             </TextContent>
-                            <SourceEdit source={source} onChange={setSource} />
+                            <SourceEdit
+                              source={source}
+                              onChange={setSource}
+                              registerValidation={registerValidateConfig}
+                            />
                           </FormSection>
                         )}
 
@@ -171,8 +287,26 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 {t("processor.selectActionDescription")}
                               </Text>
                             </TextContent>
-                            <ActionEdit action={action} onChange={setAction} />
+                            <ActionEdit
+                              action={action}
+                              onChange={setAction}
+                              registerValidation={registerValidateConfig}
+                            />
                           </FormSection>
+                        )}
+                        {processorType !== "" && (
+                          <AlertGroup
+                            className={"processor-edit__form__notice"}
+                          >
+                            <Alert
+                              variant="info"
+                              isInline={true}
+                              isPlain={true}
+                              title={t(
+                                "processor.processorWillBeAvailableShortly"
+                              )}
+                            />
+                          </AlertGroup>
                         )}
                       </>
                     )}
@@ -184,10 +318,19 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                 shrink={{ default: "shrink" }}
               >
                 <ActionGroup className={"processor-edit__actions"}>
-                  <Button variant="primary" onClick={onSave}>
+                  <Button
+                    variant="primary"
+                    onClick={handleSubmit}
+                    isLoading={isLoading}
+                    isDisabled={isLoading}
+                  >
                     {t("common.create")}
                   </Button>
-                  <Button variant="link" onClick={onCancel}>
+                  <Button
+                    variant="link"
+                    onClick={onCancel}
+                    isDisabled={isLoading}
+                  >
                     {t("common.cancel")}
                   </Button>
                 </ActionGroup>

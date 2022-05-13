@@ -45,7 +45,7 @@ const InstancesListPage = (): JSX.Element => {
       accessor: "name",
       label: t("common.name"),
       formatter: (value: IRowData, row?: IRow): JSX.Element => {
-        const bridgeId = (row as Instance)?.id;
+        const bridgeId = (row as Instance)?.id ?? "";
         return (
           <Link
             data-testid="tableInstances-linkInstance"

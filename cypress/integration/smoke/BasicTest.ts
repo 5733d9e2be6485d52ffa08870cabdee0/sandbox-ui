@@ -42,19 +42,13 @@ describe("Basic Elements", () => {
   });
 
   it("Instance header details are available", () => {
-    const instanceHeaderDetails = [
-      "Name",
-      "Description",
-      "Status",
-      "Time created",
-    ];
-    cy.get(
-      "table[data-ouia-component-id='Instances list table'] thead tr th"
-    ).should("have.length", 4);
-    cy.get(
-      "table[data-ouia-component-id='Instances list table'] thead tr th"
-    ).each((item, index) => {
-      cy.wrap(item).should("contain.text", instanceHeaderDetails[index]);
-    });
+    const instanceHeaderDetails = ["Name", "Status", "Time created"];
+    cy.ouiaId("Instances list table", "PF4/Table")
+      .ouiaType("PF4/TableRow")
+      .find("th")
+      .should("have.length", instanceHeaderDetails.length)
+      .each((item, index) => {
+        cy.wrap(item).should("have.text", instanceHeaderDetails[index]);
+      });
   });
 });

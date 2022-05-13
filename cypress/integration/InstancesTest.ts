@@ -87,21 +87,18 @@ describe("Instances Test", () => {
           cy.ouiaId("instance-details-id")
             .should("have.text", "3543edaa-1851-4ad7-96be-ebde7d20d717")
             .should("be.visible");
-          cy.ouiaId("instance-details-owner")
-            .should("have.text", "bebianco@redhat.com")
-            .should("be.visible");
           cy.ouiaId("instance-details-endpoint")
             .find("input")
             .should(
               "have.value",
-              "https://ob-3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events"
+              "https://3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events"
             )
             .should("be.visible");
           cy.ouiaId("instance-details-submitted-date")
-            .should("have.text", formatDate("2022-04-12T12:04:43.044590+0000"))
+            .should("have.text", formatDate("2022-02-24T13:34:00Z"))
             .should("be.visible");
           cy.ouiaId("instance-details-published-date")
-            .should("have.text", formatDate("2022-04-12T12:06:22.881959+0000"))
+            .should("have.text", formatDate("2022-02-24T13:35:00Z"))
             .should("be.visible");
           cy.ouiaId("close-instance-details").click();
         })

@@ -16,6 +16,7 @@ import {
 import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
+import { Instance } from "../../../types/Instance";
 import {
   DEFAULT_PAGE_SIZE,
   FIRST_PAGE,
@@ -28,7 +29,9 @@ import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi"
 import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
-import { BridgeResponse } from "@openapi/generated";
+import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
+import axios from "axios";
+import { ResponseError } from "../../../types/Error";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -38,14 +41,14 @@ const InstancesListPage = (): JSX.Element => {
     useState<number>(DEFAULT_PAGE_SIZE);
   const [totalRows, setTotalRows] = useState<number>();
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
-  const [selectedInstance, setSelectedInstance] = useState<BridgeResponse>();
+  const [selectedInstance, setSelectedInstance] = useState<Instance>();
 
   const columnNames = [
     {
       accessor: "name",
       label: t("common.name"),
       formatter: (value: IRowData, row?: IRow): JSX.Element => {
-        const bridgeId = (row as BridgeResponse)?.id ?? "";
+        const bridgeId = (row as Instance)?.id;
         return (
           <Link
             data-testid="tableInstances-linkInstance"
@@ -102,6 +105,51 @@ const InstancesListPage = (): JSX.Element => {
   }, [error]);
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
+  const [newBridgeName, setNewBridgeName] = useState("");
+  const [existingBridgeName, setExistingBridgeName] = useState("");
+
+  const {
+    error: createBridgeError,
+    isLoading: createBridgeLoading,
+    createBridge,
+    bridge,
+  } = useCreateBridgeApi();
+
+  const handleCreateBridge = useCallback(
+    (name: string) => {
+      setNewBridgeName(name);
+      createBridge({ name });
+    },
+    [createBridge]
+  );
+
+  useEffect(() => {
+    if (bridge) {
+      closeCreateInstanceDialog();
+      getBridges(currentPage, currentPageSize);
+    }
+  }, [bridge, getBridges, currentPage, currentPageSize]);
+
+  useEffect(() => {
+    if (createBridgeError) {
+      if (axios.isAxiosError(createBridgeError)) {
+        // TODO: replace error code string with a value coming from an error catalog
+        //  See https://issues.redhat.com/browse/MGDOBR-669 for more details.
+        if (
+          (createBridgeError.response?.data as ResponseError).code ===
+          "OPENBRIDGE-1"
+        ) {
+          setExistingBridgeName(newBridgeName);
+        }
+      }
+    }
+  }, [createBridgeError, newBridgeName]);
+
+  const closeCreateInstanceDialog = (): void => {
+    setShowCreateInstance(false);
+    setNewBridgeName("");
+    setExistingBridgeName("");
+  };
 
   const customToolbarElement = (
     <>
@@ -112,10 +160,11 @@ const InstancesListPage = (): JSX.Element => {
         {t("instance.createSEInstance")}
       </Button>
       <CreateInstance
-        isLoading={false}
+        isLoading={createBridgeLoading}
         isModalOpen={showCreateInstance}
-        onClose={(): void => setShowCreateInstance(false)}
-        onCreate={(): void => setShowCreateInstance(false)}
+        onClose={closeCreateInstanceDialog}
+        onCreate={handleCreateBridge}
+        existingInstanceName={existingBridgeName}
       />
     </>
   );
@@ -154,7 +203,7 @@ const InstancesListPage = (): JSX.Element => {
             columns={columnNames}
             customToolbarElement={customToolbarElement}
             onDetailsClick={(rowData): void => {
-              setSelectedInstance(rowData as unknown as BridgeResponse);
+              setSelectedInstance(rowData as unknown as Instance);
               setShowInstanceDrawer(true);
             }}
             isLoading={isLoading}

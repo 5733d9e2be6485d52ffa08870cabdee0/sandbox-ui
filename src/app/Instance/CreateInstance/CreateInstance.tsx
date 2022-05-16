@@ -11,52 +11,65 @@ import {
 import { useTranslation } from "react-i18next";
 
 export interface CreateInstanceProps {
-  /**
-   * Flag to indicate the creation request is in progress
-   */
+  /** Flag to indicate the creation request is in progress */
   isLoading: boolean;
-  /**
-   * Flag to show/hide the modal
-   */
+  /** Flag to show/hide the modal */
   isModalOpen: boolean;
-  /**
-   * Callback to close the modal
-   */
+  /** Callback to close the modal */
   onClose: () => void;
-  /**
-   * Callback to create the instance
-   */
+  /** Callback to create the instance */
   onCreate: (name: string) => void;
+  /** invalid instance name used to create an instance */
+  existingInstanceName?: string;
 }
 
 const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
-  const { isLoading, isModalOpen, onClose, onCreate } = props;
+  const { isLoading, isModalOpen, onClose, onCreate, existingInstanceName } =
+    props;
   const [name, setName] = useState("");
-  // @TODO Basic temporary error management. To be integrated with APIs errors.
   const [error, setError] = useState<string | null>(null);
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const FORM_ID = "create-instance-form";
 
+  const validate = useCallback(() => {
+    if (name.trim() === "") {
+      setError(t("common.required"));
+      return false;
+    }
+    if (existingInstanceName && name.trim() === existingInstanceName) {
+      setError(t("instance.errors.invalidName"));
+      return false;
+    }
+    setError(null);
+    return true;
+  }, [name, t, existingInstanceName]);
+
   const onSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      if (name === "") {
-        setError("name-required");
-      } else {
-        setError(null);
-        onCreate(name);
+      if (validate()) {
+        onCreate(name.trim());
       }
     },
-    [name, onCreate]
+    [name, onCreate, validate]
   );
 
-  const handleNameChange = useCallback((value: string) => {
-    setName(value);
-    setError(value === "" ? "name-required" : null);
-  }, []);
+  const handleNameChange = useCallback(
+    (name: string) => {
+      setName(name);
+      if (existingInstanceName) {
+        validate();
+      }
+    },
+    [existingInstanceName, validate]
+  );
 
-  const isNameMissing = error === "name-required" ? "error" : "default";
+  useEffect(() => {
+    if (existingInstanceName) {
+      validate();
+    }
+  }, [existingInstanceName, validate]);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -95,8 +108,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
           label={t("common.name")}
           isRequired
           fieldId="instance-name"
-          validated={isNameMissing}
-          helperTextInvalid={t("common.required")}
+          validated={error ? "error" : "default"}
+          helperTextInvalid={error}
         >
           <TextInput
             isRequired
@@ -107,7 +120,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
             name="instance-name"
             value={name}
             onChange={handleNameChange}
-            validated={isNameMissing}
+            onBlur={validate}
+            validated={error ? "error" : "default"}
             isDisabled={isLoading}
           />
         </FormGroup>

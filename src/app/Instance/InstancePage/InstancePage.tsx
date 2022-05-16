@@ -30,7 +30,6 @@ import {
   TableWithPagination,
 } from "@app/components/TableWithPagination/TableWithPagination";
 import { IRow, IRowData } from "@patternfly/react-table";
-import { Instance } from "../../../types/Instance";
 import { formatDistance } from "date-fns";
 import "./InstancePage.css";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
@@ -40,6 +39,7 @@ import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSke
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
+import { BridgeResponse } from "@openapi/generated";
 
 interface InstanceRouteParams {
   instanceId: string;
@@ -129,7 +129,7 @@ const InstancePage = (): JSX.Element => {
       accessor: "name",
       label: t("common.name"),
       formatter: (value: IRowData, row?: IRow): JSX.Element => {
-        const processorId = (row as Instance)?.id ?? "";
+        const processorId = (row as BridgeResponse)?.id ?? "";
         return (
           <Link
             data-testid="tableProcessors-linkProcessor"

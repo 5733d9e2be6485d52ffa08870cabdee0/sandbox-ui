@@ -1,5 +1,4 @@
 import React from "react";
-import { Instance } from "../../../types/Instance";
 import {
   ClipboardCopy,
   DescriptionList,
@@ -18,9 +17,10 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
+import { BridgeResponse } from "@openapi/generated";
 
 interface InstanceDetailsProps {
-  instance: Instance;
+  instance: BridgeResponse;
   onClosingDetails: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 

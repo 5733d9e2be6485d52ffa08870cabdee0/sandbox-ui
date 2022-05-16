@@ -64,6 +64,7 @@
     "loadingProcessor": "Loading processor",
     "loadingProcessorType": "Loading processor type",
     "noFilters": "No filters configured",
+    "noProcessors": "No processors for this Smart Event instance",
     "noTransformationTemplate": "No template configured",
     "processorName": "Processor name",
     "processorsListTable": "Processors list table",

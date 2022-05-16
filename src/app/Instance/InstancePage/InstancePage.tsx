@@ -6,6 +6,8 @@ import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
+  EmptyState,
+  EmptyStateIcon,
   PageSection,
   PageSectionVariants,
   Split,
@@ -16,11 +18,12 @@ import {
   TabTitleText,
   Text,
   TextContent,
+  Title,
 } from "@patternfly/react-core";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
-import { CaretDownIcon } from "@patternfly/react-icons";
+import { CaretDownIcon, PlusCircleIcon } from "@patternfly/react-icons";
 import {
   DEFAULT_PAGE_SIZE,
   FIRST_PAGE,
@@ -312,7 +315,14 @@ const InstancePage = (): JSX.Element => {
                   pageNumber={currentPage}
                   pageSize={currentPageSize}
                   totalRows={totalRows ?? 0}
-                />
+                >
+                  <EmptyState variant="large">
+                    <EmptyStateIcon icon={PlusCircleIcon} />
+                    <Title headingLevel="h4" size="lg">
+                      {t("processor.noProcessors")}
+                    </Title>
+                  </EmptyState>
+                </TableWithPagination>
               </TabContent>
             </PageSection>
           </DrawerContent>

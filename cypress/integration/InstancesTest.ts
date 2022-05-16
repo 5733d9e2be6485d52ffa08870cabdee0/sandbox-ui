@@ -12,7 +12,7 @@ describe("Instances Test", () => {
       );
     });
 
-    it("Submit", () => {
+    it.skip("Submit", () => {
       const newInstanceName: string = "Some new instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
       cy.ouiaId("create-instance", "PF4/ModalContent")

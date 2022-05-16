@@ -53,7 +53,7 @@ describe("Instances Test", () => {
     });
   });
 
-  describe("Instance Page - Instance six", () => {
+  describe("Instance Page - Instance one", () => {
     beforeEach(() => {
       cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
     });

@@ -66,18 +66,20 @@ export const TableWithPagination: FunctionComponent<
   const actionResolver = (
     rowData?: IRow
   ): { title: string; onClick: () => void }[] => {
-    return [
-      {
+    const actions = [];
+    if (onDetailsClick) {
+      actions.push({
         title: t("common.details"),
         onClick: (): void => onDetailsClick?.(rowData),
-      },
-      {
-        title: t("common.delete"),
-        onClick: (): void =>
-          // @TODO missing action to perform when clicking on delete action
-          {},
-      },
-    ];
+      });
+    }
+    actions.push({
+      title: t("common.delete"),
+      onClick: (): void =>
+        // @TODO missing action to perform when clicking on delete action
+        {},
+    });
+    return actions;
   };
 
   const getPagination = (isBottom: boolean): JSX.Element => (

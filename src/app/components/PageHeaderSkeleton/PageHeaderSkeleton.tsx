@@ -7,21 +7,24 @@ import {
   SplitItem,
   Stack,
   StackItem,
+  Tab,
+  Tabs,
 } from "@patternfly/react-core";
 
 interface PageHeaderSkeletonProps {
   pageTitle: string;
   hasActionDropdown: boolean;
   hasLabel: boolean;
+  totalTabs?: number;
 }
 
 const PageHeaderSkeleton = (props: PageHeaderSkeletonProps): JSX.Element => {
-  const { pageTitle, hasActionDropdown, hasLabel } = props;
+  const { pageTitle, hasActionDropdown, hasLabel, totalTabs = 0 } = props;
   return (
     <>
       <PageSection
         variant={PageSectionVariants.light}
-        hasShadowBottom={true}
+        hasShadowBottom={totalTabs === 0}
         type="breadcrumb"
       >
         <Split hasGutter={true}>
@@ -33,7 +36,10 @@ const PageHeaderSkeleton = (props: PageHeaderSkeletonProps): JSX.Element => {
           </SplitItem>
         </Split>
       </PageSection>
-      <PageSection variant={PageSectionVariants.light} hasShadowBottom={true}>
+      <PageSection
+        variant={PageSectionVariants.light}
+        hasShadowBottom={totalTabs === 0}
+      >
         <Split hasGutter={true}>
           <SplitItem isFilled={true}>
             <Stack hasGutter={true}>
@@ -58,6 +64,19 @@ const PageHeaderSkeleton = (props: PageHeaderSkeletonProps): JSX.Element => {
           )}
         </Split>
       </PageSection>
+      {totalTabs > 0 && (
+        <PageSection variant={PageSectionVariants.light} type="tabs">
+          <Tabs usePageInsets>
+            {[...Array(totalTabs).keys()].map((tabNumber) => (
+              <Tab
+                key={tabNumber}
+                eventKey={tabNumber}
+                title={<Skeleton fontSize="xl" width={"100px"} />}
+              />
+            ))}
+          </Tabs>
+        </PageSection>
+      )}
     </>
   );
 };

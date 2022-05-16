@@ -38,6 +38,7 @@
     "instancesListPageTitle": "Smart Events Instances",
     "instancesListTable": "Instances list table",
     "instanceWillBeAvailableShortly": "Your Smart Events instance will be ready for use shortly after creation.",
+    "loadingInstance": "Loading instance",
     "noInstances": "No Smart Event instances",
     "smartEventInstances": "Smart Event Instances"
   },
@@ -66,6 +67,7 @@
     "loadingProcessor": "Loading processor",
     "loadingProcessorType": "Loading processor type",
     "noFilters": "No filters configured",
+    "noProcessors": "No processors for this Smart Event instance",
     "noTransformationTemplate": "No template configured",
     "processorName": "Processor name",
     "processorsListTable": "Processors list table",

@@ -33,7 +33,7 @@ describe("Basic Elements", () => {
     //TODO: MGDOBR-710
     cy.wait(10000);
     cy.ouiaType("PF4/TableRow").should("have.length", 11);
-    cy.ouiaId("ee22ce62-1f23-4dd7-b106-e4158baf8228", "PF4/TableRow")
+    cy.ouiaId("3543edaa-1851-4ad7-96be-ebde7d20d717", "PF4/TableRow")
       .find("a[data-testid='tableInstances-linkInstance']")
       .should("be.visible")
       .click();

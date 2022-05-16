@@ -1,5 +1,4 @@
 import React from "react";
-import { Instance } from "../../../types/Instance";
 import {
   ClipboardCopy,
   DescriptionList,
@@ -18,9 +17,10 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
+import { BridgeResponse } from "@openapi/generated";
 
 interface InstanceDetailsProps {
-  instance: Instance;
+  instance: BridgeResponse;
   onClosingDetails: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
@@ -71,12 +71,6 @@ export const InstanceDetails = ({
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
-            <DescriptionListTerm>{t("common.owner")}</DescriptionListTerm>
-            <DescriptionListDescription data-ouia-component-id="instance-details-owner">
-              {instance.owner}
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-          <DescriptionListGroup>
             <DescriptionListTerm>{t("common.url")}</DescriptionListTerm>
             <DescriptionListDescription>
               <ClipboardCopy
@@ -92,13 +86,13 @@ export const InstanceDetails = ({
           <DescriptionListGroup>
             <DescriptionListTerm>{t("common.submittedAt")}</DescriptionListTerm>
             <DescriptionListDescription data-ouia-component-id="instance-details-submitted-date">
-              {formatDate(instance.submitted_at)}
+              {instance.submitted_at && formatDate(instance.submitted_at)}
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
             <DescriptionListTerm>{t("common.publishedAt")}</DescriptionListTerm>
             <DescriptionListDescription data-ouia-component-id="instance-details-published-date">
-              {formatDate(instance.published_at)}
+              {instance.published_at && formatDate(instance.published_at)}
             </DescriptionListDescription>
           </DescriptionListGroup>
         </DescriptionList>

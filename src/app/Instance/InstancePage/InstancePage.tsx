@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Drawer,
@@ -6,6 +6,8 @@ import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
+  EmptyState,
+  EmptyStateIcon,
   PageSection,
   PageSectionVariants,
   Split,
@@ -16,37 +18,98 @@ import {
   TabTitleText,
   Text,
   TextContent,
+  Title,
 } from "@patternfly/react-core";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
-import { CaretDownIcon } from "@patternfly/react-icons";
+import { CaretDownIcon, PlusCircleIcon } from "@patternfly/react-icons";
 import {
   DEFAULT_PAGE_SIZE,
   FIRST_PAGE,
   TableWithPagination,
 } from "@app/components/TableWithPagination/TableWithPagination";
 import { IRow, IRowData } from "@patternfly/react-table";
-import { Instance } from "../../../types/Instance";
 import { formatDistance } from "date-fns";
 import "./InstancePage.css";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
 import StatusLabel from "@app/components/StatusLabel/StatusLabel";
+import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
+import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
+import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
+import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
+import { usePolling } from "../../../hooks/usePolling/usePolling";
+import { BridgeResponse } from "@openapi/generated";
+
+interface InstanceRouteParams {
+  instanceId: string;
+}
 
 const InstancePage = (): JSX.Element => {
+  const { instanceId } = useParams<InstanceRouteParams>();
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const location = useLocation();
   const history = useHistory();
+  const goToHome = useCallback((): void => history.push(`/`), [history]);
 
   const processorsTabRef = React.createRef<HTMLElement>();
-  const accessTabRef = React.createRef<HTMLElement>();
 
+  const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
+  const [currentPageSize, setCurrentPageSize] =
+    useState<number>(DEFAULT_PAGE_SIZE);
+  const [totalRows, setTotalRows] = useState<number>();
   const [activeTabKey, setActiveTabKey] = useState<number | string>(0);
   const [isDropdownActionOpen, setIsDropdownActionOpen] =
     useState<boolean>(false);
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
 
-  const instanceName = `Instance one`; // @TODO retrieve it from API
+  const {
+    getBridge,
+    bridge,
+    isLoading: isBridgeLoading,
+    error: bridgeError,
+  } = useGetBridgeApi();
+
+  useEffect(() => {
+    getBridge(instanceId);
+  }, [getBridge, instanceId]);
+
+  const {
+    getProcessors,
+    processorListResponse,
+    isLoading: areProcessorsLoading,
+    error: processorsError,
+  } = useGetProcessorsApi();
+
+  const triggerGetProcessors = useCallback(
+    (): void => getProcessors(instanceId, currentPage, currentPageSize, true),
+    [currentPage, currentPageSize, getProcessors, instanceId]
+  );
+
+  usePolling(() => triggerGetProcessors(), 10000);
+
+  useEffect(
+    () => getProcessors(instanceId, FIRST_PAGE, DEFAULT_PAGE_SIZE),
+    [getProcessors, instanceId]
+  );
+
+  useEffect(() => {
+    if (processorListResponse) {
+      setCurrentPage(processorListResponse.page ?? FIRST_PAGE);
+      setTotalRows(processorListResponse.total ?? 0);
+    }
+  }, [processorListResponse]);
+
+  useEffect(() => {
+    if (bridgeError) {
+      console.error(bridgeError);
+      goToHome();
+    }
+
+    if (processorsError) {
+      console.error(processorsError);
+    }
+  }, [bridgeError, goToHome, processorsError]);
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -66,7 +129,7 @@ const InstancePage = (): JSX.Element => {
       accessor: "name",
       label: t("common.name"),
       formatter: (value: IRowData, row?: IRow): JSX.Element => {
-        const processorId = (row as Instance)?.id;
+        const processorId = (row as BridgeResponse)?.id ?? "";
         return (
           <Link
             data-testid="tableProcessors-linkProcessor"
@@ -107,162 +170,165 @@ const InstancePage = (): JSX.Element => {
     },
   ];
 
-  const processorsOverviewRows = [
-    {
-      id: "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
-      type: "sink",
-      name: "Processor one",
-      status: "ready",
-      submitted_at: "2022-03-15T20:10:00Z",
+  const customToolbarElement = (
+    <Link to={`${location.pathname}/create-processor`}>
+      <Button ouiaId="create-processor" variant="primary">
+        {t("processor.createProcessor")}
+      </Button>
+    </Link>
+  );
+
+  const onPaginationChange = useCallback(
+    (pageNumber: number, pageSize: number): void => {
+      const correctPageNumber =
+        pageSize === currentPageSize ? pageNumber : FIRST_PAGE;
+      setCurrentPage(correctPageNumber);
+      setCurrentPageSize(pageSize);
+      getProcessors(instanceId, correctPageNumber, pageSize);
     },
-    {
-      id: "f8f34af4-caed-11ec-9d64-0242ac120002",
-      type: "source",
-      name: "Processor three",
-      status: "accepted",
-      submitted_at: "2022-04-15T12:10:46Z",
-    },
-  ];
+    [currentPageSize, getProcessors, instanceId]
+  );
 
   return (
-    <Drawer isExpanded={showInstanceDrawer}>
-      <DrawerContent
-        data-ouia-component-id="instance-drawer"
-        panelContent={
-          <InstanceDetails
-            onClosingDetails={(): void => setShowInstanceDrawer(false)}
-            instance={{
-              id: "3543edaa-1851-4ad7-96be-ebde7d20d717",
-              endpoint:
-                "https://ob-3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
-              name: instanceName,
-              owner: "bebianco@redhat.com",
-              published_at: "2022-04-12T12:06:22.881959+0000",
-              status: "READY",
-              submitted_at: "2022-04-12T12:04:43.044590+0000",
-            }}
+    <>
+      {(isBridgeLoading ||
+        (totalRows === undefined && areProcessorsLoading)) && (
+        <>
+          <PageHeaderSkeleton
+            pageTitle={t("instance.loadingInstance")}
+            hasActionDropdown={true}
+            hasLabel={false}
+            totalTabs={1}
           />
-        }
-      >
-        <PageSection variant={PageSectionVariants.light} type="breadcrumb">
-          <Breadcrumb
-            path={[
-              { label: t("instance.smartEventInstances"), linkTo: "/" },
-              { label: instanceName },
-            ]}
-          />
-        </PageSection>
-        <PageSection variant={PageSectionVariants.light}>
-          <Split>
-            <SplitItem isFilled>
-              <TextContent>
-                <Text ouiaId="instance-name" component="h1">
-                  {instanceName}
-                </Text>
-              </TextContent>
-            </SplitItem>
-            <SplitItem>
-              <Dropdown
-                ouiaId="actions"
-                onSelect={(): void => setIsDropdownActionOpen(false)}
-                toggle={
-                  <DropdownToggle
-                    ouiaId="actions"
-                    onToggle={(isOpen: boolean): void =>
-                      setIsDropdownActionOpen(isOpen)
-                    }
-                    toggleIndicator={CaretDownIcon}
-                  >
-                    {t("common.actions")}
-                  </DropdownToggle>
-                }
-                isOpen={isDropdownActionOpen}
-                dropdownItems={[
-                  <DropdownItem
-                    key="details"
-                    ouiaId="details"
-                    onClick={(): void => {
-                      setShowInstanceDrawer(true);
-                    }}
-                  >
-                    {t("common.details")}
-                  </DropdownItem>,
-                  <DropdownItem
-                    key="delete"
-                    ouiaId="delete"
-                    onClick={onDeleteClick}
-                  >
-                    {t("common.delete")}
-                  </DropdownItem>,
+          <PageSection>
+            <TabContent id="instance-skeleton__page__tabs-processors">
+              <TableWithPaginationSkeleton
+                hasActionColumn={true}
+                columns={processorsOverviewColumns}
+                totalRows={currentPageSize}
+                customToolbarElement={customToolbarElement}
+              />
+            </TabContent>
+          </PageSection>
+        </>
+      )}
+      {bridge && processorListResponse?.items && (
+        <Drawer isExpanded={showInstanceDrawer}>
+          <DrawerContent
+            data-ouia-component-id="instance-drawer"
+            panelContent={
+              <InstanceDetails
+                onClosingDetails={(): void => setShowInstanceDrawer(false)}
+                instance={bridge}
+              />
+            }
+          >
+            <PageSection variant={PageSectionVariants.light} type="breadcrumb">
+              <Breadcrumb
+                path={[
+                  { label: t("instance.smartEventInstances"), linkTo: "/" },
+                  { label: bridge.name ?? "" },
                 ]}
               />
-            </SplitItem>
-          </Split>
-        </PageSection>
-        <PageSection variant={PageSectionVariants.light} type="tabs">
-          <Tabs
-            className="instance-page__tabs"
-            ouiaId="instance-details"
-            usePageInsets
-            activeKey={activeTabKey}
-            onSelect={handleTabClick}
-          >
-            <Tab
-              eventKey={0}
-              ouiaId="processors"
-              tabContentId="instance-page__tabs-processors"
-              tabContentRef={processorsTabRef}
-              title={<TabTitleText>{t("common.processors")}</TabTitleText>}
-            />
-            <Tab
-              eventKey={1}
-              ouiaId="access"
-              tabContentId="instance-page__tabs-access"
-              tabContentRef={accessTabRef}
-              title={<TabTitleText>{t("common.access")}</TabTitleText>}
-            />
-          </Tabs>
-        </PageSection>
-        <PageSection>
-          <TabContent
-            eventKey={0}
-            id="instance-page__tabs-processors"
-            ouiaId="processors"
-            ref={processorsTabRef}
-            aria-label="Processors tab"
-          >
-            <TableWithPagination
-              columns={processorsOverviewColumns}
-              customToolbarElement={
-                <Link to={`${location.pathname}/create-processor`}>
-                  <Button ouiaId="create-processor" variant="primary">
-                    {t("processor.createProcessor")}
-                  </Button>
-                </Link>
-              }
-              rows={processorsOverviewRows}
-              tableLabel={t(
-                "openbridgeTempDictionary:processor.processorsListTable"
-              )}
-              onPaginationChange={(): void => {}} // @TODO MGDOBR-673
-              pageNumber={FIRST_PAGE} // @TODO MGDOBR-673
-              pageSize={DEFAULT_PAGE_SIZE} // @TODO MGDOBR-673
-              totalRows={DEFAULT_PAGE_SIZE} // @TODO MGDOBR-673
-            />
-          </TabContent>
-          <TabContent
-            eventKey={1}
-            id="instance-page__tabs-access"
-            ouiaId="access"
-            ref={accessTabRef}
-            aria-label="Access tab"
-            hidden
-          >
-            Instance Access section
-          </TabContent>
-        </PageSection>
-      </DrawerContent>
-    </Drawer>
+            </PageSection>
+            <PageSection variant={PageSectionVariants.light}>
+              <Split>
+                <SplitItem isFilled>
+                  <TextContent>
+                    <Text ouiaId="instance-name" component="h1">
+                      {bridge.name}
+                    </Text>
+                  </TextContent>
+                </SplitItem>
+                <SplitItem>
+                  <Dropdown
+                    ouiaId="actions"
+                    onSelect={(): void => setIsDropdownActionOpen(false)}
+                    toggle={
+                      <DropdownToggle
+                        ouiaId="actions"
+                        onToggle={(isOpen: boolean): void =>
+                          setIsDropdownActionOpen(isOpen)
+                        }
+                        toggleIndicator={CaretDownIcon}
+                      >
+                        {t("common.actions")}
+                      </DropdownToggle>
+                    }
+                    isOpen={isDropdownActionOpen}
+                    dropdownItems={[
+                      <DropdownItem
+                        key="details"
+                        ouiaId="details"
+                        onClick={(): void => {
+                          setShowInstanceDrawer(true);
+                        }}
+                      >
+                        {t("common.details")}
+                      </DropdownItem>,
+                      <DropdownItem
+                        key="delete"
+                        ouiaId="delete"
+                        onClick={onDeleteClick}
+                      >
+                        {t("common.delete")}
+                      </DropdownItem>,
+                    ]}
+                  />
+                </SplitItem>
+              </Split>
+            </PageSection>
+            <PageSection variant={PageSectionVariants.light} type="tabs">
+              <Tabs
+                className="instance-page__tabs"
+                ouiaId="instance-details"
+                usePageInsets
+                activeKey={activeTabKey}
+                onSelect={handleTabClick}
+              >
+                <Tab
+                  eventKey={0}
+                  ouiaId="processors"
+                  tabContentId="instance-page__tabs-processors"
+                  tabContentRef={processorsTabRef}
+                  title={<TabTitleText>{t("common.processors")}</TabTitleText>}
+                />
+              </Tabs>
+            </PageSection>
+            <PageSection>
+              <TabContent
+                eventKey={0}
+                id="instance-page__tabs-processors"
+                ouiaId="processors"
+                ref={processorsTabRef}
+                aria-label="Processors tab"
+              >
+                <TableWithPagination
+                  columns={processorsOverviewColumns}
+                  customToolbarElement={customToolbarElement}
+                  rows={processorListResponse.items}
+                  tableLabel={t(
+                    "openbridgeTempDictionary:processor.processorsListTable"
+                  )}
+                  isLoading={areProcessorsLoading}
+                  onPaginationChange={onPaginationChange}
+                  pageNumber={currentPage}
+                  pageSize={currentPageSize}
+                  totalRows={totalRows ?? 0}
+                >
+                  <EmptyState variant="large">
+                    <EmptyStateIcon icon={PlusCircleIcon} />
+                    <Title headingLevel="h4" size="lg">
+                      {t("processor.noProcessors")}
+                    </Title>
+                  </EmptyState>
+                </TableWithPagination>
+              </TabContent>
+            </PageSection>
+          </DrawerContent>
+        </Drawer>
+      )}
+    </>
   );
 };
 

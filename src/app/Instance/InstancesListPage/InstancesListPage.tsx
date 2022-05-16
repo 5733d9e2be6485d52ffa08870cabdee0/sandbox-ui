@@ -16,7 +16,6 @@ import {
 import { IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
-import { Instance } from "../../../types/Instance";
 import {
   DEFAULT_PAGE_SIZE,
   FIRST_PAGE,
@@ -32,6 +31,7 @@ import { TableWithPaginationSkeleton } from "@app/components/TableWithPagination
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import axios from "axios";
 import { ResponseError } from "../../../types/Error";
+import { BridgeResponse } from "@openapi/generated";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -41,14 +41,14 @@ const InstancesListPage = (): JSX.Element => {
     useState<number>(DEFAULT_PAGE_SIZE);
   const [totalRows, setTotalRows] = useState<number>();
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
-  const [selectedInstance, setSelectedInstance] = useState<Instance>();
+  const [selectedInstance, setSelectedInstance] = useState<BridgeResponse>();
 
   const columnNames = [
     {
       accessor: "name",
       label: t("common.name"),
       formatter: (value: IRowData, row?: IRow): JSX.Element => {
-        const bridgeId = (row as Instance)?.id;
+        const bridgeId = (row as BridgeResponse)?.id ?? "";
         return (
           <Link
             data-testid="tableInstances-linkInstance"
@@ -203,7 +203,7 @@ const InstancesListPage = (): JSX.Element => {
             columns={columnNames}
             customToolbarElement={customToolbarElement}
             onDetailsClick={(rowData): void => {
-              setSelectedInstance(rowData as unknown as Instance);
+              setSelectedInstance(rowData as unknown as BridgeResponse);
               setShowInstanceDrawer(true);
             }}
             isLoading={isLoading}

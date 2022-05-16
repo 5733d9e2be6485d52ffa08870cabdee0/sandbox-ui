@@ -401,6 +401,7 @@ export const handlers = [
     const processor = {
       kind: "Processor",
       id,
+      type: action ? "sink" : "source",
       name,
       href: `/api/v1/bridges/${bridge?.id ?? ""}/processors/${id}`,
       submitted_at: new Date().toISOString(),
@@ -424,7 +425,15 @@ export const handlers = [
       name.includes("fail-create")
     );
 
-    return res(ctx.status(200), ctx.delay(apiDelay), ctx.json(newProcessor));
+    return res(
+      ctx.status(200),
+      ctx.delay(apiDelay),
+      ctx.json(
+        cleanupProcessor(
+          newProcessor as unknown as Record<string | number | symbol, unknown>
+        )
+      )
+    );
   }),
   // delete a processor
   rest.delete(

@@ -31,6 +31,8 @@ interface TableWithPaginationProps {
   customToolbarElement?: React.ReactNode;
   /** Function executed when clicking on the "Details" action */
   onDetailsClick?: (rowData?: IRow) => void;
+  /** Function executed when clicking on the "Details" action */
+  onDeleteClick?: (rowData?: IRow) => void;
   /** True, when table data is loading */
   isLoading?: boolean;
   /** Element to be rendered when there are no rows to display */
@@ -52,6 +54,7 @@ export const TableWithPagination: FunctionComponent<
   columns,
   customToolbarElement,
   onDetailsClick,
+  onDeleteClick,
   isLoading,
   rows,
   totalRows,
@@ -75,9 +78,7 @@ export const TableWithPagination: FunctionComponent<
     }
     actions.push({
       title: t("common.delete"),
-      onClick: (): void =>
-        // @TODO missing action to perform when clicking on delete action
-        {},
+      onClick: (): void => onDeleteClick?.(rowData),
     });
     return actions;
   };

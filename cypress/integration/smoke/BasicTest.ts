@@ -33,12 +33,11 @@ describe("Basic Elements", () => {
     //TODO: MGDOBR-710
     cy.wait(10000);
     cy.ouiaType("PF4/TableRow").should("have.length", 11);
-    cy.ouiaId("3543edaa-1851-4ad7-96be-ebde7d20d717", "PF4/TableRow")
+    cy.ouiaId("Instance two", "PF4/TableRow")
       .find("a[data-testid='tableInstances-linkInstance']")
       .should("be.visible")
       .click();
-    //TODO: fix the name of the instance. It seems that the application contains some dummy data
-    cy.ouiaId("instance-name", "PF4/Text").should("have.text", "Instance one");
+    cy.ouiaId("instance-name", "PF4/Text").should("have.text", "Instance two");
   });
 
   it("Instance header details are available", () => {

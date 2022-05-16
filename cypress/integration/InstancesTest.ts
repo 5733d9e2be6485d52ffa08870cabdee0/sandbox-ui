@@ -12,41 +12,52 @@ describe("Instances Test", () => {
       );
     });
 
-    it.skip("Submit", () => {
+    it("Submit", () => {
       const newInstanceName: string = "Some new instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
-      cy.ouiaId("create-instance", "PF4/ModalContent")
-        .should("be.visible")
-        .within(() => {
-          cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
-          cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
-            "have.text",
-            "Info alert:Your Smart Events instance will be ready for use shortly after creation."
-          );
-          cy.ouiaId("submit", "PF4/Button").click();
-        })
-        .should("not.exist");
-      //TODO: MGDOBR-706 - uncomment code for the verification that the instance was created (currently mocked server does not support it)
-      /*
+      cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
+        cy.wrap($modal)
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
+            cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
+              "have.text",
+              "Info alert:Your Smart Events instance will be ready for use shortly after creation."
+            );
+            cy.ouiaId("submit", "PF4/Button").click();
+          });
+        cy.wrap($modal, { timeout: 20000 }).should("not.exist");
+      });
+
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(newInstanceName, "PF4/TableRow")
-        .should("be.visible");
-      */
+        .should("be.visible")
+        .within(() => {
+          cy.get("td:first").should("have.text", newInstanceName);
+          cy.get("td:nth-child(2)").then(($state) => {
+            cy.wrap($state).should("have.text", "accepted");
+            cy.wrap($state, { timeout: 30000 }).should("have.text", "ready");
+          });
+        });
     });
 
     it("Cancel", () => {
       const newInstanceName: string = "Canceled instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
-      cy.ouiaId("create-instance", "PF4/ModalContent")
-        .within(() => {
-          cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
-          cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
-            "have.text",
-            "Info alert:Your Smart Events instance will be ready for use shortly after creation."
-          );
-          cy.ouiaId("cancel", "PF4/Button").click();
-        })
-        .should("not.exist");
+      cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
+        cy.wrap($modal)
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
+            cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
+              "have.text",
+              "Info alert:Your Smart Events instance will be ready for use shortly after creation."
+            );
+            cy.ouiaId("cancel", "PF4/Button").click();
+          });
+        cy.wrap($modal, { timeout: 7000 }).should("not.exist");
+      });
+
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(newInstanceName, "PF4/TableRow")
         .should("not.exist");
@@ -79,7 +90,7 @@ describe("Instances Test", () => {
           cy.ouiaId("actions", "PF4/DropdownToggle").click();
           cy.ouiaId("details", "PF4/DropdownItem").click();
         });
-      //The InstanceDetails.tsx contains dummy data which are not related to this instance
+
       cy.ouiaId("instance-details-panel")
         .within(() => {
           cy.ouiaId("instance-details-name", "PF4/Text")
@@ -103,7 +114,7 @@ describe("Instances Test", () => {
             .should("be.visible");
           cy.ouiaId("close-instance-details").click();
         })
-        //constructions like "not.exists" or "not.be.visible" fail in this case
+        //constructions like "not.exist" or "not.be.visible" fail in this case
         .should("have.attr", "hidden");
     });
 
@@ -116,7 +127,7 @@ describe("Instances Test", () => {
           .ouiaId("create-processor", "PF4/Button")
           .should("be.visible");
         cy.ouiaId("Processors list table", "PF4/Table")
-          .ouiaId("f8f34af4-caed-11ec-9d64-0242ac120002", "PF4/TableRow")
+          .ouiaId("Processor three", "PF4/TableRow")
           .find("td")
           .then(($cells) => {
             expect($cells).have.length(6);

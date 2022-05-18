@@ -6,10 +6,13 @@ import {
   ToolbarContent,
   ToolbarItem,
 } from "@patternfly/react-core";
-import { Table, TableColumn, TableRow } from "@app/components/Table";
+import {
+  RenderActions,
+  Table,
+  TableColumn,
+  TableRow,
+} from "@app/components/Table";
 import { Pagination } from "@app/components/Pagination/Pagination";
-import { useTranslation } from "react-i18next";
-import { IRow } from "@patternfly/react-table";
 import { TableSkeleton } from "@app/components/TableSkeleton/TableSkeleton";
 
 interface TableWithPaginationProps {
@@ -29,14 +32,12 @@ interface TableWithPaginationProps {
   tableLabel: string;
   /** Custom element you want to be in the toolbar */
   customToolbarElement?: React.ReactNode;
-  /** Function executed when clicking on the "Details" action */
-  onDetailsClick?: (rowData?: IRow) => void;
-  /** Function executed when clicking on the "Details" action */
-  onDeleteClick?: (rowData?: IRow) => void;
   /** True, when table data is loading */
   isLoading?: boolean;
   /** Element to be rendered when there are no rows to display */
   children?: JSX.Element;
+  /** Render function to add actions to the table */
+  renderActions?: RenderActions;
 }
 
 export const FIRST_PAGE = 0;
@@ -53,8 +54,6 @@ export const TableWithPagination: FunctionComponent<
 > = ({
   columns,
   customToolbarElement,
-  onDetailsClick,
-  onDeleteClick,
   isLoading,
   rows,
   totalRows,
@@ -63,26 +62,8 @@ export const TableWithPagination: FunctionComponent<
   onPaginationChange,
   tableLabel,
   children,
+  renderActions,
 }) => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
-
-  const actionResolver = (
-    rowData?: IRow
-  ): { title: string; onClick: () => void }[] => {
-    const actions = [];
-    if (onDetailsClick) {
-      actions.push({
-        title: t("common.details"),
-        onClick: (): void => onDetailsClick?.(rowData),
-      });
-    }
-    actions.push({
-      title: t("common.delete"),
-      onClick: (): void => onDeleteClick?.(rowData),
-    });
-    return actions;
-  };
-
   const getPagination = (isBottom: boolean): JSX.Element => (
     <Pagination
       itemCount={totalRows}
@@ -121,11 +102,11 @@ export const TableWithPagination: FunctionComponent<
         />
       ) : (
         <Table
-          actionResolver={actionResolver}
           ariaLabel={tableLabel}
           columns={columns}
           cssClasses="overview__table"
           rows={rows}
+          renderActions={renderActions}
         >
           {children}
         </Table>

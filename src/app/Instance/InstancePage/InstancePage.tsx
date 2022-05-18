@@ -29,7 +29,7 @@ import {
   FIRST_PAGE,
   TableWithPagination,
 } from "@app/components/TableWithPagination/TableWithPagination";
-import { IRow, IRowData } from "@patternfly/react-table";
+import { IAction, IRow, IRowData } from "@patternfly/react-table";
 import { formatDistance } from "date-fns";
 import "./InstancePage.css";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
@@ -39,8 +39,10 @@ import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSke
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
-import { BridgeResponse } from "@openapi/generated";
+import { BridgeResponse, ManagedResourceStatus } from "@openapi/generated";
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
+import { TableRow } from "@app/components/Table";
+import { canDeleteResource } from "@utils/resourceUtils";
 
 interface InstanceRouteParams {
   instanceId: string;
@@ -195,6 +197,19 @@ const InstancePage = (): JSX.Element => {
     history.push(`/`);
   }, [history]);
 
+  const tableActions = (rowData: TableRow): IAction[] => [
+    {
+      title: t("common.delete"),
+      onClick: (): void => {
+        console.log("delete processor");
+        // TODO See https://issues.redhat.com/browse/MGDOBR-676
+      },
+      isDisabled: !canDeleteResource(
+        (rowData.originalData as BridgeResponse).status as ManagedResourceStatus
+      ),
+    },
+  ];
+
   return (
     <>
       {(isBridgeLoading ||
@@ -328,6 +343,9 @@ const InstancePage = (): JSX.Element => {
                     pageNumber={currentPage}
                     pageSize={currentPageSize}
                     totalRows={totalRows ?? 0}
+                    renderActions={({ row, ActionsColumn }): JSX.Element => (
+                      <ActionsColumn items={tableActions(row)} />
+                    )}
                   >
                     <EmptyState variant="large">
                       <EmptyStateIcon icon={PlusCircleIcon} />

@@ -343,7 +343,6 @@ const InstancePage = (): JSX.Element => {
           <DeleteInstance
             instanceId={bridge.id}
             instanceName={bridge.name}
-            processorsCount={processorListResponse.total}
             showDeleteModal={showDeleteModal}
             onCanceled={(): void => setShowDeleteModal(false)}
             onDeleted={handleOnDeleteSuccess}

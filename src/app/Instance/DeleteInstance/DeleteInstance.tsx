@@ -10,9 +10,6 @@ interface DeleteInstanceProps {
   instanceId?: string;
   /** The name of the instance to delete */
   instanceName?: string;
-  /** The number of processors inside the instance.
-   * If not provided, it will be retrieved by this component */
-  processorsCount?: number;
   /** Callback executed when the deletion is confirmed */
   onDeleted: () => void;
   /** Callback executed when the deletion is canceled */
@@ -20,14 +17,8 @@ interface DeleteInstanceProps {
 }
 
 const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
-  const {
-    showDeleteModal,
-    instanceId,
-    instanceName,
-    processorsCount,
-    onDeleted,
-    onCanceled,
-  } = props;
+  const { showDeleteModal, instanceId, instanceName, onDeleted, onCanceled } =
+    props;
   const [preloading, setPreloading] = useState(false);
   const [deleteBlockedReason, setDeleteBlockedReason] = useState<
     string | undefined
@@ -37,22 +28,10 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
 
   useEffect(() => {
     if (showDeleteModal && instanceId && instanceName) {
-      if (processorsCount === undefined) {
-        setPreloading(true);
-        getProcessors(instanceId);
-      } else if (processorsCount > 0) {
-        setDeleteBlockedReason(
-          "There are processors associated with this instance. Please delete them first."
-        );
-      }
+      setPreloading(true);
+      getProcessors(instanceId);
     }
-  }, [
-    showDeleteModal,
-    instanceId,
-    instanceName,
-    getProcessors,
-    processorsCount,
-  ]);
+  }, [showDeleteModal, instanceId, instanceName, getProcessors]);
 
   useEffect(() => {
     if (processorListResponse) {

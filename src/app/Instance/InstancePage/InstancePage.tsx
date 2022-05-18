@@ -295,7 +295,11 @@ const InstancePage = (): JSX.Element => {
                           key="delete"
                           ouiaId="delete"
                           onClick={deleteInstance}
-                          isDisabled={!(bridge && processorListResponse)}
+                          isDisabled={
+                            !canDeleteResource(
+                              bridge.status as ManagedResourceStatus
+                            )
+                          }
                         >
                           {t("common.delete")}
                         </DropdownItem>,

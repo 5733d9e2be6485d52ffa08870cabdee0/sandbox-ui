@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { DeleteModal } from "@app/components/DeleteModal/DeleteModal";
 import { useDeleteBridgeApi } from "../../../hooks/useBridgesApi/useDeleteBridgeApi";
+import { useTranslation } from "react-i18next";
+import axios from "axios";
+import { ResponseError } from "../../../types/Error";
 
 interface DeleteInstanceProps {
   /** Flag to show/close the modal */
@@ -17,6 +20,7 @@ interface DeleteInstanceProps {
 }
 
 const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
+  const { t } = useTranslation(["openbridgeTempDictionary"]);
   const { showDeleteModal, instanceId, instanceName, onDeleted, onCanceled } =
     props;
   const [preloading, setPreloading] = useState(false);
@@ -38,16 +42,17 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
       setPreloading(false);
       if (processorListResponse.total && processorListResponse.total > 0) {
         setDeleteBlockedReason(
-          "There are processors associated with this instance. Please delete them first."
+          t("instance.errors.cantDeleteBecauseProcessorsInside")
         );
       }
     }
-  }, [processorListResponse]);
+  }, [processorListResponse, t]);
 
   const {
     deleteBridge,
     isLoading: deleteBridgeLoading,
     success: bridgeDeleteSuccess,
+    error: bridgeDeleteError,
   } = useDeleteBridgeApi();
 
   const handleDelete = (): void => {
@@ -65,7 +70,22 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
     if (bridgeDeleteSuccess) {
       onDeleted();
     }
-  }, [bridgeDeleteSuccess, onDeleted]);
+    if (bridgeDeleteError) {
+      // Doing the following check because it could pass some time between
+      // the check on existing processors and when the user actually
+      // confirms the deletion. If in the meantime someone creates a processor,
+      // the API error will trigger the error message inside the modal.
+      if (
+        axios.isAxiosError(bridgeDeleteError) &&
+        (bridgeDeleteError.response?.data as ResponseError).code ===
+          "OPENBRIDGE-2"
+      ) {
+        setDeleteBlockedReason(
+          t("instance.errors.cantDeleteBecauseProcessorsInside")
+        );
+      }
+    }
+  }, [bridgeDeleteSuccess, bridgeDeleteError, onDeleted, t]);
 
   return (
     <>

@@ -199,6 +199,24 @@ export const handlers = [
       );
     }
 
+    const processorsCount = db.processor.count({
+      where: {
+        bridge: {
+          id: {
+            equals: bridgeId as string,
+          },
+        },
+      },
+    });
+
+    if (processorsCount > 0) {
+      return res(
+        ctx.status(400),
+        ctx.delay(apiDelay),
+        ctx.json(error_bridge_not_deletable)
+      );
+    }
+
     db.bridge.update({
       where: {
         id: {
@@ -772,6 +790,15 @@ const error_duplicated_resource = {
   id: "1",
   href: "/api/v1/errors/1",
   code: "OPENBRIDGE-1",
+};
+
+const error_bridge_not_deletable = {
+  kind: "Error",
+  id: "2",
+  href: "/api/v1/errors/2",
+  code: "OPENBRIDGE-2",
+  reason:
+    "It is not possible to delete a Bridge instance with active Processors.",
 };
 
 interface MockProcessorRequest extends Omit<ProcessorRequest, "filters"> {

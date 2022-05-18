@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import {
   Bullseye,
   Button,
@@ -19,7 +19,7 @@ import {
 } from "@patternfly/react-core";
 import "./DeleteModal.css";
 
-interface DeleteModalProps {
+export interface DeleteModalProps {
   /** Flag to show/hide the modal */
   showDialog: boolean;
   /** The title of the modal */
@@ -52,7 +52,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
     isLoading,
     blockedDeletionReason,
   } = props;
-  const { t } = useTranslation();
+  const { t } = useTranslation("openbridgeTempDictionary");
   const [nameValue, setNameValue] = useState("");
   const canDelete = nameValue === resourceName;
 
@@ -77,7 +77,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
       isLoading={isLoading}
       onClick={onConfirmDelete}
     >
-      {t("delete")}
+      {t("common.delete")}
     </Button>,
     <Button
       key="cancel"
@@ -85,13 +85,13 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
       onClick={onCancelDelete}
       isDisabled={isLoading}
     >
-      {t("cancel")}
+      {t("common.cancel")}
     </Button>,
   ];
 
   const closeActions = [
     <Button key="close" onClick={onCancelDelete}>
-      {t("close")}
+      {t("common.close")}
     </Button>,
   ];
 
@@ -107,7 +107,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
       <ModalBoxBody>
         {isPreloading && (
           <Bullseye className={"delete-modal-body__bullseye"}>
-            <Spinner isSVG size="lg" aria-label="Loading" />
+            <Spinner isSVG size="lg" aria-label={t("common.loading")} />
           </Bullseye>
         )}
         {!isPreloading && blockedDeletionReason && (
@@ -122,8 +122,15 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
             <StackItem>
               <TextContent>
                 <Text component={TextVariants.p}>
-                  {resourceType} <strong>{resourceName}</strong> will be
-                  deleted.
+                  <Trans
+                    i18nKey={
+                      "openbridgeTempDictionary:common.resourceWillBeDeletedHTML"
+                    }
+                    values={{
+                      type: resourceType,
+                      name: resourceName,
+                    }}
+                  />
                 </Text>
               </TextContent>
             </StackItem>
@@ -131,9 +138,14 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
               <Form onSubmit={(event): void => event.preventDefault()}>
                 <FormGroup
                   label={
-                    <>
-                      Type <em>{resourceName}</em> to confirm the deletion.
-                    </>
+                    <Trans
+                      i18nKey={
+                        "openbridgeTempDictionary:common.typeNameToConfirmHTML"
+                      }
+                      values={{
+                        name: resourceName,
+                      }}
+                    />
                   }
                   fieldId="delete-confirmation-value"
                 >
@@ -143,7 +155,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
                     type="text"
                     onChange={setNameValue}
                     isDisabled={isLoading}
-                    aria-label="name input"
+                    aria-label="delete-confirmation-value"
                     autoComplete={"off"}
                     validated={
                       canDelete

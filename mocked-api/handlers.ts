@@ -498,7 +498,7 @@ export const handlers = [
         },
       });
 
-      if (existingProcessors.length > 1) {
+      if (existingProcessors.length > 0) {
         return res(
           ctx.status(400),
           ctx.json({
@@ -740,7 +740,7 @@ const cleanupProcessor = (
   // removing properties not needed for the response
   const omitProperties = ["bridge"];
 
-  if (!(processor.filters as Array<Record<string, unknown>>).length) {
+  if (!(processor.filters as Array<Record<string, unknown>>)?.length) {
     omitProperties.push("filters");
   }
   if (processor.transformationTemplate === "") {

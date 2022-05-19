@@ -201,6 +201,7 @@ const ProcessorDetailPage = (): JSX.Element => {
   const actionItems = [
     <DropdownItem
       key="delete"
+      ouiaId="delete"
       component="button"
       onClick={(): void => deleteProcessor()}
       isDisabled={
@@ -249,7 +250,10 @@ const ProcessorDetailPage = (): JSX.Element => {
                 <Stack hasGutter={true}>
                   <StackItem>
                     <TextContent>
-                      <Text component="h1">{currentProcessor.name}</Text>
+
+                      <Text component="h1" ouiaId="processor-name">
+                        {currentProcessor.name}
+                      </Text>
                     </TextContent>
                   </StackItem>
                   <StackItem>
@@ -266,6 +270,7 @@ const ProcessorDetailPage = (): JSX.Element => {
                           currentProcessor.status !==
                           ManagedResourceStatus.Ready
                         }
+                        ouiaId="edit"
                         onClick={(): void => setIsEditing(true)}
                       >
                         {t("common.edit")}
@@ -273,11 +278,13 @@ const ProcessorDetailPage = (): JSX.Element => {
                     </SplitItem>
                     <SplitItem>
                       <Dropdown
+                        ouiaId="processor-actions"
                         onSelect={actionsSelect}
                         alignments={{ sm: "right" }}
                         toggle={
                           <DropdownToggle
                             id="toggle-id"
+                            ouiaId="actions-toggle"
                             onToggle={actionsToggle}
                             toggleIndicator={CaretDownIcon}
                           >

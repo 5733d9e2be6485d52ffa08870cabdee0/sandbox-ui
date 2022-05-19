@@ -106,7 +106,9 @@ const CreateProcessorPage = (): JSX.Element => {
             hasShadowBottom={true}
           >
             <TextContent>
-              <Text component="h1">{t("processor.createProcessor")}</Text>
+              <Text component="h1" ouiaId="page-name">
+                {t("processor.createProcessor")}
+              </Text>
             </TextContent>
           </PageSection>
           <ProcessorEdit

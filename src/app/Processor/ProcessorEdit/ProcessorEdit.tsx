@@ -249,6 +249,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                         <TextInput
                           type="text"
                           id="processor-name"
+                          ouiaId="processor-name"
                           name="processor-name"
                           aria-describedby="processor-name"
                           isRequired={true}
@@ -269,7 +270,10 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                         {processorType === "source" && (
                           <FormSection title={t("processor.source")}>
                             <TextContent>
-                              <Text component="p">
+                              <Text
+                                component="p"
+                                ouiaId="source-type-description"
+                              >
                                 {t(
                                   "processor.selectSourceProcessorTypeDescription"
                                 )}
@@ -294,7 +298,10 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                         </FormSection>
                         <FormSection title={t("processor.transformation")}>
                           <TextContent>
-                            <Text component="p">
+                            <Text
+                              component="p"
+                              ouiaId={"transformation-description"}
+                            >
                               {t("processor.addTransformationDescription")}
                             </Text>
                           </TextContent>
@@ -312,7 +319,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                         {processorType === "sink" && (
                           <FormSection title={t("processor.action")}>
                             <TextContent>
-                              <Text component="p">
+                              <Text component="p" ouiaId="action-description">
                                 {t("processor.selectActionDescription")}
                               </Text>
                             </TextContent>
@@ -329,6 +336,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                           >
                             <Alert
                               variant="info"
+                              ouiaId="info-processor-available-soon"
                               isInline={true}
                               isPlain={true}
                               title={t(
@@ -349,6 +357,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                 <ActionGroup className={"processor-edit__actions"}>
                   <Button
                     variant="primary"
+                    ouiaId="submit"
                     onClick={handleSubmit}
                     isLoading={isLoading}
                     isDisabled={isLoading}
@@ -357,6 +366,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                   </Button>
                   <Button
                     variant="link"
+                    ouiaId="cancel"
                     onClick={onCancel}
                     isDisabled={isLoading}
                   >

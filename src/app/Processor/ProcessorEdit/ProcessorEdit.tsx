@@ -22,36 +22,59 @@ import {
 import FiltersEdit from "@app/Processor/ProcessorEdit/FiltersEdit/FiltersEdit";
 import { CodeEditor } from "@patternfly/react-code-editor";
 import ActionEdit from "@app/Processor/ProcessorEdit/ActionEdit/ActionEdit";
-import { Action, ProcessorRequest } from "@openapi/generated";
+import {
+  Action,
+  ProcessorRequest,
+  ProcessorResponse,
+} from "@openapi/generated";
 import SourceEdit from "@app/Processor/ProcessorEdit/SourceEdit/SourceEdit";
 import { EventFilter, ProcessorFormData } from "../../../types/Processor";
 import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidateProcessor";
 import "./ProcessorEdit.css";
 
 interface ProcessorEditProps {
+  processor?: ProcessorResponse;
   existingProcessorName?: string;
   isLoading: boolean;
+  saveButtonLabel: string;
   onSave: (requestData: ProcessorRequest) => void;
   onCancel: () => void;
+  processorTypeSection?: JSX.Element;
 }
 
 const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
-  const { existingProcessorName, isLoading, onSave, onCancel } = props;
+  const {
+    existingProcessorName,
+    isLoading,
+    saveButtonLabel,
+    onSave,
+    onCancel,
+    processor,
+    processorTypeSection,
+  } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
-  const [processorType, setProcessorType] = useState("");
-  const [name, setName] = useState("");
-  const [filters, setFilters] = useState<EventFilter[]>([
-    { key: "", type: "", value: "" },
-  ]);
-  const [transformation, setTransformation] = useState("");
-  const [action, setAction] = useState<Action>({
-    type: "",
-    parameters: {},
-  });
-  const [source, setSource] = useState({
-    type: "",
-    parameters: {},
-  });
+  const [processorType, setProcessorType] = useState(processor?.type ?? "");
+  const [name, setName] = useState(processor?.name ?? "");
+  const [filters, setFilters] = useState<EventFilter[]>(
+    (processor?.filters as unknown as EventFilter[]) ?? [
+      { key: "", type: "", value: "" },
+    ]
+  );
+  const [transformation, setTransformation] = useState(
+    processor?.transformationTemplate ?? ""
+  );
+  const [action, setAction] = useState<Action>(
+    processor?.action ?? {
+      type: "",
+      parameters: {},
+    }
+  );
+  const [source, setSource] = useState(
+    processor?.source ?? {
+      type: "",
+      parameters: {},
+    }
+  );
   const [request, setRequest] = useState<ProcessorFormData>({
     name,
     type: processorType,
@@ -162,51 +185,57 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                       title={t("processor.generalInformation")}
                       titleElement="h2"
                     >
-                      <FormGroup
-                        label={t("processor.selectProcessorType")}
-                        fieldId={"processor-type"}
-                        isRequired
-                        helperTextInvalid={validation.errors.processorType}
-                        validated={
-                          validation.errors.processorType ? "error" : "default"
-                        }
-                        className={
-                          validation.errors.processorType &&
-                          "processor-field-error"
-                        }
-                      >
-                        <Grid
-                          hasGutter={true}
-                          className={"processor-form__type-selection"}
+                      {processorTypeSection ? (
+                        processorTypeSection
+                      ) : (
+                        <FormGroup
+                          label={t("processor.selectProcessorType")}
+                          fieldId={"processor-type"}
+                          isRequired
+                          helperTextInvalid={validation.errors.processorType}
+                          validated={
+                            validation.errors.processorType
+                              ? "error"
+                              : "default"
+                          }
+                          className={
+                            validation.errors.processorType &&
+                            "processor-field-error"
+                          }
                         >
-                          <GridItem span={6}>
-                            <Tile
-                              title={t("processor.sourceProcessor")}
-                              isSelected={processorType === "source"}
-                              style={{ height: "100%" }}
-                              onClick={(): void => {
-                                setProcessorType("source");
-                                resetValidation("processorType");
-                              }}
-                            >
-                              {t("processor.sourceProcessorDescription")}
-                            </Tile>
-                          </GridItem>
-                          <GridItem span={6}>
-                            <Tile
-                              title={t("processor.sinkProcessor")}
-                              style={{ width: "100%", height: "100%" }}
-                              isSelected={processorType === "sink"}
-                              onClick={(): void => {
-                                setProcessorType("sink");
-                                resetValidation("processorType");
-                              }}
-                            >
-                              {t("processor.sinkProcessorDescription")}
-                            </Tile>
-                          </GridItem>
-                        </Grid>
-                      </FormGroup>
+                          <Grid
+                            hasGutter={true}
+                            className={"processor-form__type-selection"}
+                          >
+                            <GridItem span={6}>
+                              <Tile
+                                title={t("processor.sourceProcessor")}
+                                isSelected={processorType === "source"}
+                                style={{ height: "100%" }}
+                                onClick={(): void => {
+                                  setProcessorType("source");
+                                  resetValidation("processorType");
+                                }}
+                              >
+                                {t("processor.sourceProcessorDescription")}
+                              </Tile>
+                            </GridItem>
+                            <GridItem span={6}>
+                              <Tile
+                                title={t("processor.sinkProcessor")}
+                                style={{ width: "100%", height: "100%" }}
+                                isSelected={processorType === "sink"}
+                                onClick={(): void => {
+                                  setProcessorType("sink");
+                                  resetValidation("processorType");
+                                }}
+                              >
+                                {t("processor.sinkProcessorDescription")}
+                              </Tile>
+                            </GridItem>
+                          </Grid>
+                        </FormGroup>
+                      )}
                       <FormGroup
                         fieldId={"processor-name"}
                         label={t("processor.processorName")}
@@ -324,7 +353,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                     isLoading={isLoading}
                     isDisabled={isLoading}
                   >
-                    {t("common.create")}
+                    {saveButtonLabel}
                   </Button>
                   <Button
                     variant="link"

@@ -11,7 +11,12 @@ const setupProcessorEdit = (): {
   const onSave = jest.fn();
   const onCancel = jest.fn();
   const comp = customRender(
-    <ProcessorEdit onSave={onSave} onCancel={onCancel} isLoading={false} />
+    <ProcessorEdit
+      onSave={onSave}
+      onCancel={onCancel}
+      isLoading={false}
+      saveButtonLabel="Create"
+    />
   );
   return { comp, onSave, onCancel };
 };

@@ -518,6 +518,7 @@ export const handlers = [
         },
         data: {
           name,
+          status: "accepted",
           filters: filters as unknown as EventFilter[],
           transformationTemplate,
           ...(action ? { action } : {}),

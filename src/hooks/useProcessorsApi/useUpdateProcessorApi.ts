@@ -4,12 +4,11 @@ import {
   ProcessorRequest,
   ProcessorsApi,
 } from "@openapi/generated";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useAuth } from "@rhoas/app-services-ui-shared";
+import config from "../../../config/config";
 
-export function useUpdateProcessorApi(
-  getToken: () => Promise<string>,
-  basePath: string
-): {
+export function useUpdateProcessorApi(): {
   updateProcessor: (
     bridgeId: string,
     processorId: string,
@@ -21,17 +20,23 @@ export function useUpdateProcessorApi(
 } {
   const [processor, setProcessor] = useState<ProcessorResponse>();
   const [error, setError] = useState<unknown>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const auth = useAuth();
+
+  const getToken = useCallback(async (): Promise<string> => {
+    return (await auth.kas.getToken()) || "";
+  }, [auth]);
 
   const updateProcessor = async (
     bridgeId: string,
     processorId: string,
     processorRequest: ProcessorRequest
   ): Promise<void> => {
+    setIsLoading(true);
     const processorsApi = new ProcessorsApi(
       new Configuration({
         accessToken: getToken,
-        basePath,
+        basePath: config.apiBasePath,
       })
     );
     await processorsApi

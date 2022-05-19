@@ -229,7 +229,7 @@ const ProcessorDetailPage = (): JSX.Element => {
                   <Split hasGutter={true}>
                     <SplitItem>
                       <Button
-                        disabled={
+                        isAriaDisabled={
                           currentProcessor.status !==
                           ManagedResourceStatus.Ready
                         }

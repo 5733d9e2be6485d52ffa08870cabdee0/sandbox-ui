@@ -498,7 +498,10 @@ export const handlers = [
         },
       });
 
-      if (existingProcessors.length > 0) {
+      const processorNameCollision =
+        existingProcessors.length === 1 &&
+        existingProcessors[0].id !== processorId;
+      if (processorNameCollision || existingProcessors.length > 1) {
         return res(
           ctx.status(400),
           ctx.json({

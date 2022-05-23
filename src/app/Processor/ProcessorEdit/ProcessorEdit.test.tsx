@@ -68,6 +68,46 @@ describe("ProcessorEdit component", () => {
     expect(comp.queryByText("Action")).toBeInTheDocument();
   });
 
+  it("should display custom save button", async () => {
+    const saveButtonLabel = "Custom";
+    const comp = customRender(
+      <ProcessorEdit
+        onSave={jest.fn}
+        onCancel={jest.fn}
+        isLoading={false}
+        saveButtonLabel={saveButtonLabel}
+      />
+    );
+    await waitForI18n(comp);
+
+    expect(comp.queryByText(saveButtonLabel)).toBeInTheDocument();
+  });
+
+  it("should display the information of the passed processor and the processor type section", async () => {
+    const name = "Processor name";
+    const type = "sink";
+
+    const comp = customRender(
+      <ProcessorEdit
+        onSave={jest.fn}
+        onCancel={jest.fn}
+        isLoading={false}
+        processorTypeSection={
+          <label data-testid="processor-type-label">{type}</label>
+        }
+        saveButtonLabel="Save"
+        processor={{
+          name,
+          type,
+        }}
+      />
+    );
+    await waitForI18n(comp);
+
+    expect(comp.baseElement.querySelector("#processor-name")).toHaveValue(name);
+    expect(comp.getByTestId("processor-type-label")).toHaveTextContent(type);
+  });
+
   it("handles filters addition and removal", async () => {
     const { comp } = setupProcessorEdit();
     await waitForI18n(comp);

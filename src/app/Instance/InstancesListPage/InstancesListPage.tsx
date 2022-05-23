@@ -31,7 +31,7 @@ import { TableWithPaginationSkeleton } from "@app/components/TableWithPagination
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import axios from "axios";
 import { ResponseError } from "../../../types/Error";
-import { BridgeResponse } from "@openapi/generated";
+import { BridgeResponse, ManagedResourceStatus } from "@openapi/generated";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -49,13 +49,17 @@ const InstancesListPage = (): JSX.Element => {
       label: t("common.name"),
       formatter: (value: IRowData, row?: IRow): JSX.Element => {
         const bridgeId = (row as BridgeResponse)?.id ?? "";
-        return (
+        const status = (row as BridgeResponse)?.status;
+
+        return status === ManagedResourceStatus.Ready ? (
           <Link
             data-testid="tableInstances-linkInstance"
             to={`/instance/${bridgeId}`}
           >
             {value}
           </Link>
+        ) : (
+          <>{value}</>
         );
       },
     },

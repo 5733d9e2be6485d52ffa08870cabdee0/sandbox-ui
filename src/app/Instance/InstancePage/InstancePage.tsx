@@ -43,6 +43,7 @@ import { BridgeResponse, ManagedResourceStatus } from "@openapi/generated";
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
+import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
 
 interface InstanceRouteParams {
   instanceId: string;
@@ -186,23 +187,42 @@ const InstancePage = (): JSX.Element => {
     [currentPageSize, getProcessors, instanceId]
   );
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showInstanceDeleteModal, setShowInstanceDeleteModal] = useState(false);
+  const [deleteProcessorId, setDeleteProcessorId] = useState("");
+  const [deleteProcessorName, setDeleteProcessorName] = useState("");
 
   const deleteInstance = (): void => {
-    setShowDeleteModal(true);
+    setShowInstanceDeleteModal(true);
   };
 
-  const handleOnDeleteSuccess = useCallback((): void => {
-    setShowDeleteModal(false);
+  const handleOnDeleteInstanceSuccess = useCallback((): void => {
+    setShowInstanceDeleteModal(false);
     history.push(`/`);
   }, [history]);
+
+  const [showProcessorDeleteModal, setShowProcessorDeleteModal] =
+    useState(false);
+
+  const deleteProcessor = (id: string, name: string): void => {
+    setDeleteProcessorId(id);
+    setDeleteProcessorName(name);
+    setShowProcessorDeleteModal(true);
+  };
+
+  const handleOnDeleteProcessorSuccess = useCallback((): void => {
+    setShowProcessorDeleteModal(false);
+    getProcessors(instanceId, currentPage, currentPageSize);
+  }, [getProcessors, instanceId, currentPage, currentPageSize]);
 
   const tableActions = (rowData: TableRow): IAction[] => [
     {
       title: t("common.delete"),
       onClick: (): void => {
-        console.log("delete processor");
-        // TODO See https://issues.redhat.com/browse/MGDOBR-676
+        const id = (rowData.originalData as BridgeResponse).id;
+        const name = (rowData.originalData as BridgeResponse).name;
+        if (id && name) {
+          deleteProcessor(id, name);
+        }
       },
       isDisabled: !canDeleteResource(
         (rowData.originalData as BridgeResponse).status as ManagedResourceStatus
@@ -365,9 +385,17 @@ const InstancePage = (): JSX.Element => {
           <DeleteInstance
             instanceId={bridge.id}
             instanceName={bridge.name}
-            showDeleteModal={showDeleteModal}
-            onCanceled={(): void => setShowDeleteModal(false)}
-            onDeleted={handleOnDeleteSuccess}
+            showDeleteModal={showInstanceDeleteModal}
+            onCanceled={(): void => setShowInstanceDeleteModal(false)}
+            onDeleted={handleOnDeleteInstanceSuccess}
+          />
+          <DeleteProcessor
+            bridgeId={instanceId}
+            processorId={deleteProcessorId}
+            processorName={deleteProcessorName}
+            showDeleteModal={showProcessorDeleteModal}
+            onCanceled={(): void => setShowProcessorDeleteModal(false)}
+            onDeleted={handleOnDeleteProcessorSuccess}
           />
         </>
       )}

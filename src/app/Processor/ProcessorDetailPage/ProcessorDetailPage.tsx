@@ -37,6 +37,8 @@ import {
 } from "@openapi/generated";
 import axios from "axios";
 import { ResponseError } from "../../../types/Error";
+import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
+import { canDeleteResource } from "@utils/resourceUtils";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
@@ -62,15 +64,6 @@ const ProcessorDetailPage = (): JSX.Element => {
   const actionsSelect = (): void => {
     setIsActionsOpen(!isActionsOpen);
   };
-  const actionItems = [
-    <DropdownItem
-      key="delete"
-      component="button"
-      onClick={(): void => goToInstance()}
-    >
-      {t("processor.delete")}
-    </DropdownItem>,
-  ];
 
   const {
     getBridge,
@@ -193,6 +186,32 @@ const ProcessorDetailPage = (): JSX.Element => {
     [t]
   );
 
+  const [showProcessorDeleteModal, setShowProcessorDeleteModal] =
+    useState(false);
+
+  const deleteProcessor = (): void => {
+    setShowProcessorDeleteModal(true);
+  };
+
+  const handleOnDeleteProcessorSuccess = useCallback((): void => {
+    setShowProcessorDeleteModal(false);
+    goToInstance();
+  }, [goToInstance]);
+
+  const actionItems = [
+    <DropdownItem
+      key="delete"
+      component="button"
+      onClick={(): void => deleteProcessor()}
+      isDisabled={
+        !processor ||
+        !canDeleteResource(processor.status as ManagedResourceStatus)
+      }
+    >
+      {t("processor.delete")}
+    </DropdownItem>,
+  ];
+
   return (
     <>
       {(isBridgeLoading || isProcessorLoading) && (
@@ -285,9 +304,19 @@ const ProcessorDetailPage = (): JSX.Element => {
               existingProcessorName={existingProcessorName}
             />
           ) : (
-            <ProcessorDetail
-              processor={currentProcessor as unknown as Processor}
-            />
+              <>
+                <ProcessorDetail
+                  processor={currentProcessor as unknown as Processor}
+                />
+                <DeleteProcessor
+                    showDeleteModal={showProcessorDeleteModal}
+                    bridgeId={bridge.id as string}
+                    processorId={currentProcessor.id as string}
+                    processorName={currentProcessor.name as string}
+                    onDeleted={handleOnDeleteProcessorSuccess}
+                    onCanceled={(): void => setShowProcessorDeleteModal(false)}
+                />
+              </>
           )}
         </>
       )}

@@ -1,9 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
+import isEqual from "lodash.isequal";
+import isEqualWith from "lodash.isequalwith";
 import { useHistory, useParams } from "react-router-dom";
 import {
+  Button,
   Dropdown,
   DropdownItem,
   DropdownToggle,
+  FormGroup,
+  Label,
   PageSection,
   PageSectionVariants,
   Split,
@@ -23,6 +28,15 @@ import { useGetProcessorApi } from "../../../hooks/useProcessorsApi/useGetProces
 import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
 import { Processor } from "../../../types/Processor";
 import ProcessorDetailSkeleton from "@app/Processor/ProcessorDetail/ProcessorDetailSkeleton";
+import ProcessorEdit from "@app/Processor/ProcessorEdit/ProcessorEdit";
+import { useUpdateProcessorApi } from "../../../hooks/useProcessorsApi/useUpdateProcessorApi";
+import {
+  ManagedResourceStatus,
+  ProcessorRequest,
+  ProcessorResponse,
+} from "@openapi/generated";
+import axios from "axios";
+import { ResponseError } from "../../../types/Error";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
@@ -35,7 +49,13 @@ const ProcessorDetailPage = (): JSX.Element => {
   );
   const goToHome = useCallback((): void => history.push(`/`), [history]);
 
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentProcessor, setCurrentProcessor] = useState<ProcessorResponse>();
   const [isActionsOpen, setIsActionsOpen] = useState(false);
+  const [existingProcessorName, setExistingProcessorName] = useState<
+    string | undefined
+  >();
+  const [requestData, setRequestData] = useState<ProcessorRequest>();
   const actionsToggle = (isOpen: boolean): void => {
     setIsActionsOpen(isOpen);
   };
@@ -48,7 +68,7 @@ const ProcessorDetailPage = (): JSX.Element => {
       component="button"
       onClick={(): void => goToInstance()}
     >
-      {t("common.delete")}
+      {t("processor.delete")}
     </DropdownItem>,
   ];
 
@@ -74,6 +94,22 @@ const ProcessorDetailPage = (): JSX.Element => {
     getProcessor(instanceId, processorId);
   }, [getProcessor, instanceId, processorId]);
 
+  const {
+    updateProcessor,
+    processor: updatedProcessor,
+    isLoading: updateProcessorLoading,
+    error: updateProcessorError,
+  } = useUpdateProcessorApi();
+
+  useEffect(() => {
+    setCurrentProcessor(processor);
+  }, [processor]);
+
+  useEffect(() => {
+    setCurrentProcessor(updatedProcessor);
+    setIsEditing(false);
+  }, [updatedProcessor]);
+
   useEffect(() => {
     if (bridgeError) {
       console.error(bridgeError);
@@ -83,7 +119,79 @@ const ProcessorDetailPage = (): JSX.Element => {
       console.error(processorError);
       goToInstance();
     }
-  }, [bridgeError, processorError, goToHome, goToInstance]);
+    if (updateProcessorError && axios.isAxiosError(updateProcessorError)) {
+      // TODO: replace error code string with a value coming from an error catalog
+      //  See https://issues.redhat.com/browse/MGDOBR-669 for more details.
+      if (
+        (updateProcessorError.response?.data as ResponseError).code ===
+        "OPENBRIDGE-1"
+      ) {
+        setExistingProcessorName(requestData?.name);
+      }
+    }
+  }, [
+    bridgeError,
+    processorError,
+    goToHome,
+    goToInstance,
+    updateProcessorError,
+    requestData?.name,
+  ]);
+
+  const processorNotChanged = useCallback(
+    (prevDef: ProcessorResponse, updatedDef: ProcessorRequest): boolean =>
+      isEqualWith(
+        prevDef,
+        updatedDef,
+        (prev: ProcessorResponse, next: ProcessorRequest) =>
+          isEqual(prev.name, next.name) &&
+          isEqual(prev.filters, next.filters) &&
+          isEqual(prev.transformationTemplate, next.transformationTemplate) &&
+          isEqual(prev.action, next.action) &&
+          isEqual(prev.source, next.source)
+      ),
+    []
+  );
+
+  const handleUpdateProcessorSaving = useCallback(
+    (processorRequest: ProcessorRequest) => {
+      if (
+        currentProcessor &&
+        processorNotChanged(currentProcessor, processorRequest)
+      ) {
+        setIsEditing(false);
+        return;
+      }
+      setRequestData(processorRequest);
+      updateProcessor(instanceId, processorId, processorRequest);
+    },
+    [
+      currentProcessor,
+      instanceId,
+      processorId,
+      processorNotChanged,
+      updateProcessor,
+    ]
+  );
+
+  const getProcessorTypeSection = useCallback(
+    (processor: ProcessorResponse) => (
+      <Stack>
+        <StackItem>
+          <FormGroup
+            label={t("processor.processorType")}
+            fieldId={"processor-type"}
+          />
+        </StackItem>
+        <StackItem>
+          <Label color={"blue"} data-testid="processor-type-label">
+            {processor.type && t(`processor.${processor.type}`)}
+          </Label>
+        </StackItem>
+      </Stack>
+    ),
+    [t]
+  );
 
   return (
     <>
@@ -91,13 +199,14 @@ const ProcessorDetailPage = (): JSX.Element => {
         <>
           <PageHeaderSkeleton
             pageTitle={t("processor.loadingProcessor")}
+            hasEditButton={true}
             hasActionDropdown={true}
             hasLabel={true}
           />
           <ProcessorDetailSkeleton />
         </>
       )}
-      {bridge && processor && (
+      {bridge && currentProcessor && (
         <>
           <PageSection
             variant={PageSectionVariants.light}
@@ -108,7 +217,7 @@ const ProcessorDetailPage = (): JSX.Element => {
               path={[
                 { label: t("instance.smartEventInstances"), linkTo: "/" },
                 { label: bridge.name ?? "", linkTo: `/instance/${instanceId}` },
-                { label: processor.name ?? "" },
+                { label: currentProcessor.name ?? "" },
               ]}
             />
           </PageSection>
@@ -121,33 +230,65 @@ const ProcessorDetailPage = (): JSX.Element => {
                 <Stack hasGutter={true}>
                   <StackItem>
                     <TextContent>
-                      <Text component="h1">{processor.name}</Text>
+                      <Text component="h1">{currentProcessor.name}</Text>
                     </TextContent>
                   </StackItem>
                   <StackItem>
-                    <StatusLabel status={processor.status ?? ""} />
+                    <StatusLabel status={currentProcessor.status ?? ""} />
                   </StackItem>
                 </Stack>
               </SplitItem>
-              <SplitItem>
-                <Dropdown
-                  onSelect={actionsSelect}
-                  toggle={
-                    <DropdownToggle
-                      id="toggle-id"
-                      onToggle={actionsToggle}
-                      toggleIndicator={CaretDownIcon}
-                    >
-                      {t("common.actions")}
-                    </DropdownToggle>
-                  }
-                  isOpen={isActionsOpen}
-                  dropdownItems={actionItems}
-                />
-              </SplitItem>
+              {!isEditing && (
+                <SplitItem>
+                  <Split hasGutter={true}>
+                    <SplitItem>
+                      <Button
+                        isAriaDisabled={
+                          currentProcessor.status !==
+                          ManagedResourceStatus.Ready
+                        }
+                        onClick={(): void => setIsEditing(true)}
+                      >
+                        {t("common.edit")}
+                      </Button>
+                    </SplitItem>
+                    <SplitItem>
+                      <Dropdown
+                        onSelect={actionsSelect}
+                        alignments={{ sm: "right" }}
+                        toggle={
+                          <DropdownToggle
+                            id="toggle-id"
+                            onToggle={actionsToggle}
+                            toggleIndicator={CaretDownIcon}
+                          >
+                            {t("common.actions")}
+                          </DropdownToggle>
+                        }
+                        isOpen={isActionsOpen}
+                        dropdownItems={actionItems}
+                      />
+                    </SplitItem>
+                  </Split>
+                </SplitItem>
+              )}
             </Split>
           </PageSection>
-          <ProcessorDetail processor={processor as unknown as Processor} />
+          {isEditing ? (
+            <ProcessorEdit
+              processorTypeSection={getProcessorTypeSection(currentProcessor)}
+              processor={currentProcessor}
+              isLoading={updateProcessorLoading}
+              saveButtonLabel={t("common.save")}
+              onSave={handleUpdateProcessorSaving}
+              onCancel={(): void => setIsEditing(false)}
+              existingProcessorName={existingProcessorName}
+            />
+          ) : (
+            <ProcessorDetail
+              processor={currentProcessor as unknown as Processor}
+            />
+          )}
         </>
       )}
     </>

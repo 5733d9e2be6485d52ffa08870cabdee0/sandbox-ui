@@ -10,6 +10,7 @@ import {
 import { v4 as uuid } from "uuid";
 import { instancesData, processorData } from "./data";
 import { omit } from "lodash";
+import { EventFilter } from "../src/types/Processor";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
@@ -292,7 +293,6 @@ export const handlers = [
     `${apiUrl}/bridges/:bridgeId/processors/:processorId`,
     (req, res, ctx) => {
       const { bridgeId, processorId } = req.params;
-
       const bridge = db.bridge.findFirst({
         where: {
           id: {
@@ -435,6 +435,124 @@ export const handlers = [
       )
     );
   }),
+  // update a processor
+  rest.put(
+    `${apiUrl}/bridges/:bridgeId/processors/:processorId`,
+    (req, res, ctx) => {
+      const { bridgeId, processorId } = req.params;
+      const { name, filters, transformationTemplate, source, action } =
+        req.body as ProcessorRequest;
+
+      const existingBridge = db.bridge.findFirst({
+        where: {
+          id: {
+            equals: bridgeId as string,
+          },
+        },
+      });
+
+      if (!existingBridge) {
+        return res(
+          ctx.status(404),
+          ctx.delay(apiDelay),
+          ctx.json({
+            ...error_not_found,
+            reason: `Bridge with id '${
+              bridgeId as string
+            }' for customer 'XXXXXXXX' does not exist`,
+          })
+        );
+      }
+
+      const processor = db.processor.findFirst({
+        where: {
+          id: {
+            equals: processorId as string,
+          },
+        },
+      });
+
+      if (!processor) {
+        return res(
+          ctx.status(404),
+          ctx.delay(apiDelay),
+          ctx.json({
+            ...error_not_found,
+            reason: `Processor with id '${
+              processorId as string
+            }' for customer 'XXXXXXXX' does not exist`,
+          })
+        );
+      }
+
+      const existingProcessors = db.processor.findMany({
+        where: {
+          name: {
+            equals: name,
+          },
+          bridge: {
+            id: {
+              equals: bridgeId as string,
+            },
+          },
+        },
+      });
+
+      const processorNameCollision =
+        existingProcessors.length === 1 &&
+        existingProcessors[0].id !== processorId;
+      if (processorNameCollision || existingProcessors.length > 1) {
+        return res(
+          ctx.status(400),
+          ctx.json({
+            ...error_duplicated_resource,
+            reason: `Processor with name '${name}' already exists for bridge with id ${
+              bridgeId as string
+            } for customer with id 'XXXXXXXXXX'`,
+          })
+        );
+      }
+
+      const updatedProcessor = db.processor.update({
+        where: {
+          id: {
+            equals: processorId as string,
+          },
+        },
+        data: {
+          name,
+          status: "accepted",
+          filters: filters as unknown as EventFilter[],
+          transformationTemplate,
+          ...(action ? { action } : {}),
+          ...(source ? { source } : {}),
+        },
+      });
+
+      // make the process slower if the resource name contains "wait" and make it fail
+      // if the name contains "fail"
+      resourceStatusFlow(
+        "processor",
+        "create",
+        processorId as string,
+        name.includes("wait"),
+        name.includes("fail-create")
+      );
+
+      return res(
+        ctx.status(200),
+        ctx.delay(apiDelay),
+        ctx.json(
+          cleanupProcessor(
+            updatedProcessor as unknown as Record<
+              string | number | symbol,
+              unknown
+            >
+          )
+        )
+      );
+    }
+  ),
   // delete a processor
   rest.delete(
     `${apiUrl}/bridges/:bridgeId/processors/:processorId`,
@@ -626,7 +744,7 @@ const cleanupProcessor = (
   // removing properties not needed for the response
   const omitProperties = ["bridge"];
 
-  if (!(processor.filters as Array<Record<string, unknown>>).length) {
+  if (!(processor.filters as Array<Record<string, unknown>>)?.length) {
     omitProperties.push("filters");
   }
   if (processor.transformationTemplate === "") {

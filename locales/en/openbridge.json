@@ -10,6 +10,7 @@
     "delete": "Delete",
     "description": "Description",
     "details": "Details",
+    "edit": "Edit",
     "endpoint": "Endpoint",
     "id": "ID",
     "kafkaTopic": "Kafka Topic",
@@ -20,6 +21,7 @@
     "publishedAt": "Published at",
     "quickStartAccess": "For help getting started, access the quick start guide.",
     "required": "Required",
+    "save": "Save",
     "selectType": "Select type",
     "status": "Status",
     "submittedAt": "Time created",
@@ -56,6 +58,7 @@
     "addTransformationDescription": "Add a transformation template.",
     "channel": "Channel",
     "createProcessor": "Create processor",
+    "delete": "Delete processor",
     "deleteFilter": "Delete filter",
     "errors": {
       "missingProcessorType": "Please select a processor type.",

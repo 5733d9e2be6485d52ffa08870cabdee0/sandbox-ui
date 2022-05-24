@@ -13,13 +13,20 @@ import {
 
 interface PageHeaderSkeletonProps {
   pageTitle: string;
+  hasEditButton?: boolean;
   hasActionDropdown: boolean;
   hasLabel: boolean;
   totalTabs?: number;
 }
 
 const PageHeaderSkeleton = (props: PageHeaderSkeletonProps): JSX.Element => {
-  const { pageTitle, hasActionDropdown, hasLabel, totalTabs = 0 } = props;
+  const {
+    pageTitle,
+    hasEditButton = false,
+    hasActionDropdown,
+    hasLabel,
+    totalTabs = 0,
+  } = props;
   return (
     <>
       <PageSection
@@ -57,6 +64,11 @@ const PageHeaderSkeleton = (props: PageHeaderSkeletonProps): JSX.Element => {
               )}
             </Stack>
           </SplitItem>
+          {hasEditButton && (
+            <SplitItem>
+              <Skeleton fontSize="2xl" width={"60px"} />
+            </SplitItem>
+          )}
           {hasActionDropdown && (
             <SplitItem>
               <Skeleton fontSize="2xl" width={"100px"} />

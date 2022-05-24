@@ -110,6 +110,7 @@ const CreateProcessorPage = (): JSX.Element => {
             </TextContent>
           </PageSection>
           <ProcessorEdit
+            saveButtonLabel={t("common.create")}
             onSave={handleSave}
             onCancel={goToInstance}
             isLoading={isAddLoading}

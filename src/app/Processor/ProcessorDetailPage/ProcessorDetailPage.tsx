@@ -35,6 +35,8 @@ import {
   ProcessorRequest,
   ProcessorResponse,
 } from "@openapi/generated";
+import axios from "axios";
+import { ResponseError } from "../../../types/Error";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
@@ -50,6 +52,10 @@ const ProcessorDetailPage = (): JSX.Element => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentProcessor, setCurrentProcessor] = useState<ProcessorResponse>();
   const [isActionsOpen, setIsActionsOpen] = useState(false);
+  const [existingProcessorName, setExistingProcessorName] = useState<
+    string | undefined
+  >();
+  const [requestData, setRequestData] = useState<ProcessorRequest>();
   const actionsToggle = (isOpen: boolean): void => {
     setIsActionsOpen(isOpen);
   };
@@ -113,8 +119,15 @@ const ProcessorDetailPage = (): JSX.Element => {
       console.error(processorError);
       goToInstance();
     }
-    if (updateProcessorError) {
-      console.error(updateProcessorError);
+    if (updateProcessorError && axios.isAxiosError(updateProcessorError)) {
+      // TODO: replace error code string with a value coming from an error catalog
+      //  See https://issues.redhat.com/browse/MGDOBR-669 for more details.
+      if (
+        (updateProcessorError.response?.data as ResponseError).code ===
+        "OPENBRIDGE-1"
+      ) {
+        setExistingProcessorName(requestData?.name);
+      }
     }
   }, [
     bridgeError,
@@ -122,6 +135,7 @@ const ProcessorDetailPage = (): JSX.Element => {
     goToHome,
     goToInstance,
     updateProcessorError,
+    requestData?.name,
   ]);
 
   const processorNotChanged = useCallback(
@@ -148,6 +162,7 @@ const ProcessorDetailPage = (): JSX.Element => {
         setIsEditing(false);
         return;
       }
+      setRequestData(processorRequest);
       updateProcessor(instanceId, processorId, processorRequest);
     },
     [
@@ -267,6 +282,7 @@ const ProcessorDetailPage = (): JSX.Element => {
               saveButtonLabel={t("common.save")}
               onSave={handleUpdateProcessorSaving}
               onCancel={(): void => setIsEditing(false)}
+              existingProcessorName={existingProcessorName}
             />
           ) : (
             <ProcessorDetail

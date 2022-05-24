@@ -68,6 +68,12 @@ export interface BridgeResponse {
      * @type {string}
      * @memberof BridgeResponse
      */
+    'owner'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BridgeResponse
+     */
     'endpoint'?: string;
 }
 

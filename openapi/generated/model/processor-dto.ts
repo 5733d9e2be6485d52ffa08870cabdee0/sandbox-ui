@@ -62,6 +62,12 @@ export interface ProcessorDTO {
     'customerId'?: string;
     /**
      * 
+     * @type {string}
+     * @memberof ProcessorDTO
+     */
+    'owner'?: string;
+    /**
+     * 
      * @type {ManagedResourceStatus}
      * @memberof ProcessorDTO
      */

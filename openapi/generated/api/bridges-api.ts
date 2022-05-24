@@ -26,6 +26,8 @@ import { BridgeListResponse } from '../model';
 import { BridgeRequest } from '../model';
 // @ts-ignore
 import { BridgeResponse } from '../model';
+// @ts-ignore
+import { ManagedResourceStatus } from '../model';
 /**
  * BridgesApi - axios parameter creator
  * @export
@@ -149,12 +151,14 @@ export const BridgesApiAxiosParamCreator = function (configuration?: Configurati
         /**
          * Get the list of Bridge instances for the authenticated user.
          * @summary Get the list of Bridge instances
+         * @param {string} [name] 
          * @param {number} [page] 
          * @param {number} [size] 
+         * @param {Set<ManagedResourceStatus>} [status] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getBridges: async (page?: number, size?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getBridges: async (name?: string, page?: number, size?: number, status?: Set<ManagedResourceStatus>, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/bridges`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -171,12 +175,20 @@ export const BridgesApiAxiosParamCreator = function (configuration?: Configurati
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
             if (page !== undefined) {
                 localVarQueryParameter['page'] = page;
             }
 
             if (size !== undefined) {
                 localVarQueryParameter['size'] = size;
+            }
+
+            if (status) {
+                localVarQueryParameter['status'] = Array.from(status);
             }
 
 
@@ -236,13 +248,15 @@ export const BridgesApiFp = function(configuration?: Configuration) {
         /**
          * Get the list of Bridge instances for the authenticated user.
          * @summary Get the list of Bridge instances
+         * @param {string} [name] 
          * @param {number} [page] 
          * @param {number} [size] 
+         * @param {Set<ManagedResourceStatus>} [status] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getBridges(page?: number, size?: number, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BridgeListResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getBridges(page, size, options);
+        async getBridges(name?: string, page?: number, size?: number, status?: Set<ManagedResourceStatus>, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BridgeListResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getBridges(name, page, size, status, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -288,13 +302,15 @@ export const BridgesApiFactory = function (configuration?: Configuration, basePa
         /**
          * Get the list of Bridge instances for the authenticated user.
          * @summary Get the list of Bridge instances
+         * @param {string} [name] 
          * @param {number} [page] 
          * @param {number} [size] 
+         * @param {Set<ManagedResourceStatus>} [status] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getBridges(page?: number, size?: number, options?: any): AxiosPromise<BridgeListResponse> {
-            return localVarFp.getBridges(page, size, options).then((request) => request(axios, basePath));
+        getBridges(name?: string, page?: number, size?: number, status?: Set<ManagedResourceStatus>, options?: any): AxiosPromise<BridgeListResponse> {
+            return localVarFp.getBridges(name, page, size, status, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -338,13 +354,15 @@ export interface BridgesApiInterface {
     /**
      * Get the list of Bridge instances for the authenticated user.
      * @summary Get the list of Bridge instances
+     * @param {string} [name] 
      * @param {number} [page] 
      * @param {number} [size] 
+     * @param {Set<ManagedResourceStatus>} [status] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BridgesApiInterface
      */
-    getBridges(page?: number, size?: number, options?: AxiosRequestConfig): AxiosPromise<BridgeListResponse>;
+    getBridges(name?: string, page?: number, size?: number, status?: Set<ManagedResourceStatus>, options?: AxiosRequestConfig): AxiosPromise<BridgeListResponse>;
 
 }
 
@@ -394,13 +412,15 @@ export class BridgesApi extends BaseAPI implements BridgesApiInterface {
     /**
      * Get the list of Bridge instances for the authenticated user.
      * @summary Get the list of Bridge instances
+     * @param {string} [name] 
      * @param {number} [page] 
      * @param {number} [size] 
+     * @param {Set<ManagedResourceStatus>} [status] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BridgesApi
      */
-    public getBridges(page?: number, size?: number, options?: AxiosRequestConfig) {
-        return BridgesApiFp(this.configuration).getBridges(page, size, options).then((request) => request(this.axios, this.basePath));
+    public getBridges(name?: string, page?: number, size?: number, status?: Set<ManagedResourceStatus>, options?: AxiosRequestConfig) {
+        return BridgesApiFp(this.configuration).getBridges(name, page, size, status, options).then((request) => request(this.axios, this.basePath));
     }
 }

@@ -48,6 +48,12 @@ export interface BridgeDTO {
     'customerId'?: string;
     /**
      * 
+     * @type {string}
+     * @memberof BridgeDTO
+     */
+    'owner'?: string;
+    /**
+     * 
      * @type {ManagedResourceStatus}
      * @memberof BridgeDTO
      */

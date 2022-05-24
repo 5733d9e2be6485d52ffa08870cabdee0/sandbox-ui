@@ -101,6 +101,7 @@ const ProcessorDetailPage = (): JSX.Element => {
 
   useEffect(() => {
     setCurrentProcessor(updatedProcessor);
+    setIsEditing(false);
   }, [updatedProcessor]);
 
   useEffect(() => {
@@ -147,9 +148,7 @@ const ProcessorDetailPage = (): JSX.Element => {
         setIsEditing(false);
         return;
       }
-      void updateProcessor(instanceId, processorId, processorRequest).then(() =>
-        setIsEditing(false)
-      );
+      updateProcessor(instanceId, processorId, processorRequest);
     },
     [
       currentProcessor,

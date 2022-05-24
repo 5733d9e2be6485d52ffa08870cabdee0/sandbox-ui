@@ -13,7 +13,7 @@ export function useUpdateProcessorApi(): {
     bridgeId: string,
     processorId: string,
     processorRequest: ProcessorRequest
-  ) => Promise<void>;
+  ) => void;
   processor?: ProcessorResponse;
   isLoading: boolean;
   error: unknown;
@@ -27,11 +27,11 @@ export function useUpdateProcessorApi(): {
     return (await auth.kas.getToken()) || "";
   }, [auth]);
 
-  const updateProcessor = async (
+  const updateProcessor = (
     bridgeId: string,
     processorId: string,
     processorRequest: ProcessorRequest
-  ): Promise<void> => {
+  ): void => {
     setIsLoading(true);
     const processorsApi = new ProcessorsApi(
       new Configuration({
@@ -39,7 +39,7 @@ export function useUpdateProcessorApi(): {
         basePath: config.apiBasePath,
       })
     );
-    await processorsApi
+    processorsApi
       .updateProcessor(bridgeId, processorId, processorRequest)
       .then((response) => setProcessor(response.data))
       .catch((err) => setError(err))

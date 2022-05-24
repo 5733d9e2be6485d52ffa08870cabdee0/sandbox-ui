@@ -33,6 +33,8 @@ export function useUpdateProcessorApi(): {
     processorRequest: ProcessorRequest
   ): void => {
     setIsLoading(true);
+    setError(undefined);
+    setProcessor(undefined);
     const processorsApi = new ProcessorsApi(
       new Configuration({
         accessToken: getToken,

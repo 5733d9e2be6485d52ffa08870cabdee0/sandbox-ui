@@ -204,8 +204,8 @@ const ProcessorDetailPage = (): JSX.Element => {
       component="button"
       onClick={(): void => deleteProcessor()}
       isDisabled={
-        !processor ||
-        !canDeleteResource(processor.status as ManagedResourceStatus)
+        !currentProcessor ||
+        !canDeleteResource(currentProcessor.status as ManagedResourceStatus)
       }
     >
       {t("processor.delete")}
@@ -304,19 +304,19 @@ const ProcessorDetailPage = (): JSX.Element => {
               existingProcessorName={existingProcessorName}
             />
           ) : (
-              <>
-                <ProcessorDetail
-                  processor={currentProcessor as unknown as Processor}
-                />
-                <DeleteProcessor
-                    showDeleteModal={showProcessorDeleteModal}
-                    bridgeId={bridge.id as string}
-                    processorId={currentProcessor.id as string}
-                    processorName={currentProcessor.name as string}
-                    onDeleted={handleOnDeleteProcessorSuccess}
-                    onCanceled={(): void => setShowProcessorDeleteModal(false)}
-                />
-              </>
+            <>
+              <ProcessorDetail
+                processor={currentProcessor as unknown as Processor}
+              />
+              <DeleteProcessor
+                showDeleteModal={showProcessorDeleteModal}
+                bridgeId={bridge.id as string}
+                processorId={currentProcessor.id as string}
+                processorName={currentProcessor.name as string}
+                onDeleted={handleOnDeleteProcessorSuccess}
+                onCanceled={(): void => setShowProcessorDeleteModal(false)}
+              />
+            </>
           )}
         </>
       )}

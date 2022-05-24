@@ -4,8 +4,7 @@ import {
   ProcessorsApi,
 } from "@openapi/generated";
 import { useCallback, useState } from "react";
-import { useAuth } from "@rhoas/app-services-ui-shared";
-import config from "../../../config/config";
+import { useAuth, useConfig } from "@rhoas/app-services-ui-shared";
 
 export function useGetProcessorApi(): {
   getProcessor: (bridgeId: string, processorId: string) => void;
@@ -17,9 +16,10 @@ export function useGetProcessorApi(): {
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
   const auth = useAuth();
+  const config = useConfig();
 
   const getToken = useCallback(async (): Promise<string> => {
-    return (await auth.kas.getToken()) || "";
+    return (await auth.smart_events.getToken()) || "";
   }, [auth]);
 
   const getProcessor = useCallback(
@@ -27,7 +27,7 @@ export function useGetProcessorApi(): {
       const processorsApi = new ProcessorsApi(
         new Configuration({
           accessToken: getToken,
-          basePath: config.apiBasePath,
+          basePath: config.smart_events.apiBasePath,
         })
       );
       processorsApi
@@ -36,7 +36,7 @@ export function useGetProcessorApi(): {
         .catch((err) => setError(err))
         .finally(() => setIsLoading(false));
     },
-    [getToken]
+    [getToken, config]
   );
 
   return { getProcessor, isLoading, processor, error };

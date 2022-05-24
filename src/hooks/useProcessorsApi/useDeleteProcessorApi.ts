@@ -1,7 +1,6 @@
 import { Configuration, ProcessorsApi } from "@openapi/generated";
 import { useCallback, useState } from "react";
-import { useAuth } from "@rhoas/app-services-ui-shared";
-import config from "../../../config/config";
+import { useAuth, useConfig } from "@rhoas/app-services-ui-shared";
 
 export function useDeleteProcessorApi(): {
   deleteProcessor: (bridgeId: string, processorId: string) => void;
@@ -13,9 +12,10 @@ export function useDeleteProcessorApi(): {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState<boolean | undefined>();
   const auth = useAuth();
+  const config = useConfig();
 
   const getToken = useCallback(async (): Promise<string> => {
-    return (await auth.kas.getToken()) || "";
+    return (await auth.smart_events.getToken()) || "";
   }, [auth]);
 
   const deleteProcessor = (bridgeId: string, processorId: string): void => {
@@ -26,7 +26,7 @@ export function useDeleteProcessorApi(): {
     const processorsApi = new ProcessorsApi(
       new Configuration({
         accessToken: getToken,
-        basePath: config.apiBasePath,
+        basePath: config.smart_events.apiBasePath,
       })
     );
     processorsApi

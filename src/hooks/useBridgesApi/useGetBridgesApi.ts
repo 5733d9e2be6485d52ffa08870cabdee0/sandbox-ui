@@ -4,9 +4,8 @@ import {
   Configuration,
 } from "@openapi/generated";
 import { useCallback, useRef, useState } from "react";
-import { useAuth } from "@rhoas/app-services-ui-shared";
+import { useAuth, useConfig } from "@rhoas/app-services-ui-shared";
 import axios, { CancelTokenSource } from "axios";
-import config from "config/config";
 
 export function useGetBridgesApi(): {
   getBridges: (pageReq?: number, sizeReq?: number, isPolling?: boolean) => void;
@@ -20,9 +19,10 @@ export function useGetBridgesApi(): {
   const [isLoading, setIsLoading] = useState(true);
   const prevCallTokenSource = useRef<CancelTokenSource>();
   const auth = useAuth();
+  const config = useConfig();
 
   const getToken = useCallback(async (): Promise<string> => {
-    return (await auth.kas.getToken()) || "";
+    return (await auth.smart_events.getToken()) || "";
   }, [auth]);
 
   const getBridges = useCallback(
@@ -37,7 +37,7 @@ export function useGetBridgesApi(): {
       const bridgeApi = new BridgesApi(
         new Configuration({
           accessToken: getToken,
-          basePath: config.apiBasePath,
+          basePath: config.smart_events.apiBasePath,
         })
       );
       bridgeApi
@@ -55,7 +55,7 @@ export function useGetBridgesApi(): {
           }
         });
     },
-    [getToken]
+    [getToken, config]
   );
 
   return { getBridges, isLoading, bridgeListResponse, error };

@@ -109,7 +109,7 @@ export const KeycloakAuthProvider: React.FunctionComponent = (props) => {
   };
 
   const authTokenContext = {
-    kas: {
+    smart_events: {
       getToken: getKeyCloakToken,
     },
     getUsername: getUsername,

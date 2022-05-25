@@ -99,7 +99,7 @@ export const Table: FunctionComponent<TableProps> = ({
         <Tbody>
           {transformRows(rows, columns).map((row: TableRow, rowIndex) => (
             <Tr
-              ouiaId={row.originalData?.id as string}
+              ouiaId={row.originalData?.name as string}
               key={(row.originalData?.id as string) ?? rowIndex}
             >
               {row?.cells?.map((cell, cellIndex) => (

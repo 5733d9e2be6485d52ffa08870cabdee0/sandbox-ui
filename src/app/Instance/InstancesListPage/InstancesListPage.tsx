@@ -13,7 +13,7 @@ import {
   TextContent,
   Title,
 } from "@patternfly/react-core";
-import { IRow, IRowData } from "@patternfly/react-table";
+import { IAction, IRow, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import {
@@ -32,6 +32,9 @@ import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridge
 import axios from "axios";
 import { ResponseError } from "../../../types/Error";
 import { BridgeResponse, ManagedResourceStatus } from "@openapi/generated";
+import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
+import { TableRow } from "@app/components/Table";
+import { canDeleteResource } from "@utils/resourceUtils";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -155,6 +158,55 @@ const InstancesListPage = (): JSX.Element => {
     setExistingBridgeName("");
   };
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteInstanceId, setDeleteInstanceId] = useState<string>();
+  const [deleteInstanceName, setDeleteInstanceName] = useState<string>();
+
+  const deleteInstance = (id: string, name: string): void => {
+    setDeleteInstanceId(id);
+    setDeleteInstanceName(name);
+    setShowDeleteModal(true);
+  };
+
+  const resetDeleteInstance = useCallback((): void => {
+    setDeleteInstanceId("");
+    setDeleteInstanceName("");
+  }, []);
+
+  const handleOnDeleteSuccess = useCallback((): void => {
+    setShowDeleteModal(false);
+    getBridges(currentPage, currentPageSize);
+    resetDeleteInstance();
+  }, [currentPage, currentPageSize, getBridges, resetDeleteInstance]);
+
+  const handleOnDeleteCancel = useCallback((): void => {
+    setShowDeleteModal(false);
+    resetDeleteInstance();
+  }, [resetDeleteInstance]);
+
+  const tableActions = (rowData: TableRow): IAction[] => [
+    {
+      title: t("common.details"),
+      onClick: (): void => {
+        setSelectedInstance(rowData.originalData as BridgeResponse);
+        setShowInstanceDrawer(true);
+      },
+    },
+    {
+      title: t("common.delete"),
+      onClick: (): void => {
+        const id = (rowData.originalData as BridgeResponse).id;
+        const name = (rowData.originalData as BridgeResponse).name;
+        if (id && name) {
+          deleteInstance(id, name);
+        }
+      },
+      isDisabled: !canDeleteResource(
+        (rowData.originalData as BridgeResponse).status as ManagedResourceStatus
+      ),
+    },
+  ];
+
   const customToolbarElement = (
     <>
       <Button
@@ -206,10 +258,6 @@ const InstancesListPage = (): JSX.Element => {
           <TableWithPagination
             columns={columnNames}
             customToolbarElement={customToolbarElement}
-            onDetailsClick={(rowData): void => {
-              setSelectedInstance(rowData as unknown as BridgeResponse);
-              setShowInstanceDrawer(true);
-            }}
             isLoading={isLoading}
             rows={bridgeListResponse.items}
             totalRows={totalRows ?? 0}
@@ -218,6 +266,9 @@ const InstancesListPage = (): JSX.Element => {
             onPaginationChange={onPaginationChange}
             tableLabel={t(
               "openbridgeTempDictionary:instance.instancesListTable"
+            )}
+            renderActions={({ row, ActionsColumn }): JSX.Element => (
+              <ActionsColumn items={tableActions(row)} />
             )}
           >
             <EmptyState variant="large">
@@ -236,22 +287,31 @@ const InstancesListPage = (): JSX.Element => {
     </>
   );
 
-  return selectedInstance ? (
-    <Drawer isExpanded={showInstanceDrawer}>
-      <DrawerContent
-        data-ouia-component-id="instance-drawer"
-        panelContent={
-          <InstanceDetails
-            onClosingDetails={(): void => setShowInstanceDrawer(false)}
-            instance={selectedInstance}
-          />
-        }
-      >
-        {pageContent}
-      </DrawerContent>
-    </Drawer>
-  ) : (
-    <>{pageContent}</>
+  return (
+    <>
+      <Drawer isExpanded={showInstanceDrawer}>
+        <DrawerContent
+          data-ouia-component-id="instance-drawer"
+          panelContent={
+            selectedInstance ? (
+              <InstanceDetails
+                onClosingDetails={(): void => setShowInstanceDrawer(false)}
+                instance={selectedInstance}
+              />
+            ) : null
+          }
+        >
+          {pageContent}
+        </DrawerContent>
+      </Drawer>
+      <DeleteInstance
+        showDeleteModal={showDeleteModal}
+        instanceId={deleteInstanceId}
+        instanceName={deleteInstanceName}
+        onDeleted={handleOnDeleteSuccess}
+        onCanceled={handleOnDeleteCancel}
+      />
+    </>
   );
 };
 

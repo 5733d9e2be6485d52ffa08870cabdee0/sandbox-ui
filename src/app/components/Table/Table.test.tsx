@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { Table } from "./Table";
+import { IAction } from "@patternfly/react-table";
 
 describe("Table component", () => {
   const columns = [{ accessor: "col", label: "Column" }];
@@ -34,7 +35,7 @@ describe("Table component", () => {
   });
 
   test("should render action cells, when `actionResolver` is configured", () => {
-    const actionResolver = (): { title: string; onClick: () => void }[] => [
+    const tableActions = (): IAction[] => [
       {
         title: "actions...",
         onClick: jest.fn(),
@@ -42,7 +43,13 @@ describe("Table component", () => {
     ];
 
     const { container } = render(
-      <Table columns={columns} rows={rows} actionResolver={actionResolver} />
+      <Table
+        columns={columns}
+        rows={rows}
+        renderActions={({ ActionsColumn }): JSX.Element => (
+          <ActionsColumn items={tableActions()} />
+        )}
+      />
     );
 
     expect(container.querySelector(".pf-c-table__action")).toBeInTheDocument();

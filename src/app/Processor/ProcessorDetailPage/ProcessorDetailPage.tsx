@@ -250,7 +250,6 @@ const ProcessorDetailPage = (): JSX.Element => {
                 <Stack hasGutter={true}>
                   <StackItem>
                     <TextContent>
-
                       <Text component="h1" ouiaId="processor-name">
                         {currentProcessor.name}
                       </Text>

@@ -134,8 +134,8 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
         >
           <TextInput
             type="text"
-            id="missing-source-parameters"
-            ouiaId="source-parameters"
+            id="source-parameters"
+            ouiaId="missing-source-parameters"
             name="source-parameters"
             aria-describedby="source-parameters"
             isDisabled={true}

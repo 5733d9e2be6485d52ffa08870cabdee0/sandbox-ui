@@ -44,7 +44,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
         <Stack hasGutter={true}>
           <StackItem>
             <TextContent>
-              <Text component={TextVariants.h2} ouiaId="processor-type">
+              <Text component={TextVariants.h2} ouiaId="type">
                 {t("processor.processorType")}
               </Text>
             </TextContent>
@@ -61,10 +61,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
           <Stack hasGutter={true}>
             <StackItem>
               <TextContent>
-                <Text
-                  component={TextVariants.h2}
-                  ouiaId="processor-source-section"
-                >
+                <Text component={TextVariants.h2} ouiaId="source-section">
                   {t("processor.source")}
                 </Text>
               </TextContent>

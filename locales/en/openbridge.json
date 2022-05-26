@@ -19,6 +19,7 @@
     "loading": "Loading",
     "name": "Name",
     "owner": "Owner",
+    "processor": "Processor",
     "processors": "Processors",
     "publishedAt": "Published at",
     "quickStartAccess": "For help getting started, access the quick start guide.",
@@ -65,6 +66,7 @@
     "createProcessor": "Create processor",
     "delete": "Delete processor",
     "deleteFilter": "Delete filter",
+    "deleteProcessor": "Delete Processor?",
     "errors": {
       "missingProcessorType": "Please select a processor type.",
       "invalidName": "A processor with this name already exists in this instance.",

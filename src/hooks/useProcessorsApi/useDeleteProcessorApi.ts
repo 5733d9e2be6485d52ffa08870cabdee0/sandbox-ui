@@ -1,33 +1,43 @@
 import { Configuration, ProcessorsApi } from "@openapi/generated";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useAuth } from "@rhoas/app-services-ui-shared";
+import config from "../../../config/config";
 
-export function useDeleteProcessorApi(
-  getToken: () => Promise<string>,
-  basePath: string
-): {
-  deleteProcessor: (bridgeId: string, processorId: string) => Promise<void>;
+export function useDeleteProcessorApi(): {
+  deleteProcessor: (bridgeId: string, processorId: string) => void;
   isLoading: boolean;
+  success: boolean | undefined;
   error: unknown;
 } {
   const [error, setError] = useState<unknown>();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState<boolean | undefined>();
+  const auth = useAuth();
 
-  const deleteProcessor = async (
-    bridgeId: string,
-    processorId: string
-  ): Promise<void> => {
+  const getToken = useCallback(async (): Promise<string> => {
+    return (await auth.kas.getToken()) || "";
+  }, [auth]);
+
+  const deleteProcessor = (bridgeId: string, processorId: string): void => {
+    setSuccess(undefined);
+    setError(undefined);
+    setIsLoading(true);
+
     const processorsApi = new ProcessorsApi(
       new Configuration({
         accessToken: getToken,
-        basePath,
+        basePath: config.apiBasePath,
       })
     );
-    await processorsApi
+    processorsApi
       .deleteProcessor(bridgeId, processorId)
-      .then()
-      .catch((err) => setError(err))
+      .then(() => setSuccess(true))
+      .catch((err) => {
+        setError(err);
+        setSuccess(false);
+      })
       .finally(() => setIsLoading(false));
   };
 
-  return { deleteProcessor, isLoading, error };
+  return { deleteProcessor, isLoading, success, error };
 }

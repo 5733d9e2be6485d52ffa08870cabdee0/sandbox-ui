@@ -58,6 +58,7 @@ const DeleteProcessor = (props: DeleteProcessorProps): JSX.Element => {
     <>
       {processorId && processorName && (
         <DeleteModal
+          ouiaId="delete-processor"
           modalTitle={t("processor.deleteProcessor")}
           showDialog={showDeleteModal}
           isPreloading={false}

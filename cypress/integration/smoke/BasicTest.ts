@@ -1,6 +1,10 @@
 describe("Basic Elements", () => {
   beforeEach(() => {
     cy.visit("/");
+
+    cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
+      "not.exist"
+    );
   });
 
   it("The Create SE Instance button is visible", () => {

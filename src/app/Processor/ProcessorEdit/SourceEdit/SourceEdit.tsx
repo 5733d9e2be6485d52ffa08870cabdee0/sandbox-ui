@@ -108,6 +108,7 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
       >
         <FormSelect
           id={`source-type`}
+          ouiaId="source-type"
           aria-label={t("processor.sourceType")}
           isRequired={true}
           value={type}
@@ -134,6 +135,7 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
           <TextInput
             type="text"
             id="source-parameters"
+            ouiaId="missing-source-parameters"
             name="source-parameters"
             aria-describedby="source-parameters"
             isDisabled={true}
@@ -162,6 +164,7 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
                   <TextInput
                     type="text"
                     id={field.name}
+                    ouiaId={field.name}
                     name={field.name}
                     aria-describedby={field.name}
                     isRequired={true}

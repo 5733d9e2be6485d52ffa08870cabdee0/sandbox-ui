@@ -44,7 +44,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
         <Stack hasGutter={true}>
           <StackItem>
             <TextContent>
-              <Text component={TextVariants.h2}>
+              <Text component={TextVariants.h2} ouiaId="type">
                 {t("processor.processorType")}
               </Text>
             </TextContent>
@@ -61,7 +61,9 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
           <Stack hasGutter={true}>
             <StackItem>
               <TextContent>
-                <Text component={TextVariants.h2}>{t("processor.source")}</Text>
+                <Text component={TextVariants.h2} ouiaId="source-section">
+                  {t("processor.source")}
+                </Text>
               </TextContent>
             </StackItem>
             <StackItem>
@@ -95,19 +97,22 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
         <Stack hasGutter={true}>
           <StackItem>
             <TextContent>
-              <Text component={TextVariants.h2}>{t("processor.filters")}</Text>
+              <Text component={TextVariants.h2} ouiaId="filters-section">
+                {t("processor.filters")}
+              </Text>
             </TextContent>
           </StackItem>
           <StackItem>
             {processor.filters?.length ? (
               <TableComposable
                 variant={"compact"}
+                ouiaId="filters-descriptions"
                 borders={true}
                 className="processor-detail__filters"
                 data-ouia-component-id={"filters"}
               >
                 <Thead>
-                  <Tr>
+                  <Tr ouiaId="table-head">
                     <Th>{t("common.key")}</Th>
                     <Th>{t("common.type")}</Th>
                     <Th>{t("common.value")}</Th>
@@ -116,7 +121,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                 <Tbody>
                   {processor.filters?.map(
                     (filter): JSX.Element => (
-                      <Tr key={filter.key}>
+                      <Tr key={filter.key} ouiaId={filter.key}>
                         <Td>{filter.key}</Td>
                         <Td>{t(`processor.${filter.type}`)}</Td>
                         <Td>{filter.value}</Td>
@@ -127,7 +132,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
               </TableComposable>
             ) : (
               <TextContent>
-                <Text component={TextVariants.p}>
+                <Text component={TextVariants.p} ouiaId="no-filters">
                   {t("processor.noFilters")}
                 </Text>
               </TextContent>
@@ -141,7 +146,10 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
             <Stack hasGutter={true}>
               <StackItem>
                 <TextContent>
-                  <Text component={TextVariants.h2}>
+                  <Text
+                    component={TextVariants.h2}
+                    ouiaId="transformation-section"
+                  >
                     {t("processor.transformation")}
                   </Text>
                 </TextContent>
@@ -150,7 +158,10 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                 <>
                   <StackItem>
                     <TextContent>
-                      <Text component={TextVariants.p}>
+                      <Text
+                        component={TextVariants.p}
+                        ouiaId="transformation-template"
+                      >
                         {t("processor.transformationTemplate")}
                       </Text>
                     </TextContent>
@@ -166,7 +177,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
               ) : (
                 <StackItem>
                   <TextContent>
-                    <Text component={TextVariants.p}>
+                    <Text component={TextVariants.p} ouiaId="no-transformation">
                       {t("processor.noTransformationTemplate")}
                     </Text>
                   </TextContent>
@@ -178,7 +189,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
             <Stack hasGutter={true}>
               <StackItem>
                 <TextContent>
-                  <Text component={TextVariants.h2}>
+                  <Text component={TextVariants.h2} ouiaId="action-section">
                     {t("processor.action")}
                   </Text>
                 </TextContent>

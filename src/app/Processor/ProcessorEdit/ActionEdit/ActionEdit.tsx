@@ -149,6 +149,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
       >
         <FormSelect
           id={`action-type`}
+          ouiaId="action-type"
           aria-label={t("processor.actionType")}
           isRequired={true}
           value={type}
@@ -173,6 +174,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
           <TextInput
             type="text"
             id="action-config"
+            ouiaId="missing-actions"
             name="action-config"
             aria-describedby="action-config"
             isDisabled={true}
@@ -201,6 +203,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
                   <TextInput
                     type="text"
                     id={field.name}
+                    ouiaId={field.name}
                     name={field.name}
                     aria-describedby={field.name}
                     isRequired={true}

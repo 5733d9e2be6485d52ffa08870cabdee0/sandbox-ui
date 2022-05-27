@@ -16,13 +16,33 @@ describe("Basic Elements", () => {
     cy.ouiaId("smart-events", "PF4/NavItem").then(($item) => {
       //toggle menu side bar - both directions
       if ($item.is(":visible")) {
+        // wait until data are loaded
+        cy.ouiaType("PF4/TableRow")
+          .should("have.length", 11)
+          .should(($rows) => {
+            expect($rows.eq(1)).contain.text("Instance one");
+          });
+
+        // collapse panel
         cy.get("button#nav-toggle").click();
         cy.ouiaId("smart-events", "PF4/NavItem").should("not.be.visible");
+
+        // expand panel
         cy.get("button#nav-toggle").click();
         cy.ouiaId("smart-events", "PF4/NavItem").should("be.visible");
       } else {
+        // expand panel
         cy.get("button#nav-toggle").click();
         cy.ouiaId("smart-events", "PF4/NavItem").should("be.visible");
+
+        // wait until data are loaded
+        cy.ouiaType("PF4/TableRow")
+          .should("have.length", 11)
+          .should(($rows) => {
+            expect($rows.eq(1)).contain.text("Instance one");
+          });
+
+        // collapse panel
         cy.get("button#nav-toggle").click();
         cy.ouiaId("smart-events", "PF4/NavItem").should("not.be.visible");
       }

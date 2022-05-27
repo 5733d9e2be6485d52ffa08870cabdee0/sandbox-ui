@@ -26,7 +26,7 @@ export const instancesData = [
     id: "ee22ce62-1f23-4dd7-b106-e4158baf8228",
     name: "Instance three",
     href: "/api/v1/bridges/ee22ce62-1f23-4dd7-b106-e4158baf8228",
-    status: "ready",
+    status: "accepted",
     submitted_at: "2022-02-15T12:03:00Z",
     published_at: "2022-02-15T12:04:00Z",
     endpoint:
@@ -37,7 +37,7 @@ export const instancesData = [
     id: "21ac90ba-76d2-4f88-b08b-2547ef359bae",
     name: "Instance four",
     href: "/api/v1/bridges/21ac90ba-76d2-4f88-b08b-2547ef359bae",
-    status: "ready",
+    status: "provisioning",
     submitted_at: "2022-02-10T16:34:00Z",
     published_at: "2022-02-10T16:35:00Z",
     endpoint:

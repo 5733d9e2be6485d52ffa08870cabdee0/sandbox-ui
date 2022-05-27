@@ -135,6 +135,7 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
                     <TextInput
                       type="text"
                       id={`filter-value-${index}`}
+                      ouiaId="filter-value"
                       name={`filter-value-${index}`}
                       aria-describedby={`filter-value-${index}`}
                       value={filter.value}

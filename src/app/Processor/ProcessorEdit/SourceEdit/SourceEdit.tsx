@@ -15,10 +15,11 @@ interface SourceEditProps {
   source?: Source;
   onChange: (source: Source) => void;
   registerValidation: (validationFunction: () => boolean) => void;
+  isDisabled?: boolean;
 }
 
 const SourceEdit = (props: SourceEditProps): JSX.Element => {
-  const { source, onChange, registerValidation } = props;
+  const { source, onChange, registerValidation, isDisabled = false } = props;
   const [type, setType] = useState(source?.type ?? "");
   const [parameters, setParameters] = useState(source?.parameters ?? {});
 
@@ -111,6 +112,7 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
           ouiaId="source-type"
           aria-label={t("processor.sourceType")}
           isRequired={true}
+          isDisabled={isDisabled}
           value={type}
           onChange={(type: string): void => updateType(type)}
           validated={validation.errors.type ? "error" : "default"}
@@ -168,6 +170,7 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
                     name={field.name}
                     aria-describedby={field.name}
                     isRequired={true}
+                    isDisabled={isDisabled}
                     value={parameters[field.name] ?? ""}
                     onChange={(value: string): void => {
                       updateParameters({

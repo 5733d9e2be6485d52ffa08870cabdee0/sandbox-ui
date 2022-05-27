@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActionGroup,
@@ -12,8 +12,11 @@ import {
   FormSection,
   Grid,
   GridItem,
+  Label,
   PageSection,
   PageSectionVariants,
+  Stack,
+  StackItem,
   Text,
   TextContent,
   TextInput,
@@ -33,13 +36,19 @@ import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidatePr
 import "./ProcessorEdit.css";
 
 interface ProcessorEditProps {
+  /** The processor data to populate the form. Used when updating an existing processor.
+   * Not required when creating a new processor */
   processor?: ProcessorResponse;
-  existingProcessorName?: string;
+  /** Flag indicating if the save request is loading */
   isLoading: boolean;
+  /** Label for the "Save" button */
   saveButtonLabel: string;
+  /** Callback for when the save button is clicked */
   onSave: (requestData: ProcessorRequest) => void;
+  /** Callback for when the cancel button is clicked */
   onCancel: () => void;
-  processorTypeSection?: JSX.Element;
+  /** Already existing processor name that prevents from saving the processor */
+  existingProcessorName?: string;
 }
 
 const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
@@ -50,9 +59,12 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     onSave,
     onCancel,
     processor,
-    processorTypeSection,
   } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const isExistingProcessor = useMemo(
+    () => processor !== undefined,
+    [processor]
+  );
   const [processorType, setProcessorType] = useState(processor?.type ?? "");
   const [name, setName] = useState(processor?.name ?? "");
   const [filters, setFilters] = useState<EventFilter[]>(
@@ -185,8 +197,24 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                       title={t("processor.generalInformation")}
                       titleElement="h2"
                     >
-                      {processorTypeSection ? (
-                        processorTypeSection
+                      {isExistingProcessor ? (
+                        <Stack>
+                          <StackItem>
+                            <FormGroup
+                              label={t("processor.processorType")}
+                              fieldId={"processor-type"}
+                            />
+                          </StackItem>
+                          <StackItem>
+                            <Label
+                              color={"blue"}
+                              data-testid="processor-type-label"
+                            >
+                              {processor?.type &&
+                                t(`processor.${processor.type}`)}
+                            </Label>
+                          </StackItem>
+                        </Stack>
                       ) : (
                         <FormGroup
                           label={t("processor.selectProcessorType")}
@@ -283,6 +311,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                               source={source}
                               onChange={setSource}
                               registerValidation={registerValidateConfig}
+                              isDisabled={isExistingProcessor}
                             />
                           </FormSection>
                         )}
@@ -327,6 +356,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                               action={action}
                               onChange={setAction}
                               registerValidation={registerValidateConfig}
+                              isDisabled={isExistingProcessor}
                             />
                           </FormSection>
                         )}

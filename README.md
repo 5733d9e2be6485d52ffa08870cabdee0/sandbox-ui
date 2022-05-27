@@ -57,3 +57,13 @@ npm run generate-openapi
 The first script will download the OpenAPI spec from the `sandbox` repo, replacing `openapi/smart-events.yml`.
 
 The second one will delete the existing SDK and generate a new one.
+
+## Error Catalog TS SDK
+
+The structure containing the error catalog is located in the `openapi/generated/error.ts` file.
+
+It's possible to generate a fresh version of it, by running:
+
+```sh
+npm run generate-error-catalog
+```

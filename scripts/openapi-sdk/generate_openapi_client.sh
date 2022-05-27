@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-openapi_filename=$(dirname $0)/../openapi/smart-events.yaml
-output_path=$(dirname $0)/../openapi/generated
+openapi_filename=$(dirname $0)/../../openapi/smart-events.yaml
+output_path=$(dirname $0)/../../openapi/generated
 package_name="smart-events"
 additional_properties="ngVersion=6.1.7,npmName=${package_name},supportsES6=true,withInterfaces=true,withSeparateModelsAndApi=true,modelPackage=model,apiPackage=api"
 

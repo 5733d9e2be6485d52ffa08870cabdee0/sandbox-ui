@@ -1,8 +1,7 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, ReactElement } from "react";
 import {
   ActionsColumn,
-  IAction,
-  IRow,
+  ActionsColumnProps,
   IRowData,
   TableComposable,
   Tbody,
@@ -27,9 +26,14 @@ export interface TableRow extends IRowData {
   originalData?: IRowData;
 }
 
+export type RenderActions = <TRow>(props: {
+  /** PF ActionsColumn component used to render the actions  */
+  ActionsColumn: typeof ActionsColumn;
+  /** The row data passed to the actions */
+  row: TRow;
+}) => ReactElement<ActionsColumnProps> | undefined;
+
 interface TableProps {
-  /** It enables the presence of an action menu on the rows, with the given resolver */
-  actionResolver?: (rowData?: IRow) => IAction[];
   /** Accessible name for the table */
   ariaLabel?: string;
   /** Columns to display */
@@ -42,16 +46,18 @@ interface TableProps {
   variant?: "compact";
   /** Element to be rendered when there are no rows to display */
   children?: JSX.Element;
+  /** Render function to add actions to the table */
+  renderActions?: RenderActions;
 }
 
 export const Table: FunctionComponent<TableProps> = ({
-  actionResolver,
   ariaLabel = "Table",
   columns,
   cssClasses,
   rows,
   variant,
   children,
+  renderActions,
 }) => {
   const transformColumns = (columns: TableColumn[]): string[] => {
     return columns.map((column) => column.label);
@@ -105,9 +111,9 @@ export const Table: FunctionComponent<TableProps> = ({
               {row?.cells?.map((cell, cellIndex) => (
                 <Td key={cellIndex}>{cell}</Td>
               ))}
-              {actionResolver && (
+              {renderActions && (
                 <Td className="pf-c-table__action">
-                  <ActionsColumn items={actionResolver(row?.originalData)} />
+                  {renderActions({ row, ActionsColumn })}
                 </Td>
               )}
             </Tr>

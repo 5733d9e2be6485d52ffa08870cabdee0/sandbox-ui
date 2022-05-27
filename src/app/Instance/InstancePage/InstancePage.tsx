@@ -29,7 +29,7 @@ import {
   FIRST_PAGE,
   TableWithPagination,
 } from "@app/components/TableWithPagination/TableWithPagination";
-import { IRow, IRowData } from "@patternfly/react-table";
+import { IAction, IRow, IRowData } from "@patternfly/react-table";
 import { formatDistance } from "date-fns";
 import "./InstancePage.css";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
@@ -39,7 +39,11 @@ import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSke
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
-import { BridgeResponse } from "@openapi/generated";
+import { BridgeResponse, ManagedResourceStatus } from "@openapi/generated";
+import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
+import { TableRow } from "@app/components/Table";
+import { canDeleteResource } from "@utils/resourceUtils";
+import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
 
 interface InstanceRouteParams {
   instanceId: string;
@@ -118,12 +122,6 @@ const InstancePage = (): JSX.Element => {
     setActiveTabKey(eventKey);
   };
 
-  const onDeleteClick = (): void =>
-    // @TODO missing action to perform when clicking on delete action
-    {
-      history.push(`/`);
-    };
-
   const processorsOverviewColumns = [
     {
       accessor: "name",
@@ -189,6 +187,49 @@ const InstancePage = (): JSX.Element => {
     [currentPageSize, getProcessors, instanceId]
   );
 
+  const [showInstanceDeleteModal, setShowInstanceDeleteModal] = useState(false);
+  const [deleteProcessorId, setDeleteProcessorId] = useState("");
+  const [deleteProcessorName, setDeleteProcessorName] = useState("");
+
+  const deleteInstance = (): void => {
+    setShowInstanceDeleteModal(true);
+  };
+
+  const handleOnDeleteInstanceSuccess = useCallback((): void => {
+    setShowInstanceDeleteModal(false);
+    history.push(`/`);
+  }, [history]);
+
+  const [showProcessorDeleteModal, setShowProcessorDeleteModal] =
+    useState(false);
+
+  const deleteProcessor = (id: string, name: string): void => {
+    setDeleteProcessorId(id);
+    setDeleteProcessorName(name);
+    setShowProcessorDeleteModal(true);
+  };
+
+  const handleOnDeleteProcessorSuccess = useCallback((): void => {
+    setShowProcessorDeleteModal(false);
+    getProcessors(instanceId, currentPage, currentPageSize);
+  }, [getProcessors, instanceId, currentPage, currentPageSize]);
+
+  const tableActions = (rowData: TableRow): IAction[] => [
+    {
+      title: t("common.delete"),
+      onClick: (): void => {
+        const id = (rowData.originalData as BridgeResponse).id;
+        const name = (rowData.originalData as BridgeResponse).name;
+        if (id && name) {
+          deleteProcessor(id, name);
+        }
+      },
+      isDisabled: !canDeleteResource(
+        (rowData.originalData as BridgeResponse).status as ManagedResourceStatus
+      ),
+    },
+  ];
+
   return (
     <>
       {(isBridgeLoading ||
@@ -213,120 +254,150 @@ const InstancePage = (): JSX.Element => {
         </>
       )}
       {bridge && processorListResponse?.items && (
-        <Drawer isExpanded={showInstanceDrawer}>
-          <DrawerContent
-            data-ouia-component-id="instance-drawer"
-            panelContent={
-              <InstanceDetails
-                onClosingDetails={(): void => setShowInstanceDrawer(false)}
-                instance={bridge}
-              />
-            }
-          >
-            <PageSection variant={PageSectionVariants.light} type="breadcrumb">
-              <Breadcrumb
-                path={[
-                  { label: t("instance.smartEventInstances"), linkTo: "/" },
-                  { label: bridge.name ?? "" },
-                ]}
-              />
-            </PageSection>
-            <PageSection variant={PageSectionVariants.light}>
-              <Split>
-                <SplitItem isFilled>
-                  <TextContent>
-                    <Text ouiaId="instance-name" component="h1">
-                      {bridge.name}
-                    </Text>
-                  </TextContent>
-                </SplitItem>
-                <SplitItem>
-                  <Dropdown
-                    ouiaId="actions"
-                    onSelect={(): void => setIsDropdownActionOpen(false)}
-                    toggle={
-                      <DropdownToggle
-                        ouiaId="actions"
-                        onToggle={(isOpen: boolean): void =>
-                          setIsDropdownActionOpen(isOpen)
-                        }
-                        toggleIndicator={CaretDownIcon}
-                      >
-                        {t("common.actions")}
-                      </DropdownToggle>
-                    }
-                    isOpen={isDropdownActionOpen}
-                    dropdownItems={[
-                      <DropdownItem
-                        key="details"
-                        ouiaId="details"
-                        onClick={(): void => {
-                          setShowInstanceDrawer(true);
-                        }}
-                      >
-                        {t("common.details")}
-                      </DropdownItem>,
-                      <DropdownItem
-                        key="delete"
-                        ouiaId="delete"
-                        onClick={onDeleteClick}
-                      >
-                        {t("common.delete")}
-                      </DropdownItem>,
-                    ]}
-                  />
-                </SplitItem>
-              </Split>
-            </PageSection>
-            <PageSection variant={PageSectionVariants.light} type="tabs">
-              <Tabs
-                className="instance-page__tabs"
-                ouiaId="instance-details"
-                usePageInsets
-                activeKey={activeTabKey}
-                onSelect={handleTabClick}
-              >
-                <Tab
-                  eventKey={0}
-                  ouiaId="processors"
-                  tabContentId="instance-page__tabs-processors"
-                  tabContentRef={processorsTabRef}
-                  title={<TabTitleText>{t("common.processors")}</TabTitleText>}
+        <>
+          <Drawer isExpanded={showInstanceDrawer}>
+            <DrawerContent
+              data-ouia-component-id="instance-drawer"
+              panelContent={
+                <InstanceDetails
+                  onClosingDetails={(): void => setShowInstanceDrawer(false)}
+                  instance={bridge}
                 />
-              </Tabs>
-            </PageSection>
-            <PageSection>
-              <TabContent
-                eventKey={0}
-                id="instance-page__tabs-processors"
-                ouiaId="processors"
-                ref={processorsTabRef}
-                aria-label="Processors tab"
+              }
+            >
+              <PageSection
+                variant={PageSectionVariants.light}
+                type="breadcrumb"
               >
-                <TableWithPagination
-                  columns={processorsOverviewColumns}
-                  customToolbarElement={customToolbarElement}
-                  rows={processorListResponse.items}
-                  tableLabel={t(
-                    "openbridgeTempDictionary:processor.processorsListTable"
-                  )}
-                  isLoading={areProcessorsLoading}
-                  onPaginationChange={onPaginationChange}
-                  pageNumber={currentPage}
-                  pageSize={currentPageSize}
-                  totalRows={totalRows ?? 0}
+                <Breadcrumb
+                  path={[
+                    { label: t("instance.smartEventInstances"), linkTo: "/" },
+                    { label: bridge.name ?? "" },
+                  ]}
+                />
+              </PageSection>
+              <PageSection variant={PageSectionVariants.light}>
+                <Split>
+                  <SplitItem isFilled>
+                    <TextContent>
+                      <Text ouiaId="instance-name" component="h1">
+                        {bridge.name}
+                      </Text>
+                    </TextContent>
+                  </SplitItem>
+                  <SplitItem>
+                    <Dropdown
+                      ouiaId="actions"
+                      onSelect={(): void => setIsDropdownActionOpen(false)}
+                      toggle={
+                        <DropdownToggle
+                          ouiaId="actions"
+                          onToggle={(isOpen: boolean): void =>
+                            setIsDropdownActionOpen(isOpen)
+                          }
+                          toggleIndicator={CaretDownIcon}
+                        >
+                          {t("common.actions")}
+                        </DropdownToggle>
+                      }
+                      isOpen={isDropdownActionOpen}
+                      dropdownItems={[
+                        <DropdownItem
+                          key="details"
+                          ouiaId="details"
+                          onClick={(): void => {
+                            setShowInstanceDrawer(true);
+                          }}
+                        >
+                          {t("common.details")}
+                        </DropdownItem>,
+                        <DropdownItem
+                          key="delete"
+                          ouiaId="delete"
+                          onClick={deleteInstance}
+                          isDisabled={
+                            !canDeleteResource(
+                              bridge.status as ManagedResourceStatus
+                            )
+                          }
+                        >
+                          {t("common.delete")}
+                        </DropdownItem>,
+                      ]}
+                    />
+                  </SplitItem>
+                </Split>
+              </PageSection>
+              <PageSection variant={PageSectionVariants.light} type="tabs">
+                <Tabs
+                  className="instance-page__tabs"
+                  ouiaId="instance-details"
+                  usePageInsets
+                  activeKey={activeTabKey}
+                  onSelect={handleTabClick}
                 >
-                  <EmptyState variant="large">
-                    <EmptyStateIcon icon={PlusCircleIcon} />
-                    <Title headingLevel="h4" size="lg">
-                      {t("processor.noProcessors")}
-                    </Title>
-                  </EmptyState>
-                </TableWithPagination>
-              </TabContent>
-            </PageSection>
-          </DrawerContent>
-        </Drawer>
+                  <Tab
+                    eventKey={0}
+                    ouiaId="processors"
+                    tabContentId="instance-page__tabs-processors"
+                    tabContentRef={processorsTabRef}
+                    title={
+                      <TabTitleText>{t("common.processors")}</TabTitleText>
+                    }
+                  />
+                </Tabs>
+              </PageSection>
+              <PageSection>
+                <TabContent
+                  eventKey={0}
+                  id="instance-page__tabs-processors"
+                  ouiaId="processors"
+                  ref={processorsTabRef}
+                  aria-label="Processors tab"
+                >
+                  <TableWithPagination
+                    columns={processorsOverviewColumns}
+                    customToolbarElement={customToolbarElement}
+                    rows={processorListResponse.items}
+                    tableLabel={t(
+                      "openbridgeTempDictionary:processor.processorsListTable"
+                    )}
+                    isLoading={areProcessorsLoading}
+                    onPaginationChange={onPaginationChange}
+                    pageNumber={currentPage}
+                    pageSize={currentPageSize}
+                    totalRows={totalRows ?? 0}
+                    renderActions={({ row, ActionsColumn }): JSX.Element => (
+                      <ActionsColumn items={tableActions(row)} />
+                    )}
+                  >
+                    <EmptyState variant="large">
+                      <EmptyStateIcon icon={PlusCircleIcon} />
+                      <Title headingLevel="h4" size="lg">
+                        {t("processor.noProcessors")}
+                      </Title>
+                    </EmptyState>
+                  </TableWithPagination>
+                </TabContent>
+              </PageSection>
+            </DrawerContent>
+          </Drawer>
+          <DeleteInstance
+            instanceId={bridge.id}
+            instanceName={bridge.name}
+            showDeleteModal={showInstanceDeleteModal}
+            onCanceled={(): void => setShowInstanceDeleteModal(false)}
+            onDeleted={handleOnDeleteInstanceSuccess}
+          />
+          <DeleteProcessor
+            bridgeId={instanceId}
+            processorId={deleteProcessorId}
+            processorName={deleteProcessorName}
+            showDeleteModal={showProcessorDeleteModal}
+            onCanceled={(): void => setShowProcessorDeleteModal(false)}
+            onDeleted={handleOnDeleteProcessorSuccess}
+          />
+        </>
       )}
     </>
   );

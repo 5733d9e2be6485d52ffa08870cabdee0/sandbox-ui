@@ -80,6 +80,7 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
           {filters.map((filter, index) => (
             <StackItem
               key={`filter-${filter.type}-${index}`}
+              data-ouia-component-id={`item-${index}`}
               data-testid="filter-item"
             >
               <Split hasGutter={true}>
@@ -91,6 +92,7 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
                     <TextInput
                       type="text"
                       id={`filter-key-${index}`}
+                      ouiaId="filter-key"
                       name={`filter-key-${index}`}
                       aria-describedby={`filter-key-${index}`}
                       value={filter.key}
@@ -107,6 +109,7 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
                   >
                     <FormSelect
                       id={`filter-type-${index}`}
+                      ouiaId="filter-type"
                       aria-label={t("common.type")}
                       value={filter.type}
                       onChange={(type): void =>
@@ -132,6 +135,7 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
                     <TextInput
                       type="text"
                       id={`filter-value-${index}`}
+                      ouiaId="filter-value"
                       name={`filter-value-${index}`}
                       aria-describedby={`filter-value-${index}`}
                       value={filter.value}
@@ -150,6 +154,7 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
                     <FlexItem>
                       <Button
                         variant="plain"
+                        ouiaId="delete-item"
                         aria-label={t("processor.deleteFilter")}
                         onClick={(): void => deleteFilter(index)}
                         isDisabled={filters.length === 1}
@@ -167,6 +172,7 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
       <StackItem>
         <Button
           variant="link"
+          ouiaId="add-filter"
           icon={<PlusCircleIcon />}
           onClick={addFilter}
           isInline={true}

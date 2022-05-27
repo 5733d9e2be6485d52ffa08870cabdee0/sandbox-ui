@@ -64,6 +64,82 @@ describe("Instances Test", () => {
     });
   });
 
+  describe("the Instance statuses", () => {
+    beforeEach(() => {
+      cy.visit("/");
+      cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
+        "not.exist"
+      );
+    });
+
+    it("Accepted", () => {
+      const instanceName: string = "Instance three";
+      cy.ouiaId("Instances list table", "PF4/Table")
+        .ouiaId(instanceName, "PF4/TableRow")
+        .should("be.visible")
+        .within(() => {
+          cy.get("td:first").should("have.html", instanceName);
+          cy.get("td:nth-child(2)").should("have.text", "accepted");
+          cy.get("td:nth-child(4)")
+            .click()
+            .within(() => {
+              cy.ouiaType("PF4/DropdownItem").then(($items) => {
+                expect($items.eq(0)).have.text("Details");
+                expect($items.eq(0)).be.enabled;
+                expect($items.eq(1)).have.text("Delete");
+                expect($items.eq(1)).have.attr("aria-disabled", "true");
+              });
+            });
+        });
+    });
+
+    it("Provisioning", () => {
+      const instanceName: string = "Instance four";
+      cy.ouiaId("Instances list table", "PF4/Table")
+        .ouiaId(instanceName, "PF4/TableRow")
+        .should("be.visible")
+        .within(() => {
+          cy.get("td:first").should("have.html", instanceName);
+          cy.get("td:nth-child(2)").should("have.text", "provisioning");
+          cy.get("td:nth-child(4)")
+            .click()
+            .within(() => {
+              cy.ouiaType("PF4/DropdownItem").then(($items) => {
+                expect($items.eq(0)).have.text("Details");
+                expect($items.eq(0)).be.enabled;
+                expect($items.eq(1)).have.text("Delete");
+                expect($items.eq(1)).have.attr("aria-disabled", "true");
+              });
+            });
+        });
+    });
+
+    it("Ready", () => {
+      const instanceName: string = "Instance two";
+      cy.ouiaId("Instances list table", "PF4/Table")
+        .ouiaId(instanceName, "PF4/TableRow")
+        .should("be.visible")
+        .within(() => {
+          cy.get("td:first")
+            .should("have.text", instanceName)
+            .should("not.have.html", instanceName)
+            .find("a")
+            .should("be.visible");
+          cy.get("td:nth-child(2)").should("have.text", "ready");
+          cy.get("td:nth-child(4)")
+            .click()
+            .within(() => {
+              cy.ouiaType("PF4/DropdownItem").then(($items) => {
+                expect($items.eq(0)).have.text("Details");
+                expect($items.eq(0)).be.enabled;
+                expect($items.eq(1)).have.text("Delete");
+                expect($items.eq(0)).be.enabled;
+              });
+            });
+        });
+    });
+  });
+
   describe("Instance Page - Instance one", () => {
     beforeEach(() => {
       cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");

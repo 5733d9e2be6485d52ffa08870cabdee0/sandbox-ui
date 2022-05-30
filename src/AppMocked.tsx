@@ -11,7 +11,12 @@ import {
   AppServicesLoading,
   I18nProvider,
 } from "@rhoas/app-services-ui-components";
-import { Auth, AuthContext } from "@rhoas/app-services-ui-shared";
+import {
+  Auth,
+  AuthContext,
+  Config,
+  ConfigContext,
+} from "@rhoas/app-services-ui-shared";
 
 import { SetupWorkerApi } from "msw/lib/types/setupWorker/glossary";
 
@@ -27,36 +32,44 @@ const AppMocked = (): JSX.Element => {
 
   // setting up dummy auth context
   const authTokenContext = {
-    kas: {
+    smart_events: {
       getToken: () => Promise.resolve("dummy"),
     },
     getUsername: () => Promise.resolve("username"),
   } as Auth;
 
+  const config = {
+    smart_events: {
+      apiBasePath: process.env.BASE_URL as string,
+    },
+  } as Config;
+
   return (
     <AuthContext.Provider value={authTokenContext}>
-      <I18nProvider
-        lng="en"
-        resources={{
-          en: {
-            common: () =>
-              import(
-                "@rhoas/app-services-ui-components/locales/en/common.json"
-              ),
-            openbridgeTempDictionary: () =>
-              import("../locales/en/openbridge.json"),
-          },
-        }}
-        debug={true}
-      >
-        <Suspense fallback={<AppServicesLoading />}>
-          <BrowserRouter basename={"/"}>
-            <AppLayout>
-              <Routes />
-            </AppLayout>
-          </BrowserRouter>
-        </Suspense>
-      </I18nProvider>
+      <ConfigContext.Provider value={config}>
+        <I18nProvider
+          lng="en"
+          resources={{
+            en: {
+              common: () =>
+                import(
+                  "@rhoas/app-services-ui-components/locales/en/common.json"
+                ),
+              openbridgeTempDictionary: () =>
+                import("../locales/en/openbridge.json"),
+            },
+          }}
+          debug={true}
+        >
+          <Suspense fallback={<AppServicesLoading />}>
+            <BrowserRouter basename={"/"}>
+              <AppLayout>
+                <Routes />
+              </AppLayout>
+            </BrowserRouter>
+          </Suspense>
+        </I18nProvider>
+      </ConfigContext.Provider>
     </AuthContext.Provider>
   );
 };

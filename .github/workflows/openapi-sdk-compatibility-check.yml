@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: "Fetch latest sandbox/openapi/openapi.yaml"
+      - name: "Fetch latest sandbox/openapi/rhose-api.yaml"
         run: |
           scripts/fetch_openapi.sh
       - name: "Check 'git diff' result is 0"

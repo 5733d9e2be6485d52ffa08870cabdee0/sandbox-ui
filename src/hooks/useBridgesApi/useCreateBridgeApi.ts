@@ -5,8 +5,7 @@ import {
   BridgeResponse,
 } from "@openapi/generated";
 import { useCallback, useState } from "react";
-import { useAuth } from "@rhoas/app-services-ui-shared";
-import config from "../../../config/config";
+import { useAuth, useConfig } from "@rhoas/app-services-ui-shared";
 
 export function useCreateBridgeApi(): {
   createBridge: (bridgeRequest: BridgeRequest) => void;
@@ -18,9 +17,10 @@ export function useCreateBridgeApi(): {
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(false);
   const auth = useAuth();
+  const config = useConfig();
 
   const getToken = useCallback(async (): Promise<string> => {
-    return (await auth.kas.getToken()) || "";
+    return (await auth.smart_events.getToken()) || "";
   }, [auth]);
 
   const createBridge = (bridgeRequest: BridgeRequest): void => {
@@ -30,7 +30,7 @@ export function useCreateBridgeApi(): {
     const bridgeApi = new BridgesApi(
       new Configuration({
         accessToken: getToken,
-        basePath: config.apiBasePath,
+        basePath: config.smart_events.apiBasePath,
       })
     );
     bridgeApi

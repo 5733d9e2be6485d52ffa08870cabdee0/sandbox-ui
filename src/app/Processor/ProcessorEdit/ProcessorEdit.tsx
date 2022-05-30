@@ -279,6 +279,8 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                             <GridItem span={6}>
                               <Tile
                                 title={t("processor.sourceProcessor")}
+                                data-ouia-component-id="source"
+                                data-ouia-component-type="Tile"
                                 isSelected={processorType === "source"}
                                 style={{ height: "100%" }}
                                 onClick={(): void => {
@@ -292,6 +294,8 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                             <GridItem span={6}>
                               <Tile
                                 title={t("processor.sinkProcessor")}
+                                data-ouia-component-id="sink"
+                                data-ouia-component-type="Tile"
                                 style={{ width: "100%", height: "100%" }}
                                 isSelected={processorType === "sink"}
                                 onClick={(): void => {

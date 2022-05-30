@@ -12,6 +12,7 @@ import {
   I18nProvider,
 } from "@rhoas/app-services-ui-components";
 import { KeycloakAuthProvider, setKeycloakInstance } from "./Keycloak";
+import { Config, ConfigContext } from "@rhoas/app-services-ui-shared";
 
 const App = (): JSX.Element => {
   const [initialized, setInitialized] = useState(false);
@@ -24,32 +25,40 @@ const App = (): JSX.Element => {
     void init();
   }, []);
 
+  const config = {
+    smart_events: {
+      apiBasePath: process.env.BASE_URL as string,
+    },
+  } as Config;
+
   return (
     <KeycloakAuthProvider>
-      <I18nProvider
-        lng="en"
-        resources={{
-          en: {
-            common: () =>
-              import(
-                "@rhoas/app-services-ui-components/locales/en/common.json"
-              ),
-            openbridgeTempDictionary: () =>
-              import("../locales/en/openbridge.json"),
-          },
-        }}
-        debug={true}
-      >
-        <Suspense fallback={<AppServicesLoading />}>
-          <BrowserRouter basename={"/"}>
-            {initialized && (
-              <AppLayout>
-                <Routes />
-              </AppLayout>
-            )}
-          </BrowserRouter>
-        </Suspense>
-      </I18nProvider>
+      <ConfigContext.Provider value={config}>
+        <I18nProvider
+          lng="en"
+          resources={{
+            en: {
+              common: () =>
+                import(
+                  "@rhoas/app-services-ui-components/locales/en/common.json"
+                ),
+              openbridgeTempDictionary: () =>
+                import("../locales/en/openbridge.json"),
+            },
+          }}
+          debug={true}
+        >
+          <Suspense fallback={<AppServicesLoading />}>
+            <BrowserRouter basename={"/"}>
+              {initialized && (
+                <AppLayout>
+                  <Routes />
+                </AppLayout>
+              )}
+            </BrowserRouter>
+          </Suspense>
+        </I18nProvider>
+      </ConfigContext.Provider>
     </KeycloakAuthProvider>
   );
 };

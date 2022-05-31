@@ -20,7 +20,7 @@
       "@apis/*": ["src/apis/*"],
       "@constants/*": ["src/constants/*"],
       "@utils/*": ["src/utils/*"],
-      "@context/*": ["src/context/*"],
+      "@contexts/*": ["src/contexts/*"],
       "@openapi/*": ["openapi/*"]
     }
   }

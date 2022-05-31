@@ -4,8 +4,8 @@ import {
   ProcessorRequest,
   ProcessorsApi,
 } from "@openapi/generated";
-import { useCallback, useState } from "react";
-import { useAuth, useConfig } from "@rhoas/app-services-ui-shared";
+import { useState } from "react";
+import { useSmartEvents } from "@contexts/SmartEventsContext";
 
 export function useAddProcessorToBridgeApi(): {
   addProcessorToBridge: (
@@ -19,12 +19,7 @@ export function useAddProcessorToBridgeApi(): {
   const [processor, setProcessor] = useState<ProcessorResponse>();
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(false);
-  const auth = useAuth();
-  const config = useConfig();
-
-  const getToken = useCallback(async (): Promise<string> => {
-    return (await auth.smart_events.getToken()) || "";
-  }, [auth]);
+  const { getToken, apiBaseUrl } = useSmartEvents();
 
   const addProcessorToBridge = (
     bridgeId: string,
@@ -36,7 +31,7 @@ export function useAddProcessorToBridgeApi(): {
     const processorsApi = new ProcessorsApi(
       new Configuration({
         accessToken: getToken,
-        basePath: config.smart_events.apiBasePath,
+        basePath: apiBaseUrl,
       })
     );
     processorsApi

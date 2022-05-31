@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/await-thenable */
 import Keycloak from "keycloak-js";
-import React from "react";
-
-import { Auth, AuthContext } from "@rhoas/app-services-ui-shared";
 
 export let keycloak: Keycloak.KeycloakInstance | undefined;
 
@@ -31,10 +28,6 @@ export const setKeycloakInstance = async (): Promise<void> => {
  */
 export const init = async (): Promise<void> => {
   try {
-    /* Keycloak configuration using OB authentication.
-     * These params will change after sso is implemented.
-     * See https://issues.redhat.com/browse/MGDOBR-466
-     */
     keycloak = Keycloak({
       realm: "redhat-external",
       url: "https://sso.redhat.com/auth/",
@@ -86,6 +79,17 @@ export const getParsedKeyCloakToken =
     return {} as Keycloak.KeycloakTokenParsed;
   };
 
+export const getUsername = (): Promise<string> => {
+  return getParsedKeyCloakToken().then(
+    (token: unknown) =>
+      (
+        token as {
+          [index: string]: string;
+        }
+      )["username"] ?? ""
+  );
+};
+
 /**
  * logout of keycloak, clear cache and offline store then redirect to
  * keycloak login page
@@ -94,29 +98,4 @@ export const logout = async (): Promise<void> => {
   if (keycloak) {
     await keycloak.logout();
   }
-};
-
-export const KeycloakAuthProvider: React.FunctionComponent = (props) => {
-  const getUsername = (): Promise<string> => {
-    return getParsedKeyCloakToken().then(
-      (token: unknown) =>
-        (
-          token as {
-            [index: string]: string;
-          }
-        )["username"] ?? ""
-    );
-  };
-
-  const authTokenContext = {
-    smart_events: {
-      getToken: getKeyCloakToken,
-    },
-    getUsername: getUsername,
-  } as Auth;
-  return (
-    <AuthContext.Provider value={authTokenContext}>
-      {props.children}
-    </AuthContext.Provider>
-  );
 };

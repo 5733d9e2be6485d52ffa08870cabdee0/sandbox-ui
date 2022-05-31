@@ -91,6 +91,7 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
     <>
       {instanceId && instanceName && (
         <DeleteModal
+          ouiaId="delete-instance"
           modalTitle={`Delete Smart Events Instance?`}
           showDialog={showDeleteModal}
           resourceType={"Instance"}

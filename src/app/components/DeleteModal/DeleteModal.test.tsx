@@ -26,10 +26,12 @@ const setupModal = (
     resourceName = testName,
     resourceType = testType,
     blockedDeletionReason,
+    ouiaId = "delete-instance",
   } = props;
 
   const comp = customRender(
     <DeleteModal
+      ouiaId={ouiaId}
       onCancel={onCancel}
       onConfirm={onConfirm}
       showDialog={showDialog}

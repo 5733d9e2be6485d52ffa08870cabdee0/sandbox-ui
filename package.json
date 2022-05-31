@@ -18,8 +18,9 @@
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "fetch-openapi": "./scripts/fetch_openapi.sh",
-    "generate-openapi": "./scripts/generate_openapi_client.sh"
+    "fetch-openapi": "./scripts/openapi-sdk/fetch_openapi.sh",
+    "generate-openapi": "./scripts/openapi-sdk/generate_openapi_client.sh",
+    "generate-error-catalog": "node scripts/error-catalog-sdk/generate_error_catalog.mjs"
   },
   "author": "",
   "license": "Apache-2.0",

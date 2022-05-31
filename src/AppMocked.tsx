@@ -11,13 +11,7 @@ import {
   AppServicesLoading,
   I18nProvider,
 } from "@rhoas/app-services-ui-components";
-import {
-  Auth,
-  AuthContext,
-  Config,
-  ConfigContext,
-} from "@rhoas/app-services-ui-shared";
-
+import { SmartEventsContextProvider } from "@contexts/SmartEventsContext";
 import { SetupWorkerApi } from "msw/lib/types/setupWorker/glossary";
 
 // App using mocked apis trough msw
@@ -30,47 +24,40 @@ const AppMocked = (): JSX.Element => {
   };
   void worker.start();
 
-  // setting up dummy auth context
-  const authTokenContext = {
-    smart_events: {
-      getToken: () => Promise.resolve("dummy"),
-    },
-    getUsername: () => Promise.resolve("username"),
-  } as Auth;
-
-  const config = {
-    smart_events: {
-      apiBasePath: process.env.BASE_URL as string,
-    },
-  } as Config;
+  const apiBaseUrl = process.env.BASE_URL as string;
+  // setting up dummy auth functions
+  const getToken = (): Promise<string> => Promise.resolve("dummy");
+  const getUsername = (): Promise<string> => Promise.resolve("username");
 
   return (
-    <AuthContext.Provider value={authTokenContext}>
-      <ConfigContext.Provider value={config}>
-        <I18nProvider
-          lng="en"
-          resources={{
-            en: {
-              common: () =>
-                import(
-                  "@rhoas/app-services-ui-components/locales/en/common.json"
-                ),
-              openbridgeTempDictionary: () =>
-                import("../locales/en/openbridge.json"),
-            },
-          }}
-          debug={true}
-        >
-          <Suspense fallback={<AppServicesLoading />}>
-            <BrowserRouter basename={"/"}>
-              <AppLayout>
-                <Routes />
-              </AppLayout>
-            </BrowserRouter>
-          </Suspense>
-        </I18nProvider>
-      </ConfigContext.Provider>
-    </AuthContext.Provider>
+    <SmartEventsContextProvider
+      getToken={getToken}
+      getUsername={getUsername}
+      apiBaseUrl={apiBaseUrl}
+    >
+      <I18nProvider
+        lng="en"
+        resources={{
+          en: {
+            common: () =>
+              import(
+                "@rhoas/app-services-ui-components/locales/en/common.json"
+              ),
+            openbridgeTempDictionary: () =>
+              import("../locales/en/openbridge.json"),
+          },
+        }}
+        debug={true}
+      >
+        <Suspense fallback={<AppServicesLoading />}>
+          <BrowserRouter basename={"/"}>
+            <AppLayout>
+              <Routes />
+            </AppLayout>
+          </BrowserRouter>
+        </Suspense>
+      </I18nProvider>
+    </SmartEventsContextProvider>
   );
 };
 

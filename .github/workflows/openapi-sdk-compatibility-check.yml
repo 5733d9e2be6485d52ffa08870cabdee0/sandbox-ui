@@ -7,11 +7,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: "Fetch latest sandbox/openapi/rhose-api.yaml"
         run: |
-          scripts/fetch_openapi.sh
+          scripts/openapi-sdk/fetch_openapi.sh
       - name: "Check 'git diff' result is 0"
         run: |
           if ! git diff --exit-code; then
-            echo "Run scripts/fetch_openapi.sh and scripts/generate_openapi_client.sh locally. Open PR afterwards."
+            echo "Run scripts/openapi-sdk/fetch_openapi.sh and scripts/openapi-sdk/generate_openapi_client.sh locally. Open PR afterwards."
             exit 1
           else
             echo "SDK and Openapi are synced."

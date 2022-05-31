@@ -21,6 +21,7 @@ export default {
     "^@constants/(.*)$": "<rootDir>/src/constants/$1",
     "^@utils/(.*)$": "<rootDir>/src/utils/$1",
     "^@contexts/(.*)$": "<rootDir>/src/contexts/$1",
+    "^@openapi/(.*)$": "<rootDir>/openapi/$1",
   },
   reporters: ["default"],
   testEnvironment: "jest-environment-jsdom",

@@ -15,10 +15,11 @@ interface ActionEditProps {
   action?: Action;
   onChange: (action: Action) => void;
   registerValidation: (validationFunction: () => boolean) => void;
+  isDisabled?: boolean;
 }
 
 const ActionEdit = (props: ActionEditProps): JSX.Element => {
-  const { action, onChange, registerValidation } = props;
+  const { action, onChange, registerValidation, isDisabled = false } = props;
   const [type, setType] = useState(action?.type ?? "");
   const [parameters, setParameters] = useState(action?.parameters ?? {});
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -152,6 +153,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
           ouiaId="action-type"
           aria-label={t("processor.actionType")}
           isRequired={true}
+          isDisabled={isDisabled}
           value={type}
           onChange={(type: string): void => updateType(type)}
           validated={validation.errors.type ? "error" : "default"}
@@ -207,6 +209,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
                     name={field.name}
                     aria-describedby={field.name}
                     isRequired={true}
+                    isDisabled={isDisabled}
                     value={parameters[field.name] ?? ""}
                     validated={
                       validation.errors[field.name] ? "error" : "default"

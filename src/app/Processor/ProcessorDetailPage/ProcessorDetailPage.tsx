@@ -7,8 +7,6 @@ import {
   Dropdown,
   DropdownItem,
   DropdownToggle,
-  FormGroup,
-  Label,
   PageSection,
   PageSectionVariants,
   Split,
@@ -167,25 +165,6 @@ const ProcessorDetailPage = (): JSX.Element => {
     ]
   );
 
-  const getProcessorTypeSection = useCallback(
-    (processor: ProcessorResponse) => (
-      <Stack>
-        <StackItem>
-          <FormGroup
-            label={t("processor.processorType")}
-            fieldId={"processor-type"}
-          />
-        </StackItem>
-        <StackItem>
-          <Label color={"blue"} data-testid="processor-type-label">
-            {processor.type && t(`processor.${processor.type}`)}
-          </Label>
-        </StackItem>
-      </Stack>
-    ),
-    [t]
-  );
-
   const [showProcessorDeleteModal, setShowProcessorDeleteModal] =
     useState(false);
 
@@ -301,7 +280,6 @@ const ProcessorDetailPage = (): JSX.Element => {
           </PageSection>
           {isEditing ? (
             <ProcessorEdit
-              processorTypeSection={getProcessorTypeSection(currentProcessor)}
               processor={currentProcessor}
               isLoading={updateProcessorLoading}
               saveButtonLabel={t("common.save")}

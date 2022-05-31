@@ -2,8 +2,15 @@ import React from "react";
 import ProcessorEdit from "./ProcessorEdit";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
+import {
+  ManagedResourceStatus,
+  ProcessorResponse,
+  ProcessorType,
+} from "@openapi/generated";
 
-const setupProcessorEdit = (): {
+const setupProcessorEdit = (
+  processor?: ProcessorResponse
+): {
   comp: RenderResult;
   onSave: () => void;
   onCancel: () => void;
@@ -16,6 +23,7 @@ const setupProcessorEdit = (): {
       onCancel={onCancel}
       isLoading={false}
       saveButtonLabel="Create"
+      processor={processor}
     />
   );
   return { comp, onSave, onCancel };
@@ -81,31 +89,6 @@ describe("ProcessorEdit component", () => {
     await waitForI18n(comp);
 
     expect(comp.queryByText(saveButtonLabel)).toBeInTheDocument();
-  });
-
-  it("should display the information of the passed processor and the processor type section", async () => {
-    const name = "Processor name";
-    const type = "sink";
-
-    const comp = customRender(
-      <ProcessorEdit
-        onSave={jest.fn}
-        onCancel={jest.fn}
-        isLoading={false}
-        processorTypeSection={
-          <label data-testid="processor-type-label">{type}</label>
-        }
-        saveButtonLabel="Save"
-        processor={{
-          name,
-          type,
-        }}
-      />
-    );
-    await waitForI18n(comp);
-
-    expect(comp.baseElement.querySelector("#processor-name")).toHaveValue(name);
-    expect(comp.getByTestId("processor-type-label")).toHaveTextContent(type);
   });
 
   it("handles filters addition and removal", async () => {
@@ -189,4 +172,72 @@ describe("ProcessorEdit component", () => {
     expect(comp.queryByLabelText("Kafka Topic *")).toBeInTheDocument();
     expect(comp.getByLabelText("Kafka Topic *")).toBeEnabled();
   });
+
+  it("should prevent the user from changing the type of an existing processor", async () => {
+    const { comp } = setupProcessorEdit(sinkProcessor);
+    await waitForI18n(comp);
+
+    expect(
+      comp.queryByLabelText("Select processor type")
+    ).not.toBeInTheDocument();
+
+    expect(comp.getByTestId("processor-type-label")).toBeInTheDocument();
+    expect(comp.getByTestId("processor-type-label")).toHaveTextContent("Sink");
+  });
+
+  it("should disable the source section while editing an existing source processor", async () => {
+    const { comp } = setupProcessorEdit(sourceProcessor);
+    await waitForI18n(comp);
+
+    expect(
+      (comp.getByLabelText("Source type") as HTMLSelectElement).value
+    ).toBe("Slack");
+    expect(comp.getByLabelText("Source type")).toBeDisabled();
+    expect(comp.getByLabelText("Channel *")).toBeDisabled();
+    expect(comp.getByLabelText("Token *")).toBeDisabled();
+  });
+
+  it("should disable the action section while editing an existing sink processor", async () => {
+    const { comp } = setupProcessorEdit(sinkProcessor);
+    await waitForI18n(comp);
+
+    expect(
+      (comp.getByLabelText("Action type") as HTMLSelectElement).value
+    ).toBe("Slack");
+    expect(comp.getByLabelText("Action type")).toBeDisabled();
+    expect(comp.getByLabelText("Channel *")).toBeDisabled();
+    expect(comp.getByLabelText("Webhook URL *")).toBeDisabled();
+  });
 });
+
+const baseProcessor = {
+  id: "f8f34af4-caed-11ec-9d64-0242ac120002",
+  name: "Processor",
+  submitted_at: "2022-04-15T12:10:46.029400+0000",
+  published_at: "2022-04-15T12:12:52.416527+0000",
+  status: ManagedResourceStatus.Ready,
+};
+
+const sourceProcessor = {
+  ...baseProcessor,
+  type: ProcessorType.Source,
+  source: {
+    type: "Slack",
+    parameters: {
+      channel: "test",
+      token: "XXXXXXXXXXXX",
+    },
+  },
+};
+
+const sinkProcessor = {
+  ...baseProcessor,
+  type: ProcessorType.Sink,
+  action: {
+    type: "Slack",
+    parameters: {
+      channel: "test",
+      webhookUrl: "https://hooks.slack.com/services/XXXXXXXX/XXXXXX/XXXXXXXX",
+    },
+  },
+};

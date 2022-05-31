@@ -5,7 +5,7 @@ import {
 } from "@openapi/generated";
 import { useCallback, useRef, useState } from "react";
 import axios, { CancelTokenSource } from "axios";
-import { useAuth, useConfig } from "@rhoas/app-services-ui-shared";
+import { useSmartEvents } from "@contexts/SmartEventsContext";
 
 export function useGetProcessorsApi(): {
   getProcessors: (
@@ -23,12 +23,7 @@ export function useGetProcessorsApi(): {
   const [error, setError] = useState<unknown>();
   const [isLoading, setIsLoading] = useState(true);
   const prevCallTokenSource = useRef<CancelTokenSource>();
-  const auth = useAuth();
-  const config = useConfig();
-
-  const getToken = useCallback(async (): Promise<string> => {
-    return (await auth.smart_events.getToken()) || "";
-  }, [auth]);
+  const { getToken, apiBaseUrl } = useSmartEvents();
 
   const getProcessors = useCallback(
     (
@@ -47,7 +42,7 @@ export function useGetProcessorsApi(): {
       const processorsApi = new ProcessorsApi(
         new Configuration({
           accessToken: getToken,
-          basePath: config.smart_events.apiBasePath,
+          basePath: apiBaseUrl,
         })
       );
       processorsApi
@@ -65,7 +60,7 @@ export function useGetProcessorsApi(): {
           }
         });
     },
-    [getToken, config]
+    [getToken, apiBaseUrl]
   );
 
   return { getProcessors, isLoading, processorListResponse, error };

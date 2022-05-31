@@ -11,8 +11,8 @@ import {
   AppServicesLoading,
   I18nProvider,
 } from "@rhoas/app-services-ui-components";
-import { KeycloakAuthProvider, setKeycloakInstance } from "./Keycloak";
-import { Config, ConfigContext } from "@rhoas/app-services-ui-shared";
+import { getKeyCloakToken, getUsername, setKeycloakInstance } from "./Keycloak";
+import { SmartEventsContextProvider } from "@contexts/SmartEventsContext";
 
 const App = (): JSX.Element => {
   const [initialized, setInitialized] = useState(false);
@@ -25,41 +25,37 @@ const App = (): JSX.Element => {
     void init();
   }, []);
 
-  const config = {
-    smart_events: {
-      apiBasePath: process.env.BASE_URL as string,
-    },
-  } as Config;
+  const apiBaseUrl = process.env.BASE_URL as string;
 
   return (
-    <KeycloakAuthProvider>
-      <ConfigContext.Provider value={config}>
-        <I18nProvider
-          lng="en"
-          resources={{
-            en: {
-              common: () =>
-                import(
-                  "@rhoas/app-services-ui-components/locales/en/common.json"
-                ),
-              openbridgeTempDictionary: () =>
-                import("../locales/en/openbridge.json"),
-            },
-          }}
-          debug={true}
-        >
-          <Suspense fallback={<AppServicesLoading />}>
-            <BrowserRouter basename={"/"}>
-              {initialized && (
-                <AppLayout>
-                  <Routes />
-                </AppLayout>
-              )}
-            </BrowserRouter>
-          </Suspense>
-        </I18nProvider>
-      </ConfigContext.Provider>
-    </KeycloakAuthProvider>
+    <I18nProvider
+      lng="en"
+      resources={{
+        en: {
+          common: () =>
+            import("@rhoas/app-services-ui-components/locales/en/common.json"),
+          openbridgeTempDictionary: () =>
+            import("../locales/en/openbridge.json"),
+        },
+      }}
+      debug={true}
+    >
+      <Suspense fallback={<AppServicesLoading />}>
+        <BrowserRouter basename={"/"}>
+          {initialized && (
+            <SmartEventsContextProvider
+              apiBaseUrl={apiBaseUrl}
+              getToken={getKeyCloakToken}
+              getUsername={getUsername}
+            >
+              <AppLayout>
+                <Routes />
+              </AppLayout>
+            </SmartEventsContextProvider>
+          )}
+        </BrowserRouter>
+      </Suspense>
+    </I18nProvider>
   );
 };
 

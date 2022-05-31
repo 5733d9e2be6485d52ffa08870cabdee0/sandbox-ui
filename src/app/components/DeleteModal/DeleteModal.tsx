@@ -20,6 +20,8 @@ import {
 import "./DeleteModal.css";
 
 export interface DeleteModalProps {
+  /** Component ID according to the OUIA standard */
+  ouiaId: string;
   /** Flag to show/hide the modal */
   showDialog: boolean;
   /** The title of the modal */
@@ -42,6 +44,7 @@ export interface DeleteModalProps {
 
 export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
   const {
+    ouiaId,
     modalTitle,
     resourceName,
     resourceType,
@@ -71,6 +74,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
 
   const deleteActions = [
     <Button
+      ouiaId="confirm"
       key="confirm"
       variant="danger"
       isDisabled={!canDelete || isLoading}
@@ -80,6 +84,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
       {t("common.delete")}
     </Button>,
     <Button
+      ouiaId="cancel"
       key="cancel"
       variant="link"
       onClick={onCancelDelete}
@@ -90,13 +95,14 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
   ];
 
   const closeActions = [
-    <Button key="close" onClick={onCancelDelete}>
+    <Button ouiaId="close" key="close" onClick={onCancelDelete}>
       {t("common.close")}
     </Button>,
   ];
 
   return (
     <Modal
+      ouiaId={ouiaId}
       variant={ModalVariant.small}
       title={modalTitle}
       titleIconVariant="warning"
@@ -151,6 +157,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
                 >
                   <TextInput
                     id="delete-confirmation-value"
+                    ouiaId="delete-confirmation-value"
                     value={nameValue}
                     type="text"
                     onChange={setNameValue}

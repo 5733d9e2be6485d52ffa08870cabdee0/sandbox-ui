@@ -23,6 +23,7 @@ export interface EventFilter {
   key: string;
   type: string;
   value: string;
+  values?: (string | number)[];
 }
 
 export interface ProcessorFormData {
@@ -61,4 +62,12 @@ interface FieldValidateFunction {
 export interface FieldValidation {
   isValid: boolean;
   errorMessage: string;
+}
+
+export enum FilterType {
+  STRING_EQUALS = "StringEquals",
+  STRING_CONTAINS = "StringContains",
+  STRING_BEGINS = "StringBeginsWith",
+  STRING_IN = "StringIn",
+  NUMBER_IN = "NumberIn",
 }

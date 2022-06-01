@@ -11,10 +11,16 @@ import {
   Stack,
   StackItem,
   TextInput,
+  Tooltip,
 } from "@patternfly/react-core";
-import { PlusCircleIcon, TrashAltIcon } from "@patternfly/react-icons";
+import {
+  InfoCircleIcon,
+  PlusCircleIcon,
+  TrashAltIcon,
+} from "@patternfly/react-icons";
 import { useTranslation } from "react-i18next";
-import { EventFilter } from "../../../../types/Processor";
+import { EventFilter, FilterType } from "../../../../types/Processor";
+import { getFilterValue, isCommaSeparatedFilterType } from "@utils/filterUtils";
 
 interface FiltersEditProps {
   filters: EventFilter[];
@@ -52,26 +58,53 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
       isPlaceholder: true,
     },
     {
-      value: "StringEquals",
+      value: FilterType.STRING_EQUALS,
       label: t("processor.stringEquals"),
       isPlaceholder: false,
     },
     {
-      value: "StringContains",
+      value: FilterType.STRING_CONTAINS,
       label: t("processor.stringContains"),
       isPlaceholder: false,
     },
     {
-      value: "StringBeginsWith",
+      value: FilterType.STRING_BEGINS,
       label: t("processor.stringBeginsWith"),
       isPlaceholder: false,
     },
     {
-      value: "ValuesIn",
-      label: t("processor.valuesIn"),
+      value: FilterType.STRING_IN,
+      label: t("processor.stringIn"),
+      isPlaceholder: false,
+    },
+    {
+      value: FilterType.NUMBER_IN,
+      label: t("processor.numberIn"),
       isPlaceholder: false,
     },
   ];
+
+  const getOptionalTooltipIcon = (
+    filter: EventFilter
+  ): JSX.Element | undefined =>
+    isCommaSeparatedFilterType(filter) ? (
+      <Tooltip
+        position="top"
+        content={t("processor.commaSeparatedValuesTooltip")}
+      >
+        <InfoCircleIcon title="Filter value info" />
+      </Tooltip>
+    ) : undefined;
+
+  const getOptionalPlaceholder = (filter: EventFilter): string | undefined => {
+    if (filter.type === FilterType.STRING_IN) {
+      return "hello,world,how,are,you";
+    }
+    if (filter.type === FilterType.NUMBER_IN) {
+      return "1,-2,3";
+    }
+    return undefined;
+  };
 
   return (
     <Stack hasGutter={true}>
@@ -131,6 +164,7 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
                   <FormGroup
                     fieldId={`filter-value-${index}`}
                     label={t("common.value")}
+                    labelIcon={getOptionalTooltipIcon(filter)}
                   >
                     <TextInput
                       type="text"
@@ -138,7 +172,8 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
                       ouiaId="filter-value"
                       name={`filter-value-${index}`}
                       aria-describedby={`filter-value-${index}`}
-                      value={filter.value}
+                      defaultValue={getFilterValue(filter)}
+                      placeholder={getOptionalPlaceholder(filter)}
                       onChange={(value): void =>
                         updateFilter({ ...filter, value }, index)
                       }

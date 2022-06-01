@@ -63,6 +63,7 @@
     "addFilter": "Add filter",
     "addTransformationDescription": "Add a transformation template.",
     "channel": "Channel",
+    "commaSeparatedValuesTooltip": "For this filter type, it is necessary to specify a list of values separated by a comma.",
     "createProcessor": "Create processor",
     "delete": "Delete processor",
     "deleteFilter": "Delete filter",
@@ -79,6 +80,7 @@
     "noFilters": "No filters configured",
     "noProcessors": "No processors for this Smart Event instance",
     "noTransformationTemplate": "No template configured",
+    "numberIn": "Number in",
     "processorName": "Processor name",
     "processorsListTable": "Processors list table",
     "processorType": "Processor type",
@@ -102,10 +104,10 @@
     "stringBeginsWith": "String begins with",
     "stringContains": "String contains",
     "stringEquals": "String equals",
+    "stringIn": "String in",
     "token": "Token",
     "transformation": "Transformation",
     "transformationTemplate": "Transformation template",
-    "valuesIn": "Values in",
     "webhookUrl": "Webhook URL"
   }
 }

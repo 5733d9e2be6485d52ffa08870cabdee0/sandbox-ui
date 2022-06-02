@@ -127,6 +127,7 @@ describe("Delete Modal component", () => {
     fireEvent.change(comp.getByLabelText(`Type ${testName} to confirm.`), {
       target: { value: "WRONG_VALUE" },
     });
+    expect(comp.getByText("Cancel")).toBeEnabled();
     expect(comp.getByText("Delete")).toBeDisabled();
   });
 

@@ -210,7 +210,7 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
                     aria-describedby={field.name}
                     isRequired={true}
                     isDisabled={isDisabled}
-                    value={parameters[field.name] ?? ""}
+                    value={(parameters[field.name] as string) ?? ""}
                     validated={
                       validation.errors[field.name] ? "error" : "default"
                     }

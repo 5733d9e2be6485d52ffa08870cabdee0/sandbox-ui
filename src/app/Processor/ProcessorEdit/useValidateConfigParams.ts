@@ -59,7 +59,9 @@ export function useValidateConfigParams(
         if (field) {
           // Run the field validation function provided by configTypes with the current
           // value of the field
-          const fieldValidation = field.validate(config.parameters[fieldName]);
+          const fieldValidation = field.validate(
+            config.parameters[fieldName] as string
+          );
           // When the field value is valid, clean any possible previous error associated to the field
           if (fieldValidation.isValid) {
             resetValidation(field.name);

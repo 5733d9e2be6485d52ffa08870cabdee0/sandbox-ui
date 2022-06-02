@@ -171,7 +171,7 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
                     aria-describedby={field.name}
                     isRequired={true}
                     isDisabled={isDisabled}
-                    value={parameters[field.name] ?? ""}
+                    value={(parameters[field.name] as string) ?? ""}
                     onChange={(value: string): void => {
                       updateParameters({
                         ...parameters,

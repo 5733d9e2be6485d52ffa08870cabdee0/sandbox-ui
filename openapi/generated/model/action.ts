@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Red Hat Openshift SmartEvents Fleet Manager
- * The api exposed by the fleet manager of the SmartEvents service.
+ * The API exposed by the fleet manager of the SmartEvents service.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: openbridge-dev@redhat.com
@@ -28,9 +28,9 @@ export interface Action {
     'type': string;
     /**
      * 
-     * @type {{ [key: string]: string; }}
+     * @type {object}
      * @memberof Action
      */
-    'parameters': { [key: string]: string; };
+    'parameters': object;
 }
 

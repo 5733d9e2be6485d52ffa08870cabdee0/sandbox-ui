@@ -1,7 +1,9 @@
 import {
   Configuration,
+  ManagedResourceStatus,
   ProcessorListResponse,
   ProcessorsApi,
+  ProcessorType,
 } from "@openapi/generated";
 import { useCallback, useRef, useState } from "react";
 import axios, { CancelTokenSource } from "axios";
@@ -10,8 +12,10 @@ import { useSmartEvents } from "@contexts/SmartEventsContext";
 export function useGetProcessorsApi(): {
   getProcessors: (
     bridgeId: string,
+    filterName?: string,
     pageReq?: number,
     sizeReq?: number,
+    processorType?: ProcessorType,
     isPolling?: boolean
   ) => void;
   processorListResponse?: ProcessorListResponse;
@@ -28,8 +32,10 @@ export function useGetProcessorsApi(): {
   const getProcessors = useCallback(
     (
       bridgeId: string,
+      filterName?: string,
       pageReq?: number,
       sizeReq?: number,
+      processorType?: ProcessorType,
       isPolling?: boolean
     ): void => {
       setIsLoading(!isPolling); // no loading, when the call is generated from a polling
@@ -46,9 +52,17 @@ export function useGetProcessorsApi(): {
         })
       );
       processorsApi
-        .listProcessors(bridgeId, pageReq, sizeReq, {
-          cancelToken: source.token,
-        })
+        .listProcessors(
+          bridgeId,
+          filterName ?? undefined,
+          pageReq,
+          sizeReq,
+          new Set<ManagedResourceStatus>(),
+          processorType ?? undefined,
+          {
+            cancelToken: source.token,
+          }
+        )
         .then((response) => {
           setProcessorListResponse(response.data);
           setIsLoading(false);

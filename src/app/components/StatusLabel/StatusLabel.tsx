@@ -18,6 +18,8 @@ const StatusLabel = (props: StatusLabelProps): JSX.Element => {
       icon={status === "ready" ? <CheckCircleIcon /> : null}
       style={{ textTransform: "capitalize" }}
       variant="outline"
+      data-ouia-component-id={status}
+      data-ouia-component-type="QE/ProcessorState"
     >
       {status}
     </Label>

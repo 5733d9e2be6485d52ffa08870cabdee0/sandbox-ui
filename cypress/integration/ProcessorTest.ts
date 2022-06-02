@@ -1,8 +1,3 @@
-import { format } from "date-fns";
-
-const formatDate = (dateStr: string): string =>
-  format(new Date(dateStr), "PPPP p");
-
 describe("Processor Test", () => {
   /**
    * This test suite verifies that the user can create all types of processors.
@@ -63,7 +58,6 @@ describe("Processor Test", () => {
         .type("I want to write here something.");
 
       //Actions
-
       cy.ouiaId("missing-actions", "PF4/TextInput")
         .should("be.visible")
         .should("be.disabled");
@@ -80,6 +74,7 @@ describe("Processor Test", () => {
 
       cy.ouiaId("submit").click();
 
+      //Assert the new processor on the list
       cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
         "not.exist"
       );
@@ -101,28 +96,12 @@ describe("Processor Test", () => {
           cy.get("td").eq(0).should("have.text", processorName).click();
         });
 
-      cy.ouiaId("processor-name", "PF4/Text").should(
-        "have.text",
-        processorName
+      assertSinkProcessorDetails(
+        processorName,
+        "I want to write here something.",
+        action,
+        filters
       );
-
-      cy.ouiaId("filters", "PF4/Table").within(() => {
-        filters.forEach((item, rowIndex) => {
-          cy.ouiaId(item[0], "PF4/TableRow")
-            .find("td")
-            .each((cell, cellIndex) => {
-              cy.wrap(cell).should("have.text", filters[rowIndex][cellIndex]);
-            });
-        });
-      });
-
-      cy.get("code").should("have.text", "I want to write here something.");
-
-      cy.get("[class='pf-c-description-list__description']")
-        .should("have.length", action.length)
-        .each((element, index) => {
-          cy.wrap(element).should("have.text", action[index]);
-        });
     });
 
     it("Source processor", () => {
@@ -140,7 +119,6 @@ describe("Processor Test", () => {
         .type(processorName);
 
       //Source
-
       cy.ouiaId("missing-source-parameters", "PF4/TextInput")
         .should("be.visible")
         .should("be.disabled");
@@ -174,18 +152,12 @@ describe("Processor Test", () => {
         .ouiaId("filter-value", "PF4/TextInput")
         .type(filters[1][2]);
 
-      //Transformation is related to action and it is not a part of Source processor
-
       cy.ouiaId("submit").click();
 
+      //Assert the new processor on the list
       cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
         "not.exist"
       );
-
-      /*
-       * It is necessary to check data in the same test.
-       * The mocked data are deleted when the page is refreshed.
-       */
 
       cy.ouiaId("Processors list table", "PF4/Table")
         .ouiaId(processorName, "PF4/TableRow")
@@ -204,31 +176,13 @@ describe("Processor Test", () => {
           cy.get("td").eq(0).should("have.text", processorName).click();
         });
 
-      cy.ouiaId("processor-name", "PF4/Text").should(
-        "have.text",
-        processorName
-      );
-
-      cy.get("[class='pf-c-description-list__description']")
-        .should("have.length", source.length)
-        .each((element, index) => {
-          cy.wrap(element).should("have.text", source[index]);
-        });
-
-      cy.ouiaId("filters", "PF4/Table").within(() => {
-        filters.forEach((item, rowIndex) => {
-          cy.ouiaId(item[0], "PF4/TableRow")
-            .find("td")
-            .each((cell, cellIndex) => {
-              cy.wrap(cell).should("have.text", filters[rowIndex][cellIndex]);
-            });
-        });
-      });
+      assertSourceProcessorDetails(processorName, source, filters);
     });
   });
 
   describe("Edit Sink Processors", () => {
     let processorName: string;
+    let transformation: string;
     let action: string[];
     let filters: string[][];
 
@@ -247,60 +201,43 @@ describe("Processor Test", () => {
         "test",
         "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
       ];
+      transformation = "";
       filters = [["data.name", "processor.StringEquals", "John"]];
     });
 
-    it.skip("Details Header", () => {
+    it("Assert and cancel edit form", () => {
       cy.ouiaId("processor-name", "PF4/Text").should(
         "have.text",
         processorName
       );
-      cy.ouiaId("edit", "PF4/Button").should("be.visible");
+      cy.ouiaId("edit", "PF4/Button").should("not.exist");
+      cy.ouiaId("actions", "PF4/Dropdown").should("not.exist");
+      cy.ouiaId("submit", "PF4/Button").should("be.enabled");
+      cy.ouiaId("cancel", "PF4/Button").should("be.enabled").click();
+
+      //Processor Detail
+      cy.ouiaId("ready", "QE/ProcessorState").should("be.visible");
+      cy.ouiaId("edit", "PF4/Button")
+        .should("be.visible")
+        .should("have.attr", "aria-disabled", "false");
       cy.ouiaId("processor-actions", "PF4/Dropdown")
         .should("be.visible")
         .within(() => {
           cy.ouiaId("actions-toggle", "PF4/DropdownToggle").click();
           cy.ouiaId("delete", "PF4/DropdownItem").should("be.visible");
         });
-    });
-
-    it("Edit Header", () => {
-      cy.ouiaId("processor-name", "PF4/Text").should(
-        "have.text",
-        processorName
+      assertSinkProcessorDetails(
+        processorName,
+        transformation,
+        action,
+        filters
       );
-      cy.ouiaId("actions", "PF4/Dropdown").should("not.exist");
-    });
-
-    it("Name", () => {
-      processorName += " - edit";
-      cy.ouiaId("processor-name", "PF4/TextInput").clear().type(processorName);
-      cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
-
-      assertProcessorDetails();
-    });
-
-    it("Name - Cancel", () => {
-      cy.ouiaId("processor-name", "PF4/TextInput").type(" - edit");
-      cy.ouiaId("cancel", "PF4/Button").should("be.visible").click();
-
-      assertProcessorDetails();
-    });
-
-    it("Action - Parameters", () => {
-      action[1] += " - edit";
-      action[2] += "/edit";
-      cy.ouiaId("channel", "PF4/TextInput").clear().type(action[1]);
-      cy.ouiaId("webhookUrl", "PF4/TextInput").clear().type(action[2]);
-      cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
-
-      assertProcessorDetails();
     });
 
     it("Add filter row", () => {
       filters[1] = ["data.surname", "processor.StringEquals", "White"];
 
-      cy.ouiaId("add-filter", "PF4/Button").should("be.visible").click();
+      cy.ouiaId("add-filter", "PF4/Button").click();
 
       cy.ouiaId("item-1").within(() => {
         cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1][0]);
@@ -313,22 +250,189 @@ describe("Processor Test", () => {
 
       cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
 
-      assertProcessorDetails();
+      //Processor Detail
+      cy.ouiaId("accepted", "QE/ProcessorState").should("be.visible");
+      cy.ouiaId("edit", "PF4/Button")
+        .should("be.visible")
+        .should("have.attr", "aria-disabled", "true");
+      cy.ouiaId("processor-actions", "PF4/Dropdown")
+        .should("be.visible")
+        .within(() => {
+          cy.ouiaId("actions-toggle", "PF4/DropdownToggle").click();
+          cy.ouiaId("delete", "PF4/DropdownItem")
+            .should("be.visible")
+            .should("have.attr", "aria-disabled", "true");
+        });
+      assertSinkProcessorDetails(
+        processorName,
+        transformation,
+        action,
+        filters
+      );
+    });
+  });
+
+  describe("Edit Source Processors", () => {
+    let processorName: string;
+    let source: string[];
+    let filters: string[][];
+
+    beforeEach(() => {
+      cy.visit(
+        "instance/3543edaa-1851-4ad7-96be-ebde7d20d717/processor/sourcef4-ead8-6g8v-as8e-0642tdjek002"
+      );
+      cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
+        "not.exist"
+      );
+      cy.ouiaId("edit", "PF4/Button").should("be.visible").click();
+
+      processorName = "Processor four";
+      source = ["Slack", "test-ui", "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"];
+      filters = [[]];
     });
 
-    function assertProcessorDetails() {
+    it("Assert and cancel edit form", () => {
       cy.ouiaId("processor-name", "PF4/Text").should(
         "have.text",
         processorName
       );
+      cy.ouiaId("edit", "PF4/Button").should("not.exist");
+      cy.ouiaId("actions", "PF4/Dropdown").should("not.exist");
+      cy.ouiaId("submit", "PF4/Button").should("be.enabled");
+      cy.ouiaId("cancel", "PF4/Button").should("be.enabled").click();
 
-      cy.get("[class='pf-c-description-list__description']")
-        .should("have.length", action.length)
-        .each((element, index) => {
-          cy.wrap(element).should("have.text", action[index]);
+      //Processor Detail
+      cy.ouiaId("ready", "QE/ProcessorState").should("be.visible");
+      cy.ouiaId("edit", "PF4/Button")
+        .should("be.visible")
+        .should("have.attr", "aria-disabled", "false");
+      cy.ouiaId("processor-actions", "PF4/Dropdown")
+        .should("be.visible")
+        .within(() => {
+          cy.ouiaId("actions-toggle", "PF4/DropdownToggle").click();
+          cy.ouiaId("delete", "PF4/DropdownItem").should("be.visible");
         });
+      assertSourceProcessorDetails(processorName, source, filters);
+    });
 
+    it("Add filter row", () => {
+      filters[0] = ["data.surname", "processor.StringEquals", "White"];
+
+      cy.ouiaId("add-filter", "PF4/Button").click();
+
+      cy.ouiaId("item-0").within(() => {
+        cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0][0]);
+        cy.ouiaId("filter-type", "PF4/FormSelect").select("String equals");
+      });
+      //The filter-value was detached from DOM and we need to find the context again.
+      cy.ouiaId("item-0")
+        .ouiaId("filter-value", "PF4/TextInput")
+        .type(filters[0][2]);
+
+      cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
+
+      //Processor Detail
+      cy.ouiaId("accepted", "QE/ProcessorState").should("be.visible");
+      cy.ouiaId("edit", "PF4/Button")
+        .should("be.visible")
+        .should("have.attr", "aria-disabled", "true");
+      cy.ouiaId("processor-actions", "PF4/Dropdown")
+        .should("be.visible")
+        .within(() => {
+          cy.ouiaId("actions-toggle", "PF4/DropdownToggle").click();
+          cy.ouiaId("delete", "PF4/DropdownItem")
+            .should("be.visible")
+            .should("have.attr", "aria-disabled", "true");
+        });
+      assertSourceProcessorDetails(processorName, source, filters);
+    });
+  });
+
+  function assertSinkProcessorDetails(
+    processorName: string,
+    transformation: string,
+    action: string[],
+    filters: string[][]
+  ) {
+    const actionKeys: string[] = ["Action type", "Channel", "Webhook URL"];
+
+    cy.ouiaId("processor-name", "PF4/Text").should("have.text", processorName);
+
+    cy.ouiaId("type", "PF4/Text").should("have.text", "Processor type");
+    cy.get("[data-testid='processor-type-label']").should("have.text", "Sink");
+
+    cy.ouiaId("transformation-section", "PF4/Text").should(
+      "have.text",
+      "Transformation"
+    );
+    if (transformation) {
+      cy.get("code").should("have.text", transformation);
+    } else {
+      cy.ouiaId("no-transformation", "PF4/Text");
+    }
+
+    cy.ouiaId("action-section", "PF4/Text").should("have.text", "Action");
+    cy.get("[class='pf-c-description-list__term']")
+      .should("have.length", action.length)
+      .each((element, index) => {
+        cy.wrap(element).should("have.text", actionKeys[index]);
+      });
+    cy.get("[class='pf-c-description-list__description']")
+      .should("have.length", action.length)
+      .each((element, index) => {
+        cy.wrap(element).should("have.text", action[index]);
+      });
+
+    assertFilters(filters);
+
+    cy.ouiaId("source-section", "PF4/Text").should("not.exist");
+  }
+
+  function assertSourceProcessorDetails(
+    processorName: string,
+    source: string[],
+    filters: string[][]
+  ) {
+    const sourceKeys: string[] = ["Source type", "Channel", "Token"];
+
+    cy.ouiaId("processor-name", "PF4/Text").should("have.text", processorName);
+
+    cy.ouiaId("type", "PF4/Text").should("have.text", "Processor type");
+    cy.get("[data-testid='processor-type-label']").should(
+      "have.text",
+      "Source"
+    );
+
+    cy.ouiaId("source-section", "PF4/Text").should("have.text", "Source");
+    cy.get("[class='pf-c-description-list__term']")
+      .should("have.length", sourceKeys.length)
+      .each((element, index) => {
+        cy.wrap(element).should("have.text", sourceKeys[index]);
+      });
+
+    cy.get("[class='pf-c-description-list__description']")
+      .should("have.length", source.length)
+      .each((element, index) => {
+        cy.wrap(element).should("have.text", source[index]);
+      });
+
+    assertFilters(filters);
+
+    cy.ouiaId("action-section", "PF4/Text").should("not.exist");
+    cy.ouiaId("transformation-section", "PF4/Text").should("not.exist");
+  }
+
+  function assertFilters(filters: string[][]) {
+    const filtersHeader: string[] = ["Key", "Type", "Value"];
+
+    cy.ouiaId("filters-section", "PF4/Text").should("have.text", "Filters");
+    if (filters?.length > 0 && filters[0].length > 0) {
       cy.ouiaId("filters", "PF4/Table").within(() => {
+        cy.ouiaId("table-head", "PF4/TableRow")
+          .find("th")
+          .each((headCell, headIndex) => {
+            cy.wrap(headCell).should("have.text", filtersHeader[headIndex]);
+          });
         filters.forEach((item, rowIndex) => {
           cy.ouiaId(item[0], "PF4/TableRow")
             .find("td")
@@ -336,7 +440,10 @@ describe("Processor Test", () => {
               cy.wrap(cell).should("have.text", filters[rowIndex][cellIndex]);
             });
         });
+        cy.ouiaType("PF4/TableRow").should("have.length", filters.length + 1);
       });
+    } else {
+      cy.ouiaId("no-filters", "PF4/Text");
     }
-  });
+  }
 });

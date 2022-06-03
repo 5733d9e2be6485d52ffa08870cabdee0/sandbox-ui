@@ -100,6 +100,9 @@ module.exports = (env, argv) => {
         systemvars: true,
         silent: true,
       }),
+      new CopyPlugin({
+        patterns: [{ from: "./locales", to: "locales" }],
+      }),
       new MiniCssExtractPlugin({
         filename: "[name].[contenthash:8].css",
         chunkFilename: "[contenthash:8].css",

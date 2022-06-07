@@ -153,7 +153,11 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
           };
         }
         return filter;
-      });
+      })
+      .filter(
+        (item: Partial<EventFilter>) =>
+          item.value || (item.values && item.values.length > 0)
+      );
 
   const prepareRequest = (formData: ProcessorFormData): ProcessorRequest => {
     const requestData: ProcessorRequest = { name: formData.name };

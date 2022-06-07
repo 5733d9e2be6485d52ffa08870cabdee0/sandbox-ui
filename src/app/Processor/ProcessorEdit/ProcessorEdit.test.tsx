@@ -7,9 +7,11 @@ import {
   ProcessorResponse,
   ProcessorType,
 } from "@openapi/generated";
+import { EventFilter } from "../../../types/Processor";
 
 const setupProcessorEdit = (
-  processor?: ProcessorResponse
+  processor?: ProcessorResponse,
+  saveButtonLabel?: string
 ): {
   comp: RenderResult;
   onSave: () => void;
@@ -22,7 +24,7 @@ const setupProcessorEdit = (
       onSave={onSave}
       onCancel={onCancel}
       isLoading={false}
-      saveButtonLabel="Create"
+      saveButtonLabel={saveButtonLabel ?? "Create"}
       processor={processor}
     />
   );
@@ -121,6 +123,71 @@ describe("ProcessorEdit component", () => {
     expect(comp.getAllByTestId("filter-item").length).toBe(1);
     expect(comp.queryByDisplayValue("age")).not.toBeInTheDocument();
     expect(comp.getByLabelText("Delete filter")).toBeDisabled();
+  });
+
+  it("handles filters with multiple values", async () => {
+    const { comp, onSave } = setupProcessorEdit(sinkProcessor, "Save");
+    await waitForI18n(comp);
+
+    const demoStringFilter = {
+      key: "name",
+      type: "StringIn",
+      values: ["one", "two", "three"],
+    };
+    const demoNumberFilter = {
+      key: "name",
+      type: "NumberIn",
+      values: [2, 4, 8],
+    };
+
+    const demoNotValidFilter = {
+      key: "name",
+      type: "NumberIn",
+      values: ["one", "two", "three"],
+    };
+
+    const demoEmptyValuesFilter = {
+      key: "name",
+      type: "StringIn",
+      values: [],
+    };
+
+    const fillUpFilterValues = (
+      filter: Omit<EventFilter, "value">,
+      index: number
+    ): void => {
+      fireEvent.change(comp.getAllByLabelText("Key")[index], {
+        target: { value: filter.key },
+      });
+      fireEvent.change(comp.getAllByLabelText("Type")[index], {
+        target: { value: filter.type },
+      });
+      fireEvent.change(comp.getAllByLabelText("Value")[index], {
+        target: { value: filter.values?.join(", ") },
+      });
+    };
+
+    const addFilter = (): void => {
+      fireEvent.click(comp.getByText("Add filter"));
+    };
+
+    fillUpFilterValues(demoStringFilter, 0);
+    addFilter();
+    fillUpFilterValues(demoNumberFilter, 1);
+    addFilter();
+    fillUpFilterValues(demoNotValidFilter, 2);
+    addFilter();
+    fillUpFilterValues(demoEmptyValuesFilter, 3);
+    fireEvent.click(comp.getByText("Save"));
+
+    expect(onSave).toHaveBeenCalledTimes(1);
+    const { name, action } = sinkProcessor;
+    expect(onSave).toHaveBeenCalledWith({
+      name,
+      action,
+      // filters with invalid or empty values are ignored and not included in the request
+      filters: [demoStringFilter, demoNumberFilter],
+    });
   });
 
   it("displays source configuration parameters after source selection", async () => {

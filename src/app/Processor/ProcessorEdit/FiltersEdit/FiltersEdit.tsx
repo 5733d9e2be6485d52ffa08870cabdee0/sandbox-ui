@@ -6,15 +6,15 @@ import {
   FormGroup,
   FormSelect,
   FormSelectOption,
+  Popover,
   Split,
   SplitItem,
   Stack,
   StackItem,
   TextInput,
-  Tooltip,
 } from "@patternfly/react-core";
 import {
-  InfoCircleIcon,
+  HelpIcon,
   PlusCircleIcon,
   TrashAltIcon,
 } from "@patternfly/react-icons";
@@ -88,12 +88,20 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
     filter: EventFilter
   ): JSX.Element | undefined =>
     isCommaSeparatedFilterType(filter) ? (
-      <Tooltip
-        position="top"
-        content={t("processor.commaSeparatedValuesTooltip")}
+      <Popover
+        headerContent={t("processor.multipleValues")}
+        bodyContent={t("processor.commaSeparatedValuesTooltip")}
       >
-        <InfoCircleIcon title="Filter value info" />
-      </Tooltip>
+        <button
+          type="button"
+          aria-label={t("processor.moreInfoForFilterValues")}
+          onClick={(e): void => e.preventDefault()}
+          aria-describedby="form-group-label-info"
+          className="pf-c-form__group-label-help"
+        >
+          <HelpIcon noVerticalAlign={true} />
+        </button>
+      </Popover>
     ) : undefined;
 
   const getOptionalPlaceholder = (filter: EventFilter): string | undefined => {

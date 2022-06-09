@@ -217,5 +217,22 @@ describe("Instances Test", () => {
           });
       });
     });
+
+    it("Processor header details are visible", () => {
+      const processorHeaderDetails = [
+        "Name",
+        "ID",
+        "Type",
+        "Status",
+        "Time created",
+      ];
+      cy.ouiaId("Processors list table", "PF4/Table")
+        .ouiaId("table-head", "PF4/TableRow")
+        .find("th")
+        .should("have.length", processorHeaderDetails.length)
+        .each((item, index) => {
+          cy.wrap(item).should("have.text", processorHeaderDetails[index]);
+        });
+    });
   });
 });

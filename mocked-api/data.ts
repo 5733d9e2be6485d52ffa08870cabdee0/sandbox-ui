@@ -146,11 +146,11 @@ export const processorData = [
     status: "ready",
     action: {
       type: "Slack",
-      parameters: {
+      parameters: JSON.stringify({
         channel: "test",
         webhookUrl:
           "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
-      },
+      }),
     },
   },
   {
@@ -171,11 +171,11 @@ export const processorData = [
     status: "ready",
     action: {
       type: "Slack",
-      parameters: {
+      parameters: JSON.stringify({
         channel: "test",
         webhookUrl:
           "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
-      },
+      }),
     },
   },
   {
@@ -196,10 +196,10 @@ export const processorData = [
     status: "accepted",
     source: {
       type: "Slack",
-      parameters: {
+      parameters: JSON.stringify({
         channel: "test",
         token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-      },
+      }),
     },
   },
   {

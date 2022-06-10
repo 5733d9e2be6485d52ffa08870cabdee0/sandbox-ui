@@ -10,10 +10,16 @@ import { CustomJsonSchemaBridge } from "@app/Processor/ProcessorEdit/Configurati
 import { useTranslation } from "react-i18next";
 import { Button } from "@patternfly/react-core";
 
-const ConfigurationForm = (): JSX.Element => {
-  // const configuration = {};
+interface ConfigurationFormProps {
+  configuration?: { [key: string]: unknown };
+  onChange: (model: any) => void;
+  registerValidation: (validationFunction: () => boolean) => void;
+  schema: object;
+}
+
+const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
+  const { configuration = {}, onChange, registerValidation } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
-  const configuration = {};
 
   const schemaValidator = createValidator(schema);
   const bridge = new CustomJsonSchemaBridge(
@@ -36,9 +42,14 @@ const ConfigurationForm = (): JSX.Element => {
   // ]);
 
   let formRef: any;
-  const validate = (): void => {
+
+  const validate = (): boolean => {
     formRef.submit();
+    const errors = schemaValidator(configuration);
+    return errors === null;
   };
+
+  registerValidation(validate);
 
   return (
     <>
@@ -47,7 +58,7 @@ const ConfigurationForm = (): JSX.Element => {
         validate={"onChangeAfterSubmit"}
         schema={bridge}
         model={configuration}
-        onChangeModel={(model: any): void => console.log(model)}
+        onChangeModel={onChange}
         className="connector-specific pf-c-form pf-m-9-col-on-lg"
         ref={(ref: any): void => (formRef = ref)}
       >

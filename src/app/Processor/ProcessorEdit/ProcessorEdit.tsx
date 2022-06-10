@@ -24,7 +24,7 @@ import {
 } from "@patternfly/react-core";
 import FiltersEdit from "@app/Processor/ProcessorEdit/FiltersEdit/FiltersEdit";
 import { CodeEditor } from "@patternfly/react-code-editor";
-import ActionEdit from "@app/Processor/ProcessorEdit/ActionEdit/ActionEdit";
+// import ActionEdit from "@app/Processor/ProcessorEdit/ActionEdit/ActionEdit";
 import {
   Action,
   ProcessorRequest,
@@ -39,7 +39,7 @@ import {
 import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidateProcessor";
 import "./ProcessorEdit.css";
 import { isCommaSeparatedFilterType } from "@utils/filterUtils";
-import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
+import ConfigurationEdit from "@app/Processor/ProcessorEdit/ConfigurationEdit/ConfigurationEdit";
 
 
 interface ProcessorEditProps {
@@ -235,9 +235,9 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                   grow={{ default: "grow" }}
                   className={"processor-edit__content-wrap"}
                 >
-                  <div style={{ maxWidth: "800px", margin: "1rem" }}>
-                    <ConfigurationForm />
-                  </div>
+                  {/*<div style={{ maxWidth: "800px", margin: "1rem" }}>*/}
+                  {/*  <ConfigurationForm />*/}
+                  {/*</div>*/}
 
                   <Form className={"processor-edit__form"}>
                     <FormSection
@@ -403,11 +403,17 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 {t("processor.selectActionDescription")}
                               </Text>
                             </TextContent>
-                            <ActionEdit
+                            {/*<ActionEdit*/}
+                            {/*  action={action}*/}
+                            {/*  onChange={setAction}*/}
+                            {/*  registerValidation={registerValidateConfig}*/}
+                            {/* isDisabled={isExistingProcessor}*/}
+                            {/*/>*/}
+                            <ConfigurationEdit
+                              configType={"action"}
                               action={action}
-                              onChange={setAction}
                               registerValidation={registerValidateConfig}
-                              isDisabled={isExistingProcessor}
+                              onChange={setAction}
                             />
                           </FormSection>
                         )}

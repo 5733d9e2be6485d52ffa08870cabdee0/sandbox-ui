@@ -9,7 +9,8 @@ import {
 } from "@openapi/generated";
 import { v4 as uuid } from "uuid";
 import { instancesData, processorData } from "./data";
-import { omit } from "lodash";
+import omit from "lodash.omit";
+import cloneDeep from "lodash.clonedeep";
 import { EventFilter } from "../src/types/Processor";
 
 // api url
@@ -46,17 +47,11 @@ const db = factory({
     transformationTemplate: String,
     action: {
       type: String,
-      parameters: {
-        channel: String,
-        webhookUrl: String,
-      },
+      parameters: String,
     },
     source: {
       type: String,
-      parameters: {
-        channel: String,
-        token: String,
-      },
+      parameters: String,
     },
   },
 });
@@ -290,7 +285,7 @@ export const handlers = [
         ...query,
       })
       .map((item) =>
-        cleanupProcessor(
+        prepareProcessor(
           item as unknown as Record<string | number | symbol, unknown>
         )
       );
@@ -345,8 +340,9 @@ export const handlers = [
           ctx.status(200),
           ctx.delay(apiDelay),
           ctx.json(
-            cleanupProcessor(
-              processor as unknown as Record<string | number | symbol, unknown>
+            prepareProcessor(
+              processor as unknown as Record<string | number | symbol, unknown>,
+              true
             )
           )
         );
@@ -426,8 +422,16 @@ export const handlers = [
       status: "accepted",
       filters: filters,
       transformationTemplate,
-      ...(action ? { action } : {}),
-      ...(source ? { source } : {}),
+      ...(action
+        ? {
+            action: convertParametersToString(action),
+          }
+        : {}),
+      ...(source
+        ? {
+            source: convertParametersToString(source),
+          }
+        : {}),
       bridge,
     };
 
@@ -447,7 +451,7 @@ export const handlers = [
       ctx.status(200),
       ctx.delay(apiDelay),
       ctx.json(
-        cleanupProcessor(
+        prepareProcessor(
           newProcessor as unknown as Record<string | number | symbol, unknown>
         )
       )
@@ -542,8 +546,8 @@ export const handlers = [
           status: "accepted",
           filters: filters as unknown as EventFilter[],
           transformationTemplate,
-          ...(action ? { action } : {}),
-          ...(source ? { source } : {}),
+          ...(action ? { action: convertParametersToString(action) } : {}),
+          ...(source ? { source: convertParametersToString(source) } : {}),
         },
       });
 
@@ -561,7 +565,7 @@ export const handlers = [
         ctx.status(200),
         ctx.delay(apiDelay),
         ctx.json(
-          cleanupProcessor(
+          prepareProcessor(
             updatedProcessor as unknown as Record<
               string | number | symbol,
               unknown
@@ -752,15 +756,18 @@ const resourceStatusFlow = (
 };
 
 /**
- * Cleanup processor
+ * Prepare processor data to be returned by APIs
  *
- * @param processor Processor to clean from unwanted properties before response
+ * @param data Processor to clean from unwanted properties before response
+ * @param parseConfigParameters Flag indicating if action/source parameters should be parsed
  */
-const cleanupProcessor = (
-  processor: Record<string, unknown>
+const prepareProcessor = (
+  data: Record<string, unknown>,
+  parseConfigParameters = false
 ): ProcessorResponse => {
   // removing properties not needed for the response
   const omitProperties = ["bridge"];
+  const processor = cloneDeep(data);
 
   if (!(processor.filters as Array<Record<string, unknown>>)?.length) {
     omitProperties.push("filters");
@@ -775,7 +782,42 @@ const cleanupProcessor = (
     omitProperties.push("source");
   }
 
+  if (parseConfigParameters) {
+    const configSection = processor.type === "source" ? "source" : "action";
+    const parsedParameters = JSON.parse(
+      (
+        processor[configSection] as {
+          type: string;
+          parameters: string;
+        }
+      ).parameters
+    ) as { [key: string]: unknown };
+    if (processor.type === "source") {
+      (processor.source as typeof parsedParameters).parameters =
+        parsedParameters;
+    } else {
+      (processor.action as typeof parsedParameters).parameters =
+        parsedParameters;
+    }
+  }
+
   return omit(processor, omitProperties);
+};
+
+/**
+ * Convert actions/sources parameters to string because that's how they are stored
+ * in our fake db
+ *
+ * @param data Processor action or source to convert
+ * @returns Processor action or source with parameters property containing stringified parameters.
+ */
+const convertParametersToString = (
+  data: MockProcessorRequest["action"] | MockProcessorRequest["source"]
+): { type: string; parameters: string } => {
+  return {
+    type: data?.type ?? "",
+    parameters: JSON.stringify(data?.parameters),
+  };
 };
 
 const error_not_found = {

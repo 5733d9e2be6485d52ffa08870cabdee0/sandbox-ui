@@ -39,6 +39,8 @@ import {
 import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidateProcessor";
 import "./ProcessorEdit.css";
 import { isCommaSeparatedFilterType } from "@utils/filterUtils";
+import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
+
 
 interface ProcessorEditProps {
   /** The processor data to populate the form. Used when updating an existing processor.
@@ -233,6 +235,10 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                   grow={{ default: "grow" }}
                   className={"processor-edit__content-wrap"}
                 >
+                  <div style={{ maxWidth: "800px", margin: "1rem" }}>
+                    <ConfigurationForm />
+                  </div>
+
                   <Form className={"processor-edit__form"}>
                     <FormSection
                       title={t("processor.generalInformation")}

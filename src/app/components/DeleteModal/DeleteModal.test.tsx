@@ -110,6 +110,27 @@ describe("Delete Modal component", () => {
     expect(onConfirm).toBeCalledTimes(1);
   });
 
+  test("should error when deletion was not confirmed properly", async () => {
+    const onConfirm = jest.fn();
+    const onCancel = jest.fn();
+
+    const { comp } = setupModal({
+      showDialog: true,
+      onCancel,
+      onConfirm,
+    });
+    await waitForI18n(comp);
+
+    expect(await comp.findByText(title)).toBeInTheDocument();
+    expect(comp.getByText("Delete")).toBeDisabled();
+
+    fireEvent.change(comp.getByLabelText(`Type ${testName} to confirm.`), {
+      target: { value: "WRONG_VALUE" },
+    });
+    expect(comp.getByText("Cancel")).toBeEnabled();
+    expect(comp.getByText("Delete")).toBeDisabled();
+  });
+
   test("should allow the user to cancel the deletion", async () => {
     const onCancel = jest.fn();
     const { comp } = setupModal({

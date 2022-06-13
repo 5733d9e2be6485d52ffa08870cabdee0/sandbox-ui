@@ -88,12 +88,12 @@ const sinkProcessor: SinkProcessor = {
   filters: [
     {
       key: "source",
-      type: "stringContains",
+      type: "StringContains",
       value: "aws.ec2",
     },
     {
       key: "detail-type",
-      type: "stringEquals",
+      type: "StringEquals",
       value: "EC2 Instance State-change Notification",
     },
   ],
@@ -115,7 +115,7 @@ const sourceProcessor: SourceProcessor = {
   filters: [
     {
       key: "section",
-      type: "stringContains",
+      type: "StringContains",
       value: "33",
     },
   ],

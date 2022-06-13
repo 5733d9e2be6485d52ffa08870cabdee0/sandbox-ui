@@ -13,7 +13,7 @@ import { schema } from "../ConfigurationForm/schema";
 type ConfigurationEditProps = ActionConfig | SourceConfig;
 
 const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
-  const { configType, onChange, registerValidation } = props;
+  const { configType, onChange, registerValidation, readOnly = false } = props;
   const [type, setType] = useState(
     (configType === "action" ? props.action?.type : props.source?.type) ?? ""
   );
@@ -23,6 +23,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
       : props.source?.parameters) ?? {}
   );
   const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const [typeValidation, setTypeValidation] = useState<boolean>();
 
   const updateType = (type: string): void => {
     setType(type);
@@ -32,7 +33,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
       parameters: emptyParameters,
     });
     if (type) {
-      // resetValidation("type");
+      setTypeValidation(true);
     }
   };
 
@@ -50,7 +51,9 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
   };
 
   const validate = (): boolean => {
-    return validateParameters.current?.() ?? false;
+    const isTypeValid = type !== "";
+    setTypeValidation(isTypeValid);
+    return (validateParameters.current?.() ?? false) && isTypeValid;
   };
 
   useEffect(() => {
@@ -85,9 +88,9 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
         fieldId={`action-type`}
         label={t("processor.actionType")}
         isRequired={true}
-        // helperTextInvalid={validation.errors.type}
-        // validated={validation.errors.type ? "error" : "default"}
-        // className={validation.errors.type && "processor-field-error"}
+        helperTextInvalid={t("common.required")}
+        validated={typeValidation === false ? "error" : "default"}
+        className={typeValidation === false ? "processor-field-error" : ""}
       >
         <FormSelect
           id={`action-type`}
@@ -96,7 +99,8 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           isRequired={true}
           value={type}
           onChange={(type: string): void => updateType(type)}
-          // validated={validation.errors.type ? "error" : "default"}
+          validated={typeValidation === false ? "error" : "default"}
+          isDisabled={readOnly}
         >
           {typeOptions.map((option) => (
             <FormSelectOption
@@ -129,6 +133,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           schema={schema}
           onChange={updateConfiguration}
           registerValidation={registerValidateParameters}
+          readOnly={readOnly}
         />
       )}
     </>
@@ -151,4 +156,5 @@ interface SourceConfig extends BaseConfig {
 
 interface BaseConfig {
   registerValidation: (validationFunction: () => boolean) => void;
+  readOnly?: boolean;
 }

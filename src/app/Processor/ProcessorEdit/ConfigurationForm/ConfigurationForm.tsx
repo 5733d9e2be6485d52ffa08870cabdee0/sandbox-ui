@@ -8,17 +8,22 @@ import { AutoField } from "uniforms-patternfly/dist/es6";
 import { AutoForm, ValidatedQuickForm } from "uniforms";
 import { CustomJsonSchemaBridge } from "@app/Processor/ProcessorEdit/ConfigurationForm/CustomJsonSchemaBridge";
 import { useTranslation } from "react-i18next";
-import { Button } from "@patternfly/react-core";
 
 interface ConfigurationFormProps {
   configuration?: { [key: string]: unknown };
   onChange: (model: any) => void;
   registerValidation: (validationFunction: () => boolean) => void;
   schema: object;
+  readOnly?: boolean;
 }
 
 const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
-  const { configuration = {}, onChange, registerValidation } = props;
+  const {
+    configuration = {},
+    onChange,
+    registerValidation,
+    readOnly = false,
+  } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const schemaValidator = createValidator(schema);
@@ -53,7 +58,6 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
 
   return (
     <>
-      <p>auto forms begins</p>
       <KameletForm
         validate={"onChangeAfterSubmit"}
         schema={bridge}
@@ -61,19 +65,17 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
         onChangeModel={onChange}
         className="connector-specific pf-c-form pf-m-9-col-on-lg"
         ref={(ref: any): void => (formRef = ref)}
+        disabled={readOnly}
       >
         {Object.keys(
           bridge.schema.properties as { [key: string]: unknown }
         ).map((key) => (
-          <AutoField key={key} name={key} />
+          <AutoField key={key} name={key} disabled={readOnly} />
         ))}
       </KameletForm>
       {/*<AutoForm schema={bridge} onSubmit={console.log} onChange={console.log}>*/}
       {/*  <AutoFields />*/}
       {/*</AutoForm>*/}
-      <br />
-      <Button onClick={validate}>validate</Button>
-      <p>auto forms ends</p>
     </>
   );
 };

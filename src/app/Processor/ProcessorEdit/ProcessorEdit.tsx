@@ -30,7 +30,6 @@ import {
   ProcessorRequest,
   ProcessorResponse,
 } from "@openapi/generated";
-import SourceEdit from "@app/Processor/ProcessorEdit/SourceEdit/SourceEdit";
 import {
   EventFilter,
   FilterType,
@@ -358,11 +357,18 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 )}
                               </Text>
                             </TextContent>
-                            <SourceEdit
+                            {/*<SourceEdit*/}
+                            {/*  source={source}*/}
+                            {/*  onChange={setSource}*/}
+                            {/*  registerValidation={registerValidateConfig}*/}
+                            {/* isDisabled={isExistingProcessor}*/}
+                            {/*/>*/}
+                            <ConfigurationEdit
+                              configType={"source"}
                               source={source}
-                              onChange={setSource}
                               registerValidation={registerValidateConfig}
-                              isDisabled={isExistingProcessor}
+                              onChange={setSource}
+                              readOnly={processor !== undefined}
                             />
                           </FormSection>
                         )}
@@ -414,6 +420,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                               action={action}
                               registerValidation={registerValidateConfig}
                               onChange={setAction}
+                              readOnly={processor !== undefined}
                             />
                           </FormSection>
                         )}

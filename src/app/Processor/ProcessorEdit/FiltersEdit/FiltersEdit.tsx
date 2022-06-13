@@ -59,27 +59,27 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
     },
     {
       value: FilterType.STRING_EQUALS,
-      label: t("processor.stringEquals"),
+      label: t("processor.StringEquals"),
       isPlaceholder: false,
     },
     {
       value: FilterType.STRING_CONTAINS,
-      label: t("processor.stringContains"),
+      label: t("processor.StringContains"),
       isPlaceholder: false,
     },
     {
       value: FilterType.STRING_BEGINS,
-      label: t("processor.stringBeginsWith"),
+      label: t("processor.StringBeginsWith"),
       isPlaceholder: false,
     },
     {
       value: FilterType.STRING_IN,
-      label: t("processor.stringIn"),
+      label: t("processor.StringIn"),
       isPlaceholder: false,
     },
     {
       value: FilterType.NUMBER_IN,
-      label: t("processor.numberIn"),
+      label: t("processor.NumberIn"),
       isPlaceholder: false,
     },
   ];

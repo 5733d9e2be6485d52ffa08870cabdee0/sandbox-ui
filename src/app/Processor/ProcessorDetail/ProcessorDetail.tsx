@@ -124,14 +124,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                     (filter): JSX.Element => (
                       <Tr key={filter.key} ouiaId={filter.key}>
                         <Td>{filter.key}</Td>
-                        <Td>
-                          {t(
-                            `processor.${
-                              filter.type.charAt(0).toLowerCase() +
-                              filter.type.slice(1)
-                            }`
-                          )}
-                        </Td>
+                        <Td>{t(`processor.${filter.type}`)}</Td>
                         <Td>{getFilterValue(filter)}</Td>
                       </Tr>
                     )

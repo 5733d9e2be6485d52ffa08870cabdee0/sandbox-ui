@@ -6,15 +6,21 @@ import {
   FormGroup,
   FormSelect,
   FormSelectOption,
+  Popover,
   Split,
   SplitItem,
   Stack,
   StackItem,
   TextInput,
 } from "@patternfly/react-core";
-import { PlusCircleIcon, TrashAltIcon } from "@patternfly/react-icons";
+import {
+  HelpIcon,
+  PlusCircleIcon,
+  TrashAltIcon,
+} from "@patternfly/react-icons";
 import { useTranslation } from "react-i18next";
-import { EventFilter } from "../../../../types/Processor";
+import { EventFilter, FilterType } from "../../../../types/Processor";
+import { getFilterValue, isCommaSeparatedFilterType } from "@utils/filterUtils";
 
 interface FiltersEditProps {
   filters: EventFilter[];
@@ -52,26 +58,61 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
       isPlaceholder: true,
     },
     {
-      value: "StringEquals",
-      label: t("processor.stringEquals"),
+      value: FilterType.STRING_EQUALS,
+      label: t("processor.StringEquals"),
       isPlaceholder: false,
     },
     {
-      value: "StringContains",
-      label: t("processor.stringContains"),
+      value: FilterType.STRING_CONTAINS,
+      label: t("processor.StringContains"),
       isPlaceholder: false,
     },
     {
-      value: "StringBeginsWith",
-      label: t("processor.stringBeginsWith"),
+      value: FilterType.STRING_BEGINS,
+      label: t("processor.StringBeginsWith"),
       isPlaceholder: false,
     },
     {
-      value: "ValuesIn",
-      label: t("processor.valuesIn"),
+      value: FilterType.STRING_IN,
+      label: t("processor.StringIn"),
+      isPlaceholder: false,
+    },
+    {
+      value: FilterType.NUMBER_IN,
+      label: t("processor.NumberIn"),
       isPlaceholder: false,
     },
   ];
+
+  const getOptionalTooltipIcon = (
+    filter: EventFilter
+  ): JSX.Element | undefined =>
+    isCommaSeparatedFilterType(filter) ? (
+      <Popover
+        headerContent={t("processor.multipleValues")}
+        bodyContent={t("processor.commaSeparatedValuesTooltip")}
+      >
+        <button
+          type="button"
+          aria-label={t("processor.moreInfoForFilterValues")}
+          onClick={(e): void => e.preventDefault()}
+          aria-describedby="form-group-label-info"
+          className="pf-c-form__group-label-help"
+        >
+          <HelpIcon noVerticalAlign={true} />
+        </button>
+      </Popover>
+    ) : undefined;
+
+  const getOptionalPlaceholder = (filter: EventFilter): string | undefined => {
+    if (filter.type === FilterType.STRING_IN) {
+      return "hello,world,how,are,you";
+    }
+    if (filter.type === FilterType.NUMBER_IN) {
+      return "1,-2,3";
+    }
+    return undefined;
+  };
 
   return (
     <Stack hasGutter={true}>
@@ -131,6 +172,7 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
                   <FormGroup
                     fieldId={`filter-value-${index}`}
                     label={t("common.value")}
+                    labelIcon={getOptionalTooltipIcon(filter)}
                   >
                     <TextInput
                       type="text"
@@ -138,7 +180,8 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
                       ouiaId="filter-value"
                       name={`filter-value-${index}`}
                       aria-describedby={`filter-value-${index}`}
-                      value={filter.value}
+                      defaultValue={getFilterValue(filter)}
+                      placeholder={getOptionalPlaceholder(filter)}
                       onChange={(value): void =>
                         updateFilter({ ...filter, value }, index)
                       }

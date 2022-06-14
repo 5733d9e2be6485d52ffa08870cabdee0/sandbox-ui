@@ -26,6 +26,7 @@ import {
 } from "@patternfly/react-table";
 import { Processor } from "../../../types/Processor";
 import "./ProcessorDetail.css";
+import { getFilterValue } from "@utils/filterUtils";
 
 interface ProcessorDetailProps {
   /**
@@ -124,7 +125,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                       <Tr key={filter.key} ouiaId={filter.key}>
                         <Td>{filter.key}</Td>
                         <Td>{t(`processor.${filter.type}`)}</Td>
-                        <Td>{filter.value}</Td>
+                        <Td>{getFilterValue(filter)}</Td>
                       </Tr>
                     )
                   )}

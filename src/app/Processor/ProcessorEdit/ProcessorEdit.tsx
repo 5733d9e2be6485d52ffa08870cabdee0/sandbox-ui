@@ -31,9 +31,14 @@ import {
   ProcessorResponse,
 } from "@openapi/generated";
 import SourceEdit from "@app/Processor/ProcessorEdit/SourceEdit/SourceEdit";
-import { EventFilter, ProcessorFormData } from "../../../types/Processor";
+import {
+  EventFilter,
+  FilterType,
+  ProcessorFormData,
+} from "../../../types/Processor";
 import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidateProcessor";
 import "./ProcessorEdit.css";
+import { isCommaSeparatedFilterType } from "@utils/filterUtils";
 
 interface ProcessorEditProps {
   /** The processor data to populate the form. Used when updating an existing processor.
@@ -116,6 +121,44 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     });
   }, [name, processorType, filters, transformation, action, source]);
 
+  const prepareFilters: (filters: EventFilter[]) => Partial<EventFilter>[] = (
+    filters: EventFilter[]
+  ) =>
+    filters
+      .filter(
+        (filter) => filter.type && (filter.value || filter.values) && filter.key
+      )
+      .map((filter) => {
+        if (filter.value && isCommaSeparatedFilterType(filter)) {
+          const multipleValuesMapper = (item: string): number | string =>
+            filter.type === FilterType.NUMBER_IN
+              ? parseFloat(item.trim())
+              : item.trim();
+
+          const multipleValuesPredicate =
+            filter.type === FilterType.NUMBER_IN
+              ? (item: number | string): boolean =>
+                  item !== null && !isNaN(item as number)
+              : String;
+
+          const values = filter.value
+            .split(",")
+            .map(multipleValuesMapper)
+            .filter(multipleValuesPredicate);
+
+          return {
+            key: filter.key,
+            type: filter.type,
+            values,
+          };
+        }
+        return filter;
+      })
+      .filter(
+        (item: Partial<EventFilter>) =>
+          item.value || (item.values && item.values.length > 0)
+      );
+
   const prepareRequest = (formData: ProcessorFormData): ProcessorRequest => {
     const requestData: ProcessorRequest = { name: formData.name };
     if (formData.type === "sink") {
@@ -124,9 +167,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
       requestData.source = formData.source;
     }
     if (formData.filters && formData.filters.length > 0) {
-      const filtersData = formData.filters.filter(
-        (filter) => filter.type && filter.value && filter.key
-      );
+      const filtersData = prepareFilters(formData.filters) as EventFilter[];
       if (filtersData.length > 0) {
         requestData.filters =
           filtersData as unknown as ProcessorRequest["filters"];

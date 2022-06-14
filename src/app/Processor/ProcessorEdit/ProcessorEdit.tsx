@@ -207,11 +207,13 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
 
   useEffect(() => {
     if (isSubmitted) {
-      document.querySelector(".processor-field-error")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
-      });
+      document
+        .querySelector(".processor-field-error, .pf-m-error")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
       setIsSubmitted(false);
     }
   }, [isSubmitted]);

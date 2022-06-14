@@ -66,8 +66,7 @@ export class CustomJsonSchemaBridge extends JSONSchemaBridge {
    * @returns
    */
   getProps(name: string): any {
-    const { description, example, label, errorMessage, ...props } =
-      super.getProps(name);
+    const { description, example, label, ...props } = super.getProps(name);
     const { isSecret } = this.getField(name);
     if (isSecret) {
       return {
@@ -80,7 +79,6 @@ export class CustomJsonSchemaBridge extends JSONSchemaBridge {
         labelIcon: getLabelIcon(label || name, description),
         name,
         label,
-        errorMessage,
         type: "password",
       };
     }
@@ -90,8 +88,6 @@ export class CustomJsonSchemaBridge extends JSONSchemaBridge {
       labelIcon: getLabelIcon(label || name, description),
       name,
       label,
-      errorMessage,
-      className: errorMessage ? "processor-field-error" : "",
     };
   }
 

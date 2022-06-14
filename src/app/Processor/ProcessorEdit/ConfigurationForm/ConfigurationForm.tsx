@@ -4,7 +4,7 @@ import React from "react";
 // import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import { createValidator } from "@utils/validator";
 import { AutoField } from "uniforms-patternfly/dist/es6";
-import { AutoForm, ValidatedQuickForm } from "uniforms";
+import { AutoForm, ValidatedQuickForm, context } from "uniforms";
 import Omit from "lodash.omit";
 import { CustomJsonSchemaBridge } from "@app/Processor/ProcessorEdit/ConfigurationForm/CustomJsonSchemaBridge";
 import { useTranslation } from "react-i18next";
@@ -65,7 +65,6 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
         schema={bridge}
         model={configuration}
         onChangeModel={onChange}
-        className="connector-specific pf-c-form pf-m-9-col-on-lg"
         ref={(ref: any): void => (formRef = ref)}
         disabled={readOnly}
       >
@@ -88,6 +87,15 @@ function Auto(parent: any): any {
     onChange(key: string, value: unknown): any {
       if (value === "") return super.onChange(key, undefined);
       super.onChange(key, value);
+    }
+    render(): any {
+      const ctx: any = this.getContext();
+
+      return (
+        <context.Provider value={ctx}>
+          <section {...this.getNativeFormProps()} />
+        </context.Provider>
+      );
     }
   }
   return _;

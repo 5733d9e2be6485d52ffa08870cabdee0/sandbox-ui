@@ -1,4 +1,5 @@
 import React from "react";
+import { getParameterValue } from "@utils/parametersUtils";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import ProcessorDetail from "./ProcessorDetail";
 import { SinkProcessor, SourceProcessor } from "../../../types/Processor";
@@ -40,13 +41,18 @@ describe("ProcessorDetail component", () => {
     expect(comp.queryByText("Send to Slack")).toBeInTheDocument();
     expect(
       comp.queryByText(
-        (sinkProcessor.action.parameters as { [key: string]: string }).channel
+        getParameterValue(
+          (sinkProcessor.action.parameters as { [key: string]: unknown })
+            .channel
+        )
       )
     ).toBeInTheDocument();
     expect(
       comp.queryByText(
-        (sinkProcessor.action.parameters as { [key: string]: string })
-          .webhookUrl
+        getParameterValue(
+          (sinkProcessor.action.parameters as { [key: string]: unknown })
+            .webhookUrl
+        )
       )
     ).toBeInTheDocument();
 
@@ -79,8 +85,10 @@ describe("ProcessorDetail component", () => {
     expect(comp.queryByText("Demo source")).toBeInTheDocument();
     expect(
       comp.queryByText(
-        (sourceProcessor.source.parameters as { [key: string]: string })
-          .demoParameter
+        getParameterValue(
+          (sourceProcessor.source.parameters as { [key: string]: unknown })
+            .demoParameter
+        )
       )
     ).toBeInTheDocument();
 

@@ -26,7 +26,11 @@ import {
 } from "@patternfly/react-table";
 import { Processor } from "../../../types/Processor";
 import "./ProcessorDetail.css";
+<<<<<<< HEAD
 import { getFilterValue } from "@utils/filterUtils";
+=======
+import { getParameterValue } from "@utils/parametersUtils";
+>>>>>>> bdd1af1 (Use {[key: string]: unknown})
 
 interface ProcessorDetailProps {
   /**
@@ -84,7 +88,13 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                         {t(`processor.${key}`)}
                       </DescriptionListTerm>
                       <DescriptionListDescription>
-                        {processor.source.parameters[key]}
+                        {
+                          (
+                            processor.source.parameters as {
+                              [key: string]: unknown;
+                            }
+                          )[key] as string
+                        }
                       </DescriptionListDescription>
                     </DescriptionListGroup>
                   )
@@ -212,7 +222,13 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                           {t(`processor.${key}`)}
                         </DescriptionListTerm>
                         <DescriptionListDescription>
-                          {processor.action.parameters[key]}
+                          {getParameterValue(
+                            (
+                              processor.action.parameters as {
+                                [key: string]: unknown;
+                              }
+                            )[key]
+                          )}
                         </DescriptionListDescription>
                       </DescriptionListGroup>
                     )

@@ -10,6 +10,7 @@ import { Action } from "@openapi/generated";
 import { useValidationBase } from "@app/Processor/ProcessorEdit/useValidationBase";
 import { useValidateConfigParams } from "@app/Processor/ProcessorEdit/useValidateConfigParams";
 import { ConfigType } from "../../../../types/Processor";
+import { getParameterValue } from "@utils/parametersUtils";
 
 interface ActionEditProps {
   action?: Action;
@@ -210,7 +211,11 @@ const ActionEdit = (props: ActionEditProps): JSX.Element => {
                     aria-describedby={field.name}
                     isRequired={true}
                     isDisabled={isDisabled}
-                    value={(parameters[field.name] as string) ?? ""}
+                    value={
+                      getParameterValue(
+                        (parameters as { [key: string]: unknown })[field.name]
+                      ) ?? ""
+                    }
                     validated={
                       validation.errors[field.name] ? "error" : "default"
                     }

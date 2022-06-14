@@ -8,15 +8,25 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
-import { schema } from "../ConfigurationForm/schema";
+import { Schema } from "../../../../hooks/useSchemasApi/useGetSchemasApi";
+import { GetSchema } from "../../../../hooks/useSchemasApi/useGetSchemaApi";
 
 type ConfigurationEditProps = ActionConfig | SourceConfig;
 
 const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
-  const { configType, onChange, registerValidation, readOnly = false } = props;
+  const {
+    configType,
+    onChange,
+    registerValidation,
+    readOnly = false,
+    schemaCatalog,
+    getSchema,
+  } = props;
   const [type, setType] = useState(
     (configType === "action" ? props.action?.type : props.source?.type) ?? ""
   );
+  const [schema, setSchema] = useState<object>();
+  const [schemaLoading, setSchemaLoading] = useState(false);
   const [parameters, setParameters] = useState(
     (configType === "action"
       ? props.action?.parameters
@@ -67,17 +77,24 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
     }
   }, [props]);
 
+  useEffect(() => {
+    if (type) {
+      setSchemaLoading(true);
+      setSchema(undefined);
+      getSchema(type, configType)
+        .then((data) => setSchema(data))
+        .catch((error) => console.log(error))
+        .finally(() => setSchemaLoading(false));
+    }
+  }, [type, getSchema, configType]);
+
   const typeOptions = [
     {
       id: "placeholder",
       name: "",
       isPlaceholder: true,
     },
-    {
-      id: "webhook_sink_0.1",
-      name: "Webhook",
-      isPlaceholder: false,
-    },
+    ...(schemaCatalog ? getOptions(schemaCatalog, configType) : []),
   ];
 
   registerValidation(validate);
@@ -85,17 +102,17 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
   return (
     <>
       <FormGroup
-        fieldId={`action-type`}
-        label={t("processor.actionType")}
+        fieldId={`${configType}-type`}
+        label={t(`processor.${configType}Type`)}
         isRequired={true}
         helperTextInvalid={t("common.required")}
         validated={typeValidation === false ? "error" : "default"}
         className={typeValidation === false ? "processor-field-error" : ""}
       >
         <FormSelect
-          id={`action-type`}
-          ouiaId="action-type"
-          aria-label={t("processor.actionType")}
+          id={`${configType}-type`}
+          ouiaId={`${configType}-type`}
+          aria-label={t(`processor.${configType}Type`)}
           isRequired={true}
           value={type}
           onChange={(type: string): void => updateType(type)}
@@ -112,22 +129,22 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           ))}
         </FormSelect>
       </FormGroup>
-      {type === "" && (
+      {(type === "" || schemaLoading) && (
         <FormGroup
-          fieldId={`action-config`}
-          label={t("processor.actionConfiguration")}
+          fieldId={`${configType}-config`}
+          label={t(`processor.${configType}Configuration`)}
         >
           <TextInput
             type="text"
-            id="action-config"
-            ouiaId="missing-actions"
-            name="action-config"
-            aria-describedby="action-config"
+            id={`${configType}-config`}
+            ouiaId={`missing-${configType}s`}
+            name={`${configType}-config`}
+            aria-describedby={`${configType}-config`}
             isDisabled={true}
           />
         </FormGroup>
       )}
-      {type !== "" && (
+      {type !== "" && schema && !schemaLoading && (
         <ConfigurationForm
           configuration={parameters}
           schema={schema}
@@ -157,4 +174,19 @@ interface SourceConfig extends BaseConfig {
 interface BaseConfig {
   registerValidation: (validationFunction: () => boolean) => void;
   readOnly?: boolean;
+  schemaCatalog: Schema[] | undefined;
+  getSchema: GetSchema;
 }
+
+const getOptions = (
+  catalog: Schema[],
+  type: string
+): Array<{ id: string; name: string; isPlaceholder: boolean }> => {
+  return catalog
+    .filter((schema) => schema.type === type)
+    .map((schema) => ({
+      name: schema.name,
+      id: schema.id,
+      isPlaceholder: false,
+    }));
+};

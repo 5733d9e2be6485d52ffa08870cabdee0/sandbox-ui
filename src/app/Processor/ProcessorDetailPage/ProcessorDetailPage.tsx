@@ -37,6 +37,8 @@ import axios from "axios";
 import { ResponseError } from "../../../types/Error";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
 import { canDeleteResource } from "@utils/resourceUtils";
+import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";
+import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
@@ -192,6 +194,9 @@ const ProcessorDetailPage = (): JSX.Element => {
     </DropdownItem>,
   ];
 
+  const { schemas } = useGetSchemasApi();
+  const { getSchema } = useGetSchemaApi();
+
   return (
     <>
       {(isBridgeLoading || isProcessorLoading) && (
@@ -286,6 +291,8 @@ const ProcessorDetailPage = (): JSX.Element => {
               onSave={handleUpdateProcessorSaving}
               onCancel={(): void => setIsEditing(false)}
               existingProcessorName={existingProcessorName}
+              schemaCatalog={schemas}
+              getSchema={getSchema}
             />
           ) : (
             <>

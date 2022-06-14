@@ -27,7 +27,7 @@ export default {
   testEnvironment: "jest-environment-jsdom",
   testMatch: ["**/*.(spec|steps|test).[jt]s?(x)"],
   transformIgnorePatterns: [
-    "node_modules/(?!@patternfly/react-icons|@patternfly/react-tokens|@novnc|@popperjs|lodash|monaco-editor|react-monaco-editor|byte-size)",
+    "node_modules/(?!@patternfly/react-icons|@patternfly/react-tokens|@novnc|@popperjs|lodash|monaco-editor|react-monaco-editor|byte-size|uniforms)",
   ],
   setupFilesAfterEnv: ["<rootDir>/setupJest.ts"],
 };

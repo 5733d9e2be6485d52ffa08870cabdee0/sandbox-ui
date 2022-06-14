@@ -16,6 +16,8 @@ import { useAddProcessorToBridgeApi } from "../../../hooks/useProcessorsApi/useA
 import { ProcessorRequest } from "@openapi/generated";
 import { ResponseError } from "../../../types/Error";
 import ProcessorEditSkeleton from "@app/Processor/ProcessorEdit/ProcessorEditSkeleton";
+import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";
+import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 
 const CreateProcessorPage = (): JSX.Element => {
   const { instanceId } = useParams<InstanceRouteParams>();
@@ -78,6 +80,9 @@ const CreateProcessorPage = (): JSX.Element => {
     }
   }, [processorError, requestData]);
 
+  const { schemas } = useGetSchemasApi();
+  const { getSchema } = useGetSchemaApi();
+
   return (
     <>
       {isBridgeLoading && (
@@ -117,6 +122,8 @@ const CreateProcessorPage = (): JSX.Element => {
             onCancel={goToInstance}
             isLoading={isAddLoading}
             existingProcessorName={existingProcessorName}
+            schemaCatalog={schemas}
+            getSchema={getSchema}
           />
         </>
       )}

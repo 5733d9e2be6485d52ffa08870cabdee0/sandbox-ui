@@ -39,9 +39,11 @@ import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidatePr
 import "./ProcessorEdit.css";
 import { isCommaSeparatedFilterType } from "@utils/filterUtils";
 import ConfigurationEdit from "@app/Processor/ProcessorEdit/ConfigurationEdit/ConfigurationEdit";
+import { Schema } from "../../../hooks/useSchemasApi/useGetSchemasApi";
+import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 
 
-interface ProcessorEditProps {
+export interface ProcessorEditProps {
   /** The processor data to populate the form. Used when updating an existing processor.
    * Not required when creating a new processor */
   processor?: ProcessorResponse;
@@ -55,6 +57,8 @@ interface ProcessorEditProps {
   onCancel: () => void;
   /** Already existing processor name that prevents from saving the processor */
   existingProcessorName?: string;
+  schemaCatalog: Schema[] | undefined;
+  getSchema: GetSchema;
 }
 
 const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
@@ -65,6 +69,8 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     onSave,
     onCancel,
     processor,
+    schemaCatalog,
+    getSchema,
   } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const isExistingProcessor = useMemo(
@@ -369,6 +375,8 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                               registerValidation={registerValidateConfig}
                               onChange={setSource}
                               readOnly={processor !== undefined}
+                              schemaCatalog={schemaCatalog}
+                              getSchema={getSchema}
                             />
                           </FormSection>
                         )}
@@ -421,6 +429,8 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                               registerValidation={registerValidateConfig}
                               onChange={setAction}
                               readOnly={processor !== undefined}
+                              schemaCatalog={schemaCatalog}
+                              getSchema={getSchema}
                             />
                           </FormSection>
                         )}

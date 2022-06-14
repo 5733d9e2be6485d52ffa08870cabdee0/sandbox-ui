@@ -8,7 +8,12 @@ import {
   ProcessorResponse,
 } from "@openapi/generated";
 import { v4 as uuid } from "uuid";
-import { instancesData, processorData } from "./data";
+import {
+  instancesData,
+  processorData,
+  schemaCatalogData,
+  schemasData,
+} from "./data";
 import omit from "lodash.omit";
 import cloneDeep from "lodash.clonedeep";
 import { EventFilter } from "../src/types/Processor";
@@ -650,6 +655,59 @@ export const handlers = [
       return res(ctx.status(202), ctx.delay(apiDelay), ctx.json({}));
     }
   ),
+  // get schema catalog
+  rest.get(`${apiUrl}/schemas`, (_req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.delay(apiDelay),
+      ctx.json({
+        kind: "SchemaCatalog",
+        items: schemaCatalogData,
+      })
+    );
+  }),
+  // get single action schema
+  rest.get(`${apiUrl}/schemas/actions/:schemaId`, (req, res, ctx) => {
+    const { schemaId } = req.params;
+
+    const requestedSchema = schemasData[schemaId as string];
+
+    if (!requestedSchema) {
+      return res(
+        ctx.status(404),
+        ctx.delay(apiDelay),
+        ctx.json({
+          ...error_not_found,
+          reason: `The processor json schema '${
+            schemaId as string
+          }' is not in the catalog.`,
+        })
+      );
+    }
+
+    return res(ctx.status(200), ctx.delay(100), ctx.json(requestedSchema));
+  }),
+  // get single source schema
+  rest.get(`${apiUrl}/schemas/sources/:schemaId`, (req, res, ctx) => {
+    const { schemaId } = req.params;
+
+    const requestedSchema = schemasData[schemaId as string];
+
+    if (!requestedSchema) {
+      return res(
+        ctx.status(404),
+        ctx.delay(apiDelay),
+        ctx.json({
+          ...error_not_found,
+          reason: `The processor json schema '${
+            schemaId as string
+          }' is not in the catalog.`,
+        })
+      );
+    }
+
+    return res(ctx.status(200), ctx.delay(100), ctx.json(requestedSchema));
+  }),
 ];
 
 /**

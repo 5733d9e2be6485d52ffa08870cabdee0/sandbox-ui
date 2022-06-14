@@ -2,10 +2,10 @@
 import React from "react";
 // import { AutoForm, } from "uniforms";
 // import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
-import { schemaReloaded as schema } from "./schema";
 import { createValidator } from "@utils/validator";
 import { AutoField } from "uniforms-patternfly/dist/es6";
 import { AutoForm, ValidatedQuickForm } from "uniforms";
+import Omit from "lodash.omit";
 import { CustomJsonSchemaBridge } from "@app/Processor/ProcessorEdit/ConfigurationForm/CustomJsonSchemaBridge";
 import { useTranslation } from "react-i18next";
 
@@ -22,6 +22,7 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
     configuration = {},
     onChange,
     registerValidation,
+    schema,
     readOnly = false,
   } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -39,12 +40,13 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
   // const { error_handler, processors, steps, ...properties } =
   //   bridge.schema.properties;
 
-  // // no need to create form elements for error_handler, processors or steps
-  // const properties = Omit(bridge.schema.properties, [
-  //   "error_handler",
-  //   "processors",
-  //   "steps",
-  // ]);
+  // no need to create form elements for error_handler, processors or steps
+  // @TODO remove it after https://github.com/5733d9e2be6485d52ffa08870cabdee0/sandbox/pull/834 is merged
+  const properties = Omit(bridge.schema.properties, [
+    "error_handler",
+    "processors",
+    "steps",
+  ]);
 
   let formRef: any;
 
@@ -67,9 +69,7 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
         ref={(ref: any): void => (formRef = ref)}
         disabled={readOnly}
       >
-        {Object.keys(
-          bridge.schema.properties as { [key: string]: unknown }
-        ).map((key) => (
+        {Object.keys(properties as { [key: string]: unknown }).map((key) => (
           <AutoField key={key} name={key} disabled={readOnly} />
         ))}
       </KameletForm>

@@ -39,10 +39,15 @@ describe("ProcessorDetail component", () => {
     expect(comp.queryByText("Action")).toBeInTheDocument();
     expect(comp.queryByText("Send to Slack")).toBeInTheDocument();
     expect(
-      comp.queryByText(sinkProcessor.action.parameters.channel as string)
+      comp.queryByText(
+        (sinkProcessor.action.parameters as { [key: string]: string }).channel
+      )
     ).toBeInTheDocument();
     expect(
-      comp.queryByText(sinkProcessor.action.parameters.webhookUrl as string)
+      comp.queryByText(
+        (sinkProcessor.action.parameters as { [key: string]: string })
+          .webhookUrl
+      )
     ).toBeInTheDocument();
 
     expect(comp.queryByText("Source")).not.toBeInTheDocument();
@@ -74,7 +79,8 @@ describe("ProcessorDetail component", () => {
     expect(comp.queryByText("Demo source")).toBeInTheDocument();
     expect(
       comp.queryByText(
-        sourceProcessor.source.parameters.demoParameter as string
+        (sourceProcessor.source.parameters as { [key: string]: string })
+          .demoParameter
       )
     ).toBeInTheDocument();
 

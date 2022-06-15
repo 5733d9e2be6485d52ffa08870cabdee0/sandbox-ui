@@ -27,6 +27,7 @@ import {
 import { Processor } from "../../../types/Processor";
 import "./ProcessorDetail.css";
 import { getFilterValue } from "@utils/filterUtils";
+import { getParameterValue } from "@utils/parametersUtils";
 
 interface ProcessorDetailProps {
   /**
@@ -84,7 +85,13 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                         {t(`processor.${key}`)}
                       </DescriptionListTerm>
                       <DescriptionListDescription>
-                        {processor.source.parameters[key]}
+                        {
+                          (
+                            processor.source.parameters as {
+                              [key: string]: unknown;
+                            }
+                          )[key] as string
+                        }
                       </DescriptionListDescription>
                     </DescriptionListGroup>
                   )
@@ -212,7 +219,13 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                           {t(`processor.${key}`)}
                         </DescriptionListTerm>
                         <DescriptionListDescription>
-                          {processor.action.parameters[key]}
+                          {getParameterValue(
+                            (
+                              processor.action.parameters as {
+                                [key: string]: unknown;
+                              }
+                            )[key]
+                          )}
                         </DescriptionListDescription>
                       </DescriptionListGroup>
                     )

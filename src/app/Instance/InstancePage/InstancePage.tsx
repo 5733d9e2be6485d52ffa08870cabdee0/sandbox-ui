@@ -86,7 +86,8 @@ const InstancePage = (): JSX.Element => {
   } = useGetProcessorsApi();
 
   const triggerGetProcessors = useCallback(
-    (): void => getProcessors(instanceId, currentPage, currentPageSize, true),
+    (): void =>
+      getProcessors(instanceId, currentPage, currentPageSize, undefined, true),
     [currentPage, currentPageSize, getProcessors, instanceId]
   );
 

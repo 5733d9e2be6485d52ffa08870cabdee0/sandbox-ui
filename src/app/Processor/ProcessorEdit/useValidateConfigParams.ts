@@ -3,6 +3,7 @@ import { omit } from "lodash";
 import { Action, Source } from "@openapi/generated";
 import { useTranslation } from "react-i18next";
 import { ConfigType, ProcessorValidation } from "../../../types/Processor";
+import { getParameterValue } from "@utils/parametersUtils";
 
 export function useValidateConfigParams(
   // Current value of the source or action configuration provided by the user
@@ -59,7 +60,11 @@ export function useValidateConfigParams(
         if (field) {
           // Run the field validation function provided by configTypes with the current
           // value of the field
-          const fieldValidation = field.validate(config.parameters[fieldName]);
+          const fieldValidation = field.validate(
+            getParameterValue(
+              (config.parameters as { [key: string]: unknown })[fieldName]
+            )
+          );
           // When the field value is valid, clean any possible previous error associated to the field
           if (fieldValidation.isValid) {
             resetValidation(field.name);

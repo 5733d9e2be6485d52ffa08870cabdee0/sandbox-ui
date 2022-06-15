@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * Red Hat Openshift SmartEvents Fleet Manager
- * The api exposed by the fleet manager of the SmartEvents service.
+ * The API exposed by the fleet manager of the SmartEvents service.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: openbridge-dev@redhat.com
@@ -22,7 +22,8 @@
 
 export const ProcessorType = {
     Source: 'source',
-    Sink: 'sink'
+    Sink: 'sink',
+    ErrorHandler: 'error_handler'
 } as const;
 
 export type ProcessorType = typeof ProcessorType[keyof typeof ProcessorType];

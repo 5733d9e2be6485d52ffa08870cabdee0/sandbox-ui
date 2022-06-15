@@ -10,6 +10,7 @@ import { useValidationBase } from "@app/Processor/ProcessorEdit/useValidationBas
 import { Source } from "@openapi/generated";
 import { useValidateConfigParams } from "@app/Processor/ProcessorEdit/useValidateConfigParams";
 import { ConfigType } from "../../../../types/Processor";
+import { getParameterValue } from "@utils/parametersUtils";
 
 interface SourceEditProps {
   source?: Source;
@@ -171,7 +172,11 @@ const SourceEdit = (props: SourceEditProps): JSX.Element => {
                     aria-describedby={field.name}
                     isRequired={true}
                     isDisabled={isDisabled}
-                    value={parameters[field.name] ?? ""}
+                    value={
+                      getParameterValue(
+                        (parameters as { [key: string]: unknown })[field.name]
+                      ) ?? ""
+                    }
                     onChange={(value: string): void => {
                       updateParameters({
                         ...parameters,

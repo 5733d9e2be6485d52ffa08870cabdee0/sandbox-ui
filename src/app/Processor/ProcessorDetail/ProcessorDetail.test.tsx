@@ -1,4 +1,5 @@
 import React from "react";
+import { getParameterValue } from "@utils/parametersUtils";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import ProcessorDetail from "./ProcessorDetail";
 import { SinkProcessor, SourceProcessor } from "../../../types/Processor";
@@ -39,10 +40,20 @@ describe("ProcessorDetail component", () => {
     expect(comp.queryByText("Action")).toBeInTheDocument();
     expect(comp.queryByText("Send to Slack")).toBeInTheDocument();
     expect(
-      comp.queryByText(sinkProcessor.action.parameters.channel)
+      comp.queryByText(
+        getParameterValue(
+          (sinkProcessor.action.parameters as { [key: string]: unknown })
+            .channel
+        )
+      )
     ).toBeInTheDocument();
     expect(
-      comp.queryByText(sinkProcessor.action.parameters.webhookUrl)
+      comp.queryByText(
+        getParameterValue(
+          (sinkProcessor.action.parameters as { [key: string]: unknown })
+            .webhookUrl
+        )
+      )
     ).toBeInTheDocument();
 
     expect(comp.queryByText("Source")).not.toBeInTheDocument();
@@ -73,7 +84,12 @@ describe("ProcessorDetail component", () => {
 
     expect(comp.queryByText("Demo source")).toBeInTheDocument();
     expect(
-      comp.queryByText(sourceProcessor.source.parameters.demoParameter)
+      comp.queryByText(
+        getParameterValue(
+          (sourceProcessor.source.parameters as { [key: string]: unknown })
+            .demoParameter
+        )
+      )
     ).toBeInTheDocument();
 
     expect(comp.queryByText("Sink")).not.toBeInTheDocument();

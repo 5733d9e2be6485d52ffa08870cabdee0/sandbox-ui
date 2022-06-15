@@ -13,25 +13,25 @@
  */
 
 
+import { ProcessorSchemaEntryResponse } from './processor-schema-entry-response';
 
 /**
  * 
  * @export
- * @enum {string}
+ * @interface ProcessorCatalogResponse
  */
-
-export const ManagedResourceStatus = {
-    Accepted: 'accepted',
-    Preparing: 'preparing',
-    Provisioning: 'provisioning',
-    Ready: 'ready',
-    Deprovision: 'deprovision',
-    Deleting: 'deleting',
-    Deleted: 'deleted',
-    Failed: 'failed'
-} as const;
-
-export type ManagedResourceStatus = typeof ManagedResourceStatus[keyof typeof ManagedResourceStatus];
-
-
+export interface ProcessorCatalogResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ProcessorCatalogResponse
+     */
+    'kind'?: string;
+    /**
+     * 
+     * @type {Array<ProcessorSchemaEntryResponse>}
+     * @memberof ProcessorCatalogResponse
+     */
+    'items'?: Array<ProcessorSchemaEntryResponse>;
+}
 

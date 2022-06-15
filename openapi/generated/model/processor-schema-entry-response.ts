@@ -17,44 +17,44 @@
 /**
  * 
  * @export
- * @interface ErrorResponse
+ * @interface ProcessorSchemaEntryResponse
  */
-export interface ErrorResponse {
+export interface ProcessorSchemaEntryResponse {
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ProcessorSchemaEntryResponse
      */
     'kind'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ProcessorSchemaEntryResponse
      */
     'id'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ProcessorSchemaEntryResponse
      */
     'name'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ProcessorSchemaEntryResponse
+     */
+    'description'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProcessorSchemaEntryResponse
+     */
+    'type'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProcessorSchemaEntryResponse
      */
     'href'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ErrorResponse
-     */
-    'code'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ErrorResponse
-     */
-    'reason'?: string;
 }
 

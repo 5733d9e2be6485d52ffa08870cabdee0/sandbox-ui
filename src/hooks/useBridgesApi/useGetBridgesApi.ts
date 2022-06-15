@@ -2,6 +2,7 @@ import {
   BridgeListResponse,
   BridgesApi,
   Configuration,
+  ManagedResourceStatus,
 } from "@openapi/generated";
 import { useCallback, useRef, useState } from "react";
 import axios, { CancelTokenSource } from "axios";
@@ -36,9 +37,15 @@ export function useGetBridgesApi(): {
         })
       );
       bridgeApi
-        .getBridges(pageReq, sizeReq, {
-          cancelToken: source.token,
-        })
+        .getBridges(
+          undefined,
+          pageReq,
+          sizeReq,
+          new Set<ManagedResourceStatus>(),
+          {
+            cancelToken: source.token,
+          }
+        )
         .then((response) => {
           setBridgeListResponse(response.data);
           setIsLoading(false);

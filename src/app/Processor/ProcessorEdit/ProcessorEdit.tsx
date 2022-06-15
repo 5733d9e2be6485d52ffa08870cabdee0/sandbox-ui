@@ -57,7 +57,7 @@ export interface ProcessorEditProps {
   /** Already existing processor name that prevents from saving the processor */
   existingProcessorName?: string;
   /** Catalog of all the actions/sources */
-  schemaCatalog: ProcessorSchemaEntryResponse[] | undefined;
+  schemaCatalog: ProcessorSchemaEntryResponse[];
   /** Callback to retrieve a single action/source schema */
   getSchema: GetSchema;
 }

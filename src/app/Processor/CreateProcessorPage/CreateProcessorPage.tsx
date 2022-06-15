@@ -81,12 +81,12 @@ const CreateProcessorPage = (): JSX.Element => {
   }, [processorError, requestData]);
 
   // @TODO decide how to manage errors when retrieving the schema catalog
-  const { schemas } = useGetSchemasApi();
+  const { schemas, isLoading: areSchemasLoading } = useGetSchemasApi();
   const { getSchema } = useGetSchemaApi();
 
   return (
     <>
-      {isBridgeLoading && (
+      {(isBridgeLoading || areSchemasLoading) && (
         <>
           <PageHeaderSkeleton
             pageTitle={t("instance.processor.loadingProcessor")}
@@ -96,7 +96,7 @@ const CreateProcessorPage = (): JSX.Element => {
           <ProcessorEditSkeleton />
         </>
       )}
-      {bridge && (
+      {bridge && schemas && (
         <>
           <PageSection type="breadcrumb">
             <Breadcrumb

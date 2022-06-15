@@ -43,7 +43,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
 
   const updateType = (type: string): void => {
     setType(type);
-    const emptyParameters: { [key: string]: string } = {};
+    const emptyParameters: object = {};
     onChange({
       type,
       parameters: emptyParameters,
@@ -53,7 +53,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
     }
   };
 
-  const updateConfiguration = (parameters: { [key: string]: string }): void => {
+  const updateConfiguration = (parameters: object): void => {
     setParameters(parameters);
     onChange({
       type,
@@ -105,7 +105,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
       ),
       isPlaceholder: true,
     },
-    ...(schemaCatalog ? getOptions(schemaCatalog, configType) : []),
+    ...getOptions(schemaCatalog, configType),
   ];
 
   registerValidation(validate);
@@ -185,7 +185,7 @@ interface SourceConfig extends BaseConfig {
 interface BaseConfig {
   registerValidation: (validationFunction: () => boolean) => void;
   readOnly?: boolean;
-  schemaCatalog: ProcessorSchemaEntryResponse[] | undefined;
+  schemaCatalog: ProcessorSchemaEntryResponse[];
   getSchema: GetSchema;
 }
 

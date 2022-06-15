@@ -195,12 +195,12 @@ const ProcessorDetailPage = (): JSX.Element => {
   ];
 
   // @TODO decide how to manage errors when retrieving the schema catalog
-  const { schemas } = useGetSchemasApi();
+  const { schemas, isLoading: areSchemasLoading } = useGetSchemasApi();
   const { getSchema } = useGetSchemaApi();
 
   return (
     <>
-      {(isBridgeLoading || isProcessorLoading) && (
+      {(isBridgeLoading || isProcessorLoading || areSchemasLoading) && (
         <>
           <PageHeaderSkeleton
             pageTitle={t("processor.loadingProcessor")}
@@ -211,7 +211,7 @@ const ProcessorDetailPage = (): JSX.Element => {
           <ProcessorDetailSkeleton />
         </>
       )}
-      {bridge && currentProcessor && (
+      {bridge && currentProcessor && schemas && (
         <>
           <PageSection
             variant={PageSectionVariants.light}

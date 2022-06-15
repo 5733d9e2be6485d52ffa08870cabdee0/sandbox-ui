@@ -6,8 +6,8 @@ Sandbox UI for the smartevents application.
 
 ## Prerequisites
 
-- Node 16
-- npm 7
+- Node 16.15.1
+- npm 8.11.0
 
 ## Run the UI as a standalone application
 
@@ -57,8 +57,6 @@ Similarly, It is also possible to simulate a failure in the process of creating 
 Authentication is not supported. The mocked version of the application is served from `localhost` instead of `prod.foo.redhat.com`.
 
 Any resource created while using the mocked version of the app will be lost after refreshing the page. No persistence layer is implemented.
-
-At the moment the only action/source type supported is `Slack`. Trying to create a processor with a different source/action type will result in its configuration not being correctly saved.
 
 ## Code formatting
 

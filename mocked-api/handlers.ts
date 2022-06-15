@@ -8,12 +8,8 @@ import {
   ProcessorResponse,
 } from "@openapi/generated";
 import { v4 as uuid } from "uuid";
-import {
-  instancesData,
-  processorData,
-  schemaCatalogData,
-  schemasData,
-} from "./data";
+import { instancesData, processorData } from "./data";
+import { schemaCatalogData, schemasData } from "./schemasData";
 import omit from "lodash.omit";
 import cloneDeep from "lodash.clonedeep";
 import { EventFilter } from "../src/types/Processor";

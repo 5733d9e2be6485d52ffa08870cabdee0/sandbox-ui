@@ -27,12 +27,14 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
     getSchema,
   } = props;
   const [type, setType] = useState(
-    (configType === "action" ? props.action?.type : props.source?.type) ?? ""
+    (configType === ProcessorSchemaType.ACTION
+      ? props.action?.type
+      : props.source?.type) ?? ""
   );
   const [schema, setSchema] = useState<object>();
   const [schemaLoading, setSchemaLoading] = useState(false);
   const [parameters, setParameters] = useState(
-    (configType === "action"
+    (configType === ProcessorSchemaType.ACTION
       ? props.action?.parameters
       : props.source?.parameters) ?? {}
   );
@@ -71,11 +73,11 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
   };
 
   useEffect(() => {
-    if (props.configType === "action" && props.action) {
+    if (props.configType === ProcessorSchemaType.ACTION && props.action) {
       setType(props.action.type);
       setParameters(props.action.parameters);
     }
-    if (props.configType === "source" && props.source) {
+    if (props.configType === ProcessorSchemaType.SOURCE && props.source) {
       setType(props.source.type);
       setParameters(props.source.parameters);
     }

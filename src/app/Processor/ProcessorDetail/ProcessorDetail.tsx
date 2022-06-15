@@ -26,11 +26,8 @@ import {
 } from "@patternfly/react-table";
 import { Processor } from "../../../types/Processor";
 import "./ProcessorDetail.css";
-<<<<<<< HEAD
 import { getFilterValue } from "@utils/filterUtils";
-=======
 import { getParameterValue } from "@utils/parametersUtils";
->>>>>>> bdd1af1 (Use {[key: string]: unknown})
 
 interface ProcessorDetailProps {
   /**

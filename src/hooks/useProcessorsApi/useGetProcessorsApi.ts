@@ -12,7 +12,6 @@ import { useSmartEvents } from "@contexts/SmartEventsContext";
 export function useGetProcessorsApi(): {
   getProcessors: (
     bridgeId: string,
-    filterName?: string,
     pageReq?: number,
     sizeReq?: number,
     processorType?: ProcessorType,
@@ -32,7 +31,6 @@ export function useGetProcessorsApi(): {
   const getProcessors = useCallback(
     (
       bridgeId: string,
-      filterName?: string,
       pageReq?: number,
       sizeReq?: number,
       processorType?: ProcessorType,
@@ -54,7 +52,7 @@ export function useGetProcessorsApi(): {
       processorsApi
         .listProcessors(
           bridgeId,
-          filterName ?? undefined,
+          undefined,
           pageReq,
           sizeReq,
           new Set<ManagedResourceStatus>(),

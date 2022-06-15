@@ -37,9 +37,15 @@ export function useGetBridgesApi(): {
         })
       );
       bridgeApi
-        .getBridges("", pageReq, sizeReq, new Set<ManagedResourceStatus>(), {
-          cancelToken: source.token,
-        })
+        .getBridges(
+          undefined,
+          pageReq,
+          sizeReq,
+          new Set<ManagedResourceStatus>(),
+          {
+            cancelToken: source.token,
+          }
+        )
         .then((response) => {
           setBridgeListResponse(response.data);
           setIsLoading(false);

@@ -87,21 +87,14 @@ const InstancePage = (): JSX.Element => {
 
   const triggerGetProcessors = useCallback(
     (): void =>
-      getProcessors(
-        instanceId,
-        undefined,
-        currentPage,
-        currentPageSize,
-        undefined,
-        true
-      ),
+      getProcessors(instanceId, currentPage, currentPageSize, undefined, true),
     [currentPage, currentPageSize, getProcessors, instanceId]
   );
 
   usePolling(() => triggerGetProcessors(), 10000);
 
   useEffect(
-    () => getProcessors(instanceId, undefined, FIRST_PAGE, DEFAULT_PAGE_SIZE),
+    () => getProcessors(instanceId, FIRST_PAGE, DEFAULT_PAGE_SIZE),
     [getProcessors, instanceId]
   );
 
@@ -190,7 +183,7 @@ const InstancePage = (): JSX.Element => {
         pageSize === currentPageSize ? pageNumber : FIRST_PAGE;
       setCurrentPage(correctPageNumber);
       setCurrentPageSize(pageSize);
-      getProcessors(instanceId, undefined, correctPageNumber, pageSize);
+      getProcessors(instanceId, correctPageNumber, pageSize);
     },
     [currentPageSize, getProcessors, instanceId]
   );
@@ -219,7 +212,7 @@ const InstancePage = (): JSX.Element => {
 
   const handleOnDeleteProcessorSuccess = useCallback((): void => {
     setShowProcessorDeleteModal(false);
-    getProcessors(instanceId, undefined, currentPage, currentPageSize);
+    getProcessors(instanceId, currentPage, currentPageSize);
   }, [getProcessors, instanceId, currentPage, currentPageSize]);
 
   const tableActions = (rowData: TableRow): IAction[] => [

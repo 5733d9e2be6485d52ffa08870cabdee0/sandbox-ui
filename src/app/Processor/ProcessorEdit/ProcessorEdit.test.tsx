@@ -2,8 +2,11 @@ import React from "react";
 import ProcessorEdit, { ProcessorEditProps } from "./ProcessorEdit";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
-import { Schema } from "../../../hooks/useSchemasApi/useGetSchemasApi";
-import { ManagedResourceStatus, ProcessorType } from "@openapi/generated";
+import {
+  ManagedResourceStatus,
+  ProcessorSchemaEntryResponse,
+  ProcessorType,
+} from "@openapi/generated";
 import { EventFilter } from "../../../types/Processor";
 
 const setupProcessorEdit = (
@@ -30,7 +33,7 @@ const setupProcessorEdit = (
       isLoading={false}
       saveButtonLabel={saveButtonLabel}
       processor={processor}
-      schemaCatalog={schemaCatalog as Schema[]}
+      schemaCatalog={schemaCatalog as ProcessorSchemaEntryResponse[]}
       getSchema={getSchema}
     />
   );

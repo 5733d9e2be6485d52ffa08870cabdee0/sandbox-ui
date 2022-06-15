@@ -1,32 +1,31 @@
 import { useCallback } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
+import { Configuration, SchemaCatalogApi } from "@openapi/generated";
+import { ProcessorSchemaType } from "../../types/Processor";
 
 export function useGetSchemaApi(): {
   getSchema: GetSchema;
 } {
-  const { getToken } = useSmartEvents();
+  const { getToken, apiBaseUrl } = useSmartEvents();
 
   const getSchema = useCallback(
-    async (schemaId: string, schemaType: "action" | "source") => {
-      const retrieveToken = async (): Promise<string> => {
-        return (await getToken()) || "";
-      };
+    (schemaId: string, schemaType: ProcessorSchemaType) => {
+      const schemaCatalogApi = new SchemaCatalogApi(
+        new Configuration({
+          accessToken: getToken,
+          basePath: apiBaseUrl,
+        })
+      );
 
-      const token = await retrieveToken();
-      const path = schemaType === "action" ? "actions" : "sources";
-
-      return fetch(
-        `https://event-bridge-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com/api/v1/schemas/${path}/${schemaId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      ).then((response) => response.json());
+      return schemaType === ProcessorSchemaType.ACTION
+        ? schemaCatalogApi
+            .getActionProcessorSchema(schemaId)
+            .then((response) => response.data)
+        : schemaCatalogApi
+            .getSourceProcessorSchema(schemaId)
+            .then((response) => response.data);
     },
-    [getToken]
+    [getToken, apiBaseUrl]
   );
 
   return { getSchema };
@@ -34,5 +33,5 @@ export function useGetSchemaApi(): {
 
 export type GetSchema = (
   schemaId: string,
-  schemaType: "source" | "action"
+  schemaType: ProcessorSchemaType
 ) => Promise<object>;

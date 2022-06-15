@@ -24,23 +24,23 @@ import {
 } from "@patternfly/react-core";
 import FiltersEdit from "@app/Processor/ProcessorEdit/FiltersEdit/FiltersEdit";
 import { CodeEditor } from "@patternfly/react-code-editor";
-// import ActionEdit from "@app/Processor/ProcessorEdit/ActionEdit/ActionEdit";
 import {
   Action,
   ProcessorRequest,
   ProcessorResponse,
+  ProcessorSchemaEntryResponse,
 } from "@openapi/generated";
 import {
   EventFilter,
   FilterType,
   ProcessorFormData,
+  ProcessorSchemaType,
 } from "../../../types/Processor";
 import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidateProcessor";
-import "./ProcessorEdit.css";
 import { isCommaSeparatedFilterType } from "@utils/filterUtils";
 import ConfigurationEdit from "@app/Processor/ProcessorEdit/ConfigurationEdit/ConfigurationEdit";
-import { Schema } from "../../../hooks/useSchemasApi/useGetSchemasApi";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
+import "./ProcessorEdit.css";
 
 export interface ProcessorEditProps {
   /** The processor data to populate the form. Used when updating an existing processor.
@@ -56,7 +56,9 @@ export interface ProcessorEditProps {
   onCancel: () => void;
   /** Already existing processor name that prevents from saving the processor */
   existingProcessorName?: string;
-  schemaCatalog: Schema[] | undefined;
+  /** Catalog of all the actions/sources */
+  schemaCatalog: ProcessorSchemaEntryResponse[] | undefined;
+  /** Callback to retrieve a single action/source schema */
   getSchema: GetSchema;
 }
 
@@ -241,10 +243,6 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                   grow={{ default: "grow" }}
                   className={"processor-edit__content-wrap"}
                 >
-                  {/*<div style={{ maxWidth: "800px", margin: "1rem" }}>*/}
-                  {/*  <ConfigurationForm />*/}
-                  {/*</div>*/}
-
                   <Form className={"processor-edit__form"}>
                     <FormSection
                       title={t("processor.generalInformation")}
@@ -364,18 +362,12 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 )}
                               </Text>
                             </TextContent>
-                            {/*<SourceEdit*/}
-                            {/*  source={source}*/}
-                            {/*  onChange={setSource}*/}
-                            {/*  registerValidation={registerValidateConfig}*/}
-                            {/* isDisabled={isExistingProcessor}*/}
-                            {/*/>*/}
                             <ConfigurationEdit
-                              configType={"source"}
+                              configType={ProcessorSchemaType.SOURCE}
                               source={source}
                               registerValidation={registerValidateConfig}
                               onChange={setSource}
-                              readOnly={processor !== undefined}
+                              readOnly={isExistingProcessor}
                               schemaCatalog={schemaCatalog}
                               getSchema={getSchema}
                             />
@@ -418,18 +410,12 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 {t("processor.selectActionDescription")}
                               </Text>
                             </TextContent>
-                            {/*<ActionEdit*/}
-                            {/*  action={action}*/}
-                            {/*  onChange={setAction}*/}
-                            {/*  registerValidation={registerValidateConfig}*/}
-                            {/* isDisabled={isExistingProcessor}*/}
-                            {/*/>*/}
                             <ConfigurationEdit
-                              configType={"action"}
+                              configType={ProcessorSchemaType.ACTION}
                               action={action}
                               registerValidation={registerValidateConfig}
                               onChange={setAction}
-                              readOnly={processor !== undefined}
+                              readOnly={isExistingProcessor}
                               schemaCatalog={schemaCatalog}
                               getSchema={getSchema}
                             />

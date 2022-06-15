@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Action, Source } from "@openapi/generated";
+import {
+  Action,
+  ProcessorSchemaEntryResponse,
+  Source,
+} from "@openapi/generated";
 import { useTranslation } from "react-i18next";
 import {
   FormGroup,
@@ -8,8 +12,8 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
-import { Schema } from "../../../../hooks/useSchemasApi/useGetSchemasApi";
 import { GetSchema } from "../../../../hooks/useSchemasApi/useGetSchemaApi";
+import { ProcessorSchemaType } from "../../../../types/Processor";
 
 type ConfigurationEditProps = ActionConfig | SourceConfig;
 
@@ -83,6 +87,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
       setSchema(undefined);
       getSchema(type, configType)
         .then((data) => setSchema(data))
+        // @TODO: decide how to manage error while fetching a schema
         .catch((error) => console.log(error))
         .finally(() => setSchemaLoading(false));
     }
@@ -90,8 +95,12 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
 
   const typeOptions = [
     {
-      id: "placeholder",
       name: "",
+      label: t(
+        configType === ProcessorSchemaType.ACTION
+          ? "processor.selectAction"
+          : "processor.selectSource"
+      ),
       isPlaceholder: true,
     },
     ...(schemaCatalog ? getOptions(schemaCatalog, configType) : []),
@@ -119,11 +128,11 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           validated={typeValidation === false ? "error" : "default"}
           isDisabled={readOnly}
         >
-          {typeOptions.map((option) => (
+          {typeOptions.map((option, index) => (
             <FormSelectOption
-              key={option.id}
-              value={option.id}
-              label={option.name}
+              key={index}
+              value={option.name}
+              label={option.label}
               isPlaceholder={option.isPlaceholder}
             />
           ))}
@@ -160,13 +169,13 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
 export default ConfigurationEdit;
 
 interface ActionConfig extends BaseConfig {
-  configType: "action";
+  configType: ProcessorSchemaType.ACTION;
   action?: Action;
   onChange: (action: Action) => void;
 }
 
 interface SourceConfig extends BaseConfig {
-  configType: "source";
+  configType: ProcessorSchemaType.SOURCE;
   source?: Source;
   onChange: (source: Source) => void;
 }
@@ -174,19 +183,19 @@ interface SourceConfig extends BaseConfig {
 interface BaseConfig {
   registerValidation: (validationFunction: () => boolean) => void;
   readOnly?: boolean;
-  schemaCatalog: Schema[] | undefined;
+  schemaCatalog: ProcessorSchemaEntryResponse[] | undefined;
   getSchema: GetSchema;
 }
 
 const getOptions = (
-  catalog: Schema[],
+  catalog: ProcessorSchemaEntryResponse[],
   type: string
-): Array<{ id: string; name: string; isPlaceholder: boolean }> => {
+): Array<{ name: string; label: string; isPlaceholder: boolean }> => {
   return catalog
-    .filter((schema) => schema.type === type)
+    .filter((schema) => schema?.type === type)
     .map((schema) => ({
-      name: schema.name,
-      id: schema.id,
+      name: schema?.id ?? "",
+      label: schema?.name ?? "",
       isPlaceholder: false,
     }));
 };

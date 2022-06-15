@@ -194,6 +194,7 @@ const ProcessorDetailPage = (): JSX.Element => {
     </DropdownItem>,
   ];
 
+  // @TODO decide how to manage errors when retrieving the schema catalog
   const { schemas } = useGetSchemasApi();
   const { getSchema } = useGetSchemaApi();
 

@@ -80,6 +80,7 @@ const CreateProcessorPage = (): JSX.Element => {
     }
   }, [processorError, requestData]);
 
+  // @TODO decide how to manage errors when retrieving the schema catalog
   const { schemas } = useGetSchemasApi();
   const { getSchema } = useGetSchemaApi();
 

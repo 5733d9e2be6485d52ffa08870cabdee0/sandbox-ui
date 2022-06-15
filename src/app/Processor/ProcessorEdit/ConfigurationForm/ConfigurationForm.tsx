@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-return  */
-import React from "react";
-// import { AutoForm, } from "uniforms";
-// import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
-import { createValidator } from "@utils/validator";
+import React, { useRef } from "react";
+import Omit from "lodash.omit";
 import { AutoField } from "uniforms-patternfly/dist/es6";
 import { AutoForm, ValidatedQuickForm, context } from "uniforms";
-import Omit from "lodash.omit";
+import { createValidator } from "@app/Processor/ProcessorEdit/ConfigurationForm/validator";
 import { CustomJsonSchemaBridge } from "@app/Processor/ProcessorEdit/ConfigurationForm/CustomJsonSchemaBridge";
 import { useTranslation } from "react-i18next";
 
@@ -35,12 +33,8 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
     false,
     false
   );
-  // const bridge = new JSONSchemaBridge(schema, schemaValidator);
 
-  // const { error_handler, processors, steps, ...properties } =
-  //   bridge.schema.properties;
-
-  // no need to create form elements for error_handler, processors or steps
+  // excluding error_handler, processors or steps
   // @TODO remove it after https://github.com/5733d9e2be6485d52ffa08870cabdee0/sandbox/pull/834 is merged
   const properties = Omit(bridge.schema.properties, [
     "error_handler",
@@ -48,10 +42,10 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
     "steps",
   ]);
 
-  let formRef: any;
+  const newRef = useRef<any>();
 
   const validate = (): boolean => {
-    formRef.submit();
+    newRef.current?.submit();
     const errors = schemaValidator(configuration);
     return errors === null;
   };
@@ -59,23 +53,18 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
   registerValidation(validate);
 
   return (
-    <>
-      <KameletForm
-        validate={"onChangeAfterSubmit"}
-        schema={bridge}
-        model={configuration}
-        onChangeModel={onChange}
-        ref={(ref: any): void => (formRef = ref)}
-        disabled={readOnly}
-      >
-        {Object.keys(properties as { [key: string]: unknown }).map((key) => (
-          <AutoField key={key} name={key} disabled={readOnly} />
-        ))}
-      </KameletForm>
-      {/*<AutoForm schema={bridge} onSubmit={console.log} onChange={console.log}>*/}
-      {/*  <AutoFields />*/}
-      {/*</AutoForm>*/}
-    </>
+    <DynamicForm
+      validate={"onChangeAfterSubmit"}
+      schema={bridge}
+      model={configuration}
+      onChangeModel={onChange}
+      ref={(ref: any): void => (newRef.current = ref)}
+      disabled={readOnly}
+    >
+      {Object.keys(properties as { [key: string]: unknown }).map((key) => (
+        <AutoField key={key} name={key} disabled={readOnly} />
+      ))}
+    </DynamicForm>
   );
 };
 
@@ -93,11 +82,15 @@ function Auto(parent: any): any {
 
       return (
         <context.Provider value={ctx}>
-          <section {...this.getNativeFormProps()} />
+          <section
+            className="pf-c-form__section"
+            style={{ marginTop: 0 }}
+            {...this.getNativeFormProps()}
+          />
         </context.Provider>
       );
     }
   }
   return _;
 }
-const KameletForm = Auto(ValidatedQuickForm);
+const DynamicForm = Auto(ValidatedQuickForm);

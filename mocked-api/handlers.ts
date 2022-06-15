@@ -457,7 +457,8 @@ export const handlers = [
       ctx.delay(apiDelay),
       ctx.json(
         prepareProcessor(
-          newProcessor as unknown as Record<string | number | symbol, unknown>
+          newProcessor as unknown as Record<string | number | symbol, unknown>,
+          true
         )
       )
     );
@@ -574,7 +575,8 @@ export const handlers = [
             updatedProcessor as unknown as Record<
               string | number | symbol,
               unknown
-            >
+            >,
+            true
           )
         )
       );

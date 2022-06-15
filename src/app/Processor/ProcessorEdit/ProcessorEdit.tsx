@@ -42,7 +42,6 @@ import ConfigurationEdit from "@app/Processor/ProcessorEdit/ConfigurationEdit/Co
 import { Schema } from "../../../hooks/useSchemasApi/useGetSchemasApi";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 
-
 export interface ProcessorEditProps {
   /** The processor data to populate the form. Used when updating an existing processor.
    * Not required when creating a new processor */

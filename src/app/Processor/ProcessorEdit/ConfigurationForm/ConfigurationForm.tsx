@@ -10,7 +10,7 @@ import { CustomJsonSchemaBridge } from "@app/Processor/ProcessorEdit/Configurati
 import { useTranslation } from "react-i18next";
 
 interface ConfigurationFormProps {
-  configuration?: { [key: string]: unknown };
+  configuration?: object;
   onChange: (model: any) => void;
   registerValidation: (validationFunction: () => boolean) => void;
   schema: object;

@@ -3,11 +3,7 @@ import ProcessorEdit, { ProcessorEditProps } from "./ProcessorEdit";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 import { Schema } from "../../../hooks/useSchemasApi/useGetSchemasApi";
-import {
-  ManagedResourceStatus,
-  ProcessorResponse,
-  ProcessorType,
-} from "@openapi/generated";
+import { ManagedResourceStatus, ProcessorType } from "@openapi/generated";
 import { EventFilter } from "../../../types/Processor";
 
 const setupProcessorEdit = (
@@ -19,7 +15,6 @@ const setupProcessorEdit = (
 } => {
   const {
     saveButtonLabel = "Create",
-    processorTypeSection,
     processor,
     getSchema = (): Promise<object> =>
       new Promise<object>((resolve) => {
@@ -34,7 +29,6 @@ const setupProcessorEdit = (
       onCancel={onCancel}
       isLoading={false}
       saveButtonLabel={saveButtonLabel}
-      processorTypeSection={processorTypeSection}
       processor={processor}
       schemaCatalog={schemaCatalog as Schema[]}
       getSchema={getSchema}
@@ -100,15 +94,12 @@ describe("ProcessorEdit component", () => {
 
   it("should display the information of the passed processor and the processor type section", async () => {
     const name = "Processor name";
-    const type = "sink";
+    const type = "Sink";
     const { comp } = setupProcessorEdit({
       saveButtonLabel: "Save",
-      processorTypeSection: (
-        <label data-testid="processor-type-label">{type}</label>
-      ),
       processor: {
         name,
-        type,
+        type: ProcessorType.Sink,
       },
     });
     await waitForI18n(comp);
@@ -150,7 +141,10 @@ describe("ProcessorEdit component", () => {
   });
 
   it("handles filters with multiple values", async () => {
-    const { comp, onSave } = setupProcessorEdit({ processor: sinkProcessor, saveButtonLabel: "Save"});
+    const { comp, onSave } = setupProcessorEdit({
+      processor: sinkProcessor,
+      saveButtonLabel: "Save",
+    });
     await waitForI18n(comp);
 
     const demoStringFilter = {
@@ -280,7 +274,7 @@ describe("ProcessorEdit component", () => {
   });
 
   it("should prevent the user from changing the type of an existing processor", async () => {
-    const { comp } = setupProcessorEdit(sinkProcessor);
+    const { comp } = setupProcessorEdit({ processor: sinkProcessor });
     await waitForI18n(comp);
 
     expect(
@@ -292,27 +286,38 @@ describe("ProcessorEdit component", () => {
   });
 
   it("should disable the source section while editing an existing source processor", async () => {
-    const { comp } = setupProcessorEdit(sourceProcessor);
+    const { comp } = setupProcessorEdit({
+      processor: sourceProcessor,
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(SlackSourceSchema);
+        }),
+    });
     await waitForI18n(comp);
 
     expect(
       (comp.getByLabelText("Source type") as HTMLSelectElement).value
-    ).toBe("Slack");
+    ).toBe(sourceProcessor.source.type);
     expect(comp.getByLabelText("Source type")).toBeDisabled();
     expect(comp.getByLabelText("Channel *")).toBeDisabled();
     expect(comp.getByLabelText("Token *")).toBeDisabled();
   });
 
   it("should disable the action section while editing an existing sink processor", async () => {
-    const { comp } = setupProcessorEdit(sinkProcessor);
+    const { comp } = setupProcessorEdit({
+      processor: sinkProcessor,
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(kakfaSinkSchema);
+        }),
+    });
     await waitForI18n(comp);
 
     expect(
       (comp.getByLabelText("Action type") as HTMLSelectElement).value
-    ).toBe("Slack");
+    ).toBe(sinkProcessor.action.type);
     expect(comp.getByLabelText("Action type")).toBeDisabled();
-    expect(comp.getByLabelText("Channel *")).toBeDisabled();
-    expect(comp.getByLabelText("Webhook URL *")).toBeDisabled();
+    expect(comp.getByLabelText("Topic Name *")).toBeDisabled();
   });
 });
 
@@ -328,10 +333,15 @@ const sourceProcessor = {
   ...baseProcessor,
   type: ProcessorType.Source,
   source: {
-    type: "Slack",
+    type: "slack_source_0.1",
     parameters: {
-      channel: "test",
-      token: "XXXXXXXXXXXX",
+      slack_channel: "test",
+      slack_token: "XXXXXXXXXXXX",
+      data_shape: {
+        produces: {
+          format: "application/json",
+        },
+      },
     },
   },
 };
@@ -340,10 +350,9 @@ const sinkProcessor = {
   ...baseProcessor,
   type: ProcessorType.Sink,
   action: {
-    type: "Slack",
+    type: "kafka_topic_sink_0.1",
     parameters: {
-      channel: "test",
-      webhookUrl: "https://hooks.slack.com/services/XXXXXXXX/XXXXXX/XXXXXXXX",
+      topic: "test",
     },
   },
 };
@@ -400,7 +409,7 @@ const SlackSourceSchema = {
         {
           title: "Token",
           description:
-              "The token to access Slack. A Slack app is needed. This app needs to have channels:history and channels:read permissions. The Bot User OAuth Access Token is the kind of token needed.",
+            "The token to access Slack. A Slack app is needed. This app needs to have channels:history and channels:read permissions. The Bot User OAuth Access Token is the kind of token needed.",
           type: "string",
           format: "password",
         },

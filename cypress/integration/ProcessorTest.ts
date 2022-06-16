@@ -93,7 +93,10 @@ describe("Processor Test", () => {
               );
               cy.wrap($state, { timeout: 30000 }).should("have.text", "ready");
             });
-          cy.get("td").eq(0).should("have.text", processorName).click();
+          cy.get("td")
+            .eq(0)
+            .should("have.text", processorName, { timeout: 7000 })
+            .click();
         });
 
       assertSinkProcessorDetails(

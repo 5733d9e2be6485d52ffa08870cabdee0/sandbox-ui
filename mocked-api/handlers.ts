@@ -6,13 +6,14 @@ import {
   BridgeRequest,
   ProcessorRequest,
   ProcessorResponse,
+  ProcessorType,
 } from "@openapi/generated";
 import { v4 as uuid } from "uuid";
 import { instancesData, processorData } from "./data";
 import { schemaCatalogData, schemasData } from "./schemasData";
 import omit from "lodash.omit";
 import cloneDeep from "lodash.clonedeep";
-import { EventFilter } from "../src/types/Processor";
+import { EventFilter, ProcessorSchemaType } from "../src/types/Processor";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
@@ -839,7 +840,10 @@ const prepareProcessor = (
   }
 
   if (parseConfigParameters) {
-    const configSection = processor.type === "source" ? "source" : "action";
+    const configSection =
+      processor.type === ProcessorType.Source
+        ? ProcessorSchemaType.SOURCE
+        : ProcessorSchemaType.ACTION;
     const parsedParameters = JSON.parse(
       (
         processor[configSection] as {
@@ -848,7 +852,7 @@ const prepareProcessor = (
         }
       ).parameters
     ) as { [key: string]: unknown };
-    if (processor.type === "source") {
+    if (processor.type === ProcessorType.Source) {
       (processor.source as typeof parsedParameters).parameters =
         parsedParameters;
     } else {

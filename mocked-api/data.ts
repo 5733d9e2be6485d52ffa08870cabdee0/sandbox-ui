@@ -202,4 +202,22 @@ export const processorData = [
       },
     },
   },
+  {
+    kind: "Processor",
+    id: "sourcef4-ead8-6g8v-as8e-0642tdjek002",
+    name: "Processor four",
+    type: "source",
+    href: "/api/v1/bridges/3543edaa-1851-4ad7-96be-ebde7d20d717/processors/sourcef4-ead8-6g8v-as8e-0642tdjek002",
+    submitted_at: "2022-05-15T12:10:46.029400+0000",
+    published_at: "2022-05-15T12:12:52.416527+0000",
+    filters: [],
+    status: "ready",
+    source: {
+      type: "Slack",
+      parameters: {
+        channel: "test-ui",
+        token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+      },
+    },
+  },
 ];

@@ -19,8 +19,8 @@ describe("Processor Test", () => {
         "https://test.app.com/item",
       ];
       const filters = [
-        ["data.name", "processor.StringEquals", "John"],
-        ["data.surname", "processor.StringEquals", "White"],
+        ["data.name", "String equals", "John"],
+        ["data.surname", "String equals", "White"],
       ];
 
       cy.ouiaId("create-processor", "PF4/Button").click();
@@ -35,14 +35,14 @@ describe("Processor Test", () => {
 
       cy.ouiaId("item-0").within(() => {
         cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0][0]);
-        cy.ouiaId("filter-type", "PF4/FormSelect").select("String equals");
+        cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0][1]);
       });
       cy.ouiaId("item-0") //The filter-value was detached from DOM and we need to find the context again.
         .ouiaId("filter-value", "PF4/TextInput")
         .type(filters[0][2]);
       cy.ouiaId("item-1").within(() => {
         cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1][0]);
-        cy.ouiaId("filter-type", "PF4/FormSelect").select("String equals");
+        cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1][1]);
       });
       cy.ouiaId("item-1") //The filter-value was detached from DOM and we need to find the context again.
         .ouiaId("filter-value", "PF4/TextInput")
@@ -108,8 +108,8 @@ describe("Processor Test", () => {
       const processorName: string = "Source processor";
       const source = ["Slack", "dev channel", "asd14u-e"];
       const filters = [
-        ["data.name", "processor.StringEquals", "John"],
-        ["data.surname", "processor.StringEquals", "White"],
+        ["data.name", "String equals", "John"],
+        ["data.surname", "String equals", "White"],
       ];
       cy.ouiaId("create-processor", "PF4/Button").click();
       cy.ouiaId("Create processor", "breadcrumb-item").should("be.visible");
@@ -137,7 +137,7 @@ describe("Processor Test", () => {
       cy.ouiaId("add-filter", "PF4/Button").should("be.visible").click();
       cy.ouiaId("item-0").within(() => {
         cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0][0]);
-        cy.ouiaId("filter-type", "PF4/FormSelect").select("String equals");
+        cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0][1]);
       });
       //The filter-value was detached from DOM and we need to find the context again.
       cy.ouiaId("item-0")
@@ -145,7 +145,7 @@ describe("Processor Test", () => {
         .type(filters[0][2]);
       cy.ouiaId("item-1").within(() => {
         cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1][0]);
-        cy.ouiaId("filter-type", "PF4/FormSelect").select("String equals");
+        cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1][1]);
       });
       //The filter-value was detached from DOM and we need to find the context again.
       cy.ouiaId("item-1")
@@ -202,7 +202,7 @@ describe("Processor Test", () => {
         "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
       ];
       transformation = "";
-      filters = [["data.name", "processor.StringEquals", "John"]];
+      filters = [["data.name", "String equals", "John"]];
     });
 
     it("Assert and cancel edit form", () => {
@@ -235,13 +235,13 @@ describe("Processor Test", () => {
     });
 
     it("Add filter row", () => {
-      filters[1] = ["data.surname", "processor.StringEquals", "White"];
+      filters[1] = ["data.surname", "String equals", "White"];
 
       cy.ouiaId("add-filter", "PF4/Button").click();
 
       cy.ouiaId("item-1").within(() => {
         cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1][0]);
-        cy.ouiaId("filter-type", "PF4/FormSelect").select("String equals");
+        cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1][1]);
       });
       //The filter-value was detached from DOM and we need to find the context again.
       cy.ouiaId("item-1")
@@ -316,13 +316,13 @@ describe("Processor Test", () => {
     });
 
     it("Add filter row", () => {
-      filters[0] = ["data.surname", "processor.StringEquals", "White"];
+      filters[0] = ["data.surname", "String equals", "White"];
 
       cy.ouiaId("add-filter", "PF4/Button").click();
 
       cy.ouiaId("item-0").within(() => {
         cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0][0]);
-        cy.ouiaId("filter-type", "PF4/FormSelect").select("String equals");
+        cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0][1]);
       });
       //The filter-value was detached from DOM and we need to find the context again.
       cy.ouiaId("item-0")

@@ -145,11 +145,17 @@ export const processorData = [
     transformationTemplate: "Hi! This is a test message",
     status: "ready",
     action: {
-      type: "Slack",
+      type: "slack_sink_0.1",
       parameters: JSON.stringify({
-        channel: "test",
-        webhookUrl:
+        data_shape: {
+          consumes: {
+            format: "application/octet-stream",
+          },
+        },
+        slack_channel: "#test",
+        slack_webhook_url:
           "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
+        slack_username: "test",
       }),
     },
   },
@@ -170,11 +176,16 @@ export const processorData = [
     ],
     status: "ready",
     action: {
-      type: "Slack",
+      type: "slack_sink_0.1",
       parameters: JSON.stringify({
-        channel: "test",
-        webhookUrl:
+        slack_channel: "test",
+        slack_webhook_url:
           "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
+        data_shape: {
+          consumes: {
+            format: "application/octet-stream",
+          },
+        },
       }),
     },
   },
@@ -195,10 +206,15 @@ export const processorData = [
     ],
     status: "accepted",
     source: {
-      type: "Slack",
+      type: "slack_source_0.1",
       parameters: JSON.stringify({
-        channel: "test",
-        token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        slack_channel: "#test",
+        slack_token: "***********",
+        data_shape: {
+          consumes: {
+            format: "application/octet-stream",
+          },
+        },
       }),
     },
   },
@@ -213,10 +229,15 @@ export const processorData = [
     filters: [],
     status: "ready",
     source: {
-      type: "Slack",
+      type: "slack_source_0.1",
       parameters: JSON.stringify({
-        channel: "test-ui",
-        token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        slack_channel: "#test",
+        slack_token: "***********",
+        data_shape: {
+          consumes: {
+            format: "application/octet-stream",
+          },
+        },
       }),
     },
   },

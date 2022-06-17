@@ -18,6 +18,7 @@
     "key": "Key",
     "loading": "Loading",
     "name": "Name",
+    "no": "No",
     "owner": "Owner",
     "processor": "Processor",
     "processors": "Processors",
@@ -33,7 +34,8 @@
     "type": "Type",
     "typeNameToConfirmHTML": "Type <i>{{name}}</i> to confirm.",
     "url": "URL",
-    "value": "Value"
+    "value": "Value",
+    "yes": "Yes"
   },
   "instance": {
     "createASEInstance": "Create a Smart Events instance",
@@ -52,12 +54,6 @@
   },
   "processor": {
     "action": "Action",
-    "actions": {
-      "KafkaTopic": "Send to Kafka",
-      "SendToBridge": "Send to Bridge",
-      "Slack": "Send to Slack",
-      "Webhook": "Webhook"
-    },
     "actionConfiguration": "Action configuration",
     "actionType": "Action type",
     "addFilter": "Add filter",
@@ -87,6 +83,7 @@
     "processorsListTable": "Processors list table",
     "processorType": "Processor type",
     "processorWillBeAvailableShortly": "Your Processor will be ready for use shortly after creation.",
+    "propertyNotConfigured": "Property not configured",
     "selectAction": "Select an action",
     "selectActionDescription": "Select an action and provide its configuration.",
     "selectProcessorType": "Select processor type",
@@ -96,9 +93,6 @@
     "sinkProcessor": "Sink processor",
     "sinkProcessorDescription": "Sink processors help connect events to actions.",
     "source": "Source",
-    "sources": {
-      "Slack": "Slack"
-    },
     "sourceConfiguration": "Source configuration",
     "sourceProcessor": "Source processor",
     "sourceProcessorDescription": "Source processors are ready-to-use connectors that allow to connect and stream data from external sources without having to write any code.",

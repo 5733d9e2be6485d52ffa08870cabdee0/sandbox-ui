@@ -299,6 +299,8 @@ const ProcessorDetailPage = (): JSX.Element => {
             <>
               <ProcessorDetail
                 processor={currentProcessor as unknown as Processor}
+                schemaCatalog={schemas}
+                getSchema={getSchema}
               />
               <DeleteProcessor
                 showDeleteModal={showProcessorDeleteModal}

@@ -4,11 +4,18 @@ import {
   AlertGroup,
   Button,
   Form,
+  FormAlert,
   FormGroup,
   Modal,
   TextInput,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
 
 export interface CreateInstanceProps {
   /** Flag to indicate the creation request is in progress */
@@ -19,15 +26,19 @@ export interface CreateInstanceProps {
   onClose: () => void;
   /** Callback to create the instance */
   onCreate: (name: string) => void;
-  /** invalid instance name used to create an instance */
-  existingInstanceName?: string;
+  /** API error related to bridge creation */
+  createBridgeError: unknown;
 }
 
 const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
-  const { isLoading, isModalOpen, onClose, onCreate, existingInstanceName } =
+  const { isLoading, isModalOpen, onClose, onCreate, createBridgeError } =
     props;
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [genericError, setGenericError] = useState<string | null>(null);
+  const [newBridgeName, setNewBridgeName] = useState("");
+  const [existingInstanceName, setExistingInstanceName] = useState("");
+
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const FORM_ID = "create-instance-form";
@@ -42,6 +53,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       return false;
     }
     setError(null);
+    setGenericError(null);
     return true;
   }, [name, t, existingInstanceName]);
 
@@ -49,7 +61,9 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       if (validate()) {
-        onCreate(name.trim());
+        const newName = name.trim();
+        onCreate(newName);
+        setNewBridgeName(newName);
       }
     },
     [name, onCreate, validate]
@@ -66,17 +80,33 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   );
 
   useEffect(() => {
-    if (existingInstanceName) {
-      validate();
-    }
-  }, [existingInstanceName, validate]);
-
-  useEffect(() => {
     if (isModalOpen) {
       setName("");
       setError(null);
+      setGenericError(null);
     }
   }, [isModalOpen]);
+
+  useEffect(() => {
+    if (createBridgeError && axios.isAxiosError(createBridgeError)) {
+      if (createBridgeError.response?.status === 500) {
+        setGenericError(createBridgeError.response?.statusText);
+      } else if (
+        isServiceApiError(createBridgeError) &&
+        getErrorCode(createBridgeError) === APIErrorCodes.ERROR_1
+      ) {
+        setExistingInstanceName(newBridgeName);
+      }
+    }
+  }, [createBridgeError, newBridgeName]);
+
+  const getFormAlertError = (): string => {
+    if (error) {
+      return t("common.pleaseCorrectError");
+    }
+
+    return t("instance.errors.cantCreateInstance");
+  };
 
   return (
     <Modal
@@ -84,7 +114,11 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       title={t("instance.createASEInstance")}
       ouiaId="create-instance"
       width={640}
-      onClose={onClose}
+      onClose={(): void => {
+        setError(null);
+        setGenericError(null);
+        onClose();
+      }}
       actions={[
         <Button
           key="submit"
@@ -104,6 +138,16 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       ]}
     >
       <Form id={FORM_ID} onSubmit={onSubmit}>
+        {(error || genericError) && (
+          <FormAlert>
+            <Alert
+              variant="danger"
+              title={getFormAlertError()}
+              aria-live="polite"
+              isInline
+            />
+          </FormAlert>
+        )}
         <FormGroup
           label={t("common.name")}
           isRequired

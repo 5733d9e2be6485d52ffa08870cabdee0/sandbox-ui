@@ -1,5 +1,5 @@
 import React from "react";
-import { customRender, waitForI18n } from "../../../utils/testUtils";
+import { customRender, waitForI18n } from "@utils/testUtils";
 import CreateInstance, { CreateInstanceProps } from "./CreateInstance";
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 
@@ -19,6 +19,7 @@ const setupCreateInstance = (
       onCreate={onCreate}
       isLoading={isLoading}
       isModalOpen={isModalOpen}
+      createBridgeError={undefined}
     />
   );
   return { comp };

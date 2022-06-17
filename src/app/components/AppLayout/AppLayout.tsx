@@ -15,6 +15,7 @@ import {
 
 import logo from "./Patternfly-Logo.svg";
 import { logout } from "../../../Keycloak";
+import { ErrorWithDetailBoundary } from "@app/components/ErrorWithDetailBoundary/ErrorWithDetailBoundary";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -91,7 +92,7 @@ export const AppLayout: FunctionComponent<AppLayoutProps> = ({ children }) => {
       sidebar={Sidebar}
       onPageResize={onPageResize}
     >
-      {children}
+      <ErrorWithDetailBoundary>{children}</ErrorWithDetailBoundary>
     </Page>
   );
 };

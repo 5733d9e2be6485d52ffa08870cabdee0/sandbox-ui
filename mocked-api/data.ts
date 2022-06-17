@@ -214,10 +214,10 @@ export const processorData = [
     status: "ready",
     source: {
       type: "Slack",
-      parameters: {
+      parameters: JSON.stringify({
         channel: "test-ui",
         token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-      },
+      }),
     },
   },
 ];

@@ -18,5 +18,4 @@ export * from './api/bridges-api';
 export * from './api/error-catalog-api';
 export * from './api/processors-api';
 export * from './api/schema-catalog-api';
-export * from './api/shard-api';
 

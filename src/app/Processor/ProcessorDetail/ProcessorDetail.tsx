@@ -85,13 +85,13 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                         {t(`processor.${key}`)}
                       </DescriptionListTerm>
                       <DescriptionListDescription>
-                        {
+                        {getParameterValue(
                           (
                             processor.source.parameters as {
                               [key: string]: unknown;
                             }
-                          )[key] as string
-                        }
+                          )[key]
+                        )}
                       </DescriptionListDescription>
                     </DescriptionListGroup>
                   )

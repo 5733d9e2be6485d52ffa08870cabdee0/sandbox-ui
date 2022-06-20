@@ -71,3 +71,8 @@ export enum FilterType {
   STRING_IN = "StringIn",
   NUMBER_IN = "NumberIn",
 }
+
+export enum ProcessorSchemaType {
+  ACTION = "action",
+  SOURCE = "source",
+}

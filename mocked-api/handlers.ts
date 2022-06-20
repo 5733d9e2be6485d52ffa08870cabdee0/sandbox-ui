@@ -6,11 +6,14 @@ import {
   BridgeRequest,
   ProcessorRequest,
   ProcessorResponse,
+  ProcessorType,
 } from "@openapi/generated";
 import { v4 as uuid } from "uuid";
 import { instancesData, processorData } from "./data";
-import { omit } from "lodash";
-import { EventFilter } from "../src/types/Processor";
+import { schemaCatalogData, schemasData } from "./schemasData";
+import omit from "lodash.omit";
+import cloneDeep from "lodash.clonedeep";
+import { EventFilter, ProcessorSchemaType } from "../src/types/Processor";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
@@ -46,17 +49,11 @@ const db = factory({
     transformationTemplate: String,
     action: {
       type: String,
-      parameters: {
-        channel: String,
-        webhookUrl: String,
-      },
+      parameters: String,
     },
     source: {
       type: String,
-      parameters: {
-        channel: String,
-        token: String,
-      },
+      parameters: String,
     },
   },
 });
@@ -290,7 +287,7 @@ export const handlers = [
         ...query,
       })
       .map((item) =>
-        cleanupProcessor(
+        prepareProcessor(
           item as unknown as Record<string | number | symbol, unknown>
         )
       );
@@ -345,8 +342,9 @@ export const handlers = [
           ctx.status(200),
           ctx.delay(apiDelay),
           ctx.json(
-            cleanupProcessor(
-              processor as unknown as Record<string | number | symbol, unknown>
+            prepareProcessor(
+              processor as unknown as Record<string | number | symbol, unknown>,
+              true
             )
           )
         );
@@ -426,8 +424,16 @@ export const handlers = [
       status: "accepted",
       filters: filters,
       transformationTemplate,
-      ...(action ? { action } : {}),
-      ...(source ? { source } : {}),
+      ...(action
+        ? {
+            action: convertParametersToString(action),
+          }
+        : {}),
+      ...(source
+        ? {
+            source: convertParametersToString(source),
+          }
+        : {}),
       bridge,
     };
 
@@ -447,8 +453,9 @@ export const handlers = [
       ctx.status(200),
       ctx.delay(apiDelay),
       ctx.json(
-        cleanupProcessor(
-          newProcessor as unknown as Record<string | number | symbol, unknown>
+        prepareProcessor(
+          newProcessor as unknown as Record<string | number | symbol, unknown>,
+          true
         )
       )
     );
@@ -542,8 +549,8 @@ export const handlers = [
           status: "accepted",
           filters: filters as unknown as EventFilter[],
           transformationTemplate,
-          ...(action ? { action } : {}),
-          ...(source ? { source } : {}),
+          ...(action ? { action: convertParametersToString(action) } : {}),
+          ...(source ? { source: convertParametersToString(source) } : {}),
         },
       });
 
@@ -561,11 +568,12 @@ export const handlers = [
         ctx.status(200),
         ctx.delay(apiDelay),
         ctx.json(
-          cleanupProcessor(
+          prepareProcessor(
             updatedProcessor as unknown as Record<
               string | number | symbol,
               unknown
-            >
+            >,
+            true
           )
         )
       );
@@ -646,6 +654,59 @@ export const handlers = [
       return res(ctx.status(202), ctx.delay(apiDelay), ctx.json({}));
     }
   ),
+  // get schema catalog
+  rest.get(`${apiUrl}/schemas`, (_req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.delay(apiDelay),
+      ctx.json({
+        kind: "SchemaCatalog",
+        items: schemaCatalogData,
+      })
+    );
+  }),
+  // get single action schema
+  rest.get(`${apiUrl}/schemas/actions/:schemaId`, (req, res, ctx) => {
+    const { schemaId } = req.params;
+
+    const requestedSchema = schemasData[schemaId as string];
+
+    if (!requestedSchema) {
+      return res(
+        ctx.status(404),
+        ctx.delay(apiDelay),
+        ctx.json({
+          ...error_not_found,
+          reason: `The processor json schema '${
+            schemaId as string
+          }' is not in the catalog.`,
+        })
+      );
+    }
+
+    return res(ctx.status(200), ctx.delay(100), ctx.json(requestedSchema));
+  }),
+  // get single source schema
+  rest.get(`${apiUrl}/schemas/sources/:schemaId`, (req, res, ctx) => {
+    const { schemaId } = req.params;
+
+    const requestedSchema = schemasData[schemaId as string];
+
+    if (!requestedSchema) {
+      return res(
+        ctx.status(404),
+        ctx.delay(apiDelay),
+        ctx.json({
+          ...error_not_found,
+          reason: `The processor json schema '${
+            schemaId as string
+          }' is not in the catalog.`,
+        })
+      );
+    }
+
+    return res(ctx.status(200), ctx.delay(100), ctx.json(requestedSchema));
+  }),
 ];
 
 /**
@@ -752,15 +813,18 @@ const resourceStatusFlow = (
 };
 
 /**
- * Cleanup processor
+ * Prepare processor data to be returned by APIs
  *
- * @param processor Processor to clean from unwanted properties before response
+ * @param data Processor to clean from unwanted properties before response
+ * @param parseConfigParameters Flag indicating if action/source parameters should be parsed
  */
-const cleanupProcessor = (
-  processor: Record<string, unknown>
+const prepareProcessor = (
+  data: Record<string, unknown>,
+  parseConfigParameters = false
 ): ProcessorResponse => {
   // removing properties not needed for the response
   const omitProperties = ["bridge"];
+  const processor = cloneDeep(data);
 
   if (!(processor.filters as Array<Record<string, unknown>>)?.length) {
     omitProperties.push("filters");
@@ -775,7 +839,45 @@ const cleanupProcessor = (
     omitProperties.push("source");
   }
 
+  if (parseConfigParameters) {
+    const configSection =
+      processor.type === ProcessorType.Source
+        ? ProcessorSchemaType.SOURCE
+        : ProcessorSchemaType.ACTION;
+    const parsedParameters = JSON.parse(
+      (
+        processor[configSection] as {
+          type: string;
+          parameters: string;
+        }
+      ).parameters
+    ) as { [key: string]: unknown };
+    if (processor.type === ProcessorType.Source) {
+      (processor.source as typeof parsedParameters).parameters =
+        parsedParameters;
+    } else {
+      (processor.action as typeof parsedParameters).parameters =
+        parsedParameters;
+    }
+  }
+
   return omit(processor, omitProperties);
+};
+
+/**
+ * Convert actions/sources parameters to string because that's how they are stored
+ * in our fake db
+ *
+ * @param data Processor action or source to convert
+ * @returns Processor action or source with parameters property containing stringified parameters.
+ */
+const convertParametersToString = (
+  data: MockProcessorRequest["action"] | MockProcessorRequest["source"]
+): { type: string; parameters: string } => {
+  return {
+    type: data?.type ?? "",
+    parameters: JSON.stringify(data?.parameters),
+  };
 };
 
 const error_not_found = {

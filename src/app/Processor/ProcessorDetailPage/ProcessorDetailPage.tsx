@@ -37,6 +37,8 @@ import axios from "axios";
 import { ResponseError } from "../../../types/Error";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
 import { canDeleteResource } from "@utils/resourceUtils";
+import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";
+import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
@@ -192,9 +194,13 @@ const ProcessorDetailPage = (): JSX.Element => {
     </DropdownItem>,
   ];
 
+  // @TODO decide how to manage errors when retrieving the schema catalog
+  const { schemas, isLoading: areSchemasLoading } = useGetSchemasApi();
+  const { getSchema } = useGetSchemaApi();
+
   return (
     <>
-      {(isBridgeLoading || isProcessorLoading) && (
+      {(isBridgeLoading || isProcessorLoading || areSchemasLoading) && (
         <>
           <PageHeaderSkeleton
             pageTitle={t("processor.loadingProcessor")}
@@ -205,7 +211,7 @@ const ProcessorDetailPage = (): JSX.Element => {
           <ProcessorDetailSkeleton />
         </>
       )}
-      {bridge && currentProcessor && (
+      {bridge && currentProcessor && schemas && (
         <>
           <PageSection
             variant={PageSectionVariants.light}
@@ -286,6 +292,8 @@ const ProcessorDetailPage = (): JSX.Element => {
               onSave={handleUpdateProcessorSaving}
               onCancel={(): void => setIsEditing(false)}
               existingProcessorName={existingProcessorName}
+              schemaCatalog={schemas}
+              getSchema={getSchema}
             />
           ) : (
             <>

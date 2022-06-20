@@ -16,6 +16,8 @@ import { useAddProcessorToBridgeApi } from "../../../hooks/useProcessorsApi/useA
 import { ProcessorRequest } from "@openapi/generated";
 import { ResponseError } from "../../../types/Error";
 import ProcessorEditSkeleton from "@app/Processor/ProcessorEdit/ProcessorEditSkeleton";
+import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";
+import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 
 const CreateProcessorPage = (): JSX.Element => {
   const { instanceId } = useParams<InstanceRouteParams>();
@@ -78,9 +80,13 @@ const CreateProcessorPage = (): JSX.Element => {
     }
   }, [processorError, requestData]);
 
+  // @TODO decide how to manage errors when retrieving the schema catalog
+  const { schemas, isLoading: areSchemasLoading } = useGetSchemasApi();
+  const { getSchema } = useGetSchemaApi();
+
   return (
     <>
-      {isBridgeLoading && (
+      {(isBridgeLoading || areSchemasLoading) && (
         <>
           <PageHeaderSkeleton
             pageTitle={t("instance.processor.loadingProcessor")}
@@ -90,7 +96,7 @@ const CreateProcessorPage = (): JSX.Element => {
           <ProcessorEditSkeleton />
         </>
       )}
-      {bridge && (
+      {bridge && schemas && (
         <>
           <PageSection type="breadcrumb">
             <Breadcrumb
@@ -117,6 +123,8 @@ const CreateProcessorPage = (): JSX.Element => {
             onCancel={goToInstance}
             isLoading={isAddLoading}
             existingProcessorName={existingProcessorName}
+            schemaCatalog={schemas}
+            getSchema={getSchema}
           />
         </>
       )}

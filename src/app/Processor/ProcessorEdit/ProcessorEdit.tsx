@@ -24,23 +24,25 @@ import {
 } from "@patternfly/react-core";
 import FiltersEdit from "@app/Processor/ProcessorEdit/FiltersEdit/FiltersEdit";
 import { CodeEditor } from "@patternfly/react-code-editor";
-import ActionEdit from "@app/Processor/ProcessorEdit/ActionEdit/ActionEdit";
 import {
   Action,
   ProcessorRequest,
   ProcessorResponse,
+  ProcessorSchemaEntryResponse,
 } from "@openapi/generated";
-import SourceEdit from "@app/Processor/ProcessorEdit/SourceEdit/SourceEdit";
 import {
   EventFilter,
   FilterType,
   ProcessorFormData,
+  ProcessorSchemaType,
 } from "../../../types/Processor";
 import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidateProcessor";
-import "./ProcessorEdit.css";
 import { isCommaSeparatedFilterType } from "@utils/filterUtils";
+import ConfigurationEdit from "@app/Processor/ProcessorEdit/ConfigurationEdit/ConfigurationEdit";
+import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
+import "./ProcessorEdit.css";
 
-interface ProcessorEditProps {
+export interface ProcessorEditProps {
   /** The processor data to populate the form. Used when updating an existing processor.
    * Not required when creating a new processor */
   processor?: ProcessorResponse;
@@ -54,6 +56,10 @@ interface ProcessorEditProps {
   onCancel: () => void;
   /** Already existing processor name that prevents from saving the processor */
   existingProcessorName?: string;
+  /** Catalog of all the actions/sources */
+  schemaCatalog: ProcessorSchemaEntryResponse[];
+  /** Callback to retrieve a single action/source schema */
+  getSchema: GetSchema;
 }
 
 const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
@@ -64,6 +70,8 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     onSave,
     onCancel,
     processor,
+    schemaCatalog,
+    getSchema,
   } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const isExistingProcessor = useMemo(
@@ -200,11 +208,13 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
 
   useEffect(() => {
     if (isSubmitted) {
-      document.querySelector(".processor-field-error")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
-      });
+      document
+        .querySelector(".processor-field-error, .pf-m-error")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
       setIsSubmitted(false);
     }
   }, [isSubmitted]);
@@ -352,11 +362,14 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 )}
                               </Text>
                             </TextContent>
-                            <SourceEdit
+                            <ConfigurationEdit
+                              configType={ProcessorSchemaType.SOURCE}
                               source={source}
-                              onChange={setSource}
                               registerValidation={registerValidateConfig}
-                              isDisabled={isExistingProcessor}
+                              onChange={setSource}
+                              readOnly={isExistingProcessor}
+                              schemaCatalog={schemaCatalog}
+                              getSchema={getSchema}
                             />
                           </FormSection>
                         )}
@@ -397,11 +410,14 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 {t("processor.selectActionDescription")}
                               </Text>
                             </TextContent>
-                            <ActionEdit
+                            <ConfigurationEdit
+                              configType={ProcessorSchemaType.ACTION}
                               action={action}
-                              onChange={setAction}
                               registerValidation={registerValidateConfig}
-                              isDisabled={isExistingProcessor}
+                              onChange={setAction}
+                              readOnly={isExistingProcessor}
+                              schemaCatalog={schemaCatalog}
+                              getSchema={getSchema}
                             />
                           </FormSection>
                         )}

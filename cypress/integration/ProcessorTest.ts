@@ -11,7 +11,7 @@ describe("Processor Test", () => {
       );
     });
 
-    it("Sink processor", () => {
+    it.skip("Sink processor", () => {
       const processorName: string = "Sink processor";
       const action = [
         "Send to Slack",
@@ -107,7 +107,7 @@ describe("Processor Test", () => {
       );
     });
 
-    it("Source processor", () => {
+    it.skip("Source processor", () => {
       const processorName: string = "Source processor";
       const source = ["Slack", "dev channel", "asd14u-e"];
       const filters = [
@@ -208,7 +208,7 @@ describe("Processor Test", () => {
       filters = [["data.name", "String equals", "John"]];
     });
 
-    it("Assert and cancel edit form", () => {
+    it.skip("Assert and cancel edit form", () => {
       cy.ouiaId("processor-name", "PF4/Text").should(
         "have.text",
         processorName
@@ -237,7 +237,7 @@ describe("Processor Test", () => {
       );
     });
 
-    it("Add filter row", () => {
+    it.skip("Add filter row", () => {
       filters[1] = ["data.surname", "String equals", "White"];
 
       cy.ouiaId("add-filter", "PF4/Button").click();
@@ -294,7 +294,7 @@ describe("Processor Test", () => {
       filters = [[]];
     });
 
-    it("Assert and cancel edit form", () => {
+    it.skip("Assert and cancel edit form", () => {
       cy.ouiaId("processor-name", "PF4/Text").should(
         "have.text",
         processorName
@@ -318,7 +318,7 @@ describe("Processor Test", () => {
       assertSourceProcessorDetails(processorName, source, filters);
     });
 
-    it("Add filter row", () => {
+    it.skip("Add filter row", () => {
       filters[0] = ["data.surname", "String equals", "White"];
 
       cy.ouiaId("add-filter", "PF4/Button").click();

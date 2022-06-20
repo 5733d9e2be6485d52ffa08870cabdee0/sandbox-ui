@@ -89,13 +89,15 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
 
   useEffect(() => {
     if (createBridgeError && axios.isAxiosError(createBridgeError)) {
-      if (createBridgeError.response?.status === 500) {
-        setGenericError(createBridgeError.response?.statusText);
-      } else if (
+      if (
         isServiceApiError(createBridgeError) &&
         getErrorCode(createBridgeError) === APIErrorCodes.ERROR_1
       ) {
         setExistingInstanceName(newBridgeName);
+      } else {
+        setGenericError(
+          createBridgeError.response?.statusText ?? "Internal Server Error"
+        );
       }
     }
   }, [createBridgeError, newBridgeName]);

@@ -36,8 +36,10 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   const [name, setName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [genericError, setGenericError] = useState<string | null>(null);
+  const [existingInstanceName, setExistingInstanceName] = useState<
+    string | null
+  >(null);
   const [newBridgeName, setNewBridgeName] = useState("");
-  const [existingInstanceName, setExistingInstanceName] = useState("");
 
   const { t } = useTranslation("openbridgeTempDictionary");
 
@@ -80,8 +82,15 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   );
 
   useEffect(() => {
+    if (existingInstanceName) {
+      validate();
+    }
+  }, [existingInstanceName, validate]);
+
+  useEffect(() => {
     if (isModalOpen) {
       setName("");
+      setExistingInstanceName(null);
       setError(null);
       setGenericError(null);
     }
@@ -119,6 +128,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       onClose={(): void => {
         setError(null);
         setGenericError(null);
+        setExistingInstanceName(null);
         onClose();
       }}
       actions={[

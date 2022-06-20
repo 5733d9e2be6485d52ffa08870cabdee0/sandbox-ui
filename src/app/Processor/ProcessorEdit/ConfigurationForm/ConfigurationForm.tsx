@@ -84,6 +84,7 @@ function Auto(parent: any): any {
         <context.Provider value={ctx}>
           <section
             className="pf-c-form__section"
+            data-ouia-component-id="configuration"
             style={{ marginTop: 0 }}
             {...this.getNativeFormProps()}
           />

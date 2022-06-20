@@ -2,6 +2,7 @@
   "common": {
     "access": "Access",
     "actions": "Actions",
+    "addressFormErrors": "Address form errors to proceed.",
     "ago": "ago",
     "cancel": "Cancel",
     "close": "Close",
@@ -20,7 +21,6 @@
     "loading": "Loading",
     "name": "Name",
     "owner": "Owner",
-    "pleaseCorrectError": "Please correct the following errors before continuing.",
     "processor": "Processor",
     "processors": "Processors",
     "publishedAt": "Published at",

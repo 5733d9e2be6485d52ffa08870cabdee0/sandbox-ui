@@ -104,7 +104,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
 
   const getFormAlertError = (): string => {
     if (error) {
-      return t("common.pleaseCorrectError");
+      return t("common.addressFormErrors");
     }
 
     return t("instance.errors.cantCreateInstance");

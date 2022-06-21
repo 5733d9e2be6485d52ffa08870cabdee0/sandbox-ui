@@ -67,7 +67,7 @@ describe("ProcessorEdit component", () => {
 
     expect(comp.queryByText("Source")).toBeInTheDocument();
     expect(comp.queryByText("Filters")).toBeInTheDocument();
-    expect(comp.queryByText("Transformation")).toBeInTheDocument();
+    expect(comp.queryByText("Transformation")).not.toBeInTheDocument();
     expect(comp.queryByText("Action")).not.toBeInTheDocument();
   });
 

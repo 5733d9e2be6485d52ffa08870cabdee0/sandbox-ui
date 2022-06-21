@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { DeleteModal } from "@app/components/DeleteModal/DeleteModal";
 import { useDeleteBridgeApi } from "../../../hooks/useBridgesApi/useDeleteBridgeApi";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
 import { ResponseError } from "../../../types/Error";
+import { useHistory } from "react-router-dom";
 
 interface DeleteInstanceProps {
   /** Flag to show/close the modal */
@@ -21,14 +27,20 @@ interface DeleteInstanceProps {
 
 const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const history = useHistory();
   const { showDeleteModal, instanceId, instanceName, onDeleted, onCanceled } =
     props;
   const [preloading, setPreloading] = useState(false);
   const [deleteBlockedReason, setDeleteBlockedReason] = useState<
     string | undefined
   >();
+  const shouldRedirectToHome = useRef<boolean>(false);
 
-  const { getProcessors, processorListResponse } = useGetProcessorsApi();
+  const {
+    getProcessors,
+    processorListResponse,
+    error: processorListError,
+  } = useGetProcessorsApi();
 
   useEffect(() => {
     if (showDeleteModal && instanceId && instanceName) {
@@ -46,7 +58,10 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
         );
       }
     }
-  }, [processorListResponse, t]);
+    if (processorListError && axios.isAxiosError(processorListError)) {
+      setDeleteBlockedReason(t("instance.errors.cantDeleteTryLater"));
+    }
+  }, [processorListResponse, processorListError, t]);
 
   const {
     deleteBridge,
@@ -62,6 +77,10 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
   };
 
   const handleCancel = (): void => {
+    if (deleteBlockedReason && shouldRedirectToHome.current) {
+      history.replace("/");
+    }
+    shouldRedirectToHome.current = false;
     setDeleteBlockedReason(undefined);
     onCanceled();
   };
@@ -70,19 +89,31 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
     if (bridgeDeleteSuccess) {
       onDeleted();
     }
-    if (bridgeDeleteError) {
+    if (bridgeDeleteError && axios.isAxiosError(bridgeDeleteError)) {
       // Doing the following check because it could pass some time between
       // the check on existing processors and when the user actually
       // confirms the deletion. If in the meantime someone creates a processor,
       // the API error will trigger the error message inside the modal.
+      const genericErrorMsg = t("instance.errors.cantDeleteTryLater");
       if (
-        axios.isAxiosError(bridgeDeleteError) &&
-        (bridgeDeleteError.response?.data as ResponseError).code ===
-          "OPENBRIDGE-2"
+        isServiceApiError(bridgeDeleteError) &&
+        getErrorCode(bridgeDeleteError) === APIErrorCodes.ERROR_2
       ) {
         setDeleteBlockedReason(
-          t("instance.errors.cantDeleteBecauseProcessorsInside")
+          (bridgeDeleteError.response?.data as ResponseError)?.reason ??
+            genericErrorMsg
         );
+        shouldRedirectToHome.current = true;
+      } else if (
+        isServiceApiError(bridgeDeleteError) &&
+        getErrorCode(bridgeDeleteError) === APIErrorCodes.ERROR_4
+      ) {
+        setDeleteBlockedReason(
+          t("instance.errors.cantDeleteBecauseNotExisting")
+        );
+        shouldRedirectToHome.current = true;
+      } else {
+        setDeleteBlockedReason(genericErrorMsg);
       }
     }
   }, [bridgeDeleteSuccess, bridgeDeleteError, onDeleted, t]);

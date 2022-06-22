@@ -1,7 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { DeleteModal } from "@app/components/DeleteModal/DeleteModal";
 import { useDeleteProcessorApi } from "../../../hooks/useProcessorsApi/useDeleteProcessorApi";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
+import { ResponseError } from "../../../types/Error";
 
 interface DeleteProcessorProps {
   /** Flag to show/close the modal */
@@ -29,6 +36,10 @@ const DeleteProcessor = (props: DeleteProcessorProps): JSX.Element => {
     onCanceled,
   } = props;
 
+  const [deleteBlockedReason, setDeleteBlockedReason] = useState<
+    string | undefined
+  >();
+
   const { deleteProcessor, isLoading, error, success } =
     useDeleteProcessorApi();
 
@@ -39,6 +50,7 @@ const DeleteProcessor = (props: DeleteProcessorProps): JSX.Element => {
   };
 
   const handleCancel = (): void => {
+    setDeleteBlockedReason(undefined);
     onCanceled();
   };
 
@@ -49,10 +61,27 @@ const DeleteProcessor = (props: DeleteProcessorProps): JSX.Element => {
   }, [success, onDeleted]);
 
   useEffect(() => {
-    if (error) {
-      console.error(error);
+    if (error && axios.isAxiosError(error)) {
+      const genericErrorMsg = t("processor.errors.cantDeleteTryLater");
+      if (
+        isServiceApiError(error) &&
+        getErrorCode(error) === APIErrorCodes.ERROR_2
+      ) {
+        setDeleteBlockedReason(
+          (error.response?.data as ResponseError)?.reason ?? genericErrorMsg
+        );
+      } else if (
+        isServiceApiError(error) &&
+        getErrorCode(error) === APIErrorCodes.ERROR_4
+      ) {
+        setDeleteBlockedReason(
+          t("processor.errors.cantDeleteBecauseNotExisting")
+        );
+      } else {
+        setDeleteBlockedReason(genericErrorMsg);
+      }
     }
-  }, [error]);
+  }, [error, t]);
 
   return (
     <>
@@ -62,6 +91,7 @@ const DeleteProcessor = (props: DeleteProcessorProps): JSX.Element => {
           modalTitle={t("processor.deleteProcessor")}
           showDialog={showDeleteModal}
           isPreloading={false}
+          blockedDeletionReason={deleteBlockedReason}
           resourceType={t("common.processor")}
           resourceName={processorName}
           isLoading={isLoading}

@@ -5,6 +5,7 @@ import InstancesListPage from "@app/Instance/InstancesListPage/InstancesListPage
 import CreateProcessorPage from "@app/Processor/CreateProcessorPage/CreateProcessorPage";
 import ProcessorDetailPage from "@app/Processor/ProcessorDetailPage/ProcessorDetailPage";
 import { ErrorWithDetailBoundary } from "@app/components/ErrorWithDetailBoundary/ErrorWithDetailBoundary";
+import { PageNotFound } from "@app/components/PageNotFound/PageNotFound";
 
 const Routes = (): JSX.Element => {
   return (
@@ -22,11 +23,7 @@ const Routes = (): JSX.Element => {
         <Route path={`/instance/:instanceId`}>
           <InstancePage />
         </Route>
-        <Route path="*">
-          <>
-            <p>no match</p>
-          </>
-        </Route>
+        <Route path="*" component={PageNotFound} />
       </Switch>
     </ErrorWithDetailBoundary>
   );

@@ -131,8 +131,10 @@ const InstancePage = (): JSX.Element => {
         isServiceApiError(bridgeError) &&
         getErrorCode(bridgeError) === APIErrorCodes.ERROR_4
       ) {
-        //TODO Set state with specific info for PageNotFound
-        history.replace("/instance-not-found");
+        history.replace("/instance-not-found", {
+          title: t("instance.notFound"),
+          message: t("instance.errors.cantFindInstance"),
+        });
       } else {
         throw new ErrorWithDetail(
           getPageTitle(),

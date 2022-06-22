@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Button,
@@ -29,12 +29,11 @@ import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
-import axios from "axios";
-import { ResponseError } from "../../../types/Error";
 import { BridgeResponse, ManagedResourceStatus } from "@openapi/generated";
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
+import { ErrorWithDetail } from "../../../types/Error";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -45,6 +44,17 @@ const InstancesListPage = (): JSX.Element => {
   const [totalRows, setTotalRows] = useState<number>();
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
   const [selectedInstance, setSelectedInstance] = useState<BridgeResponse>();
+
+  const pageTitleElement = useMemo(
+    () => (
+      <TextContent>
+        <Text ouiaId="instances-page-title" component="h1">
+          {t("openbridgeTempDictionary:instance.instancesListPageTitle")}
+        </Text>
+      </TextContent>
+    ),
+    [t]
+  );
 
   const columnNames = [
     {
@@ -107,13 +117,14 @@ const InstancesListPage = (): JSX.Element => {
 
   useEffect(() => {
     if (error) {
-      console.error(error);
+      throw new ErrorWithDetail(
+        pageTitleElement,
+        t("instance.errors.instancesListGenericError")
+      );
     }
-  }, [error]);
+  }, [error, pageTitleElement, t]);
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
-  const [newBridgeName, setNewBridgeName] = useState("");
-  const [existingBridgeName, setExistingBridgeName] = useState("");
 
   const {
     error: createBridgeError,
@@ -124,7 +135,6 @@ const InstancesListPage = (): JSX.Element => {
 
   const handleCreateBridge = useCallback(
     (name: string) => {
-      setNewBridgeName(name);
       createBridge({ name });
     },
     [createBridge]
@@ -137,25 +147,8 @@ const InstancesListPage = (): JSX.Element => {
     }
   }, [bridge, getBridges, currentPage, currentPageSize]);
 
-  useEffect(() => {
-    if (createBridgeError) {
-      if (axios.isAxiosError(createBridgeError)) {
-        // TODO: replace error code string with a value coming from an error catalog
-        //  See https://issues.redhat.com/browse/MGDOBR-669 for more details.
-        if (
-          (createBridgeError.response?.data as ResponseError).code ===
-          "OPENBRIDGE-1"
-        ) {
-          setExistingBridgeName(newBridgeName);
-        }
-      }
-    }
-  }, [createBridgeError, newBridgeName]);
-
   const closeCreateInstanceDialog = (): void => {
     setShowCreateInstance(false);
-    setNewBridgeName("");
-    setExistingBridgeName("");
   };
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -220,7 +213,7 @@ const InstancesListPage = (): JSX.Element => {
         isModalOpen={showCreateInstance}
         onClose={closeCreateInstanceDialog}
         onCreate={handleCreateBridge}
-        existingInstanceName={existingBridgeName}
+        createBridgeError={createBridgeError}
       />
     </>
   );
@@ -239,11 +232,7 @@ const InstancesListPage = (): JSX.Element => {
   const pageContent = (
     <>
       <PageSection variant={PageSectionVariants.light}>
-        <TextContent>
-          <Text ouiaId="instances-page-title" component="h1">
-            {t("openbridgeTempDictionary:instance.instancesListPageTitle")}
-          </Text>
-        </TextContent>
+        {pageTitleElement}
       </PageSection>
       <PageSection>
         {totalRows === undefined && isLoading && (

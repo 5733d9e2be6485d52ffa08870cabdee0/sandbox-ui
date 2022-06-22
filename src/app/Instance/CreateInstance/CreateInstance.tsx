@@ -153,6 +153,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         {(error || genericError) && (
           <FormAlert>
             <Alert
+              ouiaId="error-instance-create-fail"
               variant="danger"
               title={getFormAlertError()}
               aria-live="polite"

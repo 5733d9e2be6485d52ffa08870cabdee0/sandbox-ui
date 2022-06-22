@@ -41,6 +41,23 @@ describe("Instances Test", () => {
         });
     });
 
+    it("Submit and expect error", () => {
+      const newInstanceName: string = "error-test";
+      cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
+      cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
+        cy.wrap($modal)
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
+            cy.ouiaId("submit", "PF4/Button").click();
+            cy.ouiaId("error-instance-create-fail", "PF4/Alert").should(
+              "have.text",
+              "Danger alert:Error while creating a Smart Event instance. Please, try again later."
+            );
+          });
+      });
+    });
+
     it("Cancel", () => {
       const newInstanceName: string = "Canceled instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();

@@ -147,6 +147,16 @@ export const handlers = [
       );
     }
 
+    if (name == "error-test") {
+      return res(
+        ctx.status(500),
+        ctx.json({
+          ...error_external_component,
+          reason: `Creation was no successful probably due to external component fail'`,
+        })
+      );
+    }
+
     const id = uuid();
     const bridge = {
       kind: "Bridge",
@@ -892,6 +902,13 @@ const error_duplicated_resource = {
   id: "1",
   href: "/api/v1/errors/1",
   code: "OPENBRIDGE-1",
+};
+
+const error_external_component = {
+  kind: "Error",
+  id: "1",
+  href: "/api/v1/errors/5",
+  code: "OPENBRIDGE-5",
 };
 
 const error_bridge_not_deletable = {

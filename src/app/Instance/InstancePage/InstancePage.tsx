@@ -97,6 +97,20 @@ const InstancePage = (): JSX.Element => {
     [currentPage, currentPageSize, getProcessors, instanceId]
   );
 
+  const getPageTitle = useCallback(
+    (bridge?: BridgeResponse) => {
+      const name = bridge ? bridge.name : t("instance.smartEventInstance");
+      return (
+        <TextContent>
+          <Text ouiaId="instance-name" component="h1">
+            {name}
+          </Text>
+        </TextContent>
+      );
+    },
+    [t]
+  );
+
   usePolling(() => triggerGetProcessors(), 10000);
 
   useEffect(
@@ -121,20 +135,19 @@ const InstancePage = (): JSX.Element => {
         history.replace("/instance-not-found");
       } else {
         throw new ErrorWithDetail(
-          (
-            <TextContent>
-              <Text component="h1">{t("instance.smartEventInstance")}</Text>
-            </TextContent>
-          ),
+          getPageTitle(),
           t("instance.errors.instanceDetailsGenericError")
         );
       }
     }
 
     if (processorsError) {
-      console.error(processorsError);
+      throw new ErrorWithDetail(
+        getPageTitle(bridge),
+        t("instance.errors.processorsListGenericError")
+      );
     }
-  }, [bridgeError, history, processorsError, t]);
+  }, [bridge, bridgeError, getPageTitle, history, processorsError, t]);
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,

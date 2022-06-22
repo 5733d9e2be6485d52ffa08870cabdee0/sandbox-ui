@@ -12,6 +12,7 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { ErrorWithDetail } from "../../../types/Error";
+import { useHistory } from "react-router-dom";
 
 export const ErrorWithDetailBoundary: FunctionComponent = ({
   children,
@@ -19,9 +20,22 @@ export const ErrorWithDetailBoundary: FunctionComponent = ({
   children?: ReactNode;
 }) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const history = useHistory();
+
   return (
     <ErrorBoundary
-      fallbackRender={({ error }: { error: ErrorWithDetail }): JSX.Element => {
+      fallbackRender={({
+        error,
+        resetErrorBoundary,
+      }: {
+        error: ErrorWithDetail;
+        resetErrorBoundary: () => void;
+      }): JSX.Element => {
+        const unListen = history.listen(() => {
+          resetErrorBoundary();
+          unListen();
+        });
+
         const detailSection = error.detailSection ?? (
           <TextContent>
             <Text component="h1">{t("common.genericError")}</Text>

@@ -47,6 +47,7 @@
       "cantDeleteBecauseProcessorsInside": "It is not possible to delete a Bridge instance with active Processors.",
       "cantDeleteBecauseNotExisting": "The Bridge you are trying to delete, it does not exist anymore.",
       "cantDeleteTryLater": "It is not possible to delete this Bridge. Try again later.",
+      "instanceDetailsGenericError": "Error while retrieving the Smart Event instance details.",
       "instancesListGenericError": "Error while retrieving the list of Smart Event instances.",
       "invalidName": "A Smart Events Instance with this name already exists in your account."
     },
@@ -56,6 +57,7 @@
     "instanceWillBeAvailableShortly": "Your Smart Events instance will be ready for use shortly after creation.",
     "loadingInstance": "Loading instance",
     "noInstances": "No Smart Event instances",
+    "smartEventInstance": "Smart Events Instance",
     "smartEventInstances": "Smart Event Instances"
   },
   "processor": {

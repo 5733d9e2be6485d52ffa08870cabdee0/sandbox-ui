@@ -44,6 +44,13 @@ import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
+import axios from "axios";
+import { ErrorWithDetail } from "../../../types/Error";
 
 interface InstanceRouteParams {
   instanceId: string;
@@ -54,7 +61,6 @@ const InstancePage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const location = useLocation();
   const history = useHistory();
-  const goToHome = useCallback((): void => history.push(`/`), [history]);
 
   const processorsTabRef = React.createRef<HTMLElement>();
 
@@ -106,15 +112,29 @@ const InstancePage = (): JSX.Element => {
   }, [processorListResponse]);
 
   useEffect(() => {
-    if (bridgeError) {
-      console.error(bridgeError);
-      goToHome();
+    if (bridgeError && axios.isAxiosError(bridgeError)) {
+      if (
+        isServiceApiError(bridgeError) &&
+        getErrorCode(bridgeError) === APIErrorCodes.ERROR_4
+      ) {
+        //TODO Set state with specific info for PageNotFound
+        history.replace("/instance-not-found");
+      } else {
+        throw new ErrorWithDetail(
+          (
+            <TextContent>
+              <Text component="h1">{t("instance.smartEventInstance")}</Text>
+            </TextContent>
+          ),
+          t("instance.errors.instanceDetailsGenericError")
+        );
+      }
     }
 
     if (processorsError) {
       console.error(processorsError);
     }
-  }, [bridgeError, goToHome, processorsError]);
+  }, [bridgeError, history, processorsError, t]);
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,

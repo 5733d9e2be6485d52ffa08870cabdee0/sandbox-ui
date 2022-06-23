@@ -46,9 +46,9 @@
     "createSEInstance": "Create Smart Events instance",
     "errors": {
       "cantCreateInstance": "Error while creating a Smart Event instance. Please, try again later.",
-      "cantDeleteBecauseProcessorsInside": "It is not possible to delete a Bridge instance with active Processors.",
-      "cantDeleteBecauseNotExisting": "The Bridge you are trying to delete, it does not exist anymore.",
-      "cantDeleteTryLater": "It is not possible to delete this Bridge. Try again later.",
+      "cantDeleteBecauseProcessorsInside": "It is not possible to delete a Smart Events instance with active Processors.",
+      "cantDeleteBecauseNotExisting": "The Smart Events instance you are trying to delete, it does not exist anymore.",
+      "cantDeleteTryLater": "It is not possible to delete this Smart Events instance. Try again later.",
       "cantFindInstance": "The Smart Event Instance you are looking for does not exist. It might have been deleted.",
       "instanceDetailsGenericError": "Error while retrieving the Smart Event instance details.",
       "instancesListGenericError": "Error while retrieving the list of Smart Event instances.",

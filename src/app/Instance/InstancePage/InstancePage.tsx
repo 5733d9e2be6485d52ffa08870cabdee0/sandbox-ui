@@ -131,6 +131,10 @@ const InstancePage = (): JSX.Element => {
         isServiceApiError(bridgeError) &&
         getErrorCode(bridgeError) === APIErrorCodes.ERROR_4
       ) {
+        /* When the instance is not found on the server, we are going to replace
+         * the current URL with a fake URL that does not match any route.
+         * In this way, the PageNotFound component will be shown.
+         */
         history.replace("/instance-not-found", {
           title: t("instance.notFound"),
           message: t("instance.errors.cantFindInstance"),

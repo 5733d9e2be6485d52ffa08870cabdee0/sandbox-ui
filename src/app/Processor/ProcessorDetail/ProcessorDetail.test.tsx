@@ -1,8 +1,12 @@
 import React from "react";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import ProcessorDetail from "./ProcessorDetail";
-import { SinkProcessor, SourceProcessor } from "../../../types/Processor";
-import { ManagedResourceStatus } from "@openapi/generated";
+import {
+  DataShapeValue,
+  SinkProcessor,
+  SourceProcessor,
+} from "../../../types/Processor";
+import { ManagedResourceStatus, ProcessorType } from "@openapi/generated";
 
 describe("ProcessorDetail component", () => {
   it("should display sink processor information", async () => {
@@ -64,9 +68,10 @@ describe("ProcessorDetail component", () => {
 
     expect(
       comp.queryByText(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (sinkProcessor.action.parameters as any).data_shape.consumes
-          .format as string
+        getDataShapeValue(
+          sinkProcessor.action.parameters as { [key: string]: unknown },
+          sinkProcessor.type
+        )
       )
     ).toBeInTheDocument();
 
@@ -129,9 +134,10 @@ describe("ProcessorDetail component", () => {
 
     expect(
       comp.queryByText(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (sourceProcessor.source.parameters as any).data_shape.produces
-          .format as string
+        getDataShapeValue(
+          sourceProcessor.source.parameters as { [key: string]: unknown },
+          sourceProcessor.type
+        )
       )
     ).toBeInTheDocument();
 
@@ -362,4 +368,12 @@ const slackSourceSchema = {
       },
     },
   },
+};
+
+const getDataShapeValue = (
+  parameters: { [key: string]: unknown },
+  type: ProcessorType
+): string => {
+  const key = type === ProcessorType.Sink ? "consumes" : "produces";
+  return (parameters.data_shape as DataShapeValue)[key].format;
 };

@@ -76,3 +76,9 @@ export enum ProcessorSchemaType {
   ACTION = "action",
   SOURCE = "source",
 }
+
+export interface DataShapeValue {
+  [key: string]: {
+    format: string;
+  };
+}

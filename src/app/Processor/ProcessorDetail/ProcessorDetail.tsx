@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   CodeBlock,
   CodeBlockCode,
@@ -24,21 +24,60 @@ import {
   Thead,
   Tr,
 } from "@patternfly/react-table";
-import { Processor } from "../../../types/Processor";
+import { Processor, ProcessorSchemaType } from "../../../types/Processor";
 import "./ProcessorDetail.css";
 import { getFilterValue } from "@utils/filterUtils";
-import { getParameterValue } from "@utils/parametersUtils";
+import {
+  ProcessorSchemaEntryResponse,
+  ProcessorType,
+} from "@openapi/generated";
+import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
+import ProcessorDetailConfigParameters from "@app/Processor/ProcessorDetail/ProcessorDetailConfigParameters";
 
 interface ProcessorDetailProps {
-  /**
-   * The processor to display
-   */
+  /** The processor to display */
   processor: Processor;
+  /** Catalog of all the actions/sources */
+  schemaCatalog: ProcessorSchemaEntryResponse[];
+  /** Callback to retrieve a single action/source schema */
+  getSchema: GetSchema;
 }
 
 const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
-  const { processor } = props;
+  const { processor, schemaCatalog, getSchema } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const [schema, setSchema] = useState<object>();
+  const [schemaLoading, setSchemaLoading] = useState(false);
+
+  const sourceOrActionId =
+    processor.type === ProcessorType.Source
+      ? processor.source.type
+      : processor.action.type;
+
+  const processorConfig =
+    processor.type === ProcessorType.Source
+      ? processor.source.parameters
+      : processor.action.parameters;
+
+  const configType =
+    processor.type === ProcessorType.Source
+      ? ProcessorSchemaType.SOURCE
+      : ProcessorSchemaType.ACTION;
+
+  const sourceOrActionName =
+    schemaCatalog.find((schema) => schema.id === sourceOrActionId)?.name ?? "";
+
+  useEffect(() => {
+    if (processor) {
+      setSchemaLoading(true);
+      setSchema(undefined);
+      getSchema(sourceOrActionId, configType)
+        .then((data) => setSchema(data))
+        // @TODO: decide how to manage error while fetching a schema
+        .catch((error) => console.log(error))
+        .finally(() => setSchemaLoading(false));
+    }
+  }, [processor, getSchema, sourceOrActionId, configType]);
 
   return (
     <>
@@ -58,7 +97,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
           </StackItem>
         </Stack>
       </PageSection>
-      {processor.type === "source" && (
+      {processor.type === ProcessorType.Source && (
         <PageSection variant={PageSectionVariants.light}>
           <Stack hasGutter={true}>
             <StackItem>
@@ -75,26 +114,16 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                     {t("processor.sourceType")}
                   </DescriptionListTerm>
                   <DescriptionListDescription>
-                    {processor.source.type}
+                    {sourceOrActionName}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
-                {Object.keys(processor.source.parameters).map(
-                  (key): JSX.Element => (
-                    <DescriptionListGroup key={key}>
-                      <DescriptionListTerm>
-                        {t(`processor.${key}`)}
-                      </DescriptionListTerm>
-                      <DescriptionListDescription>
-                        {getParameterValue(
-                          (
-                            processor.source.parameters as {
-                              [key: string]: unknown;
-                            }
-                          )[key]
-                        )}
-                      </DescriptionListDescription>
-                    </DescriptionListGroup>
-                  )
+                {schema && !schemaLoading && (
+                  <>
+                    <ProcessorDetailConfigParameters
+                      schema={schema}
+                      parameters={processorConfig as { [key: string]: unknown }}
+                    />
+                  </>
                 )}
               </DescriptionList>
             </StackItem>
@@ -148,7 +177,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
           </StackItem>
         </Stack>
       </PageSection>
-      {processor.type === "sink" && (
+      {processor.type === ProcessorType.Sink && (
         <>
           <PageSection variant={PageSectionVariants.light}>
             <Stack hasGutter={true}>
@@ -209,26 +238,18 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                       {t("processor.actionType")}
                     </DescriptionListTerm>
                     <DescriptionListDescription>
-                      {t(`processor.actions.${processor.action.type}`)}
+                      {sourceOrActionName}
                     </DescriptionListDescription>
                   </DescriptionListGroup>
-                  {Object.keys(processor.action.parameters).map(
-                    (key): JSX.Element => (
-                      <DescriptionListGroup key={key}>
-                        <DescriptionListTerm>
-                          {t(`processor.${key}`)}
-                        </DescriptionListTerm>
-                        <DescriptionListDescription>
-                          {getParameterValue(
-                            (
-                              processor.action.parameters as {
-                                [key: string]: unknown;
-                              }
-                            )[key]
-                          )}
-                        </DescriptionListDescription>
-                      </DescriptionListGroup>
-                    )
+                  {schema && !schemaLoading && (
+                    <>
+                      <ProcessorDetailConfigParameters
+                        schema={schema}
+                        parameters={
+                          processorConfig as { [key: string]: unknown }
+                        }
+                      />
+                    </>
                   )}
                 </DescriptionList>
               </StackItem>

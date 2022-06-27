@@ -1,4 +1,4 @@
-import { Action, Source } from "@openapi/generated";
+import { Action, ProcessorType, Source } from "@openapi/generated";
 
 export type Processor = SinkProcessor | SourceProcessor;
 
@@ -28,7 +28,7 @@ export interface EventFilter {
 
 export interface ProcessorFormData {
   name: string;
-  type: string;
+  type?: ProcessorType;
   action?: Action;
   transformationTemplate?: string;
   filters?: EventFilter[];
@@ -75,4 +75,10 @@ export enum FilterType {
 export enum ProcessorSchemaType {
   ACTION = "action",
   SOURCE = "source",
+}
+
+export interface DataShapeValue {
+  [key: string]: {
+    format: string;
+  };
 }

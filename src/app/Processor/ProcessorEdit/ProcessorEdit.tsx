@@ -29,6 +29,7 @@ import {
   ProcessorRequest,
   ProcessorResponse,
   ProcessorSchemaEntryResponse,
+  ProcessorType,
 } from "@openapi/generated";
 import {
   EventFilter,
@@ -78,7 +79,9 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     () => processor !== undefined,
     [processor]
   );
-  const [processorType, setProcessorType] = useState(processor?.type ?? "");
+  const [processorType, setProcessorType] = useState<ProcessorType | undefined>(
+    processor?.type
+  );
   const [name, setName] = useState(processor?.name ?? "");
   const [filters, setFilters] = useState<EventFilter[]>(
     (processor?.filters as unknown as EventFilter[]) ?? [
@@ -169,7 +172,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
 
   const prepareRequest = (formData: ProcessorFormData): ProcessorRequest => {
     const requestData: ProcessorRequest = { name: formData.name };
-    if (formData.type === "sink") {
+    if (formData.type === ProcessorType.Sink) {
       requestData.action = formData.action;
     } else {
       requestData.source = formData.source;
@@ -291,10 +294,12 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 title={t("processor.sourceProcessor")}
                                 data-ouia-component-id="source"
                                 data-ouia-component-type="Tile"
-                                isSelected={processorType === "source"}
+                                isSelected={
+                                  processorType === ProcessorType.Source
+                                }
                                 style={{ height: "100%" }}
                                 onClick={(): void => {
-                                  setProcessorType("source");
+                                  setProcessorType(ProcessorType.Source);
                                   resetValidation("processorType");
                                 }}
                               >
@@ -307,9 +312,11 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 data-ouia-component-id="sink"
                                 data-ouia-component-type="Tile"
                                 style={{ width: "100%", height: "100%" }}
-                                isSelected={processorType === "sink"}
+                                isSelected={
+                                  processorType === ProcessorType.Sink
+                                }
                                 onClick={(): void => {
-                                  setProcessorType("sink");
+                                  setProcessorType(ProcessorType.Sink);
                                   resetValidation("processorType");
                                 }}
                               >
@@ -348,9 +355,9 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                         />
                       </FormGroup>
                     </FormSection>
-                    {processorType !== "" && (
+                    {processorType && (
                       <>
-                        {processorType === "source" && (
+                        {processorType === ProcessorType.Source && (
                           <FormSection title={t("processor.source")}>
                             <TextContent>
                               <Text
@@ -383,45 +390,48 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                             onChange={setFilters}
                           />
                         </FormSection>
-                        <FormSection title={t("processor.transformation")}>
-                          <TextContent>
-                            <Text
-                              component="p"
-                              ouiaId={"transformation-description"}
-                            >
-                              {t("processor.addTransformationDescription")}
-                            </Text>
-                          </TextContent>
-                          <CodeEditor
-                            id={"transformation-template"}
-                            height={"300px"}
-                            isLineNumbersVisible={true}
-                            code={transformation}
-                            onChange={setTransformation}
-                            options={{
-                              scrollbar: { alwaysConsumeMouseWheel: false },
-                            }}
-                          />
-                        </FormSection>
-                        {processorType === "sink" && (
-                          <FormSection title={t("processor.action")}>
-                            <TextContent>
-                              <Text component="p" ouiaId="action-description">
-                                {t("processor.selectActionDescription")}
-                              </Text>
-                            </TextContent>
-                            <ConfigurationEdit
-                              configType={ProcessorSchemaType.ACTION}
-                              action={action}
-                              registerValidation={registerValidateConfig}
-                              onChange={setAction}
-                              readOnly={isExistingProcessor}
-                              schemaCatalog={schemaCatalog}
-                              getSchema={getSchema}
-                            />
-                          </FormSection>
+
+                        {processorType === ProcessorType.Sink && (
+                          <>
+                            <FormSection title={t("processor.transformation")}>
+                              <TextContent>
+                                <Text
+                                  component="p"
+                                  ouiaId={"transformation-description"}
+                                >
+                                  {t("processor.addTransformationDescription")}
+                                </Text>
+                              </TextContent>
+                              <CodeEditor
+                                id={"transformation-template"}
+                                height={"300px"}
+                                isLineNumbersVisible={true}
+                                code={transformation}
+                                onChange={setTransformation}
+                                options={{
+                                  scrollbar: { alwaysConsumeMouseWheel: false },
+                                }}
+                              />
+                            </FormSection>
+                            <FormSection title={t("processor.action")}>
+                              <TextContent>
+                                <Text component="p" ouiaId="action-description">
+                                  {t("processor.selectActionDescription")}
+                                </Text>
+                              </TextContent>
+                              <ConfigurationEdit
+                                configType={ProcessorSchemaType.ACTION}
+                                action={action}
+                                registerValidation={registerValidateConfig}
+                                onChange={setAction}
+                                readOnly={isExistingProcessor}
+                                schemaCatalog={schemaCatalog}
+                                getSchema={getSchema}
+                              />
+                            </FormSection>
+                          </>
                         )}
-                        {processorType !== "" && (
+                        {processorType && (
                           <AlertGroup
                             className={"processor-edit__form__notice"}
                           >

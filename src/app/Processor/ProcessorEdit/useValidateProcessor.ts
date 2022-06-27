@@ -64,7 +64,7 @@ export function useValidateProcessor(
   }, [name, resetValidation, existingProcessorName, t]);
 
   const validateProcessorType = useCallback((): boolean => {
-    if (isEmpty(type)) {
+    if (!type) {
       setValidation((prevState) => ({
         ...prevState,
         errors: {

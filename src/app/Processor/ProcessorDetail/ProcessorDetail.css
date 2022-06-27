@@ -2,3 +2,11 @@
 .processor-detail__transformation-template {
   max-width: 50rem;
 }
+
+.processor-detail__derived-title {
+  text-transform: capitalize;
+}
+
+.processor-detail__property--not-set {
+  color: var(--pf-global--Color--200);
+}

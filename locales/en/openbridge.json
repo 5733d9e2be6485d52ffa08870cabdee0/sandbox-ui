@@ -22,6 +22,8 @@
     "name": "Name",
     "no": "No",
     "owner": "Owner",
+    "pageDoesNotExistError": "The page you are looking for does not exist. It might have been moved or deleted.",
+    "pageNotFound": "Page not found",
     "processor": "Processor",
     "processors": "Processors",
     "publishedAt": "Published at",
@@ -46,9 +48,14 @@
     "createSEInstance": "Create Smart Events instance",
     "errors": {
       "cantCreateInstance": "Error while creating a Smart Event instance. Please, try again later.",
-      "cantDeleteBecauseProcessorsInside": "There are processors associated with this instance. Please delete them first.",
+      "cantDeleteBecauseProcessorsInside": "It is not possible to delete a Smart Events instance with active Processors.",
+      "cantDeleteBecauseNotExisting": "The Smart Events instance you are trying to delete, it does not exist anymore.",
+      "cantDeleteTryLater": "It is not possible to delete this Smart Events instance. Try again later.",
+      "cantFindInstance": "The Smart Event Instance you are looking for does not exist. It might have been deleted.",
+      "instanceDetailsGenericError": "Error while retrieving the Smart Event instance details.",
       "instancesListGenericError": "Error while retrieving the list of Smart Event instances.",
-      "invalidName": "A Smart Events Instance with this name already exists in your account."
+      "invalidName": "A Smart Events Instance with this name already exists in your account.",
+      "processorsListGenericError": "Error while retrieving the list of Processors for this Smart Event instance."
     },
     "instanceId": "Instance ID",
     "instancesListPageTitle": "Smart Events Instances",
@@ -56,6 +63,8 @@
     "instanceWillBeAvailableShortly": "Your Smart Events instance will be ready for use shortly after creation.",
     "loadingInstance": "Loading instance",
     "noInstances": "No Smart Event instances",
+    "notFound": "Smart Events Instance not found",
+    "smartEventInstance": "Smart Events Instance",
     "smartEventInstances": "Smart Event Instances"
   },
   "processor": {
@@ -71,9 +80,11 @@
     "deleteFilter": "Delete filter",
     "deleteProcessor": "Delete Processor?",
     "errors": {
-      "missingProcessorType": "Please select a processor type.",
+      "cantDeleteBecauseNotExisting": "The Processor you are trying to delete, it does not exist anymore.",
+      "cantDeleteTryLater": "It is not possible to delete this Processor. Try again later.",
       "invalidName": "A processor with this name already exists in this instance.",
-      "invalidUrl": "Please enter a valid URL with http or https protocol."
+      "invalidUrl": "Please enter a valid URL with http or https protocol.",
+      "missingProcessorType": "Please select a processor type."
     },
     "filters": "Filters",
     "generalInformation": "General information",

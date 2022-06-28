@@ -44,6 +44,13 @@ import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
+import axios from "axios";
+import { ErrorWithDetail } from "../../../types/Error";
 
 interface InstanceRouteParams {
   instanceId: string;
@@ -54,7 +61,6 @@ const InstancePage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const location = useLocation();
   const history = useHistory();
-  const goToHome = useCallback((): void => history.push(`/`), [history]);
 
   const processorsTabRef = React.createRef<HTMLElement>();
 
@@ -91,6 +97,20 @@ const InstancePage = (): JSX.Element => {
     [currentPage, currentPageSize, getProcessors, instanceId]
   );
 
+  const getPageTitle = useCallback(
+    (bridge?: BridgeResponse) => {
+      const name = bridge ? bridge.name : t("instance.smartEventInstance");
+      return (
+        <TextContent>
+          <Text ouiaId="instance-name" component="h1">
+            {name}
+          </Text>
+        </TextContent>
+      );
+    },
+    [t]
+  );
+
   usePolling(() => triggerGetProcessors(), 10000);
 
   useEffect(
@@ -106,15 +126,34 @@ const InstancePage = (): JSX.Element => {
   }, [processorListResponse]);
 
   useEffect(() => {
-    if (bridgeError) {
-      console.error(bridgeError);
-      goToHome();
+    if (bridgeError && axios.isAxiosError(bridgeError)) {
+      if (
+        isServiceApiError(bridgeError) &&
+        getErrorCode(bridgeError) === APIErrorCodes.ERROR_4
+      ) {
+        /* When the instance is not found on the server, we are going to replace
+         * the current URL with a fake URL that does not match any route.
+         * In this way, the PageNotFound component will be shown.
+         */
+        history.replace("/instance-not-found", {
+          title: t("instance.notFound"),
+          message: t("instance.errors.cantFindInstance"),
+        });
+      } else {
+        throw new ErrorWithDetail(
+          getPageTitle(),
+          t("instance.errors.instanceDetailsGenericError")
+        );
+      }
     }
 
     if (processorsError) {
-      console.error(processorsError);
+      throw new ErrorWithDetail(
+        getPageTitle(bridge),
+        t("instance.errors.processorsListGenericError")
+      );
     }
-  }, [bridgeError, goToHome, processorsError]);
+  }, [bridge, bridgeError, getPageTitle, history, processorsError, t]);
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,

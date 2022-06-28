@@ -52,7 +52,7 @@ describe("Instances Test", () => {
             cy.ouiaId("submit", "PF4/Button").click();
             cy.ouiaId("error-instance-create-fail", "PF4/Alert").should(
               "have.text",
-              "Danger alert:Error while creating a Smart Event instance. Please, try again later."
+              "Danger alert:Address form errors to proceed."
             );
           });
       });

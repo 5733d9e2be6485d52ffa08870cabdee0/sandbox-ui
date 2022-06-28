@@ -36,6 +36,30 @@ describe("Delete Test", () => {
     });
   });
 
+  it("Instance :: External component fail", () => {
+    cy.visit("/");
+
+    cy.ouiaId("Instances list table", "PF4/Table")
+      .ouiaId("error-test", "PF4/TableRow")
+      .find("td")
+      .then(($cells) => {
+        expect($cells).have.length(4);
+        expect($cells.eq(1)).have.text("ready");
+        cy.wrap($cells.eq(3)).ouiaType("PF4/Dropdown").click();
+      });
+
+    cy.ouiaType("PF4/DropdownItem").contains("Delete").click();
+
+    cy.ouiaId("delete-confirmation-value", "PF4/TextInput").type("error-test");
+    cy.ouiaId("confirm", "PF4/Button").click();
+
+    cy.ouiaId("delete-instance", "PF4/ModalContent").should("exist");
+    cy.ouiaId("delete-instance", "PF4/ModalContent").should(
+      "contain.text",
+      "It is not possible to delete this Smart Events instance. Try again later."
+    );
+  });
+
   it("Processor", () => {
     // Open 'Instance one'
     cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");

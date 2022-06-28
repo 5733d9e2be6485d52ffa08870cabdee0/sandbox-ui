@@ -46,7 +46,7 @@ export const instancesData = [
   {
     kind: "Bridge",
     id: "d4de4dd9-42fe-48ec-8ac7-42163e6e971a",
-    name: "Instance five",
+    name: "error-test",
     href: "/api/v1/bridges/d4de4dd9-42fe-48ec-8ac7-42163e6e971a",
     status: "ready",
     submitted_at: "2022-02-05T13:58:00Z",

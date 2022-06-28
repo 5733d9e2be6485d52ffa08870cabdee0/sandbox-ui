@@ -193,6 +193,16 @@ export const handlers = [
       },
     });
 
+    if (existingBridge!.name == "error-test") {
+      return res(
+        ctx.status(500),
+        ctx.json({
+          ...error_external_component,
+          reason: `Deletion was no successful probably due to external component fail'`,
+        })
+      );
+    }
+
     if (!existingBridge) {
       return res(
         ctx.status(404),

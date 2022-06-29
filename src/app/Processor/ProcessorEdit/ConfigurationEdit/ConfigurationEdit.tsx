@@ -6,6 +6,8 @@ import {
 } from "@openapi/generated";
 import { useTranslation } from "react-i18next";
 import {
+  Alert,
+  FormAlert,
   FormGroup,
   FormSelect,
   FormSelectOption,
@@ -14,6 +16,12 @@ import {
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
 import { GetSchema } from "../../../../hooks/useSchemasApi/useGetSchemaApi";
 import { ProcessorSchemaType } from "../../../../types/Processor";
+import axios from "axios";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
 
 type ConfigurationEditProps = ActionConfig | SourceConfig;
 
@@ -32,6 +40,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
       : props.source?.type) ?? ""
   );
   const [schema, setSchema] = useState<object>();
+  const [schemaError, setSchemaError] = useState<string | undefined>();
   const [schemaLoading, setSchemaLoading] = useState(false);
   const [parameters, setParameters] = useState(
     (configType === ProcessorSchemaType.ACTION
@@ -87,13 +96,26 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
     if (type) {
       setSchemaLoading(true);
       setSchema(undefined);
+      setSchemaError(undefined);
       getSchema(type, configType)
         .then((data) => setSchema(data))
-        // @TODO: decide how to manage error while fetching a schema
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          if (error && axios.isAxiosError(error)) {
+            if (
+              isServiceApiError(error) &&
+              getErrorCode(error) === APIErrorCodes.ERROR_4
+            ) {
+              setSchemaError(t("processor.errors.cantFindParametersInfo"));
+            } else {
+              setSchemaError(
+                t("processor.errors.parametersSectionGenericError")
+              );
+            }
+          }
+        })
         .finally(() => setSchemaLoading(false));
     }
-  }, [type, getSchema, configType]);
+  }, [type, getSchema, configType, t]);
 
   const typeOptions = [
     {
@@ -155,7 +177,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           />
         </FormGroup>
       )}
-      {type !== "" && schema && !schemaLoading && (
+      {type !== "" && schema && !schemaError && !schemaLoading && (
         <ConfigurationForm
           configuration={parameters}
           schema={schema}
@@ -163,6 +185,17 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           registerValidation={registerValidateParameters}
           readOnly={readOnly}
         />
+      )}
+      {schemaError && (
+        <FormAlert>
+          <Alert
+            ouiaId="error-schema"
+            variant="danger"
+            title={schemaError}
+            aria-live="polite"
+            isInline
+          />
+        </FormAlert>
       )}
     </>
   );

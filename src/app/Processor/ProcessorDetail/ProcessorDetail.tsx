@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   CodeBlock,
   CodeBlockCode,
   DescriptionList,
@@ -33,6 +34,12 @@ import {
 } from "@openapi/generated";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import ProcessorDetailConfigParameters from "@app/Processor/ProcessorDetail/ProcessorDetailConfigParameters";
+import axios from "axios";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
 
 interface ProcessorDetailProps {
   /** The processor to display */
@@ -47,6 +54,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
   const { processor, schemaCatalog, getSchema } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const [schema, setSchema] = useState<object>();
+  const [schemaError, setSchemaError] = useState<string | undefined>();
   const [schemaLoading, setSchemaLoading] = useState(false);
 
   const sourceOrActionId =
@@ -71,13 +79,26 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
     if (processor) {
       setSchemaLoading(true);
       setSchema(undefined);
+      setSchemaError(undefined);
       getSchema(sourceOrActionId, configType)
         .then((data) => setSchema(data))
-        // @TODO: decide how to manage error while fetching a schema
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          if (error && axios.isAxiosError(error)) {
+            if (
+              isServiceApiError(error) &&
+              getErrorCode(error) === APIErrorCodes.ERROR_4
+            ) {
+              setSchemaError(t("processor.errors.cantFindParametersInfo"));
+            } else {
+              setSchemaError(
+                t("processor.errors.parametersSectionGenericError")
+              );
+            }
+          }
+        })
         .finally(() => setSchemaLoading(false));
     }
-  }, [processor, getSchema, sourceOrActionId, configType]);
+  }, [processor, getSchema, sourceOrActionId, configType, t]);
 
   return (
     <>
@@ -117,13 +138,22 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                     {sourceOrActionName}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
-                {schema && !schemaLoading && (
+                {schema && !schemaError && !schemaLoading && (
                   <>
                     <ProcessorDetailConfigParameters
                       schema={schema}
                       parameters={processorConfig as { [key: string]: unknown }}
                     />
                   </>
+                )}
+                {schemaError && (
+                  <Alert
+                    ouiaId="error-schema"
+                    variant="danger"
+                    title={schemaError}
+                    aria-live="polite"
+                    isInline
+                  />
                 )}
               </DescriptionList>
             </StackItem>

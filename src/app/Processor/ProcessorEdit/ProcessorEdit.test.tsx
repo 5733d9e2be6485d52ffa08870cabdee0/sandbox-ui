@@ -35,6 +35,7 @@ const setupProcessorEdit = (
       processor={processor}
       schemaCatalog={schemaCatalog as ProcessorSchemaEntryResponse[]}
       getSchema={getSchema}
+      schemaError={undefined}
     />
   );
   return { comp, onSave, onCancel };

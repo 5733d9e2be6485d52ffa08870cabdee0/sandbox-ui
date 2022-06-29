@@ -82,7 +82,7 @@ const CreateProcessorPage = (): JSX.Element => {
 
   // @TODO decide how to manage errors when retrieving the schema catalog
   const { schemas, isLoading: areSchemasLoading } = useGetSchemasApi();
-  const { getSchema } = useGetSchemaApi();
+  const { getSchema, error: schemaError } = useGetSchemaApi();
 
   return (
     <>
@@ -125,6 +125,7 @@ const CreateProcessorPage = (): JSX.Element => {
             existingProcessorName={existingProcessorName}
             schemaCatalog={schemas}
             getSchema={getSchema}
+            schemaError={schemaError}
           />
         </>
       )}

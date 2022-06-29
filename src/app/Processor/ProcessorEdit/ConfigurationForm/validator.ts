@@ -5,7 +5,7 @@ import ajv from "ajv-errors";
 
 const ajvInstance = new Ajv2019({
   allErrors: true,
-  useDefaults: false,
+  useDefaults: true,
   strict: "log",
   strictSchema: false,
 });

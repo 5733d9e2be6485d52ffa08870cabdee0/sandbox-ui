@@ -112,8 +112,10 @@ export class CustomJsonSchemaBridge extends JSONSchemaBridge {
       field.type === "string" &&
       typeof enumValues !== "undefined"
     ) {
-      if (enumValues[0] !== "") {
+      if (field.default === undefined && enumValues[0] !== "") {
         newEnumValues = ["", ...enumValues];
+      } else {
+        newEnumValues = enumValues;
       }
     }
     // Due to:

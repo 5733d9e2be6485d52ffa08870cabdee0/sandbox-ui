@@ -76,8 +76,31 @@ export const schemasData: { [key: string]: object } = {
         description: "The topic where to send the event.",
         example: "my-topic",
       },
+      kafka_broker_url: {
+        type: "string",
+        title: "Broker URL",
+        description: "RHOSAK Broker URL",
+        example: "username-c--hj---mhlksdfss-p--a.bf2.kafka.rhcloud.com:443",
+      },
+      kafka_client_id: {
+        type: "string",
+        title: "Client Id",
+        description:
+          "The Client Id part of the credentials to authenticate to Kafka",
+      },
+      kafka_client_secret: {
+        type: "string",
+        title: "Client Secret",
+        description:
+          "The Client Secret part of the credentials to authenticate to Kafka",
+      },
     },
-    required: ["topic"],
+    required: [
+      "topic",
+      "kafka_broker_url",
+      "kafka_client_id",
+      "kafka_client_secret",
+    ],
   },
   "send_to_bridge_sink_0.1": {
     type: "object",

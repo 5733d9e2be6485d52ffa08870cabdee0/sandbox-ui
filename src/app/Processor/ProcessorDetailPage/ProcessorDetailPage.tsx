@@ -54,7 +54,6 @@ const ProcessorDetailPage = (): JSX.Element => {
     (): void => history.push(`/instance/${instanceId}`),
     [history, instanceId]
   );
-  const goToHome = useCallback((): void => history.push(`/`), [history]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [currentProcessor, setCurrentProcessor] = useState<ProcessorResponse>();
@@ -143,7 +142,9 @@ const ProcessorDetailPage = (): JSX.Element => {
         );
       }
     }
+  }, [bridgeError, history, processor?.name, t]);
 
+  useEffect(() => {
     if (processorError && axios.isAxiosError(processorError)) {
       if (
         isServiceApiError(processorError) &&
@@ -170,7 +171,9 @@ const ProcessorDetailPage = (): JSX.Element => {
         );
       }
     }
+  }, [history, processor?.name, processorError, t]);
 
+  useEffect(() => {
     if (schemasError && axios.isAxiosError(schemasError)) {
       throw new ErrorWithDetail(
         (
@@ -183,7 +186,9 @@ const ProcessorDetailPage = (): JSX.Element => {
         t("processor.errors.processorDetailsGenericError")
       );
     }
+  }, [processor?.name, schemasError, t]);
 
+  useEffect(() => {
     if (updateProcessorError && axios.isAxiosError(updateProcessorError)) {
       // TODO: replace error code string with a value coming from an error catalog
       //  See https://issues.redhat.com/browse/MGDOBR-669 for more details.
@@ -194,18 +199,7 @@ const ProcessorDetailPage = (): JSX.Element => {
         setExistingProcessorName(requestData?.name);
       }
     }
-  }, [
-    bridgeError,
-    processorError,
-    goToHome,
-    goToInstance,
-    updateProcessorError,
-    requestData?.name,
-    history,
-    t,
-    processor?.name,
-    schemasError,
-  ]);
+  }, [requestData?.name, updateProcessorError]);
 
   const processorNotChanged = useCallback(
     (prevDef: ProcessorResponse, updatedDef: ProcessorRequest): boolean =>

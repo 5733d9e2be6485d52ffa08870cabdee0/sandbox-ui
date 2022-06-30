@@ -59,6 +59,7 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
       }
     }
     if (processorListError && axios.isAxiosError(processorListError)) {
+      setPreloading(false);
       setDeleteBlockedReason(t("instance.errors.cantDeleteTryLater"));
     }
   }, [processorListResponse, processorListError, t]);

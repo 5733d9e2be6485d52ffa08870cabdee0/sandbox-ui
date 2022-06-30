@@ -84,6 +84,13 @@ const CreateProcessorPage = (): JSX.Element => {
     error: createProcessorError,
   } = useAddProcessorToBridgeApi();
 
+  const {
+    schemas,
+    isLoading: areSchemasLoading,
+    error: schemasError,
+  } = useGetSchemasApi();
+  const { getSchema, error: schemaError } = useGetSchemaApi();
+
   const handleSave = (requestData: ProcessorRequest): void => {
     setRequestData(requestData);
     addProcessorToBridge(instanceId, requestData);
@@ -135,9 +142,18 @@ const CreateProcessorPage = (): JSX.Element => {
     }
   }, [createProcessorError, history, requestData, t]);
 
-  // @TODO decide how to manage errors when retrieving the schema catalog
-  const { schemas, isLoading: areSchemasLoading } = useGetSchemasApi();
-  const { getSchema, error: schemaError } = useGetSchemaApi();
+  useEffect(() => {
+    if (schemasError && axios.isAxiosError(schemasError)) {
+      throw new ErrorWithDetail(
+        (
+          <TextContent>
+            <Text component="h1">{t("common.processor")}</Text>
+          </TextContent>
+        ),
+        t("processor.errors.processorDetailsGenericError")
+      );
+    }
+  }, [schemasError, t]);
 
   return (
     <>

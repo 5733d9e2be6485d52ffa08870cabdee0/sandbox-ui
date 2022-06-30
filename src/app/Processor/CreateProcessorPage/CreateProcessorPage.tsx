@@ -23,6 +23,7 @@ import {
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
+import { ActionModal } from "@app/components/ActionModal/ActionModal";
 
 const CreateProcessorPage = (): JSX.Element => {
   const { instanceId } = useParams<InstanceRouteParams>();
@@ -30,6 +31,7 @@ const CreateProcessorPage = (): JSX.Element => {
     string | undefined
   >();
   const [requestData, setRequestData] = useState<ProcessorRequest>();
+  const [actionModal, setActionModal] = useState<JSX.Element | undefined>();
   const history = useHistory();
   const goToInstance = useCallback(
     (): void => history.push(`/instance/${instanceId}`),
@@ -100,9 +102,38 @@ const CreateProcessorPage = (): JSX.Element => {
         getErrorCode(createProcessorError) === APIErrorCodes.ERROR_1
       ) {
         setExistingProcessorName(requestData?.name);
+      } else if (
+        (isServiceApiError(createProcessorError) &&
+          getErrorCode(createProcessorError) === APIErrorCodes.ERROR_2) ||
+        getErrorCode(createProcessorError) === APIErrorCodes.ERROR_4
+      ) {
+        setActionModal(
+          <ActionModal
+            action={(): void => {
+              setActionModal(undefined);
+              history.push("/");
+            }}
+            message={t(
+              "processor.errors.cantCreateProcessorBecauseInstanceNotAvailable"
+            )}
+            showDialog={true}
+            title={t("processor.errors.cantCreateProcessor")}
+          />
+        );
+      } else {
+        setActionModal(
+          <ActionModal
+            action={(): void => {
+              setActionModal(undefined);
+            }}
+            message={t("common.tryAgainLater")}
+            showDialog={true}
+            title={t("processor.errors.cantCreateProcessor")}
+          />
+        );
       }
     }
-  }, [createProcessorError, requestData]);
+  }, [createProcessorError, history, requestData, t]);
 
   // @TODO decide how to manage errors when retrieving the schema catalog
   const { schemas, isLoading: areSchemasLoading } = useGetSchemasApi();
@@ -153,6 +184,7 @@ const CreateProcessorPage = (): JSX.Element => {
           />
         </>
       )}
+      {actionModal}
     </>
   );
 };

@@ -80,6 +80,8 @@
     "deleteFilter": "Delete filter",
     "deleteProcessor": "Delete Processor?",
     "errors": {
+      "cantCreateProcessor": "Error while creating a Processor",
+      "cantCreateProcessorBecauseInstanceNotAvailable": "The Smart Events instance you are associating it with is in the deletion phase or does not exist anymore.",
       "cantDeleteBecauseNotExisting": "The Processor you are trying to delete, it does not exist anymore.",
       "cantDeleteTryLater": "It is not possible to delete this Processor. Try again later.",
       "cantFindInstance": "The Smart Event Instance, related to the Processor you are looking for, does not exist. It might have been deleted.",

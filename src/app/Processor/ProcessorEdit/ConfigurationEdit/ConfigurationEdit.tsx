@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Action,
   ProcessorSchemaEntryResponse,
@@ -6,8 +6,6 @@ import {
 } from "@openapi/generated";
 import { useTranslation } from "react-i18next";
 import {
-  Alert,
-  FormAlert,
   FormGroup,
   FormSelect,
   FormSelectOption,
@@ -22,6 +20,9 @@ import {
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
+import { ActionModal } from "@app/components/ActionModal/ActionModal";
+import { useHistory, useParams } from "react-router-dom";
+import { InstanceRouteParams } from "@app/Instance/InstancePage/InstancePage";
 
 type ConfigurationEditProps = ActionConfig | SourceConfig;
 
@@ -34,33 +35,41 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
     schemaCatalog,
     getSchema,
   } = props;
+
+  const history = useHistory();
+  const { instanceId } = useParams<InstanceRouteParams>();
+
   const [type, setType] = useState(
     (configType === ProcessorSchemaType.ACTION
       ? props.action?.type
       : props.source?.type) ?? ""
   );
   const [schema, setSchema] = useState<object>();
-  const [schemaError, setSchemaError] = useState<string | undefined>();
   const [schemaLoading, setSchemaLoading] = useState(false);
   const [parameters, setParameters] = useState(
     (configType === ProcessorSchemaType.ACTION
       ? props.action?.parameters
       : props.source?.parameters) ?? {}
   );
+  const [actionModal, setActionModal] = useState<JSX.Element | undefined>();
+
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const [typeValidation, setTypeValidation] = useState<boolean>();
 
-  const updateType = (type: string): void => {
-    setType(type);
-    const emptyParameters: object = {};
-    onChange({
-      type,
-      parameters: emptyParameters,
-    });
-    if (type) {
-      setTypeValidation(true);
-    }
-  };
+  const updateType = useCallback(
+    (type: string): void => {
+      setType(type);
+      const emptyParameters: object = {};
+      onChange({
+        type,
+        parameters: emptyParameters,
+      });
+      if (type) {
+        setTypeValidation(true);
+      }
+    },
+    [onChange]
+  );
 
   const updateConfiguration = (parameters: object): void => {
     setParameters(parameters);
@@ -96,7 +105,6 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
     if (type) {
       setSchemaLoading(true);
       setSchema(undefined);
-      setSchemaError(undefined);
       getSchema(type, configType)
         .then((data) => setSchema(data))
         .catch((error) => {
@@ -105,17 +113,35 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
               isServiceApiError(error) &&
               getErrorCode(error) === APIErrorCodes.ERROR_4
             ) {
-              setSchemaError(t("processor.errors.cantFindParametersInfo"));
+              setActionModal(
+                <ActionModal
+                  action={(): void => {
+                    setActionModal(undefined);
+                    updateType("");
+                  }}
+                  message={t("processor.errors.cantCreateProcessorOfThatType")}
+                  showDialog={true}
+                  title={t("processor.errors.cantCreateProcessor")}
+                />
+              );
             } else {
-              setSchemaError(
-                t("processor.errors.parametersSectionGenericError")
+              setActionModal(
+                <ActionModal
+                  action={(): void => {
+                    setActionModal(undefined);
+                    history.replace(`/instance/${instanceId}`);
+                  }}
+                  message={t("common.tryAgainLater")}
+                  showDialog={true}
+                  title={t("processor.errors.cantCreateProcessor")}
+                />
               );
             }
           }
         })
         .finally(() => setSchemaLoading(false));
     }
-  }, [type, getSchema, configType, t]);
+  }, [configType, getSchema, history, instanceId, t, type, updateType]);
 
   const typeOptions = [
     {
@@ -177,7 +203,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           />
         </FormGroup>
       )}
-      {type !== "" && schema && !schemaError && !schemaLoading && (
+      {type !== "" && schema && !schemaLoading && (
         <ConfigurationForm
           configuration={parameters}
           schema={schema}
@@ -186,17 +212,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           readOnly={readOnly}
         />
       )}
-      {schemaError && (
-        <FormAlert>
-          <Alert
-            ouiaId="error-schema"
-            variant="danger"
-            title={schemaError}
-            aria-live="polite"
-            isInline
-          />
-        </FormAlert>
-      )}
+      {actionModal}
     </>
   );
 };

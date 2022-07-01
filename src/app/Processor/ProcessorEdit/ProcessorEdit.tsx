@@ -61,8 +61,6 @@ export interface ProcessorEditProps {
   schemaCatalog: ProcessorSchemaEntryResponse[];
   /** Callback to retrieve a single action/source schema */
   getSchema: GetSchema;
-  /** Possible Schema error */
-  schemaError: unknown;
 }
 
 const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
@@ -75,7 +73,6 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     processor,
     schemaCatalog,
     getSchema,
-    schemaError,
   } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const isExistingProcessor = useMemo(
@@ -464,7 +461,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                     ouiaId="submit"
                     onClick={handleSubmit}
                     isLoading={isLoading}
-                    isDisabled={isLoading || schemaError !== undefined}
+                    isDisabled={isLoading}
                   >
                     {saveButtonLabel}
                   </Button>

@@ -52,7 +52,7 @@ import { APIErrorCodes } from "@openapi/generated/errors";
 import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
 
-interface InstanceRouteParams {
+export interface InstanceRouteParams {
   instanceId: string;
 }
 

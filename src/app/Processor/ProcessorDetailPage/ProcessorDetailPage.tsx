@@ -391,7 +391,6 @@ const ProcessorDetailPage = (): JSX.Element => {
               existingProcessorName={existingProcessorName}
               schemaCatalog={schemas}
               getSchema={getSchema}
-              schemaError={schemaError}
             />
           ) : (
             <>

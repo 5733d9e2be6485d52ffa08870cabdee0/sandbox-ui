@@ -89,7 +89,7 @@ const CreateProcessorPage = (): JSX.Element => {
     isLoading: areSchemasLoading,
     error: schemasError,
   } = useGetSchemasApi();
-  const { getSchema, error: schemaError } = useGetSchemaApi();
+  const { getSchema } = useGetSchemaApi();
 
   const handleSave = (requestData: ProcessorRequest): void => {
     setRequestData(requestData);
@@ -196,7 +196,6 @@ const CreateProcessorPage = (): JSX.Element => {
             existingProcessorName={existingProcessorName}
             schemaCatalog={schemas}
             getSchema={getSchema}
-            schemaError={schemaError}
           />
         </>
       )}

@@ -9,6 +9,13 @@ import {
 } from "@openapi/generated";
 import { EventFilter } from "../../../types/Processor";
 
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useParams: jest
+    .fn()
+    .mockReturnValue({ environment: "dev", service: "fakeService" }),
+}));
+
 const setupProcessorEdit = (
   params: Partial<ProcessorEditProps>
 ): {
@@ -35,7 +42,6 @@ const setupProcessorEdit = (
       processor={processor}
       schemaCatalog={schemaCatalog as ProcessorSchemaEntryResponse[]}
       getSchema={getSchema}
-      schemaError={undefined}
     />
   );
   return { comp, onSave, onCancel };

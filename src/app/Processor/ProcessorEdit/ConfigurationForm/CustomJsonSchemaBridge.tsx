@@ -74,7 +74,7 @@ export class CustomJsonSchemaBridge extends JSONSchemaBridge {
         ...(this.showCredentialHelpText && {
           helperText: this.duplicateMode
             ? this.t("credentialDuplicateFieldHelpText")
-            : this.t("credentialEditFieldHelpText"),
+            : this.t("processor.credentialEditFieldHelpText"),
         }),
         labelIcon: getLabelIcon(label || name, description),
         name,

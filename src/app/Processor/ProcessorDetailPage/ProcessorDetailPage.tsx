@@ -34,7 +34,7 @@ import {
   ProcessorResponse,
 } from "@openapi/generated";
 import axios from "axios";
-import { ErrorWithDetail, ResponseError } from "../../../types/Error";
+import { ErrorWithDetail } from "../../../types/Error";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
 import { canDeleteResource } from "@utils/resourceUtils";
 import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";
@@ -44,6 +44,7 @@ import {
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
+import { ActionModal } from "@app/components/ActionModal/ActionModal";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
@@ -62,6 +63,8 @@ const ProcessorDetailPage = (): JSX.Element => {
     string | undefined
   >();
   const [requestData, setRequestData] = useState<ProcessorRequest>();
+  const [actionModal, setActionModal] = useState<JSX.Element | undefined>();
+
   const actionsToggle = (isOpen: boolean): void => {
     setIsActionsOpen(isOpen);
   };
@@ -190,16 +193,43 @@ const ProcessorDetailPage = (): JSX.Element => {
 
   useEffect(() => {
     if (updateProcessorError && axios.isAxiosError(updateProcessorError)) {
-      // TODO: replace error code string with a value coming from an error catalog
-      //  See https://issues.redhat.com/browse/MGDOBR-669 for more details.
       if (
-        (updateProcessorError.response?.data as ResponseError).code ===
-        "OPENBRIDGE-1"
+        isServiceApiError(updateProcessorError) &&
+        getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_1
       ) {
         setExistingProcessorName(requestData?.name);
+      } else if (
+        isServiceApiError(updateProcessorError) &&
+        getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_19
+      ) {
+        setActionModal(
+          <ActionModal
+            action={(): void => {
+              setActionModal(undefined);
+              history.push("/temp");
+              history.goBack();
+            }}
+            message={t(
+              "processor.errors.cantUpdateProcessorBecauseNotReadyState"
+            )}
+            showDialog={true}
+            title={t("processor.errors.cantUpdateProcessor")}
+          />
+        );
+      } else {
+        setActionModal(
+          <ActionModal
+            action={(): void => {
+              setActionModal(undefined);
+            }}
+            message={t("common.tryAgainLater")}
+            showDialog={true}
+            title={t("processor.errors.cantUpdateProcessor")}
+          />
+        );
       }
     }
-  }, [requestData?.name, updateProcessorError]);
+  }, [history, requestData?.name, t, updateProcessorError]);
 
   const processorNotChanged = useCallback(
     (prevDef: ProcessorResponse, updatedDef: ProcessorRequest): boolean =>
@@ -382,6 +412,7 @@ const ProcessorDetailPage = (): JSX.Element => {
           )}
         </>
       )}
+      {actionModal}
     </>
   );
 };

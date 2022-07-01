@@ -118,7 +118,7 @@ const CreateProcessorPage = (): JSX.Element => {
           <ActionModal
             action={(): void => {
               setActionModal(undefined);
-              history.push("/");
+              history.replace("/");
             }}
             message={t(
               "processor.errors.cantCreateProcessorBecauseInstanceNotAvailable"

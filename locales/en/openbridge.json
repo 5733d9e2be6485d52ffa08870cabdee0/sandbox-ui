@@ -87,6 +87,8 @@
       "cantFindInstance": "The Smart Event Instance, related to the Processor you are looking for, does not exist. It might have been deleted.",
       "cantFindParametersInfo": "The information related to the parameters section for this Processor is currently missing.",
       "cantFindProcessor": "The Processor you are looking for does not exist. It might have been deleted.",
+      "cantUpdateProcessor": "Error while updating a Processor",
+      "cantUpdateProcessorBecauseNotReadyState": "You can update a Processor that it is only in an actionable state.",
       "instanceDetailsGenericError": "Error while retrieving the Smart Event instance details, related to this Processor.",
       "invalidName": "A processor with this name already exists in this instance.",
       "invalidUrl": "Please enter a valid URL with http or https protocol.",

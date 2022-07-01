@@ -11,6 +11,7 @@ import {
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { useTranslation } from "react-i18next";
 import { DataShapeValue } from "../../../types/Processor";
+import { isJSONSchema } from "@utils/processorUtils";
 
 interface ProcessorDetailConfigParametersProps {
   schema: JSONSchema7;
@@ -156,9 +157,11 @@ const displayFieldValue = (
           const passwordField = oneOf.filter(
             (item) => typeof item !== "boolean" && item?.format === "password"
           );
-          if (passwordField && typeof value === "string") {
+          if (passwordField) {
             return (
-              <DescriptionListDescription>{value}</DescriptionListDescription>
+              <DescriptionListDescription>
+                {maskedValue}
+              </DescriptionListDescription>
             );
           }
         }
@@ -182,6 +185,4 @@ export const DataShape = ({ data }: { data: DataShapeValue }): JSX.Element => {
   );
 };
 
-const isJSONSchema = (value: JSONSchema7Definition): value is JSONSchema7 => {
-  return typeof value !== "boolean";
-};
+export const maskedValue = "**************************";

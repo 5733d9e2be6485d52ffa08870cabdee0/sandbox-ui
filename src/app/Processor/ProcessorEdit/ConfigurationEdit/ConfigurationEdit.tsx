@@ -12,17 +12,7 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
-import { GetSchema } from "../../../../hooks/useSchemasApi/useGetSchemaApi";
 import { ProcessorSchemaType } from "../../../../types/Processor";
-import axios from "axios";
-import {
-  getErrorCode,
-  isServiceApiError,
-} from "@openapi/generated/errorHelpers";
-import { APIErrorCodes } from "@openapi/generated/errors";
-import { ActionModal } from "@app/components/ActionModal/ActionModal";
-import { useHistory, useParams } from "react-router-dom";
-import { InstanceRouteParams } from "@app/Instance/InstancePage/InstancePage";
 
 type ConfigurationEditProps = ActionConfig | SourceConfig;
 
@@ -32,32 +22,21 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
     onChange,
     registerValidation,
     readOnly = false,
+    editMode,
     schemaCatalog,
-    getSchema,
+    schema,
   } = props;
-
-  const history = useHistory();
-  const { instanceId } = useParams<InstanceRouteParams>();
-
   const [type, setType] = useState(
     (configType === ProcessorSchemaType.ACTION
       ? props.action?.type
       : props.source?.type) ?? ""
   );
-  const [schema, setSchema] = useState<object>();
-  const [schemaLoading, setSchemaLoading] = useState(false);
+
   const [parameters, setParameters] = useState(
     (configType === ProcessorSchemaType.ACTION
       ? props.action?.parameters
       : props.source?.parameters) ?? {}
   );
-
-  const [showActionModal, setShowActionModal] = useState<boolean>(false);
-  const actionModalMessage = useRef<string>("");
-  const actionModalFn = useRef<() => void>((): void =>
-    setShowActionModal(false)
-  );
-
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const [typeValidation, setTypeValidation] = useState<boolean>();
 
@@ -106,40 +85,6 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
     }
   }, [props]);
 
-  useEffect(() => {
-    if (type) {
-      setSchemaLoading(true);
-      setSchema(undefined);
-      getSchema(type, configType)
-        .then((data) => setSchema(data))
-        .catch((error) => {
-          if (error && axios.isAxiosError(error)) {
-            if (
-              isServiceApiError(error) &&
-              getErrorCode(error) === APIErrorCodes.ERROR_4
-            ) {
-              setShowActionModal(true);
-              actionModalFn.current = (): void => {
-                setShowActionModal(false);
-                updateType("");
-              };
-              actionModalMessage.current = t(
-                "processor.errors.cantCreateProcessorOfThatType"
-              );
-            } else {
-              setShowActionModal(true);
-              actionModalFn.current = (): void => {
-                setShowActionModal(false);
-                history.replace(`/instance/${instanceId}`);
-              };
-              actionModalMessage.current = t("common.tryAgainLater");
-            }
-          }
-        })
-        .finally(() => setSchemaLoading(false));
-    }
-  }, [configType, getSchema, history, instanceId, t, type, updateType]);
-
   const typeOptions = [
     {
       name: "",
@@ -185,7 +130,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           ))}
         </FormSelect>
       </FormGroup>
-      {(type === "" || schemaLoading) && (
+      {(type === "" || !schema) && (
         <FormGroup
           fieldId={`${configType}-config`}
           label={t(`processor.${configType}Configuration`)}
@@ -200,21 +145,16 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           />
         </FormGroup>
       )}
-      {type !== "" && schema && !schemaLoading && (
+      {type !== "" && schema && (
         <ConfigurationForm
           configuration={parameters}
           schema={schema}
           onChange={updateConfiguration}
           registerValidation={registerValidateParameters}
           readOnly={readOnly}
+          editMode={editMode}
         />
       )}
-      <ActionModal
-        action={actionModalFn.current}
-        message={actionModalMessage.current}
-        showDialog={showActionModal}
-        title={t("processor.errors.cantCreateProcessor")}
-      />
     </>
   );
 };
@@ -236,8 +176,9 @@ interface SourceConfig extends BaseConfig {
 interface BaseConfig {
   registerValidation: (validationFunction: () => boolean) => void;
   readOnly?: boolean;
+  editMode: boolean;
   schemaCatalog: ProcessorSchemaEntryResponse[];
-  getSchema: GetSchema;
+  schema?: object;
 }
 
 const getOptions = (

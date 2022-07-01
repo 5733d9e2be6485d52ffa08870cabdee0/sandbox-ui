@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   ActionGroup,
@@ -34,15 +40,21 @@ import {
 } from "@rhoas/smart-events-management-sdk";
 import {
   EventFilter,
-  FilterType,
   ProcessorFormData,
   ProcessorSchemaType,
 } from "../../../types/Processor";
 import { useValidateProcessor } from "@app/Processor/ProcessorEdit/useValidateProcessor";
-import { isCommaSeparatedFilterType } from "@utils/filterUtils";
 import ConfigurationEdit from "@app/Processor/ProcessorEdit/ConfigurationEdit/ConfigurationEdit";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import "./ProcessorEdit.css";
+import { prepareRequest } from "@utils/processorUtils";
+import axios from "axios";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
+import { ActionModal } from "@app/components/ActionModal/ActionModal";
 import { css } from "@patternfly/react-styles";
 import { HelpIcon } from "@patternfly/react-icons";
 import { ExternalLink } from "@rhoas/app-services-ui-components";
@@ -67,6 +79,8 @@ export interface ProcessorEditProps {
   schemaCatalog: ProcessorSchemaEntryResponse[];
   /** Callback to retrieve a single action/source schema */
   getSchema: GetSchema;
+  /** Callback to redirect to SE Instance */
+  goBackToInstance?: () => void;
 }
 
 const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
@@ -80,6 +94,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     processor,
     schemaCatalog,
     getSchema,
+    goBackToInstance,
   } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const isExistingProcessor = useMemo(
@@ -119,6 +134,72 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     source,
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [schema, setSchema] = useState<object>();
+  const [showActionModal, setShowActionModal] = useState<boolean>(false);
+  const actionModalMessage = useRef<string>("");
+  const actionModalFn = useRef<() => void>((): void =>
+    setShowActionModal(false)
+  );
+
+  const resetActionOrSource = useCallback(() => {
+    if (processorType === ProcessorType.Source) {
+      setSource({ type: "", parameters: {} });
+    } else {
+      setAction({ type: "", parameters: {} });
+    }
+  }, [processorType]);
+
+  useEffect(() => {
+    let type;
+    if (processorType === ProcessorType.Source && source.type) {
+      type = source.type;
+    }
+    if (processorType === ProcessorType.Sink && action.type) {
+      type = action.type;
+    }
+    if (type) {
+      setSchema(undefined);
+      getSchema(
+        type,
+        processorType === ProcessorType.Sink
+          ? ProcessorSchemaType.ACTION
+          : ProcessorSchemaType.SOURCE
+      )
+        .then((data) => setSchema(data))
+        .catch((error) => {
+          if (error && axios.isAxiosError(error)) {
+            if (
+              isServiceApiError(error) &&
+              getErrorCode(error) === APIErrorCodes.ERROR_4
+            ) {
+              actionModalFn.current = (): void => {
+                setShowActionModal(false);
+                resetActionOrSource();
+              };
+              actionModalMessage.current = t(
+                "processor.errors.cantCreateProcessorOfThatType"
+              );
+              setShowActionModal(true);
+            } else {
+              setShowActionModal(true);
+              actionModalFn.current = (): void => {
+                setShowActionModal(false);
+                goBackToInstance?.();
+              };
+              actionModalMessage.current = t("common.tryAgainLater");
+            }
+          }
+        });
+    }
+  }, [
+    action.type,
+    source.type,
+    processorType,
+    getSchema,
+    t,
+    goBackToInstance,
+    resetActionOrSource,
+  ]);
 
   const {
     registerValidateConfig,
@@ -139,75 +220,13 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     });
   }, [name, processorType, filters, transformation, action, source]);
 
-  const prepareFilters: (filters: EventFilter[]) => Partial<EventFilter>[] = (
-    filters: EventFilter[]
-  ) =>
-    filters
-      .filter(
-        (filter) => filter.type && (filter.value || filter.values) && filter.key
-      )
-      .map((filter) => {
-        if (filter.value && isCommaSeparatedFilterType(filter)) {
-          const multipleValuesMapper = (item: string): number | string =>
-            filter.type === FilterType.NUMBER_IN
-              ? parseFloat(item.trim())
-              : item.trim();
-
-          const multipleValuesPredicate =
-            filter.type === FilterType.NUMBER_IN
-              ? (item: number | string): boolean =>
-                  item !== null && !isNaN(item as number)
-              : String;
-
-          const values = filter.value
-            .split(",")
-            .map(multipleValuesMapper)
-            .filter(multipleValuesPredicate);
-
-          return {
-            key: filter.key,
-            type: filter.type,
-            values,
-          };
-        }
-        return filter;
-      })
-      .filter(
-        (item: Partial<EventFilter>) =>
-          item.value || (item.values && item.values.length > 0)
-      );
-
-  const prepareRequest = (formData: ProcessorFormData): ProcessorRequest => {
-    const requestData: ProcessorRequest = { name: formData.name };
-    if (formData.type === ProcessorType.Sink) {
-      requestData.action = formData.action;
-    } else {
-      requestData.source = formData.source;
-    }
-    if (formData.filters && formData.filters.length > 0) {
-      const filtersData = prepareFilters(formData.filters) as EventFilter[];
-      if (filtersData.length > 0) {
-        requestData.filters =
-          filtersData as unknown as ProcessorRequest["filters"];
-      }
-    }
-    if (
-      formData.transformationTemplate &&
-      formData.transformationTemplate.trim().length > 0
-    ) {
-      requestData.transformationTemplate =
-        formData.transformationTemplate.trim();
-    }
-    return requestData;
-  };
-
-  const handleSubmit = (): void => {
+  const handleSubmit = useCallback((): void => {
     setIsSubmitted(true);
-    if (validate() && request) {
-      const requestData = prepareRequest(request);
+    if (validate() && request && schema) {
+      const requestData = prepareRequest(request, isExistingProcessor, schema);
       onSave(requestData);
     }
-  };
+  }, [validate, request, schema, isExistingProcessor, onSave]);
 
   useEffect(() => {
     if (existingProcessorName) {
@@ -350,6 +369,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                           name="processor-name"
                           aria-describedby="processor-name"
                           isRequired={true}
+                          isDisabled={isExistingProcessor}
                           maxLength={255}
                           value={name}
                           onChange={setName}
@@ -385,9 +405,9 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                               source={source}
                               registerValidation={registerValidateConfig}
                               onChange={setSource}
-                              readOnly={isExistingProcessor}
+                              editMode={isExistingProcessor}
                               schemaCatalog={schemaCatalog}
-                              getSchema={getSchema}
+                              schema={schema}
                             />
                           </FormSection>
                         )}
@@ -485,9 +505,9 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 action={action}
                                 registerValidation={registerValidateConfig}
                                 onChange={setAction}
-                                readOnly={isExistingProcessor}
+                                editMode={isExistingProcessor}
                                 schemaCatalog={schemaCatalog}
-                                getSchema={getSchema}
+                                schema={schema}
                               />
                             </FormSection>
                           </>
@@ -539,6 +559,12 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
             </Flex>
           </Flex>
         </section>
+        <ActionModal
+          action={actionModalFn.current}
+          message={actionModalMessage.current}
+          showDialog={showActionModal}
+          title={t("processor.errors.cantCreateProcessor")}
+        />
       </PageSection>
     </>
   );

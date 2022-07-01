@@ -91,6 +91,7 @@
     "channel": "Channel",
     "commaSeparatedValuesTooltip": "For this filter type, it is necessary to specify a list of values separated by a comma.",
     "createProcessor": "Create processor",
+    "credentialEditFieldHelpText": "This field is a credential and its value cannot be displayed. Entering a new value will update the processor configuration.",
     "delete": "Delete processor",
     "deleteFilter": "Delete filter",
     "deleteProcessor": "Delete Processor?",

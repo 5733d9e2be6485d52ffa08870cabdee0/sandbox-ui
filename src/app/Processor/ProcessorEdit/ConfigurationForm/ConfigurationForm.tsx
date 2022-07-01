@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-return  */
-import React, { useRef } from "react";
-import Omit from "lodash.omit";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { AutoField } from "uniforms-patternfly/dist/es6";
 import { AutoForm, ValidatedQuickForm, context } from "uniforms";
 import { createValidator } from "@app/Processor/ProcessorEdit/ConfigurationForm/validator";
 import { CustomJsonSchemaBridge } from "@app/Processor/ProcessorEdit/ConfigurationForm/CustomJsonSchemaBridge";
 import { useTranslation } from "react-i18next";
+import { prepareConfigParameters } from "@utils/processorUtils";
 
 interface ConfigurationFormProps {
   configuration?: object;
@@ -13,6 +13,7 @@ interface ConfigurationFormProps {
   registerValidation: (validationFunction: () => boolean) => void;
   schema: object;
   readOnly?: boolean;
+  editMode: boolean;
 }
 
 const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
@@ -22,41 +23,45 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
     registerValidation,
     schema,
     readOnly = false,
+    editMode,
   } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
-  const schemaValidator = createValidator(schema);
-  const bridge = new CustomJsonSchemaBridge(
-    schema,
-    schemaValidator,
-    t,
-    false,
-    false
+  const schemaValidator = useMemo(() => createValidator(schema), [schema]);
+
+  const bridge = useMemo(
+    () =>
+      new CustomJsonSchemaBridge(schema, schemaValidator, t, editMode, false),
+    [schema, schemaValidator, t, editMode]
   );
 
-  // excluding error_handler, processors or steps
-  // @TODO remove it after https://github.com/5733d9e2be6485d52ffa08870cabdee0/sandbox/pull/834 is merged
-  const properties = Omit(bridge.schema.properties, [
-    "error_handler",
-    "processors",
-    "steps",
-  ]);
+  const convertedConfiguration = useMemo(
+    () => prepareConfigParameters(configuration, schema, "read"),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
+  const properties = useMemo(() => bridge.schema.properties, [bridge]);
 
   const newRef = useRef<any>();
 
-  const validate = (): boolean => {
+  const validate = useCallback((): boolean => {
     newRef.current?.submit();
-    const errors = schemaValidator(configuration);
+    const errors = schemaValidator(
+      prepareConfigParameters(configuration, schema, "write")
+    );
     return errors === null;
-  };
+  }, [newRef, schemaValidator, configuration, schema]);
 
-  registerValidation(validate);
+  useEffect(() => {
+    registerValidation(validate);
+  }, [registerValidation, validate]);
 
   return (
     <DynamicForm
       validate={"onChangeAfterSubmit"}
       schema={bridge}
-      model={configuration}
+      model={convertedConfiguration}
       onChangeModel={onChange}
       ref={(ref: any): void => (newRef.current = ref)}
       disabled={readOnly}

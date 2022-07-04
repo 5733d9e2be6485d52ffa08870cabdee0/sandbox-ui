@@ -51,7 +51,12 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
       ? props.action?.parameters
       : props.source?.parameters) ?? {}
   );
-  const [actionModal, setActionModal] = useState<JSX.Element | undefined>();
+
+  const [showActionModal, setShowActionModal] = useState<boolean>(false);
+  const actionModalMessage = useRef<string>("");
+  const actionModalFn = useRef<() => void>((): void =>
+    setShowActionModal(false)
+  );
 
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const [typeValidation, setTypeValidation] = useState<boolean>();
@@ -113,29 +118,21 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
               isServiceApiError(error) &&
               getErrorCode(error) === APIErrorCodes.ERROR_4
             ) {
-              setActionModal(
-                <ActionModal
-                  action={(): void => {
-                    setActionModal(undefined);
-                    updateType("");
-                  }}
-                  message={t("processor.errors.cantCreateProcessorOfThatType")}
-                  showDialog={true}
-                  title={t("processor.errors.cantCreateProcessor")}
-                />
+              setShowActionModal(true);
+              actionModalFn.current = (): void => {
+                setShowActionModal(false);
+                updateType("");
+              };
+              actionModalMessage.current = t(
+                "processor.errors.cantCreateProcessorOfThatType"
               );
             } else {
-              setActionModal(
-                <ActionModal
-                  action={(): void => {
-                    setActionModal(undefined);
-                    history.replace(`/instance/${instanceId}`);
-                  }}
-                  message={t("common.tryAgainLater")}
-                  showDialog={true}
-                  title={t("processor.errors.cantCreateProcessor")}
-                />
-              );
+              setShowActionModal(true);
+              actionModalFn.current = (): void => {
+                setShowActionModal(false);
+                history.replace(`/instance/${instanceId}`);
+              };
+              actionModalMessage.current = t("common.tryAgainLater");
             }
           }
         })
@@ -212,7 +209,12 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           readOnly={readOnly}
         />
       )}
-      {actionModal}
+      <ActionModal
+        action={actionModalFn.current}
+        message={actionModalMessage.current}
+        showDialog={showActionModal}
+        title={t("processor.errors.cantCreateProcessor")}
+      />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   PageSection,
   PageSectionVariants,
@@ -31,7 +31,12 @@ const CreateProcessorPage = (): JSX.Element => {
     string | undefined
   >();
   const [requestData, setRequestData] = useState<ProcessorRequest>();
-  const [actionModal, setActionModal] = useState<JSX.Element | undefined>();
+
+  const [showActionModal, setShowActionModal] = useState<boolean>(false);
+  const actionModalMessage = useRef<string>("");
+  const actionModalFn = useRef<() => void>((): void =>
+    setShowActionModal(false)
+  );
   const history = useHistory();
   const goToInstance = useCallback(
     (): void => history.push(`/instance/${instanceId}`),
@@ -114,30 +119,20 @@ const CreateProcessorPage = (): JSX.Element => {
           getErrorCode(createProcessorError) === APIErrorCodes.ERROR_2) ||
         getErrorCode(createProcessorError) === APIErrorCodes.ERROR_4
       ) {
-        setActionModal(
-          <ActionModal
-            action={(): void => {
-              setActionModal(undefined);
-              history.replace("/");
-            }}
-            message={t(
-              "processor.errors.cantCreateProcessorBecauseInstanceNotAvailable"
-            )}
-            showDialog={true}
-            title={t("processor.errors.cantCreateProcessor")}
-          />
+        setShowActionModal(true);
+        actionModalFn.current = (): void => {
+          setShowActionModal(false);
+          history.replace("/");
+        };
+        actionModalMessage.current = t(
+          "processor.errors.cantCreateProcessorBecauseInstanceNotAvailable"
         );
       } else {
-        setActionModal(
-          <ActionModal
-            action={(): void => {
-              setActionModal(undefined);
-            }}
-            message={t("common.tryAgainLater")}
-            showDialog={true}
-            title={t("processor.errors.cantCreateProcessor")}
-          />
-        );
+        setShowActionModal(true);
+        actionModalFn.current = (): void => {
+          setShowActionModal(false);
+        };
+        actionModalMessage.current = t("common.tryAgainLater");
       }
     }
   }, [createProcessorError, history, requestData, t]);
@@ -199,7 +194,12 @@ const CreateProcessorPage = (): JSX.Element => {
           />
         </>
       )}
-      {actionModal}
+      <ActionModal
+        action={actionModalFn.current}
+        message={actionModalMessage.current}
+        showDialog={showActionModal}
+        title={t("processor.errors.cantCreateProcessor")}
+      />
     </>
   );
 };

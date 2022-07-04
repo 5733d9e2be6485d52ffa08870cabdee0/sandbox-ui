@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import isEqual from "lodash.isequal";
 import isEqualWith from "lodash.isequalwith";
 import { useHistory, useParams } from "react-router-dom";
@@ -63,7 +63,12 @@ const ProcessorDetailPage = (): JSX.Element => {
     string | undefined
   >();
   const [requestData, setRequestData] = useState<ProcessorRequest>();
-  const [actionModal, setActionModal] = useState<JSX.Element | undefined>();
+
+  const [showActionModal, setShowActionModal] = useState<boolean>(false);
+  const actionModalMessage = useRef<string>("");
+  const actionModalFn = useRef<() => void>((): void =>
+    setShowActionModal(false)
+  );
 
   const actionsToggle = (isOpen: boolean): void => {
     setIsActionsOpen(isOpen);
@@ -202,31 +207,21 @@ const ProcessorDetailPage = (): JSX.Element => {
         isServiceApiError(updateProcessorError) &&
         getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_19
       ) {
-        setActionModal(
-          <ActionModal
-            action={(): void => {
-              setActionModal(undefined);
-              history.push("/temp");
-              history.goBack();
-            }}
-            message={t(
-              "processor.errors.cantUpdateProcessorBecauseNotReadyState"
-            )}
-            showDialog={true}
-            title={t("processor.errors.cantUpdateProcessor")}
-          />
+        setShowActionModal(true);
+        actionModalFn.current = (): void => {
+          setShowActionModal(false);
+          history.push("/temp");
+          history.goBack();
+        };
+        actionModalMessage.current = t(
+          "processor.errors.cantUpdateProcessorBecauseNotReadyState"
         );
       } else {
-        setActionModal(
-          <ActionModal
-            action={(): void => {
-              setActionModal(undefined);
-            }}
-            message={t("common.tryAgainLater")}
-            showDialog={true}
-            title={t("processor.errors.cantUpdateProcessor")}
-          />
-        );
+        setShowActionModal(true);
+        actionModalFn.current = (): void => {
+          setShowActionModal(false);
+        };
+        actionModalMessage.current = t("common.tryAgainLater");
       }
     }
   }, [history, requestData?.name, t, updateProcessorError]);
@@ -411,7 +406,12 @@ const ProcessorDetailPage = (): JSX.Element => {
           )}
         </>
       )}
-      {actionModal}
+      <ActionModal
+        action={actionModalFn.current}
+        message={actionModalMessage.current}
+        showDialog={showActionModal}
+        title={t("processor.errors.cantUpdateProcessor")}
+      />
     </>
   );
 };

@@ -86,6 +86,7 @@
       "cantDeleteBecauseNotExisting": "The Processor you are trying to delete, it does not exist anymore.",
       "cantDeleteTryLater": "It is not possible to delete this Processor. Try again later.",
       "cantFindInstance": "The Smart Event Instance, related to the Processor you are looking for, does not exist. It might have been deleted.",
+      "cantFindParametersInfo": "The information related to the parameters section for this Processor is currently missing.",
       "cantFindProcessor": "The Processor you are looking for does not exist. It might have been deleted.",
       "cantUpdateProcessor": "Error while updating a Processor",
       "cantUpdateProcessorBecauseNotReadyState": "You can update a Processor that it is only in an actionable state.",

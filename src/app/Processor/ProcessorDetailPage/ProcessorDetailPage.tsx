@@ -223,7 +223,7 @@ const ProcessorDetailPage = (): JSX.Element => {
         actionModalMessage.current = t("common.tryAgainLater");
       }
     }
-  }, [history, requestData?.name, t, updateProcessorError]);
+  }, [goToInstance, requestData?.name, t, updateProcessorError]);
 
   const processorNotChanged = useCallback(
     (prevDef: ProcessorResponse, updatedDef: ProcessorRequest): boolean =>

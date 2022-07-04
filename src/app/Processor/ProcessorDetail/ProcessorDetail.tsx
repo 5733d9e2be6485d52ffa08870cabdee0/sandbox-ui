@@ -148,6 +148,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                 )}
                 {schemaError && (
                   <Alert
+                    className="processor-detail__alert"
                     ouiaId="error-schema"
                     variant="danger"
                     title={schemaError}
@@ -280,6 +281,16 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                         }
                       />
                     </>
+                  )}
+                  {schemaError && (
+                    <Alert
+                      className="processor-detail__alert"
+                      ouiaId="error-schema"
+                      variant="danger"
+                      title={schemaError}
+                      aria-live="polite"
+                      isInline
+                    />
                   )}
                 </DescriptionList>
               </StackItem>

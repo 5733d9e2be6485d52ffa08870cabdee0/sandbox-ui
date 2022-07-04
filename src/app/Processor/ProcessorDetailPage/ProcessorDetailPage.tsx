@@ -210,11 +210,7 @@ const ProcessorDetailPage = (): JSX.Element => {
         setShowActionModal(true);
         actionModalFn.current = (): void => {
           setShowActionModal(false);
-          /* The following two lines are an implicit way for performing
-           * a component state refresh, without reloading the whole page
-           */
-          history.push("/temp");
-          history.goBack();
+          goToInstance();
         };
         actionModalMessage.current = t(
           "processor.errors.cantUpdateProcessorBecauseNotReadyState"

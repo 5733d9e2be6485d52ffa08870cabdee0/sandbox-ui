@@ -10,3 +10,7 @@
 .processor-detail__property--not-set {
   color: var(--pf-global--Color--200);
 }
+
+.processor-detail__alert {
+  max-width: 800px;
+}

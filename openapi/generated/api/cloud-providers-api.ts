@@ -40,7 +40,7 @@ export const CloudProvidersApiAxiosParamCreator = function (configuration?: Conf
         getCloudProvider: async (id: string, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getCloudProvider', 'id', id)
-            const localVarPath = `/api/v1/cloud_providers/{id}`
+            const localVarPath = `/api/smartevents_mgmt/v1/cloud_providers/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -76,7 +76,7 @@ export const CloudProvidersApiAxiosParamCreator = function (configuration?: Conf
         listCloudProviderRegions: async (id: string, page?: number, size?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('listCloudProviderRegions', 'id', id)
-            const localVarPath = `/api/v1/cloud_providers/{id}/regions`
+            const localVarPath = `/api/smartevents_mgmt/v1/cloud_providers/{id}/regions`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -117,7 +117,7 @@ export const CloudProvidersApiAxiosParamCreator = function (configuration?: Conf
          * @throws {RequiredError}
          */
         listCloudProviders: async (page?: number, size?: number, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/v1/cloud_providers`;
+            const localVarPath = `/api/smartevents_mgmt/v1/cloud_providers`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;

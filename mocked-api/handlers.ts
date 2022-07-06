@@ -118,10 +118,15 @@ export const handlers = [
       ctx.status(404),
       ctx.delay(apiDelay),
       ctx.json({
-        ...error_not_found,
-        reason: `Bridge with id '${
-          bridgeId as string
-        }' for customer 'XXXXXXXX' does not exist`,
+        kind: "ErrorList",
+        items: [
+          {
+            ...error_not_found,
+            reason: `Bridge with id '${
+              bridgeId as string
+            }' for customer 'XXXXXXXX' does not exist`,
+          },
+        ],
       })
     );
   }),
@@ -141,8 +146,13 @@ export const handlers = [
       return res(
         ctx.status(400),
         ctx.json({
-          ...error_duplicated_resource,
-          reason: `Bridge with name '${name}' already exists for customer with id 'XXXXXXXX'`,
+          kind: "ErrorList",
+          items: [
+            {
+              ...error_duplicated_resource,
+              reason: `Bridge with name '${name}' already exists for customer with id 'XXXXXXXX'`,
+            },
+          ],
         })
       );
     }
@@ -151,8 +161,13 @@ export const handlers = [
       return res(
         ctx.status(500),
         ctx.json({
-          ...error_external_component,
-          reason: `Creation was no successful probably due to external component fail'`,
+          kind: "ErrorList",
+          items: [
+            {
+              ...error_external_component,
+              reason: `Creation was no successful probably due to external component fail'`,
+            },
+          ],
         })
       );
     }
@@ -193,12 +208,17 @@ export const handlers = [
       },
     });
 
-    if (existingBridge!.name == "error-test") {
+    if (existingBridge?.name == "error-test") {
       return res(
         ctx.status(500),
         ctx.json({
-          ...error_external_component,
-          reason: `Deletion was no successful probably due to external component fail'`,
+          kind: "ErrorList",
+          items: [
+            {
+              ...error_external_component,
+              reason: `Deletion was no successful probably due to external component fail'`,
+            },
+          ],
         })
       );
     }
@@ -208,10 +228,15 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          ...error_not_found,
-          reason: `Bridge with id '${
-            bridgeId as string
-          }' for customer 'XXXXXXXX' does not exist`,
+          kind: "ErrorList",
+          items: [
+            {
+              ...error_not_found,
+              reason: `Bridge with id '${
+                bridgeId as string
+              }' for customer 'XXXXXXXX' does not exist`,
+            },
+          ],
         })
       );
     }
@@ -230,7 +255,10 @@ export const handlers = [
       return res(
         ctx.status(400),
         ctx.delay(apiDelay),
-        ctx.json(error_bridge_not_deletable)
+        ctx.json({
+          kind: "ErrorList",
+          items: [error_bridge_not_deletable],
+        })
       );
     }
 
@@ -277,10 +305,15 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          ...error_not_found,
-          reason: `Bridge with id '${
-            bridgeId as string
-          }' for customer 'XXXXXXXX' does not exist`,
+          kind: "ErrorList",
+          items: [
+            {
+              ...error_not_found,
+              reason: `Bridge with id '${
+                bridgeId as string
+              }' for customer 'XXXXXXXX' does not exist`,
+            },
+          ],
         })
       );
     }
@@ -341,10 +374,15 @@ export const handlers = [
           ctx.status(404),
           ctx.delay(apiDelay),
           ctx.json({
-            ...error_not_found,
-            reason: `Bridge with id '${
-              bridgeId as string
-            }' for customer 'XXXXXXXX' does not exist`,
+            kind: "ErrorList",
+            items: [
+              {
+                ...error_not_found,
+                reason: `Bridge with id '${
+                  bridgeId as string
+                }' for customer 'XXXXXXXX' does not exist`,
+              },
+            ],
           })
         );
       }
@@ -373,10 +411,15 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          ...error_not_found,
-          reason: `Processor with id '${
-            processorId as string
-          }' for customer 'XXXXXXXX' does not exist`,
+          kind: "ErrorList",
+          items: [
+            {
+              ...error_not_found,
+              reason: `Processor with id '${
+                processorId as string
+              }' for customer 'XXXXXXXX' does not exist`,
+            },
+          ],
         })
       );
     }
@@ -400,10 +443,15 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          ...error_not_found,
-          reason: `Bridge with id '${
-            bridgeId as string
-          }' for customer 'XXXXXXXX' does not exist`,
+          kind: "ErrorList",
+          items: [
+            {
+              ...error_not_found,
+              reason: `Bridge with id '${
+                bridgeId as string
+              }' for customer 'XXXXXXXX' does not exist`,
+            },
+          ],
         })
       );
     }
@@ -425,10 +473,15 @@ export const handlers = [
       return res(
         ctx.status(400),
         ctx.json({
-          ...error_duplicated_resource,
-          reason: `Processor with name '${name}' already exists for bridge with id ${
-            bridgeId as string
-          } for customer with id 'XXXXXXXXXX'`,
+          kind: "ErrorList",
+          items: [
+            {
+              ...error_duplicated_resource,
+              reason: `Processor with name '${name}' already exists for bridge with id ${
+                bridgeId as string
+              } for customer with id 'XXXXXXXXXX'`,
+            },
+          ],
         })
       );
     }
@@ -503,10 +556,15 @@ export const handlers = [
           ctx.status(404),
           ctx.delay(apiDelay),
           ctx.json({
-            ...error_not_found,
-            reason: `Bridge with id '${
-              bridgeId as string
-            }' for customer 'XXXXXXXX' does not exist`,
+            kind: "ErrorList",
+            items: [
+              {
+                ...error_not_found,
+                reason: `Bridge with id '${
+                  bridgeId as string
+                }' for customer 'XXXXXXXX' does not exist`,
+              },
+            ],
           })
         );
       }
@@ -524,10 +582,15 @@ export const handlers = [
           ctx.status(404),
           ctx.delay(apiDelay),
           ctx.json({
-            ...error_not_found,
-            reason: `Processor with id '${
-              processorId as string
-            }' for customer 'XXXXXXXX' does not exist`,
+            kind: "ErrorList",
+            items: [
+              {
+                ...error_not_found,
+                reason: `Processor with id '${
+                  processorId as string
+                }' for customer 'XXXXXXXX' does not exist`,
+              },
+            ],
           })
         );
       }
@@ -552,10 +615,15 @@ export const handlers = [
         return res(
           ctx.status(400),
           ctx.json({
-            ...error_duplicated_resource,
-            reason: `Processor with name '${name}' already exists for bridge with id ${
-              bridgeId as string
-            } for customer with id 'XXXXXXXXXX'`,
+            kind: "ErrorList",
+            items: [
+              {
+                ...error_duplicated_resource,
+                reason: `Processor with name '${name}' already exists for bridge with id ${
+                  bridgeId as string
+                } for customer with id 'XXXXXXXXXX'`,
+              },
+            ],
           })
         );
       }
@@ -620,10 +688,15 @@ export const handlers = [
           ctx.status(404),
           ctx.delay(apiDelay),
           ctx.json({
-            ...error_not_found,
-            reason: `Bridge with id '${
-              bridgeId as string
-            }' for customer 'XXXXXXXX' does not exist`,
+            kind: "ErrorList",
+            items: [
+              {
+                ...error_not_found,
+                reason: `Bridge with id '${
+                  bridgeId as string
+                }' for customer 'XXXXXXXX' does not exist`,
+              },
+            ],
           })
         );
       }
@@ -646,10 +719,15 @@ export const handlers = [
           ctx.status(404),
           ctx.delay(apiDelay),
           ctx.json({
-            ...error_not_found,
-            reason: `Processor with id '${
-              bridgeId as string
-            }' for customer 'XXXXXXXX' does not exist`,
+            kind: "ErrorList",
+            items: [
+              {
+                ...error_not_found,
+                reason: `Processor with id '${
+                  bridgeId as string
+                }' for customer 'XXXXXXXX' does not exist`,
+              },
+            ],
           })
         );
       }
@@ -698,10 +776,15 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          ...error_not_found,
-          reason: `The processor json schema '${
-            schemaId as string
-          }' is not in the catalog.`,
+          kind: "ErrorList",
+          items: [
+            {
+              ...error_not_found,
+              reason: `The processor json schema '${
+                schemaId as string
+              }' is not in the catalog.`,
+            },
+          ],
         })
       );
     }
@@ -719,10 +802,15 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          ...error_not_found,
-          reason: `The processor json schema '${
-            schemaId as string
-          }' is not in the catalog.`,
+          kind: "ErrorList",
+          items: [
+            {
+              ...error_not_found,
+              reason: `The processor json schema '${
+                schemaId as string
+              }' is not in the catalog.`,
+            },
+          ],
         })
       );
     }

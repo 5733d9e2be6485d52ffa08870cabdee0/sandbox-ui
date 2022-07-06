@@ -118,7 +118,7 @@ export const handlers = [
       ctx.status(404),
       ctx.delay(apiDelay),
       ctx.json({
-        kind: "ErrorList",
+        kind: "ErrorsResponse",
         items: [
           {
             ...error_not_found,
@@ -146,7 +146,7 @@ export const handlers = [
       return res(
         ctx.status(400),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [
             {
               ...error_duplicated_resource,
@@ -161,7 +161,7 @@ export const handlers = [
       return res(
         ctx.status(500),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [
             {
               ...error_external_component,
@@ -212,7 +212,7 @@ export const handlers = [
       return res(
         ctx.status(500),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [
             {
               ...error_external_component,
@@ -228,7 +228,7 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [
             {
               ...error_not_found,
@@ -256,7 +256,7 @@ export const handlers = [
         ctx.status(400),
         ctx.delay(apiDelay),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [error_bridge_not_deletable],
         })
       );
@@ -305,7 +305,7 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [
             {
               ...error_not_found,
@@ -374,7 +374,7 @@ export const handlers = [
           ctx.status(404),
           ctx.delay(apiDelay),
           ctx.json({
-            kind: "ErrorList",
+            kind: "ErrorsResponse",
             items: [
               {
                 ...error_not_found,
@@ -411,7 +411,7 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [
             {
               ...error_not_found,
@@ -443,7 +443,7 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [
             {
               ...error_not_found,
@@ -473,7 +473,7 @@ export const handlers = [
       return res(
         ctx.status(400),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [
             {
               ...error_duplicated_resource,
@@ -556,7 +556,7 @@ export const handlers = [
           ctx.status(404),
           ctx.delay(apiDelay),
           ctx.json({
-            kind: "ErrorList",
+            kind: "ErrorsResponse",
             items: [
               {
                 ...error_not_found,
@@ -582,7 +582,7 @@ export const handlers = [
           ctx.status(404),
           ctx.delay(apiDelay),
           ctx.json({
-            kind: "ErrorList",
+            kind: "ErrorsResponse",
             items: [
               {
                 ...error_not_found,
@@ -615,7 +615,7 @@ export const handlers = [
         return res(
           ctx.status(400),
           ctx.json({
-            kind: "ErrorList",
+            kind: "ErrorsResponse",
             items: [
               {
                 ...error_duplicated_resource,
@@ -688,7 +688,7 @@ export const handlers = [
           ctx.status(404),
           ctx.delay(apiDelay),
           ctx.json({
-            kind: "ErrorList",
+            kind: "ErrorsResponse",
             items: [
               {
                 ...error_not_found,
@@ -719,7 +719,7 @@ export const handlers = [
           ctx.status(404),
           ctx.delay(apiDelay),
           ctx.json({
-            kind: "ErrorList",
+            kind: "ErrorsResponse",
             items: [
               {
                 ...error_not_found,
@@ -776,7 +776,7 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [
             {
               ...error_not_found,
@@ -802,7 +802,7 @@ export const handlers = [
         ctx.status(404),
         ctx.delay(apiDelay),
         ctx.json({
-          kind: "ErrorList",
+          kind: "ErrorsResponse",
           items: [
             {
               ...error_not_found,

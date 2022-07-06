@@ -17,7 +17,7 @@ import { EventFilter, ProcessorSchemaType } from "../src/types/Processor";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
-  process.env.BASE_PATH ?? "/api/v1"
+  process.env.BASE_PATH ?? "/api/smartevents_mgmt/v1"
 }`;
 
 // api response delay in ms
@@ -162,7 +162,7 @@ export const handlers = [
       kind: "Bridge",
       id,
       name,
-      href: `/api/v1/bridges/${id}`,
+      href: `/api/smartevents_mgmt/v1/bridges/${id}`,
       submitted_at: new Date().toISOString(),
       status: "accepted",
     };
@@ -439,7 +439,9 @@ export const handlers = [
       id,
       type: action ? "sink" : "source",
       name,
-      href: `/api/v1/bridges/${bridge?.id ?? ""}/processors/${id}`,
+      href: `/api/smartevents_mgmt/v1/bridges/${
+        bridge?.id ?? ""
+      }/processors/${id}`,
       submitted_at: new Date().toISOString(),
       status: "accepted",
       filters: filters,
@@ -903,28 +905,28 @@ const convertParametersToString = (
 const error_not_found = {
   kind: "Error",
   id: "4",
-  href: "/api/v1/errors/4",
+  href: "/api/smartevents_mgmt/v1/errors/4",
   code: "OPENBRIDGE-4",
 };
 
 const error_duplicated_resource = {
   kind: "Error",
   id: "1",
-  href: "/api/v1/errors/1",
+  href: "/api/smartevents_mgmt/v1/errors/1",
   code: "OPENBRIDGE-1",
 };
 
 const error_external_component = {
   kind: "Error",
   id: "1",
-  href: "/api/v1/errors/5",
+  href: "/api/smartevents_mgmt/v1/errors/5",
   code: "OPENBRIDGE-5",
 };
 
 const error_bridge_not_deletable = {
   kind: "Error",
   id: "2",
-  href: "/api/v1/errors/2",
+  href: "/api/smartevents_mgmt/v1/errors/2",
   code: "OPENBRIDGE-2",
   reason:
     "It is not possible to delete a Bridge instance with active Processors.",

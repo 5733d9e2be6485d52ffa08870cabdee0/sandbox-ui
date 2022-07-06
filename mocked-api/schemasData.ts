@@ -5,7 +5,7 @@ export const schemaCatalogData = [
     name: "Kafka Topic",
     description: "Send the event to a kafka topic.",
     type: "action",
-    href: "/api/v1/schemas/actions/kafka_topic_sink_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/kafka_topic_sink_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",
@@ -13,7 +13,7 @@ export const schemaCatalogData = [
     name: "Send To Bridge",
     description: "Send the event to a Bridge instance.",
     type: "action",
-    href: "/api/v1/schemas/actions/send_to_bridge_sink_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/send_to_bridge_sink_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",
@@ -21,7 +21,7 @@ export const schemaCatalogData = [
     name: "Slack",
     description: "Send the event to a slack channel.",
     type: "action",
-    href: "/api/v1/schemas/actions/slack_sink_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/slack_sink_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",
@@ -29,7 +29,7 @@ export const schemaCatalogData = [
     name: "Webhook",
     description: "Send the event to a webhook.",
     type: "action",
-    href: "/api/v1/schemas/actions/webhook_sink_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/webhook_sink_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",
@@ -37,7 +37,7 @@ export const schemaCatalogData = [
     name: "AWS Lambda",
     description: "Send the event to an AWS lambda.",
     type: "action",
-    href: "/api/v1/schemas/actions/aws_lambda_sink_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/aws_lambda_sink_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",
@@ -45,7 +45,7 @@ export const schemaCatalogData = [
     name: "Aws S3 Source",
     description: "Ingest data from Aws S3.",
     type: "source",
-    href: "/api/v1/schemas/sources/aws_s3_source_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/sources/aws_s3_source_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",
@@ -53,7 +53,7 @@ export const schemaCatalogData = [
     name: "Aws Sqs Source",
     description: "Ingest data from Aws Sqs.",
     type: "source",
-    href: "/api/v1/schemas/sources/aws_sqs_source_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/sources/aws_sqs_source_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",
@@ -61,7 +61,7 @@ export const schemaCatalogData = [
     name: "Slack Source",
     description: "Ingest data from a Slack channel.",
     type: "source",
-    href: "/api/v1/schemas/sources/slack_source_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/sources/slack_source_0.1",
   },
 ];
 

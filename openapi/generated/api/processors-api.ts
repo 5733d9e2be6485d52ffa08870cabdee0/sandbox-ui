@@ -47,7 +47,7 @@ export const ProcessorsApiAxiosParamCreator = function (configuration?: Configur
         addProcessorToBridge: async (bridgeId: string, processorRequest?: ProcessorRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'bridgeId' is not null or undefined
             assertParamExists('addProcessorToBridge', 'bridgeId', bridgeId)
-            const localVarPath = `/api/v1/bridges/{bridgeId}/processors`
+            const localVarPath = `/api/smartevents_mgmt/v1/bridges/{bridgeId}/processors`
                 .replace(`{${"bridgeId"}}`, encodeURIComponent(String(bridgeId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -91,7 +91,7 @@ export const ProcessorsApiAxiosParamCreator = function (configuration?: Configur
             assertParamExists('deleteProcessor', 'bridgeId', bridgeId)
             // verify required parameter 'processorId' is not null or undefined
             assertParamExists('deleteProcessor', 'processorId', processorId)
-            const localVarPath = `/api/v1/bridges/{bridgeId}/processors/{processorId}`
+            const localVarPath = `/api/smartevents_mgmt/v1/bridges/{bridgeId}/processors/{processorId}`
                 .replace(`{${"bridgeId"}}`, encodeURIComponent(String(bridgeId)))
                 .replace(`{${"processorId"}}`, encodeURIComponent(String(processorId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -133,7 +133,7 @@ export const ProcessorsApiAxiosParamCreator = function (configuration?: Configur
             assertParamExists('getProcessor', 'bridgeId', bridgeId)
             // verify required parameter 'processorId' is not null or undefined
             assertParamExists('getProcessor', 'processorId', processorId)
-            const localVarPath = `/api/v1/bridges/{bridgeId}/processors/{processorId}`
+            const localVarPath = `/api/smartevents_mgmt/v1/bridges/{bridgeId}/processors/{processorId}`
                 .replace(`{${"bridgeId"}}`, encodeURIComponent(String(bridgeId)))
                 .replace(`{${"processorId"}}`, encodeURIComponent(String(processorId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -177,7 +177,7 @@ export const ProcessorsApiAxiosParamCreator = function (configuration?: Configur
         listProcessors: async (bridgeId: string, name?: string, page?: number, size?: number, status?: Set<ManagedResourceStatus>, type?: ProcessorType, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'bridgeId' is not null or undefined
             assertParamExists('listProcessors', 'bridgeId', bridgeId)
-            const localVarPath = `/api/v1/bridges/{bridgeId}/processors`
+            const localVarPath = `/api/smartevents_mgmt/v1/bridges/{bridgeId}/processors`
                 .replace(`{${"bridgeId"}}`, encodeURIComponent(String(bridgeId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -239,7 +239,7 @@ export const ProcessorsApiAxiosParamCreator = function (configuration?: Configur
             assertParamExists('updateProcessor', 'bridgeId', bridgeId)
             // verify required parameter 'processorId' is not null or undefined
             assertParamExists('updateProcessor', 'processorId', processorId)
-            const localVarPath = `/api/v1/bridges/{bridgeId}/processors/{processorId}`
+            const localVarPath = `/api/smartevents_mgmt/v1/bridges/{bridgeId}/processors/{processorId}`
                 .replace(`{${"bridgeId"}}`, encodeURIComponent(String(bridgeId)))
                 .replace(`{${"processorId"}}`, encodeURIComponent(String(processorId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.

@@ -1,6 +1,14 @@
 export const schemaCatalogData = [
   {
     kind: "ProcessorSchemaEntry",
+    id: "ansible_tower_job_template_sink_0.1",
+    name: "Ansible Tower Job Template",
+    description: "Launch a job template in Ansible Tower.",
+    type: "action",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/ansible_tower_job_template_sink_0.1",
+  },
+  {
+    kind: "ProcessorSchemaEntry",
     id: "kafka_topic_sink_0.1",
     name: "Kafka Topic",
     description: "Send the event to a kafka topic.",
@@ -66,6 +74,54 @@ export const schemaCatalogData = [
 ];
 
 export const schemasData: { [key: string]: object } = {
+  "ansible_tower_job_template_sink_0.1": {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      endpoint: {
+        type: "string",
+        title: "Endpoint",
+        description: "Ansible Tower instance base endpoint.",
+        pattern:
+          "(http|https):\\/\\/([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])",
+        example: "https://my.ansible-tower.host",
+      },
+      job_template_id: {
+        type: "string",
+        title: "Job Template ID",
+        description: "The ID of the job template to trigger.",
+        example: "14",
+      },
+      basic_auth_username: {
+        type: "string",
+        title: "Basic Auth Username",
+        description: "The username for basic auth.",
+        example: "kermit",
+      },
+      basic_auth_password: {
+        type: "string",
+        title: "Basic Auth Password",
+        description: "The password for basic auth.",
+        example: "mypassword",
+      },
+      ssl_verification_disabled: {
+        type: "boolean",
+        title: "SSL Verification Disabled",
+        description: "Specify if SSL verification has to be disabled",
+        default: false,
+      },
+    },
+    required: ["endpoint", "job_template_id"],
+    optional: [
+      "basic_auth_username",
+      "basic_auth_password",
+      "ssl_verification_disabled",
+    ],
+    dependentRequired: {
+      basic_auth_username: ["basic_auth_password"],
+      basic_auth_password: ["basic_auth_username"],
+    },
+  },
   "kafka_topic_sink_0.1": {
     type: "object",
     additionalProperties: false,

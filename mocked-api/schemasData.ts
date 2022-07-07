@@ -45,7 +45,7 @@ export const schemaCatalogData = [
     name: "Google PubSub",
     description: "Send the event to Google PubSub",
     type: "action",
-    href: "/api/v1/schemas/actions/google_pubsub_sink_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/google_pubsub_sink_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",

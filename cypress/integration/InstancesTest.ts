@@ -3,6 +3,35 @@ import { format } from "date-fns";
 const formatDate = (dateStr: string): string =>
   format(new Date(dateStr), "PPPP p");
 
+function createnewInstance() {
+  const newInstanceName: string = "Some new instance";
+  cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
+  cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
+    cy.wrap($modal)
+      .should("be.visible")
+      .within(() => {
+        cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
+        cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
+          "have.text",
+          "Info alert:Your Smart Events instance will be ready for use shortly after creation."
+        );
+        cy.ouiaId("submit", "PF4/Button").click();
+      });
+    cy.wrap($modal, { timeout: 20000 }).should("not.exist");
+  });
+
+  cy.ouiaId("Instances list table", "PF4/Table")
+    .ouiaId(newInstanceName, "PF4/TableRow")
+    .should("be.visible")
+    .within(() => {
+      cy.get("td:first").should("have.text", newInstanceName);
+      cy.get("td:nth-child(2)").then(($state) => {
+        cy.wrap($state).should("have.text", "accepted");
+        cy.wrap($state, { timeout: 30000 }).should("have.text", "ready");
+      });
+    });
+}
+
 describe("Instances Test", () => {
   describe("the 'Create a SE instance' Modal", () => {
     beforeEach(() => {
@@ -13,6 +42,7 @@ describe("Instances Test", () => {
     });
 
     it("Submit", () => {
+<<<<<<< HEAD
       const newInstanceName: string = "Some new instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
       cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
@@ -39,6 +69,9 @@ describe("Instances Test", () => {
             cy.wrap($state, { timeout: 30000 }).should("have.text", "ready");
           });
         });
+=======
+      createnewInstance();
+>>>>>>> 429d980 (Replacing existing test logic with a function)
     });
 
     it("Submit and expect error", () => {

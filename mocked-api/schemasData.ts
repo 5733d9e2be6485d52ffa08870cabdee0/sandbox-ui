@@ -5,7 +5,7 @@ export const schemaCatalogData = [
     name: "Ansible Tower Job Template",
     description: "Launch a job template in Ansible Tower.",
     type: "action",
-    href: "/api/v1/schemas/actions/ansible_tower_job_template_sink_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/ansible_tower_job_template_sink_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",

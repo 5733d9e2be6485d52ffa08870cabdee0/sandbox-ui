@@ -329,6 +329,56 @@ describe("ProcessorEdit component", () => {
     expect(comp.getByLabelText("Action type")).toBeDisabled();
     expect(comp.getByLabelText("Topic Name *")).toBeDisabled();
   });
+
+  it("saves default values inside action/source configuration when the user doesn't change them", async () => {
+    const { comp, onSave } = setupProcessorEdit({
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(kakfaSinkSchema);
+        }),
+    });
+    await waitForI18n(comp);
+
+    const processorName = "Test Processor";
+    const topic = "test-topic";
+    const defaultDelay = kakfaSinkSchema.properties.delay.default;
+
+    fireEvent.click(comp.getByText("Sink processor"));
+
+    fireEvent.change(comp.getByLabelText("Processor name *"), {
+      target: { value: processorName },
+    });
+
+    fireEvent.change(comp.getByLabelText("Action type *"), {
+      target: { value: schemaCatalog[1].id },
+    });
+
+    await waitFor(() => {
+      expect(comp.queryByLabelText("Topic Name *")).toBeInTheDocument();
+      expect(comp.getByLabelText("Topic Name *")).toBeEnabled();
+    });
+
+    fireEvent.change(comp.getByLabelText("Topic Name *"), {
+      target: { value: topic },
+    });
+    expect((comp.getByLabelText("Delay") as HTMLSelectElement).value).toBe(
+      defaultDelay.toString()
+    );
+
+    fireEvent.click(comp.getByText("Create"));
+
+    expect(onSave).toHaveBeenCalledTimes(1);
+    expect(onSave).toHaveBeenCalledWith({
+      name: processorName,
+      action: {
+        type: schemaCatalog[1].id,
+        parameters: {
+          topic,
+          delay: defaultDelay,
+        },
+      },
+    });
+  });
 });
 
 const baseProcessor = {
@@ -375,7 +425,7 @@ const schemaCatalog = [
     name: "Slack Source",
     description: "Ingest data from a Slack channel.",
     type: "source",
-    href: "/api/v1/schemas/sources/slack_source_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/sources/slack_source_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",
@@ -383,7 +433,7 @@ const schemaCatalog = [
     name: "Kafka Topic",
     description: "Send the event to a kafka topic.",
     type: "action",
-    href: "/api/v1/schemas/actions/kafka_topic_sink_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/kafka_topic_sink_0.1",
   },
 ];
 
@@ -396,6 +446,12 @@ const kakfaSinkSchema = {
       title: "Topic Name",
       description: "The topic where to send the event.",
       example: "my-topic",
+    },
+    delay: {
+      type: "integer",
+      description: "Delay",
+      title: "Delay",
+      default: 500,
     },
   },
   required: ["topic"],

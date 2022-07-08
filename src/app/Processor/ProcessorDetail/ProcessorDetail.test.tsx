@@ -215,7 +215,7 @@ const schemaCatalog = [
     name: "Slack Source",
     description: "Ingest data from a Slack channel.",
     type: "source",
-    href: "/api/v1/schemas/sources/slack_source_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/sources/slack_source_0.1",
   },
   {
     kind: "ProcessorSchemaEntry",
@@ -223,7 +223,7 @@ const schemaCatalog = [
     name: "Slack",
     description: "Send the event to a slack channel.",
     type: "action",
-    href: "/api/v1/schemas/actions/slack_sink_0.1",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/slack_sink_0.1",
   },
 ];
 

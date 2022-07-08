@@ -49,6 +49,14 @@ export const schemaCatalogData = [
   },
   {
     kind: "ProcessorSchemaEntry",
+    id: "google_pubsub_sink_0.1",
+    name: "Google PubSub",
+    description: "Send the event to Google PubSub",
+    type: "action",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/google_pubsub_sink_0.1",
+  },
+  {
+    kind: "ProcessorSchemaEntry",
     id: "aws_s3_source_0.1",
     name: "Aws S3 Source",
     description: "Ingest data from Aws S3.",
@@ -371,6 +379,36 @@ export const schemasData: { [key: string]: object } = {
           "us-iso-west-1",
           "us-isob-east-1",
         ],
+      },
+    },
+  },
+  "google_pubsub_sink_0.1": {
+    type: "object",
+    additionalProperties: false,
+    required: [
+      "gcp_project_id",
+      "gcp_destination_name",
+      "gcp_service_account_key",
+    ],
+    properties: {
+      gcp_project_id: {
+        title: "Project Id",
+        description: "The Google Cloud PubSub Project Id",
+        type: "string",
+      },
+      gcp_destination_name: {
+        title: "Destination Name",
+        description:
+          "The Destination Name. For the consumer this will be the subscription name, while for the producer this will be the topic name.",
+        type: "string",
+      },
+      gcp_service_account_key: {
+        title: "Service Account Key",
+        description:
+          "The Service account key that can be used as credentials for the PubSub publisher/subscriber in base64 encoding.",
+        type: "string",
+        "x-group": "credentials",
+        format: "base64",
       },
     },
   },

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   PageSection,
   PageSectionVariants,
@@ -14,10 +14,16 @@ import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
 import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
 import { useAddProcessorToBridgeApi } from "../../../hooks/useProcessorsApi/useAddProcessorToBridgeApi";
 import { ProcessorRequest } from "@openapi/generated";
-import { ResponseError } from "../../../types/Error";
+import { ErrorWithDetail } from "../../../types/Error";
 import ProcessorEditSkeleton from "@app/Processor/ProcessorEdit/ProcessorEditSkeleton";
 import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
+import { ActionModal } from "@app/components/ActionModal/ActionModal";
 
 const CreateProcessorPage = (): JSX.Element => {
   const { instanceId } = useParams<InstanceRouteParams>();
@@ -25,12 +31,17 @@ const CreateProcessorPage = (): JSX.Element => {
     string | undefined
   >();
   const [requestData, setRequestData] = useState<ProcessorRequest>();
+
+  const [showActionModal, setShowActionModal] = useState<boolean>(false);
+  const actionModalMessage = useRef<string>("");
+  const actionModalFn = useRef<() => void>((): void =>
+    setShowActionModal(false)
+  );
   const history = useHistory();
   const goToInstance = useCallback(
     (): void => history.push(`/instance/${instanceId}`),
     [instanceId, history]
   );
-  const goToHome = useCallback((): void => history.push(`/`), [history]);
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const {
@@ -45,17 +56,45 @@ const CreateProcessorPage = (): JSX.Element => {
   }, [getBridge, instanceId]);
 
   useEffect(() => {
-    if (bridgeError) {
-      goToHome();
+    if (bridgeError && axios.isAxiosError(bridgeError)) {
+      if (
+        isServiceApiError(bridgeError) &&
+        getErrorCode(bridgeError) === APIErrorCodes.ERROR_4
+      ) {
+        /* When the instance is not found on the server, we are going to replace
+         * the current URL with a fake URL that does not match any route.
+         * In this way, the PageNotFound component will be shown.
+         */
+        history.replace("/processor-instance-not-found", {
+          title: t("instance.notFound"),
+          message: t("processor.errors.cantFindInstance"),
+        });
+      } else {
+        throw new ErrorWithDetail(
+          (
+            <TextContent>
+              <Text component="h1">{t("common.processor")}</Text>
+            </TextContent>
+          ),
+          t("processor.errors.instanceDetailsGenericError")
+        );
+      }
     }
-  }, [bridgeError, goToHome]);
+  }, [bridgeError, history, t]);
 
   const {
     addProcessorToBridge,
     isLoading: isAddLoading,
     processor: addedProcessor,
-    error: processorError,
+    error: createProcessorError,
   } = useAddProcessorToBridgeApi();
+
+  const {
+    schemas,
+    isLoading: areSchemasLoading,
+    error: schemasError,
+  } = useGetSchemasApi();
+  const { getSchema } = useGetSchemaApi();
 
   const handleSave = (requestData: ProcessorRequest): void => {
     setRequestData(requestData);
@@ -69,20 +108,47 @@ const CreateProcessorPage = (): JSX.Element => {
   }, [addedProcessor, goToInstance]);
 
   useEffect(() => {
-    if (processorError && axios.isAxiosError(processorError)) {
-      // TODO: replace error code string with a value coming from an error catalog
-      //  See https://issues.redhat.com/browse/MGDOBR-669 for more details.
+    if (createProcessorError && axios.isAxiosError(createProcessorError)) {
       if (
-        (processorError.response?.data as ResponseError).code === "OPENBRIDGE-1"
+        isServiceApiError(createProcessorError) &&
+        getErrorCode(createProcessorError) === APIErrorCodes.ERROR_1
       ) {
         setExistingProcessorName(requestData?.name);
+      } else if (
+        (isServiceApiError(createProcessorError) &&
+          getErrorCode(createProcessorError) === APIErrorCodes.ERROR_2) ||
+        getErrorCode(createProcessorError) === APIErrorCodes.ERROR_4
+      ) {
+        setShowActionModal(true);
+        actionModalFn.current = (): void => {
+          setShowActionModal(false);
+          history.replace("/");
+        };
+        actionModalMessage.current = t(
+          "processor.errors.cantCreateProcessorBecauseInstanceNotAvailable"
+        );
+      } else {
+        setShowActionModal(true);
+        actionModalFn.current = (): void => {
+          setShowActionModal(false);
+        };
+        actionModalMessage.current = t("common.tryAgainLater");
       }
     }
-  }, [processorError, requestData]);
+  }, [createProcessorError, history, requestData, t]);
 
-  // @TODO decide how to manage errors when retrieving the schema catalog
-  const { schemas, isLoading: areSchemasLoading } = useGetSchemasApi();
-  const { getSchema } = useGetSchemaApi();
+  useEffect(() => {
+    if (schemasError && axios.isAxiosError(schemasError)) {
+      throw new ErrorWithDetail(
+        (
+          <TextContent>
+            <Text component="h1">{t("common.processor")}</Text>
+          </TextContent>
+        ),
+        t("processor.errors.processorDetailsGenericError")
+      );
+    }
+  }, [schemasError, t]);
 
   return (
     <>
@@ -128,6 +194,12 @@ const CreateProcessorPage = (): JSX.Element => {
           />
         </>
       )}
+      <ActionModal
+        action={actionModalFn.current}
+        message={actionModalMessage.current}
+        showDialog={showActionModal}
+        title={t("processor.errors.cantCreateProcessor")}
+      />
     </>
   );
 };

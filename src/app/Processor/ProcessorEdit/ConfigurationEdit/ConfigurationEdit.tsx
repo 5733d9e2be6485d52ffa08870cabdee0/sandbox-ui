@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Action,
   ProcessorSchemaEntryResponse,
@@ -14,6 +14,15 @@ import {
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
 import { GetSchema } from "../../../../hooks/useSchemasApi/useGetSchemaApi";
 import { ProcessorSchemaType } from "../../../../types/Processor";
+import axios from "axios";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
+import { ActionModal } from "@app/components/ActionModal/ActionModal";
+import { useHistory, useParams } from "react-router-dom";
+import { InstanceRouteParams } from "@app/Instance/InstancePage/InstancePage";
 
 type ConfigurationEditProps = ActionConfig | SourceConfig;
 
@@ -26,6 +35,10 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
     schemaCatalog,
     getSchema,
   } = props;
+
+  const history = useHistory();
+  const { instanceId } = useParams<InstanceRouteParams>();
+
   const [type, setType] = useState(
     (configType === ProcessorSchemaType.ACTION
       ? props.action?.type
@@ -38,20 +51,30 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
       ? props.action?.parameters
       : props.source?.parameters) ?? {}
   );
+
+  const [showActionModal, setShowActionModal] = useState<boolean>(false);
+  const actionModalMessage = useRef<string>("");
+  const actionModalFn = useRef<() => void>((): void =>
+    setShowActionModal(false)
+  );
+
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const [typeValidation, setTypeValidation] = useState<boolean>();
 
-  const updateType = (type: string): void => {
-    setType(type);
-    const emptyParameters: object = {};
-    onChange({
-      type,
-      parameters: emptyParameters,
-    });
-    if (type) {
-      setTypeValidation(true);
-    }
-  };
+  const updateType = useCallback(
+    (type: string): void => {
+      setType(type);
+      const emptyParameters: object = {};
+      onChange({
+        type,
+        parameters: emptyParameters,
+      });
+      if (type) {
+        setTypeValidation(true);
+      }
+    },
+    [onChange]
+  );
 
   const updateConfiguration = (parameters: object): void => {
     setParameters(parameters);
@@ -89,11 +112,33 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
       setSchema(undefined);
       getSchema(type, configType)
         .then((data) => setSchema(data))
-        // @TODO: decide how to manage error while fetching a schema
-        .catch((error) => console.log(error))
+        .catch((error) => {
+          if (error && axios.isAxiosError(error)) {
+            if (
+              isServiceApiError(error) &&
+              getErrorCode(error) === APIErrorCodes.ERROR_4
+            ) {
+              setShowActionModal(true);
+              actionModalFn.current = (): void => {
+                setShowActionModal(false);
+                updateType("");
+              };
+              actionModalMessage.current = t(
+                "processor.errors.cantCreateProcessorOfThatType"
+              );
+            } else {
+              setShowActionModal(true);
+              actionModalFn.current = (): void => {
+                setShowActionModal(false);
+                history.replace(`/instance/${instanceId}`);
+              };
+              actionModalMessage.current = t("common.tryAgainLater");
+            }
+          }
+        })
         .finally(() => setSchemaLoading(false));
     }
-  }, [type, getSchema, configType]);
+  }, [configType, getSchema, history, instanceId, t, type, updateType]);
 
   const typeOptions = [
     {
@@ -164,6 +209,12 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           readOnly={readOnly}
         />
       )}
+      <ActionModal
+        action={actionModalFn.current}
+        message={actionModalMessage.current}
+        showDialog={showActionModal}
+        title={t("processor.errors.cantCreateProcessor")}
+      />
     </>
   );
 };

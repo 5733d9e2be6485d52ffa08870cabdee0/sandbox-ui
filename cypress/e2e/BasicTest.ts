@@ -61,7 +61,7 @@ describe("Basic Elements", () => {
     const psw: string = Cypress.env("PASSWORD");
     cy.get("#username-verification").type(user);
     cy.get("#login-show-step2").click();
-    cy.get("#password").should("be.visible").type(psw);
+    cy.get("#password").should("be.visible").type(psw, { log: false });
     cy.get("#rh-password-verification-submit-button").click();
   });
 

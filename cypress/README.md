@@ -38,11 +38,11 @@ npm run start
 Get a valid offline [token](https://console.redhat.com/openshift/token).
 
 ```
+export CYPRESS_USER=<replce with your value>
+export CYPRESS_PASSWORD=<replce with your value>
 export OPENSHIFT_OFFLINE_TOKEN=<REPLACE WITH YOUR TOKEN>
 export CYPRESS_OB_TOKEN="$(curl -s --insecure -X POST https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'client_id=cloud-services' --data-urlencode 'grant_type=refresh_token' --data-urlencode "refresh_token=$OPENSHIFT_OFFLINE_TOKEN" | jq --raw-output '.access_token')"
 ```
-
-Set `USER` and `PASSWORD` in [the configuration](cypress.e2e.json).
 
 If the test suite fail as Unauthorized than perform again:
 

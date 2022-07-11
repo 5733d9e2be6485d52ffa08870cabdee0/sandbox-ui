@@ -18,12 +18,7 @@ describe("Processor Test", () => {
 
     it("Sink processor", () => {
       const processorName: string = "Sink processor";
-      const action = [
-        "Slack",
-        "dev-action",
-        "https://test.app.com/item",
-        "application/octet-stream",
-      ];
+      const action = ["Slack", "dev-action", "https://test.app.com/item"];
       const filters = [
         ["data.name", "String equals", "John"],
         ["data.surname", "String equals", "White"],
@@ -91,18 +86,6 @@ describe("Processor Test", () => {
               .should("be.visible");
             cy.get("input").type(action[2]);
           });
-          cy.wrap(item[item.length - 1])
-            .last()
-            .within(() => {
-              cy.get("div")
-                .first()
-                .should("contain.text", "Format")
-                .should("be.visible");
-              cy.ouiaType("PF4/Select").within(() => {
-                cy.get("button").click();
-                cy.get("li button").contains(action[3]).click();
-              });
-            });
         });
 
       cy.ouiaId("submit").click();
@@ -119,12 +102,7 @@ describe("Processor Test", () => {
 
     it("Source processor", () => {
       const processorName: string = "Source processor";
-      const source = [
-        "Slack Source",
-        "dev channel",
-        "asd14u-e",
-        "application/json",
-      ];
+      const source = ["Slack Source", "dev channel", "asd14u-e"];
       const filters = [
         ["data.name", "String equals", "John"],
         ["data.surname", "String equals", "White"],
@@ -166,18 +144,6 @@ describe("Processor Test", () => {
               .should("be.visible");
             cy.get("input").type(source[2]);
           });
-          cy.wrap(item[item.length - 1])
-            .last()
-            .within(() => {
-              cy.get("div")
-                .first()
-                .should("contain.text", "Format")
-                .should("be.visible");
-              cy.ouiaType("PF4/Select").within(() => {
-                cy.get("button").click();
-                cy.get("li button").contains(source[3]).click();
-              });
-            });
         });
 
       //Filters

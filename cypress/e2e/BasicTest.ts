@@ -1,13 +1,16 @@
 describe("Basic Elements", () => {
   const bridgeName = uniqueName("myBridge");
-  let bridgeId;
+  const restUrl = `${Cypress.env("REST_URL")}${Cypress.env(
+    "REST_PATH"
+  )}/bridges`;
+  const token = Cypress.env("OB_TOKEN");
+  const authorization = `Bearer ${token}`;
+  let bridgeId: String;
 
   before(() => {
-    const token = Cypress.env("OB_TOKEN");
-    const authorization = `Bearer ${token}`;
     const options = {
       method: "POST",
-      url: "https://event-bridge-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com/api/v1/bridges",
+      url: restUrl,
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -25,6 +28,33 @@ describe("Basic Elements", () => {
     });
   });
 
+  after(() => {
+    const options = {
+      method: "DELETE",
+      url: `${restUrl}/${bridgeId}`,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: authorization,
+      },
+    };
+    cy.request(options).then((response) => {
+      expect(response.body).to.not.be.null;
+      expect(response.isOkStatusCode).to.equal(true);
+    });
+
+    cy.visit("/");
+    cy.ouiaId(bridgeName)
+      .should("be.visible")
+      .within(($item) => {
+        cy.get("td:first").should("have.text", bridgeName);
+        cy.get("td:nth-child(2)").then(($state) => {
+          cy.wrap($state).should("have.text", "deprovision");
+        });
+        cy.wrap($item, { timeout: 60000 }).should("not.exist");
+      });
+  });
+
   beforeEach(() => {
     cy.visit("/");
     const user: string = Cypress.env("USER");
@@ -40,7 +70,14 @@ describe("Basic Elements", () => {
   });
 
   it("Data are visible", () => {
-    cy.ouiaId(bridgeName).should("be.visible");
+    cy.ouiaId(bridgeName)
+      .should("be.visible")
+      .within(() => {
+        cy.get("td:first").should("have.text", bridgeName);
+        cy.get("td:nth-child(2)").then(($state) => {
+          cy.wrap($state, { timeout: 60000 }).should("have.text", "ready");
+        });
+      });
   });
 
   it("Instance header details are available", () => {

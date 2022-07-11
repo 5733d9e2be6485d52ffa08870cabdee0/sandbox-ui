@@ -16,6 +16,8 @@
   "viewportHeight": 1080,
   "env": {
     "USER": "youruser",
-    "PASSWORD": "yourpassword"
+    "PASSWORD": "yourpassword",
+    "REST_URL": "https://event-bridge-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com",
+    "REST_PATH": "/api/smartevents_mgmt/v1"
   }
 }

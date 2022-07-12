@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import isEqual from "lodash.isequal";
 import isEqualWith from "lodash.isequalwith";
 import { useHistory, useParams } from "react-router-dom";
@@ -34,11 +34,17 @@ import {
   ProcessorResponse,
 } from "@openapi/generated";
 import axios from "axios";
-import { ResponseError } from "../../../types/Error";
+import { ErrorWithDetail } from "../../../types/Error";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
 import { canDeleteResource } from "@utils/resourceUtils";
 import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
+import { ActionModal } from "@app/components/ActionModal/ActionModal";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
@@ -49,7 +55,6 @@ const ProcessorDetailPage = (): JSX.Element => {
     (): void => history.push(`/instance/${instanceId}`),
     [history, instanceId]
   );
-  const goToHome = useCallback((): void => history.push(`/`), [history]);
 
   const [isEditing, setIsEditing] = useState(false);
   const [currentProcessor, setCurrentProcessor] = useState<ProcessorResponse>();
@@ -58,6 +63,13 @@ const ProcessorDetailPage = (): JSX.Element => {
     string | undefined
   >();
   const [requestData, setRequestData] = useState<ProcessorRequest>();
+
+  const [showActionModal, setShowActionModal] = useState<boolean>(false);
+  const actionModalMessage = useRef<string>("");
+  const actionModalFn = useRef<() => void>((): void =>
+    setShowActionModal(false)
+  );
+
   const actionsToggle = (isOpen: boolean): void => {
     setIsActionsOpen(isOpen);
   };
@@ -94,6 +106,14 @@ const ProcessorDetailPage = (): JSX.Element => {
     error: updateProcessorError,
   } = useUpdateProcessorApi();
 
+  const {
+    schemas,
+    isLoading: areSchemasLoading,
+    error: schemasError,
+  } = useGetSchemasApi();
+
+  const { getSchema, error: schemaError } = useGetSchemaApi();
+
   useEffect(() => {
     setCurrentProcessor(processor);
   }, [processor]);
@@ -104,32 +124,106 @@ const ProcessorDetailPage = (): JSX.Element => {
   }, [updatedProcessor]);
 
   useEffect(() => {
-    if (bridgeError) {
-      console.error(bridgeError);
-      goToHome();
-    }
-    if (processorError) {
-      console.error(processorError);
-      goToInstance();
-    }
-    if (updateProcessorError && axios.isAxiosError(updateProcessorError)) {
-      // TODO: replace error code string with a value coming from an error catalog
-      //  See https://issues.redhat.com/browse/MGDOBR-669 for more details.
+    if (bridgeError && axios.isAxiosError(bridgeError)) {
       if (
-        (updateProcessorError.response?.data as ResponseError).code ===
-        "OPENBRIDGE-1"
+        isServiceApiError(bridgeError) &&
+        getErrorCode(bridgeError) === APIErrorCodes.ERROR_4
       ) {
-        setExistingProcessorName(requestData?.name);
+        /* When the instance is not found on the server, we are going to replace
+         * the current URL with a fake URL that does not match any route.
+         * In this way, the PageNotFound component will be shown.
+         */
+        history.replace("/processor-instance-not-found", {
+          title: t("instance.notFound"),
+          message: t("processor.errors.cantFindInstance"),
+        });
+      } else {
+        throw new ErrorWithDetail(
+          (
+            <TextContent>
+              <Text component="h1">
+                {processor?.name ?? t("common.processor")}
+              </Text>
+            </TextContent>
+          ),
+          t("processor.errors.instanceDetailsGenericError")
+        );
       }
     }
-  }, [
-    bridgeError,
-    processorError,
-    goToHome,
-    goToInstance,
-    updateProcessorError,
-    requestData?.name,
-  ]);
+  }, [bridgeError, history, processor?.name, t]);
+
+  useEffect(() => {
+    if (processorError && axios.isAxiosError(processorError)) {
+      if (
+        isServiceApiError(processorError) &&
+        getErrorCode(processorError) === APIErrorCodes.ERROR_4
+      ) {
+        /* When the instance is not found on the server, we are going to replace
+         * the current URL with a fake URL that does not match any route.
+         * In this way, the PageNotFound component will be shown.
+         */
+        history.replace("/processor-not-found", {
+          title: t("processor.notFound"),
+          message: t("processor.errors.cantFindProcessor"),
+        });
+      } else {
+        throw new ErrorWithDetail(
+          (
+            <TextContent>
+              <Text component="h1">
+                {processor?.name ?? t("common.processor")}
+              </Text>
+            </TextContent>
+          ),
+          t("processor.errors.processorDetailsGenericError")
+        );
+      }
+    }
+  }, [history, processor?.name, processorError, t]);
+
+  useEffect(() => {
+    if (schemasError && axios.isAxiosError(schemasError)) {
+      throw new ErrorWithDetail(
+        (
+          <TextContent>
+            <Text component="h1">
+              {processor?.name ?? t("common.processor")}
+            </Text>
+          </TextContent>
+        ),
+        t("processor.errors.processorDetailsGenericError")
+      );
+    }
+  }, [processor?.name, schemasError, t]);
+
+  useEffect(() => {
+    if (updateProcessorError && axios.isAxiosError(updateProcessorError)) {
+      if (
+        isServiceApiError(updateProcessorError) &&
+        getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_1
+      ) {
+        setExistingProcessorName(requestData?.name);
+      } else if (
+        isServiceApiError(updateProcessorError) &&
+        getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_19
+      ) {
+        setShowActionModal(true);
+        actionModalFn.current = (): void => {
+          setShowActionModal(false);
+          goToInstance();
+        };
+        actionModalMessage.current = t(
+          "processor.errors.cantUpdateProcessorBecauseNotReadyState"
+        );
+      } else {
+        setShowActionModal(true);
+        actionModalFn.current = (): void => {
+          setShowActionModal(false);
+        };
+        actionModalMessage.current = t("common.tryAgainLater");
+      }
+    }
+  }, [goToInstance, requestData?.name, t, updateProcessorError]);
 
   const processorNotChanged = useCallback(
     (prevDef: ProcessorResponse, updatedDef: ProcessorRequest): boolean =>
@@ -194,10 +288,6 @@ const ProcessorDetailPage = (): JSX.Element => {
     </DropdownItem>,
   ];
 
-  // @TODO decide how to manage errors when retrieving the schema catalog
-  const { schemas, isLoading: areSchemasLoading } = useGetSchemasApi();
-  const { getSchema } = useGetSchemaApi();
-
   return (
     <>
       {(isBridgeLoading || isProcessorLoading || areSchemasLoading) && (
@@ -252,7 +342,8 @@ const ProcessorDetailPage = (): JSX.Element => {
                       <Button
                         isAriaDisabled={
                           currentProcessor.status !==
-                          ManagedResourceStatus.Ready
+                            ManagedResourceStatus.Ready ||
+                          schemaError !== undefined
                         }
                         ouiaId="edit"
                         onClick={(): void => setIsEditing(true)}
@@ -314,6 +405,12 @@ const ProcessorDetailPage = (): JSX.Element => {
           )}
         </>
       )}
+      <ActionModal
+        action={actionModalFn.current}
+        message={actionModalMessage.current}
+        showDialog={showActionModal}
+        title={t("processor.errors.cantUpdateProcessor")}
+      />
     </>
   );
 };

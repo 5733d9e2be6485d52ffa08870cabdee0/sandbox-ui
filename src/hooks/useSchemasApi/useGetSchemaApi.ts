@@ -1,12 +1,14 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 import { Configuration, SchemaCatalogApi } from "@openapi/generated";
 import { ProcessorSchemaType } from "../../types/Processor";
 
 export function useGetSchemaApi(): {
   getSchema: GetSchema;
+  error: unknown;
 } {
   const { getToken, apiBaseUrl } = useSmartEvents();
+  const [error, setError] = useState<unknown>();
 
   const getSchema = useCallback(
     (schemaId: string, schemaType: ProcessorSchemaType) => {
@@ -21,14 +23,22 @@ export function useGetSchemaApi(): {
         ? schemaCatalogApi
             .getActionProcessorSchema(schemaId)
             .then((response) => response.data)
+            .catch((err) => {
+              setError(err);
+              throw err;
+            })
         : schemaCatalogApi
             .getSourceProcessorSchema(schemaId)
-            .then((response) => response.data);
+            .then((response) => response.data)
+            .catch((err) => {
+              setError(err);
+              throw err;
+            });
     },
     [getToken, apiBaseUrl]
   );
 
-  return { getSchema };
+  return { getSchema, error };
 }
 
 export type GetSchema = (

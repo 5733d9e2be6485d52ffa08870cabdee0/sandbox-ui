@@ -58,35 +58,3 @@ npm run cypress:open:e2e
 ```
 
 Clear entities which were added by the test suite.
-
-## Run UI with real data locally
-
-This section is not the supported usecase. The target is to bring an idea how validate new features in the sandbox and sanbox-ui repository locally.
-
-Revert this pull request [#31](https://github.com/5733d9e2be6485d52ffa08870cabdee0/sandbox-ui/pull/31/files).
-
-First, you have to run the backend:
-
-- Follow [the environment set up](https://github.com/5733d9e2be6485d52ffa08870cabdee0/sandbox/blob/main/dev/README.md)
-- Follow [DEMO](https://github.com/5733d9e2be6485d52ffa08870cabdee0/sandbox/blob/main/DEMO.md).
-- Change the port of the Shard operator in the sandbox repository -> sandbox-ui has similar port as operator
-  https://github.com/5733d9e2be6485d52ffa08870cabdee0/sandbox/blob/ff5feff0c21de5d876e7ce50b5840e32232e9fe9/dev/bin/shard-run.sh#L16
-
-### upgrade version of the `keycloak-js` package
-
-It is very important step. Do not forget to delete `promiseType: "native"`. It is not supported by this version.
-
-### change creditals
-
-The guides contain all important creditals. Focus on the setting of [the `OB_TOKEN`](https://github.com/5733d9e2be6485d52ffa08870cabdee0/sandbox/blob/main/DEMO.md#authentication).
-
-| Name                   | How to set it                                                                                                  |
-| :--------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `realm`                | It is mentioned in the curl command as a part of the url: `auth/realms/**event-bridge-fm**/protocol`           |
-| `url`                  | Use the output if this command `echo "http://${KEYCLOAK_UR}/auth/"`. Do not use https, just the http protocol. |
-| `clientId`             | It is mentioned in the curl command as `--user **event-bridge**`                                               |
-| `login` and `password` | It is mentioned in the curl command as `-d 'username=kermit&password=thefrog&grant_type=password'`             |
-
-### set BASE_URL
-
-Go to [the .env file](https://github.com/5733d9e2be6485d52ffa08870cabdee0/sandbox-ui/blob/main/.env) and set BASE_URL. As a value, use the output of this command `echo $MANAGER_URL`.

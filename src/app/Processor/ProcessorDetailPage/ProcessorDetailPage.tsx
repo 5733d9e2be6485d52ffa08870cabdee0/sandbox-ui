@@ -62,6 +62,7 @@ const ProcessorDetailPage = (): JSX.Element => {
   const [existingProcessorName, setExistingProcessorName] = useState<
     string | undefined
   >();
+  const [malformedTemplate, setMalformedTemplate] = useState<boolean>(false);
   const [requestData, setRequestData] = useState<ProcessorRequest>();
 
   const [showActionModal, setShowActionModal] = useState<boolean>(false);
@@ -215,6 +216,11 @@ const ProcessorDetailPage = (): JSX.Element => {
         actionModalMessage.current = t(
           "processor.errors.cantUpdateProcessorBecauseNotReadyState"
         );
+      } else if (
+        isServiceApiError(updateProcessorError) &&
+        getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_22
+      ) {
+        setMalformedTemplate(true);
       } else {
         setShowActionModal(true);
         actionModalFn.current = (): void => {
@@ -381,8 +387,15 @@ const ProcessorDetailPage = (): JSX.Element => {
               isLoading={updateProcessorLoading}
               saveButtonLabel={t("common.save")}
               onSave={handleUpdateProcessorSaving}
-              onCancel={(): void => setIsEditing(false)}
+              onCancel={(): void => {
+                setMalformedTemplate(false);
+                setIsEditing(false);
+              }}
               existingProcessorName={existingProcessorName}
+              malformedTransformationTemplate={malformedTemplate}
+              resetTransformationStatus={(): void =>
+                setMalformedTemplate(false)
+              }
               schemaCatalog={schemas}
               getSchema={getSchema}
             />

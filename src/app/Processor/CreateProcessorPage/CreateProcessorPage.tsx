@@ -30,6 +30,7 @@ const CreateProcessorPage = (): JSX.Element => {
   const [existingProcessorName, setExistingProcessorName] = useState<
     string | undefined
   >();
+  const [malformedTemplate, setMalformedTemplate] = useState<boolean>(false);
   const [requestData, setRequestData] = useState<ProcessorRequest>();
 
   const [showActionModal, setShowActionModal] = useState<boolean>(false);
@@ -127,6 +128,11 @@ const CreateProcessorPage = (): JSX.Element => {
         actionModalMessage.current = t(
           "processor.errors.cantCreateProcessorBecauseInstanceNotAvailable"
         );
+      } else if (
+        isServiceApiError(createProcessorError) &&
+        getErrorCode(createProcessorError) === APIErrorCodes.ERROR_22
+      ) {
+        setMalformedTemplate(true);
       } else {
         setShowActionModal(true);
         actionModalFn.current = (): void => {
@@ -189,6 +195,8 @@ const CreateProcessorPage = (): JSX.Element => {
             onCancel={goToInstance}
             isLoading={isAddLoading}
             existingProcessorName={existingProcessorName}
+            malformedTransformationTemplate={malformedTemplate}
+            resetTransformationStatus={(): void => setMalformedTemplate(false)}
             schemaCatalog={schemas}
             getSchema={getSchema}
           />

@@ -47,3 +47,13 @@
   width: 100%;
   border-top: 1px solid var(--pf-global--BorderColor--100);
 }
+
+.processor-edit__transformation-template.processor-field-error {
+  border-bottom-color: var(--pf-global--danger-color--100);
+  border-bottom-style: solid;
+  border-bottom-width: var(--pf-global--BorderWidth--md);
+}
+
+.processor-edit__transformation-template__helper-text {
+  margin-top: -20px;
+}

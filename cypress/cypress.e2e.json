@@ -1,0 +1,21 @@
+{
+  "fixturesFolder": false,
+  "integrationFolder": "e2e",
+  "pluginsFile": "plugins/index.ts",
+  "screenshotsFolder": "screenshots",
+  "videosFolder": "videos",
+  "supportFile": "support/index.ts",
+  "baseUrl": "https://prod.foo.redhat.com:1337/",
+  "chromeWebSecurity": false,
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "target/surefire-reports/TEST-e2e-[hash].xml",
+    "toConsole": false
+  },
+  "viewportWidth": 1920,
+  "viewportHeight": 1080,
+  "env": {
+    "REST_URL": "https://event-bridge-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com",
+    "REST_PATH": "/api/smartevents_mgmt/v1"
+  }
+}

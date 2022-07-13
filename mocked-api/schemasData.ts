@@ -201,6 +201,9 @@ export const schemasData: { [key: string]: object } = {
               "The webhook URL used by the Slack channel to handle incoming messages.",
             type: "string",
             format: "password",
+            $comment: "https://stackoverflow.com/a/6041965/9360757",
+            pattern:
+              "(http|https):\\/\\/([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])",
           },
           {
             description: "An opaque reference to the slack_webhook_url",
@@ -226,31 +229,6 @@ export const schemasData: { [key: string]: object } = {
           "This is the username that the bot will have when sending messages to a channel or user.",
         type: "string",
       },
-      data_shape: {
-        type: "object",
-        additionalProperties: false,
-        properties: {
-          consumes: {
-            $ref: "#/$defs/data_shape/consumes",
-          },
-        },
-      },
-    },
-    $defs: {
-      data_shape: {
-        consumes: {
-          type: "object",
-          additionalProperties: false,
-          required: ["format"],
-          properties: {
-            format: {
-              type: "string",
-              default: "application/octet-stream",
-              enum: ["application/octet-stream"],
-            },
-          },
-        },
-      },
     },
   },
   "webhook_sink_0.1": {
@@ -261,6 +239,9 @@ export const schemasData: { [key: string]: object } = {
         type: "string",
         title: "Endpoint",
         description: "The endpoint that receives the webhook.",
+        $comment: "https://stackoverflow.com/a/6041965/9360757",
+        pattern:
+          "(http|https):\\/\\/([\\w_-]+(?:(?:\\.[\\w_-]+)+))([\\w.,@?^=%&:\\/~+#-]*[\\w@?^=%&\\/~+#-])",
         example: "https://webhook.site/#!/f1fbd010-93cf-4be1-aa78-b37ba48858fe",
       },
       basic_auth_username: {
@@ -268,12 +249,14 @@ export const schemasData: { [key: string]: object } = {
         title: "Basic Auth Username",
         description: "The username for basic auth.",
         example: "kermit",
+        format: "password",
       },
       basic_auth_password: {
         type: "string",
         title: "Basic Auth Password",
         description: "The password for basic auth.",
         example: "mypassword",
+        format: "password",
       },
       ssl_verification_disabled: {
         type: "boolean",
@@ -289,6 +272,10 @@ export const schemasData: { [key: string]: object } = {
       "basic_auth_password",
       "ssl_verification_disabled",
     ],
+    dependentRequired: {
+      basic_auth_username: ["basic_auth_password"],
+      basic_auth_password: ["basic_auth_username"],
+    },
   },
   "aws_lambda_sink_0.1": {
     type: "object",
@@ -553,32 +540,6 @@ export const schemasData: { [key: string]: object } = {
         type: "integer",
         default: 500,
       },
-      data_shape: {
-        type: "object",
-        additionalProperties: false,
-        properties: {
-          produces: {
-            $ref: "#/$defs/data_shape/produces",
-          },
-        },
-      },
-      processors: {},
-    },
-    $defs: {
-      data_shape: {
-        produces: {
-          type: "object",
-          additionalProperties: false,
-          required: ["format"],
-          properties: {
-            format: {
-              type: "string",
-              default: "application/octet-stream",
-              enum: ["application/octet-stream"],
-            },
-          },
-        },
-      },
     },
   },
   "aws_sqs_source_0.1": {
@@ -595,6 +556,8 @@ export const schemasData: { [key: string]: object } = {
         title: "Queue Name",
         description: "The SQS Queue Name or ARN",
         type: "string",
+        pattern:
+          "^https://sqs\\.([a-z]+-[a-z]+-[0-9])\\.amazonaws\\.com/[0-9]{12}/([^/]+)$",
       },
       aws_delete_after_read: {
         title: "Auto-delete Messages",
@@ -693,7 +656,7 @@ export const schemasData: { [key: string]: object } = {
         title: "Protocol",
         description: "The underlying protocol used to communicate with SQS",
         type: "string",
-        example: "http or https",
+        enum: ["http", "https"],
         default: "https",
       },
       aws_queue_u_r_l: {
@@ -719,32 +682,6 @@ export const schemasData: { [key: string]: object } = {
         description: "Milliseconds before the next poll of the selected stream",
         type: "integer",
         default: 500,
-      },
-      data_shape: {
-        type: "object",
-        additionalProperties: false,
-        properties: {
-          produces: {
-            $ref: "#/$defs/data_shape/produces",
-          },
-        },
-      },
-      processors: {},
-    },
-    $defs: {
-      data_shape: {
-        produces: {
-          type: "object",
-          additionalProperties: false,
-          required: ["format"],
-          properties: {
-            format: {
-              type: "string",
-              default: "application/octet-stream",
-              enum: ["application/octet-stream"],
-            },
-          },
-        },
       },
     },
   },
@@ -787,32 +724,6 @@ export const schemasData: { [key: string]: object } = {
         title: "Topic Names",
         description: "Comma separated list of Kafka topic names",
         type: "string",
-      },
-      data_shape: {
-        type: "object",
-        additionalProperties: false,
-        properties: {
-          produces: {
-            $ref: "#/$defs/data_shape/produces",
-          },
-        },
-      },
-      processors: {},
-    },
-    $defs: {
-      data_shape: {
-        produces: {
-          type: "object",
-          additionalProperties: false,
-          required: ["format"],
-          properties: {
-            format: {
-              type: "string",
-              default: "application/json",
-              enum: ["application/json"],
-            },
-          },
-        },
       },
     },
   },

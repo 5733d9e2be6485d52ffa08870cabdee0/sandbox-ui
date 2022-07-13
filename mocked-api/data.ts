@@ -147,11 +147,6 @@ export const processorData = [
     action: {
       type: "slack_sink_0.1",
       parameters: JSON.stringify({
-        data_shape: {
-          consumes: {
-            format: "application/octet-stream",
-          },
-        },
         slack_channel: "#test",
         slack_webhook_url:
           "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
@@ -181,11 +176,6 @@ export const processorData = [
         slack_channel: "test",
         slack_webhook_url:
           "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
-        data_shape: {
-          consumes: {
-            format: "application/octet-stream",
-          },
-        },
       }),
     },
   },
@@ -210,11 +200,6 @@ export const processorData = [
       parameters: JSON.stringify({
         slack_channel: "#test",
         slack_token: "***********",
-        data_shape: {
-          consumes: {
-            format: "application/octet-stream",
-          },
-        },
       }),
     },
   },
@@ -233,11 +218,6 @@ export const processorData = [
       parameters: JSON.stringify({
         slack_channel: "#test",
         slack_token: "***********",
-        data_shape: {
-          consumes: {
-            format: "application/octet-stream",
-          },
-        },
       }),
     },
   },

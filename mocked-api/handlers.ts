@@ -849,11 +849,7 @@ export const handlers = [
     return res(ctx.status(200), ctx.delay(100), ctx.json(requestedSchema));
   }),
   rest.get(`${apiUrl}/cloud_providers`, (_req, res, ctx) => {
-    const items = db.cloudProvider.findMany({
-      orderBy: {
-        display_name: "asc",
-      },
-    });
+    const items = db.cloudProvider.getAll();
 
     return res(
       ctx.status(200),
@@ -881,12 +877,7 @@ export const handlers = [
     };
 
     const items = db.cloudRegion
-      .findMany({
-        orderBy: {
-          display_name: "asc",
-        },
-        ...query,
-      })
+      .findMany(query)
       .map((item) => omit(item, ["cloudProvider"]));
 
     return res(

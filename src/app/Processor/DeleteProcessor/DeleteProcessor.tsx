@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import {
   getErrorCode,
+  getErrorReason,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
-import { ResponseError } from "../../../types/Error";
 
 interface DeleteProcessorProps {
   /** Flag to show/close the modal */
@@ -65,11 +65,9 @@ const DeleteProcessor = (props: DeleteProcessorProps): JSX.Element => {
       const genericErrorMsg = t("processor.errors.cantDeleteTryLater");
       if (
         isServiceApiError(error) &&
-        getErrorCode(error) === APIErrorCodes.ERROR_2
+        getErrorCode(error) === APIErrorCodes.ERROR_19
       ) {
-        setDeleteBlockedReason(
-          (error.response?.data as ResponseError)?.reason ?? genericErrorMsg
-        );
+        setDeleteBlockedReason(getErrorReason(error) ?? genericErrorMsg);
       } else if (
         isServiceApiError(error) &&
         getErrorCode(error) === APIErrorCodes.ERROR_4

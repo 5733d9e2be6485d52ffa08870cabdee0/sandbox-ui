@@ -58,8 +58,8 @@ export interface ProcessorEditProps {
   onCancel: () => void;
   /** Already existing processor name that prevents from saving the processor */
   existingProcessorName?: string;
-  /** Malformed transformation template that prevents from saving the processor */
-  malformedTransformationTemplate?: boolean;
+  /** Malformed transformation template error that prevents from saving the processor */
+  malformedTransformationTemplate?: string;
   /** Catalog of all the actions/sources */
   schemaCatalog: ProcessorSchemaEntryResponse[];
   /** Callback to retrieve a single action/source schema */
@@ -427,9 +427,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                   className="processor-edit__transformation-template__helper-text pf-c-form__helper-text pf-m-error"
                                   aria-live="polite"
                                 >
-                                  {t(
-                                    "processor.errors.malformedTransformation"
-                                  )}
+                                  {malformedTransformationTemplate}
                                 </p>
                               )}
                             </FormSection>

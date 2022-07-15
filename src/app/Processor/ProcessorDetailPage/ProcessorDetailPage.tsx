@@ -41,6 +41,7 @@ import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi"
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import {
   getErrorCode,
+  getErrorReason,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
@@ -62,7 +63,9 @@ const ProcessorDetailPage = (): JSX.Element => {
   const [existingProcessorName, setExistingProcessorName] = useState<
     string | undefined
   >();
-  const [malformedTemplate, setMalformedTemplate] = useState<boolean>(false);
+  const [malformedTemplate, setMalformedTemplate] = useState<
+    string | undefined
+  >();
   const [requestData, setRequestData] = useState<ProcessorRequest>();
 
   const [showActionModal, setShowActionModal] = useState<boolean>(false);
@@ -220,7 +223,10 @@ const ProcessorDetailPage = (): JSX.Element => {
         isServiceApiError(updateProcessorError) &&
         getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_22
       ) {
-        setMalformedTemplate(true);
+        setMalformedTemplate(
+          getErrorReason(updateProcessorError) ??
+            t("processor.errors.malformedTransformation")
+        );
       } else {
         setShowActionModal(true);
         actionModalFn.current = (): void => {
@@ -388,7 +394,7 @@ const ProcessorDetailPage = (): JSX.Element => {
               saveButtonLabel={t("common.save")}
               onSave={handleUpdateProcessorSaving}
               onCancel={(): void => {
-                setMalformedTemplate(false);
+                setMalformedTemplate(undefined);
                 setIsEditing(false);
               }}
               existingProcessorName={existingProcessorName}

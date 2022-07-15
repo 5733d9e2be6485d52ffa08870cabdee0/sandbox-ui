@@ -20,6 +20,7 @@ import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi"
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import {
   getErrorCode,
+  getErrorReason,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
@@ -30,7 +31,9 @@ const CreateProcessorPage = (): JSX.Element => {
   const [existingProcessorName, setExistingProcessorName] = useState<
     string | undefined
   >();
-  const [malformedTemplate, setMalformedTemplate] = useState<boolean>(false);
+  const [malformedTemplate, setMalformedTemplate] = useState<
+    string | undefined
+  >();
   const [requestData, setRequestData] = useState<ProcessorRequest>();
 
   const [showActionModal, setShowActionModal] = useState<boolean>(false);
@@ -132,7 +135,10 @@ const CreateProcessorPage = (): JSX.Element => {
         isServiceApiError(createProcessorError) &&
         getErrorCode(createProcessorError) === APIErrorCodes.ERROR_22
       ) {
-        setMalformedTemplate(true);
+        setMalformedTemplate(
+          getErrorReason(createProcessorError) ??
+            t("processor.errors.malformedTransformation")
+        );
       } else {
         setShowActionModal(true);
         actionModalFn.current = (): void => {

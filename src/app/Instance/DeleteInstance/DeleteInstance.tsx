@@ -6,10 +6,10 @@ import { useTranslation } from "react-i18next";
 import axios from "axios";
 import {
   getErrorCode,
+  getErrorReason,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
-import { ResponseError } from "../../../types/Error";
 import { useHistory } from "react-router-dom";
 
 interface DeleteInstanceProps {
@@ -101,8 +101,7 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
         getErrorCode(bridgeDeleteError) === APIErrorCodes.ERROR_2
       ) {
         setDeleteBlockedReason(
-          (bridgeDeleteError.response?.data as ResponseError)?.reason ??
-            genericErrorMsg
+          getErrorReason(bridgeDeleteError) ?? genericErrorMsg
         );
         shouldRedirectToHome.current = true;
       } else if (

@@ -60,8 +60,6 @@ export interface ProcessorEditProps {
   existingProcessorName?: string;
   /** Malformed transformation template that prevents from saving the processor */
   malformedTransformationTemplate?: boolean;
-  /** Resetting validation status for transformation template */
-  resetTransformationStatus?: () => void;
   /** Catalog of all the actions/sources */
   schemaCatalog: ProcessorSchemaEntryResponse[];
   /** Callback to retrieve a single action/source schema */
@@ -77,7 +75,6 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     onSave,
     onCancel,
     processor,
-    resetTransformationStatus,
     schemaCatalog,
     getSchema,
   } = props;
@@ -420,10 +417,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                 height={"300px"}
                                 isLineNumbersVisible={true}
                                 code={transformation}
-                                onChange={(value): void => {
-                                  setTransformation(value);
-                                  resetTransformationStatus?.();
-                                }}
+                                onChange={setTransformation}
                                 options={{
                                   scrollbar: { alwaysConsumeMouseWheel: false },
                                 }}

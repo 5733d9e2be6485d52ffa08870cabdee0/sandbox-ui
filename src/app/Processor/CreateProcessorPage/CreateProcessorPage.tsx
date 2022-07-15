@@ -196,7 +196,6 @@ const CreateProcessorPage = (): JSX.Element => {
             isLoading={isAddLoading}
             existingProcessorName={existingProcessorName}
             malformedTransformationTemplate={malformedTemplate}
-            resetTransformationStatus={(): void => setMalformedTemplate(false)}
             schemaCatalog={schemas}
             getSchema={getSchema}
           />

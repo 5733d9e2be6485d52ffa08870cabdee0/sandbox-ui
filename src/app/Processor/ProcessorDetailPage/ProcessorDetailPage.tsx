@@ -393,9 +393,6 @@ const ProcessorDetailPage = (): JSX.Element => {
               }}
               existingProcessorName={existingProcessorName}
               malformedTransformationTemplate={malformedTemplate}
-              resetTransformationStatus={(): void =>
-                setMalformedTemplate(false)
-              }
               schemaCatalog={schemas}
               getSchema={getSchema}
             />

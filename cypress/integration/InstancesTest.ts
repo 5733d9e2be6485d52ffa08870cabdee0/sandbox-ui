@@ -1,9 +1,11 @@
+import { countBy } from "cypress/types/lodash";
 import { format } from "date-fns";
+import { deleteInstance } from "./DeleteTest";
 
 const formatDate = (dateStr: string): string =>
   format(new Date(dateStr), "PPPP p");
 
-function createnewInstance() {
+function createInstance() {
   const newInstanceName: string = "Some new instance";
   cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
   cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
@@ -42,7 +44,7 @@ describe("Instances Test", () => {
     });
 
     it("Submit", () => {
-      createnewInstance();
+      createInstance();
     });
 
     it("Submit and expect error", () => {
@@ -83,177 +85,256 @@ describe("Instances Test", () => {
         .ouiaId(newInstanceName, "PF4/TableRow")
         .should("not.exist");
     });
-  });
 
-  describe("the Instance statuses", () => {
-    beforeEach(() => {
-      cy.visit("/");
-      cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
-        "not.exist"
-      );
-    });
+    it("Instance List pagination test", () => {
+      // cy.ouiaId("OUIA-Generated-Button-plain-3", "PF4/Button").click();       // next button
+      // cy.ouiaId("OUIA-Generated-Button-plain-2", "PF4/Button").click();       // previous button
+      cy.get("[aria-label='Go to first page']").should("be.disabled");
+      cy.get("[aria-label='Go to previous page']").should("be.disabled");
+      cy.get("[aria-label='Go to last page']").should("not.be.disabled");
+      cy.get("[aria-label='Go to next page']").should("not.be.disabled");
+      // Go to next page
+      cy.ouiaId("OUIA-Generated-Button-plain-3", "PF4/Button").click();
+      cy.get("[aria-label='Go to first page']").should("not.be.disabled");
+      cy.get("[aria-label='Go to previous page']").should("not.be.disabled");
+      cy.get("[aria-label='Go to last page']").should("be.disabled");
+      cy.get("[aria-label='Go to next page']").should("be.disabled");
+      // Go to previous page
+      cy.ouiaId("OUIA-Generated-Button-plain-2", "PF4/Button").click();
 
-    it("Accepted", () => {
-      const instanceName: string = "Instance three";
-      cy.ouiaId("Instances list table", "PF4/Table")
-        .ouiaId(instanceName, "PF4/TableRow")
-        .should("be.visible")
-        .within(() => {
-          cy.get("td:first").should("have.html", instanceName);
-          cy.get("td:nth-child(2)").should("have.text", "accepted");
-          cy.get("td:nth-child(4)")
-            .click()
-            .within(() => {
-              cy.ouiaType("PF4/DropdownItem").then(($items) => {
-                expect($items.eq(0)).have.text("Details");
-                expect($items.eq(0)).be.enabled;
-                expect($items.eq(1)).have.text("Delete");
-                expect($items.eq(1)).have.attr("aria-disabled", "true");
-              });
-            });
-        });
-    });
-
-    it("Provisioning", () => {
-      const instanceName: string = "Instance four";
-      cy.ouiaId("Instances list table", "PF4/Table")
-        .ouiaId(instanceName, "PF4/TableRow")
-        .should("be.visible")
-        .within(() => {
-          cy.get("td:first").should("have.html", instanceName);
-          cy.get("td:nth-child(2)").should("have.text", "provisioning");
-          cy.get("td:nth-child(4)")
-            .click()
-            .within(() => {
-              cy.ouiaType("PF4/DropdownItem").then(($items) => {
-                expect($items.eq(0)).have.text("Details");
-                expect($items.eq(0)).be.enabled;
-                expect($items.eq(1)).have.text("Delete");
-                expect($items.eq(1)).have.attr("aria-disabled", "true");
-              });
-            });
-        });
-    });
-
-    it("Ready", () => {
-      const instanceName: string = "Instance two";
-      cy.ouiaId("Instances list table", "PF4/Table")
-        .ouiaId(instanceName, "PF4/TableRow")
-        .should("be.visible")
-        .within(() => {
-          cy.get("td:first")
-            .should("have.text", instanceName)
-            .should("not.have.html", instanceName)
-            .find("a")
-            .should("be.visible");
-          cy.get("td:nth-child(2)").should("have.text", "ready");
-          cy.get("td:nth-child(4)")
-            .click()
-            .within(() => {
-              cy.ouiaType("PF4/DropdownItem").then(($items) => {
-                expect($items.eq(0)).have.text("Details");
-                expect($items.eq(0)).be.enabled;
-                expect($items.eq(1)).have.text("Delete");
-                expect($items.eq(0)).be.enabled;
-              });
-            });
-        });
-    });
-  });
-
-  describe("Instance Page - Instance one", () => {
-    beforeEach(() => {
-      cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
-    });
-
-    it("Header", () => {
-      cy.ouiaId("instance-name", "PF4/Text").should(
-        "have.text",
-        "Instance one"
-      );
-      cy.ouiaId("actions", "PF4/Dropdown")
-        .should("be.visible")
-        .within(() => {
-          cy.ouiaId("actions", "PF4/DropdownToggle").click();
-          cy.ouiaId("details", "PF4/DropdownItem").should("be.visible");
-          cy.ouiaId("delete", "PF4/DropdownItem").should("be.visible");
-        });
-    });
-
-    it("Details", () => {
-      cy.ouiaId("actions", "PF4/Dropdown")
-        .should("be.visible")
-        .within(() => {
-          cy.ouiaId("actions", "PF4/DropdownToggle").click();
-          cy.ouiaId("details", "PF4/DropdownItem").click();
+      cy.ouiaType("PF4/DropdownToggle").should("be.visible");
+      cy.ouiaId(
+        "OUIA-Generated-DropdownToggle-1",
+        "PF4/DropdownToggle"
+      ).click();
+      cy.get(".pf-c-options-menu__menu")
+        .find("li")
+        .then(($cells) => {
+          expect($cells).have.length(4);
+          expect($cells.eq(0)).have.text("10 per page");
+          expect($cells.eq(1)).have.text("20 per page");
+          expect($cells.eq(2)).have.text("50 per page");
+          expect($cells.eq(3)).have.text("100 per page");
         });
 
-      cy.ouiaId("instance-details-panel")
-        .within(() => {
-          cy.ouiaId("instance-details-name", "PF4/Text")
-            .should("have.text", "Instance one")
-            .should("be.visible");
-          cy.ouiaId("instance-details-id")
-            .should("have.text", "3543edaa-1851-4ad7-96be-ebde7d20d717")
-            .should("be.visible");
-          cy.ouiaId("instance-details-endpoint")
-            .find("input")
-            .should(
-              "have.value",
-              "https://3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events"
-            )
-            .should("be.visible");
-          cy.ouiaId("instance-details-submitted-date")
-            .should("have.text", formatDate("2022-02-24T13:34:00Z"))
-            .should("be.visible");
-          cy.ouiaId("instance-details-published-date")
-            .should("have.text", formatDate("2022-02-24T13:35:00Z"))
-            .should("be.visible");
-          cy.ouiaId("close-instance-details").click();
-        })
-        //constructions like "not.exist" or "not.be.visible" fail in this case
-        .should("have.attr", "hidden");
-    });
+      // page size is changed
+      cy.contains("20 per page").click(); // change page-size
+      cy.get(".pf-c-pagination__total-items >b:nth-of-type(1)").then(function (
+        count
+      ) {
+        let size = count.text();
+        let perPageSize = parseInt(size.slice(-2));
+        cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
+          function (count) {
+            let pageSize = parseInt(count.text());
+            cy.wrap(perPageSize).should("be.lte", pageSize);
+          }
+        );
+      });
 
-    it("Processors Content", () => {
-      cy.ouiaId("instance-details", "PF4/Tabs")
-        .ouiaId("processors", "PF4/TabButton")
-        .click();
-      cy.ouiaId("processors", "PF4/TabContent").within(() => {
-        cy.ouiaId("rows-toolbar", "PF4/Toolbar")
-          .ouiaId("create-processor", "PF4/Button")
-          .should("be.visible");
-        cy.ouiaId("Processors list table", "PF4/Table")
-          .ouiaId("Processor three", "PF4/TableRow")
-          .find("td")
-          .then(($cells) => {
-            expect($cells).have.length(6);
-            expect($cells.eq(0)).have.text("Processor three");
-            expect($cells.eq(1)).have.text(
-              "f8f34af4-caed-11ec-9d64-0242ac120002"
+      cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(function (
+        count
+      ) {
+        let initialInstanceCount = parseInt(count.text());
+        createInstance();
+        cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
+          function (count) {
+            let instanceCountAfterCreate = parseInt(count.text());
+            expect(instanceCountAfterCreate).to.be.greaterThan(
+              initialInstanceCount
             );
-            expect($cells.eq(2)).have.text("Source");
-            expect($cells.eq(3)).have.text("accepted");
-            cy.wrap($cells.eq(5)).ouiaType("PF4/Dropdown").should("be.visible");
+          }
+        );
+      });
+
+      cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(function (
+        count
+      ) {
+        let initialInstanceCount = parseInt(count.text());
+        deleteInstance();
+        cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
+          function (count) {
+            let instanceCountAfterDelete = parseInt(count.text());
+            expect(instanceCountAfterDelete).to.be.lessThan(
+              initialInstanceCount
+            );
+          }
+        );
+      });
+    });
+
+    describe("the Instance statuses", () => {
+      beforeEach(() => {
+        cy.visit("/");
+        cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
+          "not.exist"
+        );
+      });
+
+      it("Accepted", () => {
+        const instanceName: string = "Instance three";
+        cy.ouiaId("Instances list table", "PF4/Table")
+          .ouiaId(instanceName, "PF4/TableRow")
+          .should("be.visible")
+          .within(() => {
+            cy.get("td:first").should("have.html", instanceName);
+            cy.get("td:nth-child(2)").should("have.text", "accepted");
+            cy.get("td:nth-child(4)")
+              .click()
+              .within(() => {
+                cy.ouiaType("PF4/DropdownItem").then(($items) => {
+                  expect($items.eq(0)).have.text("Details");
+                  expect($items.eq(0)).be.enabled;
+                  expect($items.eq(1)).have.text("Delete");
+                  expect($items.eq(1)).have.attr("aria-disabled", "true");
+                });
+              });
+          });
+      });
+
+      it("Provisioning", () => {
+        const instanceName: string = "Instance four";
+        cy.ouiaId("Instances list table", "PF4/Table")
+          .ouiaId(instanceName, "PF4/TableRow")
+          .should("be.visible")
+          .within(() => {
+            cy.get("td:first").should("have.html", instanceName);
+            cy.get("td:nth-child(2)").should("have.text", "provisioning");
+            cy.get("td:nth-child(4)")
+              .click()
+              .within(() => {
+                cy.ouiaType("PF4/DropdownItem").then(($items) => {
+                  expect($items.eq(0)).have.text("Details");
+                  expect($items.eq(0)).be.enabled;
+                  expect($items.eq(1)).have.text("Delete");
+                  expect($items.eq(1)).have.attr("aria-disabled", "true");
+                });
+              });
+          });
+      });
+
+      it("Ready", () => {
+        const instanceName: string = "Instance two";
+        cy.ouiaId("Instances list table", "PF4/Table")
+          .ouiaId(instanceName, "PF4/TableRow")
+          .should("be.visible")
+          .within(() => {
+            cy.get("td:first")
+              .should("have.text", instanceName)
+              .should("not.have.html", instanceName)
+              .find("a")
+              .should("be.visible");
+            cy.get("td:nth-child(2)").should("have.text", "ready");
+            cy.get("td:nth-child(4)")
+              .click()
+              .within(() => {
+                cy.ouiaType("PF4/DropdownItem").then(($items) => {
+                  expect($items.eq(0)).have.text("Details");
+                  expect($items.eq(0)).be.enabled;
+                  expect($items.eq(1)).have.text("Delete");
+                  expect($items.eq(0)).be.enabled;
+                });
+              });
           });
       });
     });
 
-    it("Processor header details are visible", () => {
-      const processorHeaderDetails = [
-        "Name",
-        "ID",
-        "Type",
-        "Status",
-        "Time created",
-      ];
-      cy.ouiaId("Processors list table", "PF4/Table")
-        .ouiaId("table-head", "PF4/TableRow")
-        .find("th")
-        .should("have.length", processorHeaderDetails.length)
-        .each((item, index) => {
-          cy.wrap(item).should("have.text", processorHeaderDetails[index]);
+    describe("Instance Page - Instance one", () => {
+      beforeEach(() => {
+        cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
+      });
+
+      it("Header", () => {
+        cy.ouiaId("instance-name", "PF4/Text").should(
+          "have.text",
+          "Instance one"
+        );
+        cy.ouiaId("actions", "PF4/Dropdown")
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaId("actions", "PF4/DropdownToggle").click();
+            cy.ouiaId("details", "PF4/DropdownItem").should("be.visible");
+            cy.ouiaId("delete", "PF4/DropdownItem").should("be.visible");
+          });
+      });
+
+      it("Details", () => {
+        cy.ouiaId("actions", "PF4/Dropdown")
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaId("actions", "PF4/DropdownToggle").click();
+            cy.ouiaId("details", "PF4/DropdownItem").click();
+          });
+
+        cy.ouiaId("instance-details-panel")
+          .within(() => {
+            cy.ouiaId("instance-details-name", "PF4/Text")
+              .should("have.text", "Instance one")
+              .should("be.visible");
+            cy.ouiaId("instance-details-id")
+              .should("have.text", "3543edaa-1851-4ad7-96be-ebde7d20d717")
+              .should("be.visible");
+            cy.ouiaId("instance-details-endpoint")
+              .find("input")
+              .should(
+                "have.value",
+                "https://3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events"
+              )
+              .should("be.visible");
+            cy.ouiaId("instance-details-submitted-date")
+              .should("have.text", formatDate("2022-02-24T13:34:00Z"))
+              .should("be.visible");
+            cy.ouiaId("instance-details-published-date")
+              .should("have.text", formatDate("2022-02-24T13:35:00Z"))
+              .should("be.visible");
+            cy.ouiaId("close-instance-details").click();
+          })
+          //constructions like "not.exist" or "not.be.visible" fail in this case
+          .should("have.attr", "hidden");
+      });
+
+      it("Processors Content", () => {
+        cy.ouiaId("instance-details", "PF4/Tabs")
+          .ouiaId("processors", "PF4/TabButton")
+          .click();
+        cy.ouiaId("processors", "PF4/TabContent").within(() => {
+          cy.ouiaId("rows-toolbar", "PF4/Toolbar")
+            .ouiaId("create-processor", "PF4/Button")
+            .should("be.visible");
+          cy.ouiaId("Processors list table", "PF4/Table")
+            .ouiaId("Processor three", "PF4/TableRow")
+            .find("td")
+            .then(($cells) => {
+              expect($cells).have.length(6);
+              expect($cells.eq(0)).have.text("Processor three");
+              expect($cells.eq(1)).have.text(
+                "f8f34af4-caed-11ec-9d64-0242ac120002"
+              );
+              expect($cells.eq(2)).have.text("Source");
+              expect($cells.eq(3)).have.text("accepted");
+              cy.wrap($cells.eq(5))
+                .ouiaType("PF4/Dropdown")
+                .should("be.visible");
+            });
         });
+      });
+
+      it("Processor header details are visible", () => {
+        const processorHeaderDetails = [
+          "Name",
+          "ID",
+          "Type",
+          "Status",
+          "Time created",
+        ];
+        cy.ouiaId("Processors list table", "PF4/Table")
+          .ouiaId("table-head", "PF4/TableRow")
+          .find("th")
+          .should("have.length", processorHeaderDetails.length)
+          .each((item, index) => {
+            cy.wrap(item).should("have.text", processorHeaderDetails[index]);
+          });
+      });
     });
   });
 });

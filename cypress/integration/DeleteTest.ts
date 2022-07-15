@@ -1,4 +1,4 @@
-function deleteInstance() {
+export function deleteInstance() {
   cy.ouiaId("Instances list table", "PF4/Table")
     .ouiaId("Instance ten", "PF4/TableRow")
     .find("td")

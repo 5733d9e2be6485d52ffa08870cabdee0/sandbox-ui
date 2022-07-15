@@ -79,6 +79,14 @@ export const schemaCatalogData = [
     type: "source",
     href: "/api/smartevents_mgmt/v1/schemas/sources/slack_source_0.1",
   },
+  {
+    kind: "ProcessorSchemaEntry",
+    id: "google_pubsub_source_0.1",
+    name: "Google PubSub Source",
+    description: "Ingest data from Google PubSub.",
+    type: "source",
+    href: "/api/smartevents_mgmt/v1/schemas/sources/google_pubsub_source_0.1",
+  },
 ];
 
 export const schemasData: { [key: string]: object } = {
@@ -724,6 +732,56 @@ export const schemasData: { [key: string]: object } = {
         title: "Topic Names",
         description: "Comma separated list of Kafka topic names",
         type: "string",
+      },
+    },
+  },
+  "google_pubsub_source_0.1": {
+    type: "object",
+    additionalProperties: false,
+    required: [
+      "gcp_project_id",
+      "gcp_subscription_name",
+      "gcp_service_account_key",
+    ],
+    properties: {
+      gcp_project_id: {
+        title: "Project Id",
+        description: "The Google Cloud PubSub Project Id",
+        type: "string",
+      },
+      gcp_subscription_name: {
+        title: "Subscription Name",
+        description: "The Subscription Name",
+        type: "string",
+      },
+      gcp_service_account_key: {
+        title: "Service Account Key",
+        description:
+          "The Service account key that can be used as credentials for the PubSub publisher/subscriber",
+        type: "string",
+        "x-group": "credentials",
+        format: "base64",
+      },
+      gcp_synchronous_pull: {
+        title: "Synchronous Pull",
+        description:
+          "If Synchronously pull batches of messages is enabled or not",
+        type: "boolean",
+        default: false,
+      },
+      gcp_max_messages_per_poll: {
+        title: "Max Messages Per Poll",
+        description:
+          "The max number of messages to receive from the server in a single API call",
+        type: "integer",
+        default: 1,
+      },
+      gcp_concurrent_consumers: {
+        title: "Concurrent Consumers",
+        description:
+          "The number of parallel streams consuming from the subscription",
+        type: "integer",
+        default: 1,
       },
     },
   },

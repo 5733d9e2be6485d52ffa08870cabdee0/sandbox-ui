@@ -153,6 +153,10 @@ describe("ProcessorEdit component", () => {
   it("handles filters with multiple values", async () => {
     const { comp, onSave } = setupProcessorEdit({
       processor: sinkProcessor,
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(kakfaSinkSchema);
+        }),
       saveButtonLabel: "Save",
     });
     await waitForI18n(comp);
@@ -284,7 +288,13 @@ describe("ProcessorEdit component", () => {
   });
 
   it("should prevent the user from changing the type of an existing processor", async () => {
-    const { comp } = setupProcessorEdit({ processor: sinkProcessor });
+    const { comp } = setupProcessorEdit({
+      processor: sinkProcessor,
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(kakfaSinkSchema);
+        }),
+    });
     await waitForI18n(comp);
 
     expect(
@@ -379,6 +389,50 @@ describe("ProcessorEdit component", () => {
       },
     });
   });
+
+  it("handles secret values inside the form and displays a dedicated description", async () => {
+    const { comp, onSave } = setupProcessorEdit({
+      processor: sourceProcessor,
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(SlackSourceSchema);
+        }),
+      saveButtonLabel: "Save",
+    });
+    await waitForI18n(comp);
+
+    const processorName = "Test Processor";
+
+    fireEvent.change(comp.getByLabelText("Processor name *"), {
+      target: { value: processorName },
+    });
+
+    await waitFor(() => {
+      expect(
+        (comp.getByLabelText("Channel *") as HTMLSelectElement).value
+      ).toBe("#test");
+      // secret values are not displayed, hence the token value (empty object) has
+      // been converted to an empty string
+      expect((comp.getByLabelText("Token *") as HTMLSelectElement).value).toBe(
+        ""
+      );
+      expect(
+        comp.queryByText(
+          "This field is a credential and its value cannot be displayed. Entering a new value will update the processor configuration."
+        )
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(comp.getByText("Save"));
+
+    expect(onSave).toHaveBeenCalledTimes(1);
+    expect(onSave).toHaveBeenCalledWith({
+      name: processorName,
+      // source values are the same as the original ones because the token value
+      // has been converted back to an empty object on submit
+      source: sourceProcessor.source,
+    });
+  });
 });
 
 const baseProcessor = {
@@ -395,13 +449,8 @@ const sourceProcessor = {
   source: {
     type: "slack_source_0.1",
     parameters: {
-      slack_channel: "test",
-      slack_token: "XXXXXXXXXXXX",
-      data_shape: {
-        produces: {
-          format: "application/json",
-        },
-      },
+      slack_channel: "#test",
+      slack_token: {},
     },
   },
 };

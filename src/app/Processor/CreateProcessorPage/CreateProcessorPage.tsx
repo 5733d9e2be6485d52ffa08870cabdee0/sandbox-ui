@@ -191,6 +191,7 @@ const CreateProcessorPage = (): JSX.Element => {
             existingProcessorName={existingProcessorName}
             schemaCatalog={schemas}
             getSchema={getSchema}
+            goBackToInstance={goToInstance}
           />
         </>
       )}

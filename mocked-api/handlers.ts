@@ -14,6 +14,8 @@ import { schemaCatalogData, schemasData } from "./schemasData";
 import omit from "lodash.omit";
 import cloneDeep from "lodash.clonedeep";
 import { EventFilter, ProcessorSchemaType } from "../src/types/Processor";
+import { JSONSchema7, JSONSchema7Definition } from "json-schema";
+import { isJSONSchema } from "@utils/processorUtils";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
@@ -984,9 +986,31 @@ const prepareProcessor = (
 const convertParametersToString = (
   data: MockProcessorRequest["action"] | MockProcessorRequest["source"]
 ): { type: string; parameters: string } => {
+  // converting secrets fields to an empty object to simulate their server side obfuscation
+  const newData: { [key: string]: unknown } = {};
+  if (data) {
+    const schema = schemasData[data?.type ?? ""];
+    Object.keys(data.parameters).map((key) => {
+      const def: JSONSchema7Definition | undefined = (schema as JSONSchema7)
+        ?.properties?.[key];
+      if (def && isJSONSchema(def)) {
+        if (
+          def.oneOf &&
+          def.oneOf.find(
+            (item) => isJSONSchema(item) && item.format === "password"
+          ) !== undefined
+        ) {
+          newData[key] = {};
+        } else {
+          newData[key] = (data.parameters as { [key: string]: unknown })[key];
+        }
+      }
+    });
+  }
+
   return {
     type: data?.type ?? "",
-    parameters: JSON.stringify(data?.parameters),
+    parameters: JSON.stringify(newData),
   };
 };
 

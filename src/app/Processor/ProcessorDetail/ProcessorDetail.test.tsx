@@ -59,12 +59,7 @@ describe("ProcessorDetail component", () => {
           .slack_channel as string
       )
     ).toBeInTheDocument();
-    expect(
-      comp.queryByText(
-        (sinkProcessor.action.parameters as { [key: string]: unknown })
-          .slack_webhook_url as string
-      )
-    ).toBeInTheDocument();
+    expect(comp.queryByText("**************************")).toBeInTheDocument();
 
     expect(
       comp.queryByText(
@@ -119,12 +114,7 @@ describe("ProcessorDetail component", () => {
       )
     ).toBeInTheDocument();
 
-    expect(
-      comp.queryByText(
-        (sourceProcessor.source.parameters as { [key: string]: unknown })
-          .slack_token as string
-      )
-    ).toBeInTheDocument();
+    expect(comp.queryByText("**************************")).toBeInTheDocument();
     expect(
       comp.queryByText(
         (sourceProcessor.source.parameters as { [key: string]: unknown })

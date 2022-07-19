@@ -30,6 +30,7 @@ const db = factory({
     name: String,
     kind: String,
     href: String,
+    owner: String,
     submitted_at: String,
     published_at: String,
     status: String,

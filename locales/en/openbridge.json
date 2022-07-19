@@ -93,6 +93,7 @@
       "instanceDetailsGenericError": "Error while retrieving the Smart Event instance details, related to this Processor.",
       "invalidName": "A processor with this name already exists in this instance.",
       "invalidUrl": "Please enter a valid URL with http or https protocol.",
+      "malformedTransformation": "The Transformation Template for the Processor is invalid.",
       "missingProcessorType": "Please select a processor type.",
       "parametersSectionGenericError": "Error while retrieving the information related to the parameters section for this Processor.",
       "processorDetailsGenericError": "Error while retrieving the Processor details."

@@ -41,6 +41,7 @@ import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi"
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import {
   getErrorCode,
+  getErrorReason,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
@@ -60,6 +61,9 @@ const ProcessorDetailPage = (): JSX.Element => {
   const [currentProcessor, setCurrentProcessor] = useState<ProcessorResponse>();
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [existingProcessorName, setExistingProcessorName] = useState<
+    string | undefined
+  >();
+  const [malformedTemplate, setMalformedTemplate] = useState<
     string | undefined
   >();
   const [requestData, setRequestData] = useState<ProcessorRequest>();
@@ -214,6 +218,14 @@ const ProcessorDetailPage = (): JSX.Element => {
         };
         actionModalMessage.current = t(
           "processor.errors.cantUpdateProcessorBecauseNotReadyState"
+        );
+      } else if (
+        isServiceApiError(updateProcessorError) &&
+        getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_22
+      ) {
+        setMalformedTemplate(
+          getErrorReason(updateProcessorError) ??
+            t("processor.errors.malformedTransformation")
         );
       } else {
         setShowActionModal(true);
@@ -381,8 +393,12 @@ const ProcessorDetailPage = (): JSX.Element => {
               isLoading={updateProcessorLoading}
               saveButtonLabel={t("common.save")}
               onSave={handleUpdateProcessorSaving}
-              onCancel={(): void => setIsEditing(false)}
+              onCancel={(): void => {
+                setMalformedTemplate(undefined);
+                setIsEditing(false);
+              }}
               existingProcessorName={existingProcessorName}
+              malformedTransformationTemplate={malformedTemplate}
               schemaCatalog={schemas}
               getSchema={getSchema}
             />

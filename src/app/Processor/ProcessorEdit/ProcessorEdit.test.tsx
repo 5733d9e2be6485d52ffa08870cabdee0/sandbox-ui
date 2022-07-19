@@ -26,6 +26,7 @@ const setupProcessorEdit = (
   const {
     saveButtonLabel = "Create",
     processor,
+    malformedTransformationTemplate,
     getSchema = (): Promise<object> =>
       new Promise<object>((resolve) => {
         resolve({});
@@ -40,6 +41,7 @@ const setupProcessorEdit = (
       isLoading={false}
       saveButtonLabel={saveButtonLabel}
       processor={processor}
+      malformedTransformationTemplate={malformedTransformationTemplate}
       schemaCatalog={schemaCatalog as ProcessorSchemaEntryResponse[]}
       getSchema={getSchema}
     />
@@ -378,6 +380,29 @@ describe("ProcessorEdit component", () => {
         },
       },
     });
+  });
+
+  it("shows malformed transformation template error, when raised", async () => {
+    const querySelector = jest.fn();
+    Object.defineProperty(global.document, "querySelector", {
+      value: querySelector,
+    });
+    const malformedTransformationTemplate = "template error";
+    const { comp } = setupProcessorEdit({
+      malformedTransformationTemplate,
+      processor: {
+        name: "Processor name",
+        type: ProcessorType.Sink,
+      },
+    });
+    await waitForI18n(comp);
+
+    expect(querySelector).toHaveBeenCalled();
+    expect(
+      comp.baseElement.querySelector(
+        ".processor-edit__transformation-template__helper-text"
+      )
+    ).toHaveTextContent(malformedTransformationTemplate);
   });
 });
 

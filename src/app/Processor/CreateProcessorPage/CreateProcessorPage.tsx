@@ -20,6 +20,7 @@ import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi"
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import {
   getErrorCode,
+  getErrorReason,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
@@ -28,6 +29,9 @@ import { ActionModal } from "@app/components/ActionModal/ActionModal";
 const CreateProcessorPage = (): JSX.Element => {
   const { instanceId } = useParams<InstanceRouteParams>();
   const [existingProcessorName, setExistingProcessorName] = useState<
+    string | undefined
+  >();
+  const [malformedTemplate, setMalformedTemplate] = useState<
     string | undefined
   >();
   const [requestData, setRequestData] = useState<ProcessorRequest>();
@@ -127,6 +131,14 @@ const CreateProcessorPage = (): JSX.Element => {
         actionModalMessage.current = t(
           "processor.errors.cantCreateProcessorBecauseInstanceNotAvailable"
         );
+      } else if (
+        isServiceApiError(createProcessorError) &&
+        getErrorCode(createProcessorError) === APIErrorCodes.ERROR_22
+      ) {
+        setMalformedTemplate(
+          getErrorReason(createProcessorError) ??
+            t("processor.errors.malformedTransformation")
+        );
       } else {
         setShowActionModal(true);
         actionModalFn.current = (): void => {
@@ -189,6 +201,7 @@ const CreateProcessorPage = (): JSX.Element => {
             onCancel={goToInstance}
             isLoading={isAddLoading}
             existingProcessorName={existingProcessorName}
+            malformedTransformationTemplate={malformedTemplate}
             schemaCatalog={schemas}
             getSchema={getSchema}
           />

@@ -42,6 +42,7 @@ import { isCommaSeparatedFilterType } from "@utils/filterUtils";
 import ConfigurationEdit from "@app/Processor/ProcessorEdit/ConfigurationEdit/ConfigurationEdit";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import "./ProcessorEdit.css";
+import { css } from "@patternfly/react-styles";
 
 export interface ProcessorEditProps {
   /** The processor data to populate the form. Used when updating an existing processor.
@@ -57,6 +58,8 @@ export interface ProcessorEditProps {
   onCancel: () => void;
   /** Already existing processor name that prevents from saving the processor */
   existingProcessorName?: string;
+  /** Malformed transformation template error that prevents from saving the processor */
+  malformedTransformationTemplate?: string;
   /** Catalog of all the actions/sources */
   schemaCatalog: ProcessorSchemaEntryResponse[];
   /** Callback to retrieve a single action/source schema */
@@ -66,6 +69,7 @@ export interface ProcessorEditProps {
 const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
   const {
     existingProcessorName,
+    malformedTransformationTemplate,
     isLoading,
     saveButtonLabel,
     onSave,
@@ -210,7 +214,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
   }, [existingProcessorName, validate]);
 
   useEffect(() => {
-    if (isSubmitted) {
+    if (isSubmitted || malformedTransformationTemplate) {
       document
         .querySelector(".processor-field-error, .pf-m-error")
         ?.scrollIntoView({
@@ -220,7 +224,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
         });
       setIsSubmitted(false);
     }
-  }, [isSubmitted]);
+  }, [isSubmitted, malformedTransformationTemplate]);
 
   return (
     <>
@@ -404,6 +408,12 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                               </TextContent>
                               <CodeEditor
                                 id={"transformation-template"}
+                                className={css(
+                                  "processor-edit__transformation-template",
+                                  malformedTransformationTemplate
+                                    ? "processor-field-error"
+                                    : ""
+                                )}
                                 height={"300px"}
                                 isLineNumbersVisible={true}
                                 code={transformation}
@@ -412,6 +422,14 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                   scrollbar: { alwaysConsumeMouseWheel: false },
                                 }}
                               />
+                              {malformedTransformationTemplate && (
+                                <p
+                                  className="processor-edit__transformation-template__helper-text pf-c-form__helper-text pf-m-error"
+                                  aria-live="polite"
+                                >
+                                  {malformedTransformationTemplate}
+                                </p>
+                              )}
                             </FormSection>
                             <FormSection title={t("processor.action")}>
                               <TextContent>

@@ -30,10 +30,10 @@ jobs:
           config-file: cypress.e2e.json
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
-          CYPRESS_USER: ${{ secrets.CY_USER }}
-          CYPRESS_PASSWORD: ${{ secrets.CY_PASSWORD }}
-          CYPRESS_SANDBOX_DEV_REST_URL: ${{ secrets.CY_SANDBOX_DEV_REST_URL }}
-          CYPRESS_SANDBOX_DEV_REST_PATH: ${{ secrets.CY_SANDBOX_DEV_REST_PATH  }}
+          USER: ${{ secrets.CY_USER }}
+          PASSWORD: ${{ secrets.CY_PASSWORD }}
+          SANDBOX_DEV_REST_URL: ${{ secrets.CY_SANDBOX_DEV_REST_URL }}
+          SANDBOX_DEV_REST_PATH: ${{ secrets.CY_SANDBOX_DEV_REST_PATH  }}
       - name: "Upload artifacts"
         uses: actions/upload-artifact@v2
         if: always() && !cancelled()

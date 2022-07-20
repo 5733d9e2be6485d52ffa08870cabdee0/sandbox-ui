@@ -156,6 +156,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
                   <TextInput
                     id="delete-confirmation-value"
                     ouiaId="delete-confirmation-value"
+                    data-testid="delete-confirmation-value"
                     value={nameValue}
                     type="text"
                     onChange={setNameValue}

@@ -1,39 +1,42 @@
+export function deleteInstance() {
+  cy.ouiaId("Instances list table", "PF4/Table")
+    .ouiaId("Instance ten", "PF4/TableRow")
+    .find("td")
+    .then(($cells) => {
+      expect($cells).have.length(4);
+      expect($cells.eq(1)).have.text("ready");
+      cy.wrap($cells.eq(3)).ouiaType("PF4/Dropdown").click();
+    });
+
+  cy.ouiaType("PF4/DropdownItem").contains("Delete").click();
+
+  cy.ouiaId("delete-instance", "PF4/ModalContent").within(() => {
+    cy.ouiaId("delete-confirmation-value", "PF4/TextInput").type(
+      "Instance ten"
+    );
+    cy.ouiaId("confirm", "PF4/Button").click();
+  });
+
+  cy.ouiaId("delete-instance", "PF4/ModalContent").should("not.exist");
+
+  cy.ouiaId("Instances list table", "PF4/Table").within(() => {
+    // once delete confirmed, state should change
+    cy.ouiaId("Instance ten", "PF4/TableRow")
+      .find("td")
+      .eq(1)
+      .should("have.text", "deprovision");
+
+    // once deprovision is completed, entry should disappear
+    cy.ouiaId("Instance ten", "PF4/TableRow", { timeout: 30000 }).should(
+      "not.exist"
+    );
+  });
+}
+
 describe("Delete Test", () => {
   it("Instance", () => {
     cy.visit("/");
-
-    cy.ouiaId("Instances list table", "PF4/Table")
-      .ouiaId("Instance ten", "PF4/TableRow")
-      .find("td")
-      .then(($cells) => {
-        expect($cells).have.length(4);
-        expect($cells.eq(1)).have.text("ready");
-        cy.wrap($cells.eq(3)).ouiaType("PF4/Dropdown").click();
-      });
-
-    cy.ouiaType("PF4/DropdownItem").contains("Delete").click();
-
-    cy.ouiaId("delete-instance", "PF4/ModalContent").within(() => {
-      cy.ouiaId("delete-confirmation-value", "PF4/TextInput").type(
-        "Instance ten"
-      );
-      cy.ouiaId("confirm", "PF4/Button").click();
-    });
-
-    cy.ouiaId("delete-instance", "PF4/ModalContent").should("not.exist");
-
-    cy.ouiaId("Instances list table", "PF4/Table").within(() => {
-      // once delete confirmed, state should change
-      cy.ouiaId("Instance ten", "PF4/TableRow")
-        .find("td")
-        .eq(1)
-        .should("have.text", "deprovision");
-
-      // once deprovision is completed, entry should disappear
-      cy.ouiaId("Instance ten", "PF4/TableRow", { timeout: 30000 }).should(
-        "not.exist"
-      );
-    });
+    deleteInstance();
   });
 
   it("Instance :: External component fail", () => {

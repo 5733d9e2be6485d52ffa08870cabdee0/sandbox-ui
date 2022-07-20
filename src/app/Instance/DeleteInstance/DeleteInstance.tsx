@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { DeleteModal } from "@app/components/DeleteModal/DeleteModal";
 import { useDeleteBridgeApi } from "../../../hooks/useBridgesApi/useDeleteBridgeApi";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import axios from "axios";
 import {
   getErrorCode,
@@ -32,7 +32,7 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
     props;
   const [preloading, setPreloading] = useState(false);
   const [deleteBlockedReason, setDeleteBlockedReason] = useState<
-    string | undefined
+    ReactElement | string | undefined
   >();
   const shouldRedirectToHome = useRef<boolean>(false);
 
@@ -54,7 +54,14 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
       setPreloading(false);
       if (processorListResponse.total && processorListResponse.total > 0) {
         setDeleteBlockedReason(
-          t("instance.errors.cantDeleteBecauseProcessorsInside")
+          <Trans
+            i18nKey={
+              "openbridgeTempDictionary:instance.errors.cantDeleteBecauseProcessorsInside"
+            }
+            values={{
+              resource: instanceName,
+            }}
+          />
         );
       }
     }
@@ -62,7 +69,7 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
       setPreloading(false);
       setDeleteBlockedReason(t("instance.errors.cantDeleteTryLater"));
     }
-  }, [processorListResponse, processorListError, t]);
+  }, [instanceName, processorListError, processorListResponse, t]);
 
   const {
     deleteBridge,
@@ -123,7 +130,11 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
       {instanceId && instanceName && (
         <DeleteModal
           ouiaId="delete-instance"
-          modalTitle={`Delete Smart Events Instance?`}
+          modalTitle={
+            deleteBlockedReason
+              ? t("instance.errors.cantDelete")
+              : t("instance.deleteIt")
+          }
           showDialog={showDeleteModal}
           resourceType={"Instance"}
           resourceName={instanceName}

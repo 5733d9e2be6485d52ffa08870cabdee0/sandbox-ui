@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   Bullseye,
@@ -39,7 +39,7 @@ export interface DeleteModalProps {
   /** Flag to indicate if a preload is in progress to check if the deletion is possible */
   isPreloading: boolean;
   /** Reason why the deletion is not possible */
-  blockedDeletionReason?: string;
+  blockedDeletionReason?: string | ReactElement;
 }
 
 export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
@@ -105,7 +105,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
       ouiaId={ouiaId}
       variant={ModalVariant.small}
       title={modalTitle}
-      titleIconVariant="warning"
+      titleIconVariant={blockedDeletionReason ? "danger" : "warning"}
       isOpen={showDialog}
       onClose={onCancel}
       actions={blockedDeletionReason ? closeActions : deleteActions}

@@ -1,3 +1,7 @@
 .instance-page__tabs .pf-c-tabs__item.pf-m-current .pf-c-tabs__item-text {
   color: var(--pf-c-tabs__scroll-button--hover--Color);
 }
+
+.instance-page__actions .pf-c-dropdown__menu {
+  width: 13rem;
+}

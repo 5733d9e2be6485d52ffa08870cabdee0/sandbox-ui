@@ -46,6 +46,7 @@
   "instance": {
     "createASEInstance": "Create a Smart Events instance",
     "createSEInstance": "Create Smart Events instance",
+    "delete": "Delete instance",
     "errors": {
       "cantCreateInstance": "Error while creating a Smart Event instance. Please, try again later.",
       "cantDeleteBecauseProcessorsInside": "It is not possible to delete a Smart Events instance with active Processors.",
@@ -64,6 +65,7 @@
     "loadingInstance": "Loading instance",
     "noInstances": "No Smart Event instances",
     "notFound": "Smart Events Instance not found",
+    "viewInformation": "View instance information",
     "smartEventInstance": "Smart Events Instance",
     "smartEventInstances": "Smart Event Instances"
   },

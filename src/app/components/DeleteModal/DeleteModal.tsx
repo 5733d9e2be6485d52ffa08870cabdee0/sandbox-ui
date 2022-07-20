@@ -133,7 +133,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
                       "openbridgeTempDictionary:common.resourceWillBeDeletedHTML"
                     }
                     values={{
-                      type: resourceType,
+                      type: resourceType?.toLowerCase(),
                       name: resourceName,
                     }}
                   />
@@ -142,8 +142,8 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
             </StackItem>
             <StackItem>
               <Form onSubmit={(event): void => event.preventDefault()}>
-                <FormGroup
-                  label={
+                <FormGroup fieldId="delete-confirmation-value">
+                  <Text component={TextVariants.p}>
                     <Trans
                       i18nKey={
                         "openbridgeTempDictionary:common.typeNameToConfirmHTML"
@@ -152,9 +152,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
                         name: resourceName,
                       }}
                     />
-                  }
-                  fieldId="delete-confirmation-value"
-                >
+                  </Text>
                   <TextInput
                     id="delete-confirmation-value"
                     ouiaId="delete-confirmation-value"

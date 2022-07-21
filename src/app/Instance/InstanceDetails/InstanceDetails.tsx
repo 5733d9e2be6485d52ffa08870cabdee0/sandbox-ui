@@ -71,6 +71,12 @@ export const InstanceDetails = ({
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
+            <DescriptionListTerm>{t("common.owner")}</DescriptionListTerm>
+            <DescriptionListDescription data-ouia-component-id="instance-details-owner">
+              {instance.owner}
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
             <DescriptionListTerm>{t("common.url")}</DescriptionListTerm>
             <DescriptionListDescription>
               <ClipboardCopy

@@ -1,14 +1,21 @@
 name: "Smart Events UI :: E2E :: Quality Checks"
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
+  pull_request_target:
+    types: [opened, labeled, unlabeled, synchronize]
 jobs:
   run-all-checks:
     runs-on: ubuntu-latest
-    if: github.repository == '5733d9e2be6485d52ffa08870cabdee0/sandbox'
+    if: github.repository == '5733d9e2be6485d52ffa08870cabdee0/sandbox-ui'
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: "refs/pull/${{ github.event.number }}/merge"
+      - name: Check labels
+        # Security due to https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+        if: ${{ !contains( github.event.pull_request.labels.*.name, 'safe to test') }}
+        run: |
+          echo "Please add the 'safe to test' label in order to run 'Manager - CI' pipeline if it's safe to test this code"
+          exit 1
       - name: Add mask
         run: |
           echo "::add-mask::${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }}"

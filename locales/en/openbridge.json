@@ -47,7 +47,7 @@
     "createASEInstance": "Create a Smart Events instance",
     "createSEInstance": "Create Smart Events instance",
     "delete": "Delete instance",
-    "deleteIt": "Delete Smart Events Instance?",
+    "deleteIt": "Delete Smart Events instance?",
     "errors": {
       "cantCreateInstance": "Error while creating a Smart Event instance. Please, try again later.",
       "cantDelete": "Cannot delete instance",

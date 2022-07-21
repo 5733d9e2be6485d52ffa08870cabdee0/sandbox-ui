@@ -12,28 +12,8 @@ jobs:
       - run: npm install
       - run: npm run format:check
       - run: npm run lint
-      # Disabled for draft purpose - delete before merge
-      #      - run: npm run test
-      #      - run: npm run test:it
-      - name: Set environment
-        run: |
-          sudo echo "127.0.0.1 prod.foo.redhat.com" | sudo tee -a /etc/hosts
-          TOKEN=${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }} ./scripts/get-sso-token.sh >> $GITHUB_ENV
-      - name: E2E tests
-        uses: cypress-io/github-action@v4
-        with:
-          install: false
-          project: ./cypress
-          start: npm run start
-          wait-on: "https://prod.foo.redhat.com:1337"
-          wait-on-timeout: 120
-          config-file: cypress.e2e.json
-        env:
-          NODE_TLS_REJECT_UNAUTHORIZED: 0
-          CYPRESS_USER: ${{ secrets.CY_USER }}
-          CYPRESS_PASSWORD: ${{ secrets.CY_PASSWORD }}
-          CYPRESS_SANDBOX_DEV_REST_URL: ${{ secrets.CY_SANDBOX_DEV_REST_URL }}
-          CYPRESS_SANDBOX_DEV_REST_PATH: ${{ secrets.CY_SANDBOX_DEV_REST_PATH  }}
+      - run: npm run test
+      - run: npm run test:it
       - name: "Upload artifacts"
         uses: actions/upload-artifact@v2
         if: always() && !cancelled()

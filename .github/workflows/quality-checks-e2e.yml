@@ -1,5 +1,6 @@
 name: "Smart Events UI :: E2E :: Quality Checks"
 on:
+  workflow_dispatch:
   pull_request_target:
     types: [opened, labeled, unlabeled, synchronize]
 jobs:
@@ -33,7 +34,7 @@ jobs:
           sudo echo "127.0.0.1 prod.foo.redhat.com" | sudo tee -a /etc/hosts
           echo "DEBUGENV=${{ secrets.CY_DEBUG_TEST }}" >> $GITHUB_ENV
           echo $DEBUGENV
-          TOKEN=${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }} USER=${{ secrets.CY_USER }} PASSWORD=${{ secrets.CY_PASSWORD }} REST_BASE_URL=${{ secrets.CY_SANDBOX_DEV_REST_URL }} REST_BASE_PATH=${{ secrets.CY_SANDBOX_DEV_REST_PATH  }} ./scripts/get-sso-token.sh >> $GITHUB_ENV
+          TOKEN=${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }} ./scripts/get-sso-token.sh >> $GITHUB_ENV
       - name: E2E tests
         uses: cypress-io/github-action@v4
         with:

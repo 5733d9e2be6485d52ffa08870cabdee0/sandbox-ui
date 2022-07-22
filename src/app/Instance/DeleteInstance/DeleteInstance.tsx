@@ -60,11 +60,15 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
         );
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [processorListResponse, t]);
+
+  useEffect(() => {
     if (processorListError && axios.isAxiosError(processorListError)) {
       setPreloading(false);
       setDeleteBlockedReason(t("instance.errors.cantDeleteTryLater"));
     }
-  }, [instanceName, processorListError, processorListResponse, t]);
+  }, [processorListError, t]);
 
   const {
     deleteBridge,

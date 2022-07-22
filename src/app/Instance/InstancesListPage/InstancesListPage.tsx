@@ -186,7 +186,7 @@ const InstancesListPage = (): JSX.Element => {
       },
     },
     {
-      title: t("common.delete"),
+      title: t("instance.delete"),
       onClick: (): void => {
         const id = (rowData.originalData as BridgeResponse).id;
         const name = (rowData.originalData as BridgeResponse).name;

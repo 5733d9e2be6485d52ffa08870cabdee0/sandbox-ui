@@ -103,7 +103,7 @@ describe("Instances Test", () => {
               cy.ouiaType("PF4/DropdownItem").then(($items) => {
                 expect($items.eq(0)).have.text("Details");
                 expect($items.eq(0)).be.enabled;
-                expect($items.eq(1)).have.text("Delete");
+                expect($items.eq(1)).have.text("Delete instance");
                 expect($items.eq(1)).have.attr("aria-disabled", "true");
               });
             });
@@ -124,7 +124,7 @@ describe("Instances Test", () => {
               cy.ouiaType("PF4/DropdownItem").then(($items) => {
                 expect($items.eq(0)).have.text("Details");
                 expect($items.eq(0)).be.enabled;
-                expect($items.eq(1)).have.text("Delete");
+                expect($items.eq(1)).have.text("Delete instance");
                 expect($items.eq(1)).have.attr("aria-disabled", "true");
               });
             });
@@ -149,7 +149,7 @@ describe("Instances Test", () => {
               cy.ouiaType("PF4/DropdownItem").then(($items) => {
                 expect($items.eq(0)).have.text("Details");
                 expect($items.eq(0)).be.enabled;
-                expect($items.eq(1)).have.text("Delete");
+                expect($items.eq(1)).have.text("Delete instance");
                 expect($items.eq(0)).be.enabled;
               });
             });

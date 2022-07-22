@@ -4,7 +4,10 @@ import {
   Drawer,
   DrawerContent,
   Dropdown,
+  DropdownGroup,
   DropdownItem,
+  DropdownPosition,
+  DropdownSeparator,
   DropdownToggle,
   EmptyState,
   EmptyStateIcon,
@@ -327,8 +330,10 @@ const InstancePage = (): JSX.Element => {
                   </SplitItem>
                   <SplitItem>
                     <Dropdown
+                      className="instance-page__actions"
                       ouiaId="actions"
                       onSelect={(): void => setIsDropdownActionOpen(false)}
+                      position={DropdownPosition.right}
                       toggle={
                         <DropdownToggle
                           ouiaId="actions"
@@ -342,15 +347,21 @@ const InstancePage = (): JSX.Element => {
                       }
                       isOpen={isDropdownActionOpen}
                       dropdownItems={[
-                        <DropdownItem
-                          key="details"
-                          ouiaId="details"
-                          onClick={(): void => {
-                            setShowInstanceDrawer(true);
-                          }}
+                        <DropdownGroup
+                          key="details-group"
+                          label={t("instance.viewInformation")}
                         >
-                          {t("common.details")}
-                        </DropdownItem>,
+                          <DropdownItem
+                            key="details"
+                            ouiaId="details"
+                            onClick={(): void => {
+                              setShowInstanceDrawer(true);
+                            }}
+                          >
+                            {t("common.details")}
+                          </DropdownItem>
+                        </DropdownGroup>,
+                        <DropdownSeparator key="separator" />,
                         <DropdownItem
                           key="delete"
                           ouiaId="delete"
@@ -361,7 +372,7 @@ const InstancePage = (): JSX.Element => {
                             )
                           }
                         >
-                          {t("common.delete")}
+                          {t("instance.delete")}
                         </DropdownItem>,
                       ]}
                     />

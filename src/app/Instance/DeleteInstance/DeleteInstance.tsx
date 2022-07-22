@@ -54,15 +54,21 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
       setPreloading(false);
       if (processorListResponse.total && processorListResponse.total > 0) {
         setDeleteBlockedReason(
-          t("instance.errors.cantDeleteBecauseProcessorsInside")
+          t("instance.errors.cantDeleteBecauseProcessorsInside", {
+            resource: instanceName,
+          })
         );
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [processorListResponse, t]);
+
+  useEffect(() => {
     if (processorListError && axios.isAxiosError(processorListError)) {
       setPreloading(false);
       setDeleteBlockedReason(t("instance.errors.cantDeleteTryLater"));
     }
-  }, [processorListResponse, processorListError, t]);
+  }, [processorListError, t]);
 
   const {
     deleteBridge,
@@ -123,7 +129,11 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
       {instanceId && instanceName && (
         <DeleteModal
           ouiaId="delete-instance"
-          modalTitle={`Delete Smart Events Instance?`}
+          modalTitle={
+            deleteBlockedReason
+              ? t("instance.errors.cantDelete")
+              : t("instance.deleteIt")
+          }
           showDialog={showDeleteModal}
           resourceType={"Instance"}
           resourceName={instanceName}

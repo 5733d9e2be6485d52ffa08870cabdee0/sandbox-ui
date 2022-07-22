@@ -18,6 +18,7 @@ import {
   ValidatedOptions,
 } from "@patternfly/react-core";
 import "./DeleteModal.css";
+import parse from "html-react-parser";
 
 export interface DeleteModalProps {
   /** Component ID according to the OUIA standard */
@@ -120,7 +121,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
           <Bullseye className={"delete-modal-body__bullseye"}>
             <TextContent>
               <Text component={TextVariants.p}>
-                <Trans>{blockedDeletionReason}</Trans>
+                {parse(blockedDeletionReason)}
               </Text>
             </TextContent>
           </Bullseye>

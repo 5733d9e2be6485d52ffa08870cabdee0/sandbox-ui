@@ -1,8 +1,8 @@
-import React, { ReactElement, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { DeleteModal } from "@app/components/DeleteModal/DeleteModal";
 import { useDeleteBridgeApi } from "../../../hooks/useBridgesApi/useDeleteBridgeApi";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import axios from "axios";
 import {
   getErrorCode,
@@ -32,7 +32,7 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
     props;
   const [preloading, setPreloading] = useState(false);
   const [deleteBlockedReason, setDeleteBlockedReason] = useState<
-    ReactElement | string | undefined
+    string | undefined
   >();
   const shouldRedirectToHome = useRef<boolean>(false);
 
@@ -54,14 +54,9 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
       setPreloading(false);
       if (processorListResponse.total && processorListResponse.total > 0) {
         setDeleteBlockedReason(
-          <Trans
-            i18nKey={
-              "openbridgeTempDictionary:instance.errors.cantDeleteBecauseProcessorsInside"
-            }
-            values={{
-              resource: instanceName,
-            }}
-          />
+          t("instance.errors.cantDeleteBecauseProcessorsInside", {
+            resource: instanceName,
+          })
         );
       }
     }

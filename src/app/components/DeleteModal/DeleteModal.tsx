@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
   Bullseye,
@@ -39,7 +39,7 @@ export interface DeleteModalProps {
   /** Flag to indicate if a preload is in progress to check if the deletion is possible */
   isPreloading: boolean;
   /** Reason why the deletion is not possible */
-  blockedDeletionReason?: string | ReactElement;
+  blockedDeletionReason?: string;
 }
 
 export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
@@ -119,7 +119,9 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
         {!isPreloading && blockedDeletionReason && (
           <Bullseye className={"delete-modal-body__bullseye"}>
             <TextContent>
-              <Text component={TextVariants.p}>{blockedDeletionReason}</Text>
+              <Text component={TextVariants.p}>
+                <Trans>{blockedDeletionReason}</Trans>
+              </Text>
             </TextContent>
           </Bullseye>
         )}

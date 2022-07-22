@@ -1,4 +1,10 @@
-import React, { FormEvent, useCallback, useEffect, useState } from "react";
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   Alert,
   AlertGroup,
@@ -10,12 +16,15 @@ import {
   TextInput,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
 import {
   getErrorCode,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
+import CloudProviderSelection from "@app/Instance/CreateInstance/CloudProviderSelection";
+import { GetCloudProviders } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersApi";
+import { CloudProviderResponse, CloudRegionResponse } from "@openapi/generated";
+import { GetCloudProvidersRegion } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
 
 export interface CreateInstanceProps {
   /** Flag to indicate the creation request is in progress */
@@ -25,17 +34,42 @@ export interface CreateInstanceProps {
   /** Callback to close the modal */
   onClose: () => void;
   /** Callback to create the instance */
-  onCreate: (name: string) => void;
+  onCreate: (
+    name: string,
+    cloudProviderId: string,
+    cloudRegionId: string
+  ) => void;
   /** API error related to bridge creation */
   createBridgeError: unknown;
+  /** Callback to retrieve cloud providers options **/
+  getCloudProviders: GetCloudProviders;
+  /** Callback to retrieve cloud regions options **/
+  getCloudRegions: GetCloudProvidersRegion;
 }
 
 const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
-  const { isLoading, isModalOpen, onClose, onCreate, createBridgeError } =
-    props;
+  const {
+    isLoading,
+    isModalOpen,
+    onClose,
+    onCreate,
+    createBridgeError,
+    getCloudProviders,
+    getCloudRegions,
+  } = props;
   const [name, setName] = useState("");
+  const [cloudProviderId, setCloudProviderId] = useState("");
+  const [cloudRegionId, setCloudRegionId] = useState("");
+  const [cloudProviders, setCloudProviders] = useState<CloudProviderResponse[]>(
+    []
+  );
+  const [cloudRegions, setCloudRegions] = useState<
+    CloudRegionResponse[] | undefined
+  >();
   const [error, setError] = useState<string | null>(null);
   const [genericError, setGenericError] = useState<string | null>(null);
+  const [cloudProviderUnavailable, setCloudProviderUnavailable] =
+    useState(false);
   const [existingInstanceName, setExistingInstanceName] = useState<
     string | null
   >(null);
@@ -64,11 +98,11 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       event.preventDefault();
       if (validate()) {
         const newName = name.trim();
-        onCreate(newName);
+        onCreate(newName, cloudProviderId, cloudRegionId);
         setNewBridgeName(newName);
       }
     },
-    [name, onCreate, validate]
+    [name, cloudProviderId, cloudRegionId, onCreate, validate]
   );
 
   const handleNameChange = useCallback(
@@ -81,6 +115,33 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
     [existingInstanceName, validate]
   );
 
+  const handleProviderChange = useCallback(
+    (providerId: string, regionId: string) => {
+      if (providerId !== cloudProviderId) {
+        setCloudProviderId(providerId);
+      }
+      if (regionId !== cloudRegionId) {
+        setCloudRegionId(regionId);
+      }
+    },
+    [cloudProviderId, cloudRegionId]
+  );
+
+  const retrieveCloudProviders = useCallback((): void => {
+    getCloudProviders()
+      .then((providers) => setCloudProviders(providers))
+      .catch(() => setGenericError("Internal Server Error"));
+  }, [getCloudProviders]);
+
+  const retrieveCloudRegions = useCallback(
+    (cloudProviderId: string): void => {
+      getCloudRegions(cloudProviderId)
+        .then((regions) => setCloudRegions(regions))
+        .catch(() => setGenericError("Internal server error"));
+    },
+    [getCloudRegions]
+  );
+
   useEffect(() => {
     if (existingInstanceName) {
       validate();
@@ -90,26 +151,70 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   useEffect(() => {
     if (isModalOpen) {
       setName("");
+      setCloudProviderId("");
+      setCloudRegionId("");
       setExistingInstanceName(null);
       setError(null);
       setGenericError(null);
+      setCloudProviderUnavailable(false);
+
+      retrieveCloudProviders();
+    } else {
+      setCloudProviders([]);
+      setCloudRegions(undefined);
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, retrieveCloudProviders]);
 
   useEffect(() => {
-    if (createBridgeError && axios.isAxiosError(createBridgeError)) {
-      if (
-        isServiceApiError(createBridgeError) &&
-        getErrorCode(createBridgeError) === APIErrorCodes.ERROR_1
-      ) {
-        setExistingInstanceName(newBridgeName);
-      } else {
-        setGenericError(
-          createBridgeError.response?.statusText ?? "Internal Server Error"
-        );
+    if (cloudProviderId) {
+      retrieveCloudRegions(cloudProviderId);
+    }
+  }, [cloudProviderId, retrieveCloudRegions]);
+
+  useEffect(() => {
+    // If there are no enabled cloud providers or regions, block the creation of the bridge
+    if (
+      (cloudProviders.length > 0 &&
+        cloudProviders.filter((provider) => provider.enabled).length === 0) ||
+      (cloudRegions &&
+        cloudRegions.length > 0 &&
+        cloudRegions.filter((region) => region.enabled).length === 0)
+    ) {
+      setCloudProviderUnavailable(true);
+    }
+  }, [cloudRegions, cloudProviders]);
+
+  useEffect(() => {
+    if (createBridgeError) {
+      if (isServiceApiError(createBridgeError)) {
+        const errorCode = getErrorCode(createBridgeError);
+        switch (errorCode) {
+          case APIErrorCodes.ERROR_1:
+            setExistingInstanceName(newBridgeName);
+            break;
+          // switch to enums when the corresponding BE PR will be merged
+          case "OPENBRIDGE-33":
+          case "OPENBRIDGE-34":
+            // When the cloud provider or region used to create a bridge
+            // become unavailable, we can disable the creation form because
+            // we only support 1 provider and 1 region.
+            // This will of course change when we'll expand the cloud provider support.
+            setCloudProviderUnavailable(true);
+            break;
+          default:
+            setGenericError(
+              createBridgeError.response?.statusText ?? "Internal Server Error"
+            );
+            break;
+        }
       }
     }
-  }, [createBridgeError, newBridgeName]);
+  }, [createBridgeError, newBridgeName, retrieveCloudProviders]);
+
+  const formIsDisabled = useMemo(
+    () => isLoading || cloudProviderUnavailable,
+    [cloudProviderUnavailable, isLoading]
+  );
 
   const getFormAlertError = (): string => {
     if (error) {
@@ -138,7 +243,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
           variant="primary"
           type="submit"
           form={FORM_ID}
-          isDisabled={isLoading}
+          isDisabled={formIsDisabled}
           spinnerAriaValueText={t("common.submittingRequest")}
           isLoading={isLoading}
         >
@@ -161,6 +266,18 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
             />
           </FormAlert>
         )}
+        {cloudProviderUnavailable && (
+          <FormAlert>
+            <Alert
+              variant="warning"
+              title={t("instance.creationTemporaryUnavailable")}
+              aria-live="polite"
+              isInline
+            >
+              <p>{t("instance.cloudRegionsUnavailable")}</p>
+            </Alert>
+          </FormAlert>
+        )}
         <FormGroup
           label={t("common.name")}
           isRequired
@@ -179,9 +296,17 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
             onChange={handleNameChange}
             onBlur={validate}
             validated={error ? "error" : "default"}
-            isDisabled={isLoading}
+            isDisabled={formIsDisabled}
           />
         </FormGroup>
+
+        <CloudProviderSelection
+          cloudProviders={cloudProviders}
+          cloudRegions={cloudRegions}
+          onCloudProviderChange={handleProviderChange}
+          isDisabled={formIsDisabled}
+        />
+
         <AlertGroup>
           <Alert
             variant="info"

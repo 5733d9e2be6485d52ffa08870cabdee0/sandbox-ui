@@ -34,6 +34,8 @@ import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
 import { ErrorWithDetail } from "../../../types/Error";
+import { useGetCloudProvidersApi } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersApi";
+import { useGetCloudProvidersRegions } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -134,8 +136,12 @@ const InstancesListPage = (): JSX.Element => {
   } = useCreateBridgeApi();
 
   const handleCreateBridge = useCallback(
-    (name: string) => {
-      createBridge({ name });
+    (name: string, cloudProviderId: string, cloudRegionId: string) => {
+      createBridge({
+        name,
+        cloud_provider: cloudProviderId,
+        region: cloudRegionId,
+      });
     },
     [createBridge]
   );
@@ -177,6 +183,10 @@ const InstancesListPage = (): JSX.Element => {
     resetDeleteInstance();
   }, [resetDeleteInstance]);
 
+  const { getCloudProviders } = useGetCloudProvidersApi();
+
+  const { getCloudProviderRegions } = useGetCloudProvidersRegions();
+
   const tableActions = (rowData: TableRow): IAction[] => [
     {
       title: t("common.details"),
@@ -214,6 +224,8 @@ const InstancesListPage = (): JSX.Element => {
         onClose={closeCreateInstanceDialog}
         onCreate={handleCreateBridge}
         createBridgeError={createBridgeError}
+        getCloudProviders={getCloudProviders}
+        getCloudRegions={getCloudProviderRegions}
       />
     </>
   );

@@ -16,6 +16,8 @@
     "endpoint": "Endpoint",
     "genericError": "Generic Error",
     "id": "ID",
+    "ingressEndpoint": "Ingress endpoint URL",
+    "ingressEndpointDescription": "To ingest events into the Smart Events instance, use a CloudEvents message to send POST requests to the ingress endpoint URL",
     "kafkaTopic": "Kafka Topic",
     "key": "Key",
     "loading": "Loading",
@@ -39,7 +41,6 @@
     "type": "Type",
     "typeNameToConfirmHTML": "Type <i>{{name}}</i> to confirm.",
     "unexpectedError": "Unexpected Error",
-    "url": "URL",
     "value": "Value",
     "yes": "Yes"
   },

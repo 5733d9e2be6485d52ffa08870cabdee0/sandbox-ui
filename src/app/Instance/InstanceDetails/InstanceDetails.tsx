@@ -1,6 +1,7 @@
 import React from "react";
 import {
   ClipboardCopy,
+  ClipboardCopyVariant,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
@@ -14,6 +15,7 @@ import {
   StackItem,
   Text,
   TextContent,
+  TextVariants,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
@@ -63,45 +65,72 @@ export const InstanceDetails = ({
         </DrawerActions>
       </DrawerHead>
       <DrawerContentBody>
-        <DescriptionList isHorizontal isCompact>
-          <DescriptionListGroup>
-            <DescriptionListTerm>{t("common.id")}</DescriptionListTerm>
-            <DescriptionListDescription data-ouia-component-id="instance-details-id">
-              {instance.id}
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-          <DescriptionListGroup>
-            <DescriptionListTerm>{t("common.owner")}</DescriptionListTerm>
-            <DescriptionListDescription data-ouia-component-id="instance-details-owner">
-              {instance.owner}
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-          <DescriptionListGroup>
-            <DescriptionListTerm>{t("common.url")}</DescriptionListTerm>
-            <DescriptionListDescription>
-              <ClipboardCopy
-                data-ouia-component-id="instance-details-endpoint"
-                isReadOnly
-                hoverTip={t("common.copy")}
-                clickTip={t("common.copied")}
-              >
-                {instance.endpoint}
-              </ClipboardCopy>
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-          <DescriptionListGroup>
-            <DescriptionListTerm>{t("common.submittedAt")}</DescriptionListTerm>
-            <DescriptionListDescription data-ouia-component-id="instance-details-submitted-date">
-              {instance.submitted_at && formatDate(instance.submitted_at)}
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-          <DescriptionListGroup>
-            <DescriptionListTerm>{t("common.publishedAt")}</DescriptionListTerm>
-            <DescriptionListDescription data-ouia-component-id="instance-details-published-date">
-              {instance.published_at && formatDate(instance.published_at)}
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-        </DescriptionList>
+        <Stack hasGutter>
+          <StackItem>
+            <DescriptionList isHorizontal isCompact>
+              <DescriptionListGroup>
+                <DescriptionListTerm>{t("common.id")}</DescriptionListTerm>
+                <DescriptionListDescription data-ouia-component-id="instance-details-id">
+                  {instance.id}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>{t("common.owner")}</DescriptionListTerm>
+                <DescriptionListDescription data-ouia-component-id="instance-details-owner">
+                  {instance.owner}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>
+                  {t("common.submittedAt")}
+                </DescriptionListTerm>
+                <DescriptionListDescription data-ouia-component-id="instance-details-submitted-date">
+                  {instance.submitted_at && formatDate(instance.submitted_at)}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+              <DescriptionListGroup>
+                <DescriptionListTerm>
+                  {t("common.publishedAt")}
+                </DescriptionListTerm>
+                <DescriptionListDescription data-ouia-component-id="instance-details-published-date">
+                  {instance.published_at && formatDate(instance.published_at)}
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            </DescriptionList>
+          </StackItem>
+          <StackItem>
+            <DescriptionList isCompact>
+              <DescriptionListGroup>
+                <TextContent>
+                  <Text component={TextVariants.h3}>
+                    {t("common.ingressEndpoint")}
+                  </Text>
+                </TextContent>
+                <DescriptionListDescription>
+                  <Stack hasGutter>
+                    <StackItem>
+                      <Text component={TextVariants.small}>
+                        {t("common.ingressEndpointDescription")}
+                      </Text>
+                    </StackItem>
+                    <StackItem>
+                      <ClipboardCopy
+                        data-ouia-component-id="instance-details-endpoint"
+                        isBlock
+                        isReadOnly
+                        hoverTip={t("common.copy")}
+                        clickTip={t("common.copied")}
+                        variant={ClipboardCopyVariant.inlineCompact}
+                      >
+                        {instance.endpoint}
+                      </ClipboardCopy>
+                    </StackItem>
+                  </Stack>
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            </DescriptionList>
+          </StackItem>
+        </Stack>
       </DrawerContentBody>
     </DrawerPanelContent>
   );

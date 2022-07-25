@@ -26,7 +26,7 @@ export interface ErrorsResponse {
      * @type {string}
      * @memberof ErrorsResponse
      */
-    'kind'?: string;
+    'kind': string;
     /**
      * 
      * @type {Array<ErrorResponse>}

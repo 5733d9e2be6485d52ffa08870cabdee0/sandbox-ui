@@ -26,7 +26,7 @@ export interface ErrorListResponse {
      * @type {string}
      * @memberof ErrorListResponse
      */
-    'kind'?: string;
+    'kind': string;
     /**
      * 
      * @type {Array<ErrorResponse>}
@@ -38,18 +38,18 @@ export interface ErrorListResponse {
      * @type {number}
      * @memberof ErrorListResponse
      */
-    'page'?: number;
+    'page': number;
     /**
      * 
      * @type {number}
      * @memberof ErrorListResponse
      */
-    'size'?: number;
+    'size': number;
     /**
      * 
      * @type {number}
      * @memberof ErrorListResponse
      */
-    'total'?: number;
+    'total': number;
 }
 

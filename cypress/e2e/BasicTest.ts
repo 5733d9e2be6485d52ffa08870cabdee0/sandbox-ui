@@ -11,9 +11,7 @@ describe("Basic Elements", () => {
 
   before(() => {
     if (!token) {
-      throw new Error(
-        "Missing token value, set using CYPRESS_OB_TOKEN=... " + token
-      );
+      throw new Error("Missing token value, set using CYPRESS_OB_TOKEN");
     } else {
       cy.log("Token is set correctly");
     }
@@ -23,13 +21,13 @@ describe("Basic Elements", () => {
     expect(restPath, "REST path was set").to.be.a("string").and.not.be.empty;
 
     if (typeof user !== "string" || !user) {
-      throw new Error("Missing user value, set using CYPRESS_USER=...");
+      throw new Error("Missing user value, set using CYPRESS_USER");
     } else {
       cy.log("User name is set correctly");
     }
 
     if (typeof psw !== "string" || !psw) {
-      throw new Error("Missing password value, set using CYPRESS_PASSWORD=...");
+      throw new Error("Missing password value, set using CYPRESS_PASSWORD");
     } else {
       cy.log("Password is set correctly");
     }

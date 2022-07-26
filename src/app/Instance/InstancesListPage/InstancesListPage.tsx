@@ -195,7 +195,7 @@ const InstancesListPage = (): JSX.Element => {
         }
       },
       isDisabled: !canDeleteResource(
-        (rowData.originalData as BridgeResponse).status as ManagedResourceStatus
+        (rowData.originalData as BridgeResponse).status
       ),
     },
   ];

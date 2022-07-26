@@ -972,7 +972,7 @@ const prepareProcessor = (
     }
   }
 
-  return omit(processor, omitProperties);
+  return omit(processor, omitProperties) as ProcessorResponse;
 };
 
 /**

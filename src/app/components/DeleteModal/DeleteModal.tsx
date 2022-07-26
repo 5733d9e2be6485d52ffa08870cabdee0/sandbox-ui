@@ -105,7 +105,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
       ouiaId={ouiaId}
       variant={ModalVariant.small}
       title={modalTitle}
-      titleIconVariant="warning"
+      titleIconVariant={blockedDeletionReason ? "danger" : "warning"}
       isOpen={showDialog}
       onClose={onCancel}
       actions={blockedDeletionReason ? closeActions : deleteActions}
@@ -119,7 +119,9 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
         {!isPreloading && blockedDeletionReason && (
           <Bullseye className={"delete-modal-body__bullseye"}>
             <TextContent>
-              <Text component={TextVariants.p}>{blockedDeletionReason}</Text>
+              <Text component={TextVariants.p}>
+                <Trans>{blockedDeletionReason}</Trans>
+              </Text>
             </TextContent>
           </Bullseye>
         )}
@@ -133,7 +135,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
                       "openbridgeTempDictionary:common.resourceWillBeDeletedHTML"
                     }
                     values={{
-                      type: resourceType,
+                      type: resourceType?.toLowerCase(),
                       name: resourceName,
                     }}
                   />
@@ -142,8 +144,8 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
             </StackItem>
             <StackItem>
               <Form onSubmit={(event): void => event.preventDefault()}>
-                <FormGroup
-                  label={
+                <FormGroup fieldId="delete-confirmation-value">
+                  <Text component={TextVariants.p}>
                     <Trans
                       i18nKey={
                         "openbridgeTempDictionary:common.typeNameToConfirmHTML"
@@ -152,12 +154,11 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
                         name: resourceName,
                       }}
                     />
-                  }
-                  fieldId="delete-confirmation-value"
-                >
+                  </Text>
                   <TextInput
                     id="delete-confirmation-value"
                     ouiaId="delete-confirmation-value"
+                    data-testid="delete-confirmation-value"
                     value={nameValue}
                     type="text"
                     onChange={setNameValue}

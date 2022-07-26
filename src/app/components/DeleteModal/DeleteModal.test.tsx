@@ -102,7 +102,7 @@ describe("Delete Modal component", () => {
     expect(await comp.findByText(title)).toBeInTheDocument();
     expect(comp.getByText("Delete")).toBeDisabled();
 
-    fireEvent.change(comp.getByLabelText(`Type ${testName} to confirm.`), {
+    fireEvent.change(comp.getByTestId("delete-confirmation-value"), {
       target: { value: testName },
     });
     expect(comp.getByText("Delete")).toBeEnabled();
@@ -124,7 +124,7 @@ describe("Delete Modal component", () => {
     expect(await comp.findByText(title)).toBeInTheDocument();
     expect(comp.getByText("Delete")).toBeDisabled();
 
-    fireEvent.change(comp.getByLabelText(`Type ${testName} to confirm.`), {
+    fireEvent.change(comp.getByTestId("delete-confirmation-value"), {
       target: { value: "WRONG_VALUE" },
     });
     expect(comp.getByText("Cancel")).toBeEnabled();

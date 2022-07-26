@@ -1,0 +1,63 @@
+name: "Smart Events UI :: E2E :: Quality Checks"
+on:
+  workflow_dispatch:
+  pull_request_target:
+    types: [opened, labeled, unlabeled, synchronize]
+jobs:
+  run-all-checks:
+    runs-on: ubuntu-latest
+    if: github.repository == '5733d9e2be6485d52ffa08870cabdee0/sandbox-ui'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: "refs/pull/${{ github.event.number }}/merge"
+      - name: Check labels
+        # Security due to https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+        if: ${{ !contains( github.event.pull_request.labels.*.name, 'safe to test') }}
+        run: |
+          echo "Please add the 'safe to test' label in order to run 'Smart Events UI :: E2E :: Quality Checks' pipeline if it's safe to test this code"
+          exit 1
+      - name: Add mask
+        run: |
+          echo "::add-mask::${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }}"
+          echo "::add-mask::${{ secrets.CY_USER }}"
+          echo "::add-mask::${{ secrets.CY_PASSWORD }}"
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          cache: "npm"
+      - run: npm install
+      - run: npm run format:check
+      - run: npm run lint
+      - name: Set environment
+        run: |
+          sudo echo "127.0.0.1 prod.foo.redhat.com" | sudo tee -a /etc/hosts
+          echo "DEBUGENV=${{ secrets.CY_DEBUG_TEST }}" >> $GITHUB_ENV
+          echo $DEBUGENV
+          TOKEN=${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }} ./scripts/get-sso-token.sh >> $GITHUB_ENV
+      - name: E2E tests
+        uses: cypress-io/github-action@v4
+        with:
+          install: false
+          project: ./cypress
+          start: npm run start
+          wait-on: "https://prod.foo.redhat.com:1337"
+          wait-on-timeout: 120
+          config-file: cypress.e2e.json
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: 0
+          CYPRESS_USER: ${{ secrets.CY_USER }}
+          CYPRESS_PASSWORD: ${{ secrets.CY_PASSWORD }}
+          CYPRESS_SANDBOX_DEV_REST_URL: ${{ secrets.CY_SANDBOX_DEV_REST_URL }}
+          CYPRESS_SANDBOX_DEV_REST_PATH: ${{ secrets.CY_SANDBOX_DEV_REST_PATH  }}
+      - name: "Upload artifacts"
+        uses: actions/upload-artifact@v2
+        if: always() && !cancelled()
+        with:
+          name: ui-artifacts
+          if-no-files-found: warn
+          path: |
+            **/*.log
+            **/cypress/screenshots/**
+            **/cypress/videos/**
+            **/cypress/target/surefire-reports/**

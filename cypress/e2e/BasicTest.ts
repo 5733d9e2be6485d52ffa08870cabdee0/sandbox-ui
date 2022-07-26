@@ -1,13 +1,37 @@
 describe("Basic Elements", () => {
   const bridgeName = uniqueName("myBridge");
-  const restUrl = `${Cypress.env("REST_URL")}${Cypress.env(
-    "REST_PATH"
-  )}/bridges`;
+  const restBaseUrl = Cypress.env("SANDBOX_DEV_REST_URL");
+  const restPath = Cypress.env("SANDBOX_DEV_REST_PATH");
+  const restUrl = `${restBaseUrl}${restPath}/bridges`;
   const token = Cypress.env("OB_TOKEN");
+  const user: string = Cypress.env("USER");
+  const psw: string = Cypress.env("PASSWORD");
   const authorization = `Bearer ${token}`;
   let bridgeId: String;
 
   before(() => {
+    if (!token) {
+      throw new Error("Missing token value, set using CYPRESS_OB_TOKEN");
+    } else {
+      cy.log("Token is set correctly");
+    }
+
+    expect(restBaseUrl, "REST base url was set").to.be.a("string").and.not.be
+      .empty;
+    expect(restPath, "REST path was set").to.be.a("string").and.not.be.empty;
+
+    if (typeof user !== "string" || !user) {
+      throw new Error("Missing user value, set using CYPRESS_USER");
+    } else {
+      cy.log("User name is set correctly");
+    }
+
+    if (typeof psw !== "string" || !psw) {
+      throw new Error("Missing password value, set using CYPRESS_PASSWORD");
+    } else {
+      cy.log("Password is set correctly");
+    }
+
     const options = {
       method: "POST",
       url: restUrl,
@@ -29,36 +53,36 @@ describe("Basic Elements", () => {
   });
 
   after(() => {
-    const options = {
-      method: "DELETE",
-      url: `${restUrl}/${bridgeId}`,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: authorization,
-      },
-    };
-    cy.request(options).then((response) => {
-      expect(response.body).to.not.be.null;
-      expect(response.isOkStatusCode).to.equal(true);
-    });
-
-    cy.visit("/");
-    cy.ouiaId(bridgeName)
-      .should("be.visible")
-      .within(($item) => {
-        cy.get("td:first").should("have.text", bridgeName);
-        cy.get("td:nth-child(2)").then(($state) => {
-          cy.wrap($state).should("have.text", "deprovision");
-        });
-        cy.wrap($item, { timeout: 60000 }).should("not.exist");
+    if (bridgeId != undefined) {
+      const options = {
+        method: "DELETE",
+        url: `${restUrl}/${bridgeId}`,
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: authorization,
+        },
+      };
+      cy.request(options).then((response) => {
+        expect(response.body).to.not.be.null;
+        expect(response.isOkStatusCode).to.equal(true);
       });
+
+      cy.visit("/");
+      cy.ouiaId(bridgeName)
+        .should("be.visible")
+        .within(($item) => {
+          cy.get("td:first").should("have.text", bridgeName);
+          cy.get("td:nth-child(2)").then(($state) => {
+            cy.wrap($state).should("have.text", "deprovision");
+          });
+          cy.wrap($item, { timeout: 60000 }).should("not.exist");
+        });
+    }
   });
 
   beforeEach(() => {
     cy.visit("/");
-    const user: string = Cypress.env("USER");
-    const psw: string = Cypress.env("PASSWORD");
     cy.get("#username-verification").type(user);
     cy.get("#login-show-step2").click();
     cy.get("#password").should("be.visible").type(psw, { log: false });

@@ -1,19 +1,21 @@
 import React from "react";
 import {
   ClipboardCopy,
+  ClipboardCopyVariant,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
   DrawerActions,
   DrawerCloseButton,
-  DrawerContentBody,
   DrawerHead,
+  DrawerPanelBody,
   DrawerPanelContent,
   Stack,
   StackItem,
   Text,
   TextContent,
+  TextVariants,
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
@@ -62,7 +64,7 @@ export const InstanceDetails = ({
           />
         </DrawerActions>
       </DrawerHead>
-      <DrawerContentBody>
+      <DrawerPanelBody>
         <DescriptionList isHorizontal isCompact>
           <DescriptionListGroup>
             <DescriptionListTerm>{t("common.id")}</DescriptionListTerm>
@@ -74,19 +76,6 @@ export const InstanceDetails = ({
             <DescriptionListTerm>{t("common.owner")}</DescriptionListTerm>
             <DescriptionListDescription data-ouia-component-id="instance-details-owner">
               {instance.owner}
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-          <DescriptionListGroup>
-            <DescriptionListTerm>{t("common.url")}</DescriptionListTerm>
-            <DescriptionListDescription>
-              <ClipboardCopy
-                data-ouia-component-id="instance-details-endpoint"
-                isReadOnly
-                hoverTip={t("common.copy")}
-                clickTip={t("common.copied")}
-              >
-                {instance.endpoint}
-              </ClipboardCopy>
             </DescriptionListDescription>
           </DescriptionListGroup>
           <DescriptionListGroup>
@@ -102,7 +91,39 @@ export const InstanceDetails = ({
             </DescriptionListDescription>
           </DescriptionListGroup>
         </DescriptionList>
-      </DrawerContentBody>
+      </DrawerPanelBody>
+      <DrawerPanelBody>
+        <DescriptionList isCompact>
+          <DescriptionListGroup>
+            <TextContent>
+              <Text component={TextVariants.h3}>
+                {t("common.ingressEndpoint")}
+              </Text>
+            </TextContent>
+            <DescriptionListDescription>
+              <Stack hasGutter>
+                <StackItem>
+                  <Text component={TextVariants.small}>
+                    {t("common.ingressEndpointDescription")}
+                  </Text>
+                </StackItem>
+                <StackItem>
+                  <ClipboardCopy
+                    data-ouia-component-id="instance-details-endpoint"
+                    isBlock
+                    isReadOnly
+                    hoverTip={t("common.copy")}
+                    clickTip={t("common.copied")}
+                    variant={ClipboardCopyVariant.inlineCompact}
+                  >
+                    {instance.endpoint}
+                  </ClipboardCopy>
+                </StackItem>
+              </Stack>
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+        </DescriptionList>
+      </DrawerPanelBody>
     </DrawerPanelContent>
   );
 };

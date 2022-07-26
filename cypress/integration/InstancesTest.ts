@@ -193,9 +193,9 @@ describe("Instances Test", () => {
             .should("have.text", "3543edaa-1851-4ad7-96be-ebde7d20d717")
             .should("be.visible");
           cy.ouiaId("instance-details-endpoint")
-            .find("input")
+            .find("span")
             .should(
-              "have.value",
+              "have.text",
               "https://3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events"
             )
             .should("be.visible");

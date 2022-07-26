@@ -107,11 +107,26 @@ describe("ProcessorEdit component", () => {
   it("should display the information of the passed processor and the processor type section", async () => {
     const name = "Processor name";
     const type = "Sink";
+    const kind = "Bridge";
+    const id = "d7e13602-b046-4120-b377-15d61e21c31a";
+    const href =
+      "/api/smartevents_mgmt/v1/bridges/d7e13602-b046-4120-b377-15d61e21c31a";
+    const submitted_at = "2022-02-01T12:02:00Z";
+    const published_at = "2022-02-01T12:03:00Z";
+    const owner = "bebianco@redhat.com";
+    const status = "ready";
     const { comp } = setupProcessorEdit({
       saveButtonLabel: "Save",
       processor: {
         name,
         type: ProcessorType.Sink,
+        kind: kind,
+        id: id,
+        href: href,
+        submitted_at: submitted_at,
+        published_at: published_at,
+        owner: owner,
+        status: status,
       },
     });
     await waitForI18n(comp);
@@ -391,8 +406,15 @@ describe("ProcessorEdit component", () => {
     const { comp } = setupProcessorEdit({
       malformedTransformationTemplate,
       processor: {
+        id: "f8f34af4-caed-11ec-9d64-0242ac120002",
+        submitted_at: "2022-04-15T12:10:46.029400+0000",
+        published_at: "2022-04-15T12:12:52.416527+0000",
+        status: ManagedResourceStatus.Ready,
         name: "Processor name",
         type: ProcessorType.Sink,
+        kind: "Bridge",
+        href: "/api/smartevents_mgmt/v1/bridges/f8f34af4-caed-11ec-9d64-0242ac120002",
+        owner: "bebianco@redhat.com",
       },
     });
     await waitForI18n(comp);
@@ -412,6 +434,9 @@ const baseProcessor = {
   submitted_at: "2022-04-15T12:10:46.029400+0000",
   published_at: "2022-04-15T12:12:52.416527+0000",
   status: ManagedResourceStatus.Ready,
+  kind: "Bridge",
+  href: "/api/smartevents_mgmt/v1/bridges/f8f34af4-caed-11ec-9d64-0242ac120002",
+  owner: "bebianco@redhat.com",
 };
 
 const sourceProcessor = {

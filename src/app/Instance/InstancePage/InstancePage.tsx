@@ -42,7 +42,7 @@ import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSke
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
-import { BridgeResponse, ManagedResourceStatus } from "@openapi/generated";
+import { BridgeResponse } from "@openapi/generated";
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
@@ -268,7 +268,7 @@ const InstancePage = (): JSX.Element => {
         }
       },
       isDisabled: !canDeleteResource(
-        (rowData.originalData as BridgeResponse).status as ManagedResourceStatus
+        (rowData.originalData as BridgeResponse).status
       ),
     },
   ];
@@ -366,11 +366,7 @@ const InstancePage = (): JSX.Element => {
                           key="delete"
                           ouiaId="delete"
                           onClick={deleteInstance}
-                          isDisabled={
-                            !canDeleteResource(
-                              bridge.status as ManagedResourceStatus
-                            )
-                          }
+                          isDisabled={!canDeleteResource(bridge.status)}
                         >
                           {t("instance.delete")}
                         </DropdownItem>,

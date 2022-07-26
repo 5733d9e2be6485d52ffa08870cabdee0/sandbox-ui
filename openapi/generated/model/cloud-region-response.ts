@@ -25,24 +25,24 @@ export interface CloudRegionResponse {
      * @type {string}
      * @memberof CloudRegionResponse
      */
-    'kind'?: string;
+    'kind': string;
     /**
      * 
      * @type {string}
      * @memberof CloudRegionResponse
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {string}
      * @memberof CloudRegionResponse
      */
-    'display_name'?: string;
+    'display_name': string;
     /**
      * 
      * @type {boolean}
      * @memberof CloudRegionResponse
      */
-    'enabled'?: boolean;
+    'enabled': boolean;
 }
 

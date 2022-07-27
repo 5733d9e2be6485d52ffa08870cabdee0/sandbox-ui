@@ -23,7 +23,6 @@ import {
 } from "@app/components/TableWithPagination/TableWithPagination";
 import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
-import StatusLabel from "@app/components/StatusLabel/StatusLabel";
 import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { PlusCircleIcon } from "@patternfly/react-icons";
@@ -41,6 +40,7 @@ import { ErrorWithDetail } from "../../../types/Error";
 import { useGetCloudProvidersApi } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersApi";
 import { useGetCloudProvidersRegions } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
+import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -94,9 +94,16 @@ const InstancesListPage = (): JSX.Element => {
     {
       accessor: "status",
       label: t("common.status"),
-      formatter: (value: IRowData): JSX.Element => {
-        const statusString = (value as unknown as string) ?? "";
-        return <StatusLabel status={statusString} />;
+      formatter: (value: IRowData, row?: IRow): JSX.Element => {
+        const statusString = value as unknown as ManagedResourceStatus;
+        const submittedAt = new Date((row as BridgeResponse)?.submitted_at);
+        return (
+            <SEStatusLabel
+                status={statusString}
+                resourceType={"bridge"}
+                requestedAt={submittedAt}
+            />
+        );
       },
     },
   ];

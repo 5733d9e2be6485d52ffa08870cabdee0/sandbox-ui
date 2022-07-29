@@ -52,7 +52,7 @@
     "errors": {
       "cantCreateInstance": "Error while creating a Smart Event instance. Please, try again later.",
       "cantDelete": "Cannot delete instance",
-      "cantDeleteBecauseProcessorsInside": "The <strong>{{resource}}</strong> Smart Events instance cannot be deleted until all associated processors are deleted.",
+      "cantDeleteBecauseProcessorsInside": "The \"{{resource}}\" Smart Events instance cannot be deleted until all associated processors are deleted.",
       "cantDeleteBecauseNotExisting": "The Smart Events instance you are trying to delete, it does not exist anymore.",
       "cantDeleteTryLater": "It is not possible to delete this Smart Events instance. Try again later.",
       "cantFindInstance": "The Smart Event Instance you are looking for does not exist. It might have been deleted.",

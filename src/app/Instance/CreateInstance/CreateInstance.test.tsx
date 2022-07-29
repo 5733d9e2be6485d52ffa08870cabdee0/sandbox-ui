@@ -152,10 +152,15 @@ describe("CreateInstance component", () => {
       createBridgeError: {
         response: {
           data: {
-            kind: "Error",
-            id: "1",
-            href: "/api/v1/errors/34",
-            code: "OPENBRIDGE-34",
+            kind: "ErrorsResponse",
+            items: [
+              {
+                kind: "Error",
+                id: "1",
+                href: "/api/v1/errors/34",
+                code: "OPENBRIDGE-34",
+              },
+            ],
           },
           status: 400,
         },

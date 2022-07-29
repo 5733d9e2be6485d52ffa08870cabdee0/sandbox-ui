@@ -8,14 +8,7 @@ import { useState } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 
 export function useCreateBridgeApi(): {
-  // revert to BridgeRequest when the corresponding BE PR will be merged
-  // and also pass cloud_provider and region to the createBridge call.
-  // createBridge: (bridgeRequest: BridgeRequest) => void;
-  createBridge: (bridgeRequest: {
-    name: string;
-    cloud_provider: string;
-    region: string;
-  }) => void;
+  createBridge: (bridgeRequest: BridgeRequest) => void;
   bridge?: BridgeResponse;
   isLoading: boolean;
   error: unknown;

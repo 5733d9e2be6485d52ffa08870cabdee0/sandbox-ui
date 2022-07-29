@@ -192,9 +192,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
           case APIErrorCodes.ERROR_1:
             setExistingInstanceName(newBridgeName);
             break;
-          // switch to enums when the corresponding BE PR will be merged
-          case "OPENBRIDGE-33":
-          case "OPENBRIDGE-34":
+          case APIErrorCodes.ERROR_33:
+          case APIErrorCodes.ERROR_34:
             // When the cloud provider or region used to create a bridge
             // become unavailable, we can disable the creation form because
             // we only support 1 provider and 1 region.

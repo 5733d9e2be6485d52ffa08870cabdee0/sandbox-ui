@@ -17,44 +17,44 @@
 /**
  * 
  * @export
- * @interface ErrorResponse
+ * @interface ModelError
  */
-export interface ErrorResponse {
+export interface ModelError {
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ModelError
      */
     'kind': string;
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
-     */
-    'id': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ModelError
      */
     'name'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ModelError
      */
-    'href': string;
+    'code'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
-     */
-    'code': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ModelError
      */
     'reason': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelError
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelError
+     */
+    'href': string;
 }
 

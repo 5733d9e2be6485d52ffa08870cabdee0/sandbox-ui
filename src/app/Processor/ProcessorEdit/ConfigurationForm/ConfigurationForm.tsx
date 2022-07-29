@@ -62,7 +62,13 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
       disabled={readOnly}
     >
       {Object.keys(properties as { [key: string]: unknown }).map((key) => (
-        <AutoField key={key} name={key} disabled={readOnly} />
+        <AutoField
+          key={key}
+          name={key}
+          disabled={readOnly}
+          data-ouia-component-id={key}
+          data-ouia-component-type="SE/parameter"
+        />
       ))}
     </DynamicForm>
   );

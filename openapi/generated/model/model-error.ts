@@ -13,12 +13,48 @@
  */
 
 
-import { ObjectReference } from './object-reference';
 
 /**
- * @type ModelError
+ * 
  * @export
+ * @interface ModelError
  */
-export type ModelError = ObjectReference;
-
+export interface ModelError {
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelError
+     */
+    'kind': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelError
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelError
+     */
+    'id': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelError
+     */
+    'href': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelError
+     */
+    'code'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelError
+     */
+    'reason': string;
+}
 

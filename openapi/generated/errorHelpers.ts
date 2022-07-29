@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { ErrorListResponse } from "@openapi/generated/model";
+import {  ModelError } from "@openapi/generated/model";
 
 /**
  * Check if the error code originates from the API
@@ -8,9 +8,13 @@ import { ErrorListResponse } from "@openapi/generated/model";
  * @returns true if error originated from the API
  */
 export const isServiceApiError = (error: unknown): error is AxiosError => {
-    const errorListResponse = (error as AxiosError).response?.data as ErrorListResponse;
+    const errorListResponse = (error as AxiosError).response?.data as ErrorListFixed;
     return errorListResponse?.items !== undefined;
 };
+
+interface ErrorListFixed {
+    items?: Array<ModelError>
+}
 
 /**
  * Get the first error item returned from the API
@@ -18,8 +22,8 @@ export const isServiceApiError = (error: unknown): error is AxiosError => {
  * @param error generic error returned from function
  * @returns error item (a single ErrorResponse)
  */
-export const getFirstError = (error: unknown): ErrorResponse | undefined => {
-    const errorListResponse = (error as AxiosError).response?.data as ErrorListResponse;
+export const getFirstError = (error: unknown): ModelError | undefined => {
+    const errorListResponse = (error as AxiosError).response?.data as ErrorListFixed;
     return errorListResponse?.items?.length ? errorListResponse?.items[0] : undefined;
 };
 

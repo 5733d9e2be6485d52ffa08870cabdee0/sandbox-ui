@@ -135,7 +135,7 @@ const InstancesListPage = (): JSX.Element => {
 
   const handleCreateBridge = useCallback(
     (name: string) => {
-      createBridge({ name });
+      createBridge({ name, cloud_provider: "", region: "" });
     },
     [createBridge]
   );

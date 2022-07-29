@@ -42,6 +42,8 @@ describe("Basic Elements", () => {
       },
       body: {
         name: bridgeName,
+        cloud_provider: "aws",
+        region: "us-east-1",
       },
     };
     cy.request(options).then((response) => {

@@ -1,7 +1,6 @@
 describe("Action Test", () => {
   /**
-   * This test suite verifies that the user can create all types of processors.
-   * Because it is running with mocked data we have to assert all data immediately (no reload of the page).
+   * This test suite verifies that actions are possible to modify and set the particular parameters.
    */
   describe("Create a Sink Processor", () => {
     const instanceUrl: string =
@@ -147,10 +146,6 @@ describe("Action Test", () => {
               cy.root().type("https://any.test.com/slack");
               cy.get("div.pf-m-error").should("not.exist");
             });
-            cy.ouiaId("slack_webhook_url", "SE/parameter")
-              .should("be.visible")
-              .find("div.pf-m-error")
-              .should("not.exist");
             cy.ouiaId("slack_icon_emoji", "SE/parameter")
               .should("be.visible")
               .find("div.pf-m-error")
@@ -164,6 +159,38 @@ describe("Action Test", () => {
               .find("div.pf-m-error")
               .should("not.exist");
           });
+      });
+    });
+  });
+  describe("Details of a Sink Processor", () => {
+    beforeEach(() => {
+      cy.visit(
+        "instance/3543edaa-1851-4ad7-96be-ebde7d20d717/processor/fa373030-c0d2-11ec-9d64-0242ac120002"
+      );
+      cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
+        "not.exist"
+      );
+    });
+
+    it("The editation is not allowed", () => {
+      const configOuiaId = [
+        "slack_channel",
+        "slack_webhook_url",
+        "slack_icon_emoji",
+        "slack_icon_url",
+        "slack_username",
+      ];
+      cy.ouiaId("edit", "PF4/Button").click();
+      cy.ouiaId("action-type", "PF4/FormSelect").should("be.disabled");
+      cy.ouiaId("actions", "SE/FormSection").within(() => {
+        cy.ouiaType("SE/parameter").should("have.length", configOuiaId.length);
+        configOuiaId.forEach((ouiaId) => {
+          cy.ouiaId(ouiaId, "SE/parameter")
+            .find("input")
+            .scrollIntoView()
+            .should("be.visible")
+            .should("be.disabled");
+        });
       });
     });
   });

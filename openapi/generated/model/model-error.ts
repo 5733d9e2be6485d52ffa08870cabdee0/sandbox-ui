@@ -13,25 +13,12 @@
  */
 
 
-import { ErrorResponse } from './error-response';
+import { ObjectReference } from './object-reference';
 
 /**
- * 
+ * @type ModelError
  * @export
- * @interface ErrorsResponse
  */
-export interface ErrorsResponse {
-    /**
-     * 
-     * @type {string}
-     * @memberof ErrorsResponse
-     */
-    'kind': string;
-    /**
-     * 
-     * @type {Array<ErrorResponse>}
-     * @memberof ErrorsResponse
-     */
-    'items'?: Array<ErrorResponse>;
-}
+export type ModelError = ObjectReference;
+
 

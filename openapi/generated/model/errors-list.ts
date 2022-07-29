@@ -13,37 +13,24 @@
  */
 
 
-import { Action } from './action';
 
 /**
  * 
  * @export
- * @interface BridgeRequest
+ * @interface ErrorsList
  */
-export interface BridgeRequest {
+export interface ErrorsList {
     /**
      * 
      * @type {string}
-     * @memberof BridgeRequest
+     * @memberof ErrorsList
      */
-    'name': string;
+    'kind': string;
     /**
      * 
-     * @type {Action}
-     * @memberof BridgeRequest
+     * @type {Array<Error>}
+     * @memberof ErrorsList
      */
-    'error_handler'?: Action;
-    /**
-     * 
-     * @type {string}
-     * @memberof BridgeRequest
-     */
-    'cloud_provider': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof BridgeRequest
-     */
-    'region': string;
+    'items'?: Array<Error>;
 }
 

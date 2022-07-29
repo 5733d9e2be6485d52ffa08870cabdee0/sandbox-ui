@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { ErrorListResponse, ErrorResponse } from "@openapi/generated/model";
+import { ErrorListResponse } from "@openapi/generated/model";
 
 /**
  * Check if the error code originates from the API

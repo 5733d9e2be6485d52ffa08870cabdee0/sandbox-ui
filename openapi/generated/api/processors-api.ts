@@ -21,6 +21,8 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
 // @ts-ignore
+import { ErrorsList } from '../model';
+// @ts-ignore
 import { ManagedResourceStatus } from '../model';
 // @ts-ignore
 import { ProcessorListResponse } from '../model';

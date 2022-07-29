@@ -17,44 +17,32 @@
 /**
  * 
  * @export
- * @interface ErrorResponse
+ * @interface ObjectReference
  */
-export interface ErrorResponse {
+export interface ObjectReference {
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ObjectReference
      */
     'kind': string;
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ObjectReference
      */
     'id': string;
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ObjectReference
      */
     'name'?: string;
     /**
      * 
      * @type {string}
-     * @memberof ErrorResponse
+     * @memberof ObjectReference
      */
     'href': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ErrorResponse
-     */
-    'code': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof ErrorResponse
-     */
-    'reason': string;
 }
 

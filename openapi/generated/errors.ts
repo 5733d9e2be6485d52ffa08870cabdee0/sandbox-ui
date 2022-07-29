@@ -76,4 +76,10 @@ export const APIErrorCodes = {
   /** Unable to deserialize Filter definition.*/
   ERROR_32 : "OPENBRIDGE-32", 
 
-};
+  /** The selected Cloud Provider is not valid.*/
+  ERROR_33 : "OPENBRIDGE-33", 
+
+  /** The selected Region is not valid.*/
+  ERROR_34 : "OPENBRIDGE-34", 
+
+}

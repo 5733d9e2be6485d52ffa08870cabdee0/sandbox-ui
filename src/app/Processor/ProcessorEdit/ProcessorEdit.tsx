@@ -362,7 +362,11 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                     {processorType && (
                       <>
                         {processorType === ProcessorType.Source && (
-                          <FormSection title={t("processor.source")}>
+                          <FormSection
+                            title={t("processor.source")}
+                            data-ouia-component-id="sources"
+                            data-ouia-component-type="form-section"
+                          >
                             <TextContent>
                               <Text
                                 component="p"

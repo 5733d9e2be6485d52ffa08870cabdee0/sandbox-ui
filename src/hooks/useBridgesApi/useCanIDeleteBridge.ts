@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { Configuration, ProcessorsApi } from "@openapi/generated";
-import axios from "axios";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 
 export function useCanIDeleteBridge(): {
@@ -25,9 +24,7 @@ export function useCanIDeleteBridge(): {
           return response.data?.total === 0;
         })
         .catch((err) => {
-          if (!axios.isCancel(err)) {
-            setError(err);
-          }
+          setError(err);
           return false;
         });
     },

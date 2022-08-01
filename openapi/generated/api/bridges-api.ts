@@ -27,6 +27,8 @@ import { BridgeRequest } from '../model';
 // @ts-ignore
 import { BridgeResponse } from '../model';
 // @ts-ignore
+import { ErrorsList } from '../model';
+// @ts-ignore
 import { ManagedResourceStatus } from '../model';
 /**
  * BridgesApi - axios parameter creator

@@ -24,6 +24,8 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 import { CloudProviderListResponse } from '../model';
 // @ts-ignore
 import { CloudRegionListResponse } from '../model';
+// @ts-ignore
+import { ErrorsList } from '../model';
 /**
  * CloudProvidersApi - axios parameter creator
  * @export

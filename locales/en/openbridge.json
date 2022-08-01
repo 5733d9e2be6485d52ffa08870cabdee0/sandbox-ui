@@ -37,6 +37,7 @@
     "status": "Status",
     "submittedAt": "Time created",
     "submittingRequest": "Submitting request",
+    "temporaryUnavailable": "Temporary unavailable",
     "tryAgainLater": "Try again later.",
     "type": "Type",
     "typeNameToConfirmHTML": "Type <strong>{{name}}</strong> to confirm deletion.",
@@ -47,6 +48,10 @@
   "instance": {
     "createASEInstance": "Create a Smart Events instance",
     "createSEInstance": "Create Smart Events instance",
+    "cloudProvider": "Cloud Provider",
+    "cloudRegion": "Cloud Region",
+    "cloudRegionsUnavailable": "Cloud provider regions are temporarily unavailable. Try again later.",
+    "creationTemporaryUnavailable": "Smart Events instances are unavailable for creation",
     "delete": "Delete instance",
     "deleteIt": "Delete Smart Events instance?",
     "errors": {
@@ -65,12 +70,14 @@
     "instancesListPageTitle": "Smart Events Instances",
     "instancesListTable": "Instances list table",
     "instanceWillBeAvailableShortly": "Your Smart Events instance will be ready for use shortly after creation.",
+    "loadingCloudProviders": "Loading cloud providers",
     "loadingInstance": "Loading instance",
     "noInstances": "No Smart Event instances",
     "notFound": "Smart Events Instance not found",
-    "viewInformation": "View instance information",
+    "selectRegion": "Select region",
     "smartEventInstance": "Smart Events Instance",
-    "smartEventInstances": "Smart Event Instances"
+    "smartEventInstances": "Smart Event Instances",
+    "viewInformation": "View instance information"
   },
   "processor": {
     "action": "Action",

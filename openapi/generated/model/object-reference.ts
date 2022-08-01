@@ -13,37 +13,36 @@
  */
 
 
-import { Action } from './action';
 
 /**
  * 
  * @export
- * @interface BridgeRequest
+ * @interface ObjectReference
  */
-export interface BridgeRequest {
+export interface ObjectReference {
     /**
      * 
      * @type {string}
-     * @memberof BridgeRequest
+     * @memberof ObjectReference
      */
-    'name': string;
-    /**
-     * 
-     * @type {Action}
-     * @memberof BridgeRequest
-     */
-    'error_handler'?: Action;
+    'kind': string;
     /**
      * 
      * @type {string}
-     * @memberof BridgeRequest
+     * @memberof ObjectReference
      */
-    'cloud_provider': string;
+    'id': string;
     /**
      * 
      * @type {string}
-     * @memberof BridgeRequest
+     * @memberof ObjectReference
      */
-    'region': string;
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ObjectReference
+     */
+    'href': string;
 }
 

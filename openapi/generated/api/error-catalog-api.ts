@@ -24,6 +24,8 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 import { BridgeError } from '../model';
 // @ts-ignore
 import { ErrorListResponse } from '../model';
+// @ts-ignore
+import { ErrorsList } from '../model';
 /**
  * ErrorCatalogApi - axios parameter creator
  * @export

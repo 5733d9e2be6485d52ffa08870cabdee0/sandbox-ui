@@ -59,8 +59,8 @@ describe("Action Test", () => {
 
       it("Check parameters", () => {
         cy.ouiaId("configuration").within(() => {
-          cy.ouiaType("SE/parameter").should("have.length", 1);
-          cy.ouiaId("bridgeId", "SE/parameter").should("be.visible");
+          cy.ouiaType("config-parameter").should("have.length", 1);
+          cy.ouiaId("bridgeId", "config-parameter").should("be.visible");
         });
       });
 
@@ -82,8 +82,8 @@ describe("Action Test", () => {
         cy.ouiaId("configuration")
           .should("be.visible")
           .within(() => {
-            cy.ouiaType("SE/parameter").should("have.length", 1);
-            cy.ouiaId("bridgeId", "SE/parameter").should("be.visible");
+            cy.ouiaType("config-parameter").should("have.length", 1);
+            cy.ouiaId("bridgeId", "config-parameter").should("be.visible");
           });
         cy.ouiaId("submit").click();
         cy.url().should("eq", `${Cypress.config().baseUrl}${instanceUrl}`);
@@ -104,14 +104,18 @@ describe("Action Test", () => {
         cy.get(".processor-edit__content-wrap").scrollTo("bottom");
 
         cy.ouiaId("configuration").within(() => {
-          cy.ouiaType("SE/parameter").should("have.length", 5);
-          cy.ouiaId("slack_channel", "SE/parameter")
+          cy.ouiaType("config-parameter").should("have.length", 5);
+          cy.ouiaId("slack_channel", "config-parameter")
             .should("be.visible")
             .should("contain", "Example: #myroom");
-          cy.ouiaId("slack_webhook_url", "SE/parameter").should("be.visible");
-          cy.ouiaId("slack_icon_emoji", "SE/parameter").should("be.visible");
-          cy.ouiaId("slack_icon_url", "SE/parameter").should("be.visible");
-          cy.ouiaId("slack_username", "SE/parameter").should("be.visible");
+          cy.ouiaId("slack_webhook_url", "config-parameter").should(
+            "be.visible"
+          );
+          cy.ouiaId("slack_icon_emoji", "config-parameter").should(
+            "be.visible"
+          );
+          cy.ouiaId("slack_icon_url", "config-parameter").should("be.visible");
+          cy.ouiaId("slack_username", "config-parameter").should("be.visible");
         });
       });
 
@@ -123,11 +127,11 @@ describe("Action Test", () => {
         cy.ouiaId("configuration")
           .should("be.visible")
           .within(() => {
-            cy.ouiaId("slack_channel", "SE/parameter")
+            cy.ouiaId("slack_channel", "config-parameter")
               .should("be.visible")
               .find("div.pf-m-error")
               .should("contain", "must have required property 'slack_channel'");
-            cy.ouiaId("slack_webhook_url", "SE/parameter").within(() => {
+            cy.ouiaId("slack_webhook_url", "config-parameter").within(() => {
               cy.get("div.pf-m-error")
                 .should("be.visible")
                 .should(
@@ -146,15 +150,15 @@ describe("Action Test", () => {
               cy.root().type("https://any.test.com/slack");
               cy.get("div.pf-m-error").should("not.exist");
             });
-            cy.ouiaId("slack_icon_emoji", "SE/parameter")
+            cy.ouiaId("slack_icon_emoji", "config-parameter")
               .should("be.visible")
               .find("div.pf-m-error")
               .should("not.exist");
-            cy.ouiaId("slack_icon_url", "SE/parameter")
+            cy.ouiaId("slack_icon_url", "config-parameter")
               .should("be.visible")
               .find("div.pf-m-error")
               .should("not.exist");
-            cy.ouiaId("slack_username", "SE/parameter")
+            cy.ouiaId("slack_username", "config-parameter")
               .should("be.visible")
               .find("div.pf-m-error")
               .should("not.exist");
@@ -182,10 +186,13 @@ describe("Action Test", () => {
       ];
       cy.ouiaId("edit", "PF4/Button").click();
       cy.ouiaId("action-type", "PF4/FormSelect").should("be.disabled");
-      cy.ouiaId("actions", "SE/FormSection").within(() => {
-        cy.ouiaType("SE/parameter").should("have.length", configOuiaId.length);
+      cy.ouiaId("actions", "form-section").within(() => {
+        cy.ouiaType("config-parameter").should(
+          "have.length",
+          configOuiaId.length
+        );
         configOuiaId.forEach((ouiaId) => {
-          cy.ouiaId(ouiaId, "SE/parameter")
+          cy.ouiaId(ouiaId, "config-parameter")
             .find("input")
             .scrollIntoView()
             .should("be.visible")

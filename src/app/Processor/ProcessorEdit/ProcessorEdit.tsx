@@ -434,7 +434,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                             <FormSection
                               title={t("processor.action")}
                               data-ouia-component-id="actions"
-                              data-ouia-component-type="SE/FormSection"
+                              data-ouia-component-type="form-section"
                             >
                               <TextContent>
                                 <Text component="p" ouiaId="action-description">

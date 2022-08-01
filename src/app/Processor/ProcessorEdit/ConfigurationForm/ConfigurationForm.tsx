@@ -67,7 +67,7 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
           name={key}
           disabled={readOnly}
           data-ouia-component-id={key}
-          data-ouia-component-type="SE/parameter"
+          data-ouia-component-type="config-parameter"
         />
       ))}
     </DynamicForm>

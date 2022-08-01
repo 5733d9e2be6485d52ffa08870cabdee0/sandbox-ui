@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { DeleteModal } from "@app/components/DeleteModal/DeleteModal";
 import { useDeleteBridgeApi } from "../../../hooks/useBridgesApi/useDeleteBridgeApi";
 import { useTranslation } from "react-i18next";
@@ -11,6 +10,7 @@ import {
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
 import { useHistory } from "react-router-dom";
+import { useCanIDeleteBridge } from "../../../hooks/useBridgesApi/useCanIDeleteBridge";
 
 interface DeleteInstanceProps {
   /** Flag to show/close the modal */
@@ -35,40 +35,30 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
     string | undefined
   >();
   const shouldRedirectToHome = useRef<boolean>(false);
-
-  const {
-    getProcessors,
-    processorListResponse,
-    error: processorListError,
-  } = useGetProcessorsApi();
+  const { error: canIDeleteError, canIDeleteBridge } = useCanIDeleteBridge();
 
   useEffect(() => {
     if (showDeleteModal && instanceId && instanceName) {
       setPreloading(true);
-      getProcessors(instanceId);
+      void canIDeleteBridge(instanceId).then((allowed) => {
+        setPreloading(false);
+        if (!allowed) {
+          setDeleteBlockedReason(
+            t("instance.errors.cantDeleteBecauseProcessorsInside", {
+              resource: instanceName,
+            })
+          );
+        }
+      });
     }
-  }, [showDeleteModal, instanceId, instanceName, getProcessors]);
+  }, [canIDeleteBridge, instanceId, instanceName, showDeleteModal, t]);
 
   useEffect(() => {
-    if (processorListResponse) {
-      setPreloading(false);
-      if (processorListResponse.total && processorListResponse.total > 0) {
-        setDeleteBlockedReason(
-          t("instance.errors.cantDeleteBecauseProcessorsInside", {
-            resource: instanceName,
-          })
-        );
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [processorListResponse, t]);
-
-  useEffect(() => {
-    if (processorListError && axios.isAxiosError(processorListError)) {
+    if (canIDeleteError && axios.isAxiosError(canIDeleteError)) {
       setPreloading(false);
       setDeleteBlockedReason(t("instance.errors.cantDeleteTryLater"));
     }
-  }, [processorListError, t]);
+  }, [canIDeleteError, t]);
 
   const {
     deleteBridge,

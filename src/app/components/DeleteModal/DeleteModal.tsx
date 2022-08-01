@@ -119,9 +119,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
         {!isPreloading && blockedDeletionReason && (
           <Bullseye className={"delete-modal-body__bullseye"}>
             <TextContent>
-              <Text component={TextVariants.p}>
-                <Trans>{blockedDeletionReason}</Trans>
-              </Text>
+              <Text component={TextVariants.p}>{blockedDeletionReason}</Text>
             </TextContent>
           </Bullseye>
         )}

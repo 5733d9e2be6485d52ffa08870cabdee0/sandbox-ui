@@ -11,6 +11,7 @@ import {
   DrawerHead,
   DrawerPanelBody,
   DrawerPanelContent,
+  Skeleton,
   Stack,
   StackItem,
   Text,
@@ -108,16 +109,20 @@ export const InstanceDetails = ({
                   </Text>
                 </StackItem>
                 <StackItem>
-                  <ClipboardCopy
-                    data-ouia-component-id="instance-details-endpoint"
-                    isBlock
-                    isReadOnly
-                    hoverTip={t("common.copy")}
-                    clickTip={t("common.copied")}
-                    variant={ClipboardCopyVariant.inlineCompact}
-                  >
-                    {instance.endpoint}
-                  </ClipboardCopy>
+                  {instance.endpoint ? (
+                    <ClipboardCopy
+                      data-ouia-component-id="instance-details-endpoint"
+                      isBlock
+                      isReadOnly
+                      hoverTip={t("common.copy")}
+                      clickTip={t("common.copied")}
+                      variant={ClipboardCopyVariant.inlineCompact}
+                    >
+                      {instance.endpoint}
+                    </ClipboardCopy>
+                  ) : (
+                    <Skeleton fontSize="4xl" width="100%" />
+                  )}
                 </StackItem>
               </Stack>
             </DescriptionListDescription>

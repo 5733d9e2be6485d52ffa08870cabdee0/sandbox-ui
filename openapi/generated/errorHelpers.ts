@@ -1,5 +1,12 @@
 import { AxiosError } from "axios";
-import { ErrorListResponse, ErrorResponse } from "@openapi/generated/model";
+import { ErrorListResponse,  ModelError } from "@openapi/generated/model";
+
+// @TODO Temporary workaround because the Error interface is not being
+// replaced with ModelError everywhere. See https://issues.redhat.com/browse/MGDOBR-979
+// for more details
+interface ErrorListResponseFixed {
+    items?: Array<ModelError>
+}
 
 /**
  * Check if the error code originates from the API
@@ -18,8 +25,8 @@ export const isServiceApiError = (error: unknown): error is AxiosError => {
  * @param error generic error returned from function
  * @returns error item (a single ErrorResponse)
  */
-export const getFirstError = (error: unknown): ErrorResponse | undefined => {
-    const errorListResponse = (error as AxiosError).response?.data as ErrorListResponse;
+export const getFirstError = (error: unknown): ModelError | undefined => {
+    const errorListResponse = (error as AxiosError).response?.data as ErrorListResponseFixed;
     return errorListResponse?.items?.length ? errorListResponse?.items[0] : undefined;
 };
 

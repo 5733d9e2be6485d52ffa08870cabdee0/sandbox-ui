@@ -13,7 +13,6 @@
  */
 
 
-import { ErrorResponse } from './error-response';
 
 /**
  * 
@@ -29,10 +28,10 @@ export interface ErrorListResponse {
     'kind': string;
     /**
      * 
-     * @type {Array<ErrorResponse>}
+     * @type {Array<Error>}
      * @memberof ErrorListResponse
      */
-    'items'?: Array<ErrorResponse>;
+    'items'?: Array<Error>;
     /**
      * 
      * @type {number}

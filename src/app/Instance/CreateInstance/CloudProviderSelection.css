@@ -1,0 +1,7 @@
+.cloud-provider__icon {
+  margin-right: var(--pf-global--spacer--md);
+}
+
+.cloud-provider__skeleton {
+  height: 86px;
+}

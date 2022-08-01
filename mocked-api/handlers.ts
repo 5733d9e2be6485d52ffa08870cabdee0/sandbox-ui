@@ -14,6 +14,7 @@ import { schemaCatalogData, schemasData } from "./schemasData";
 import omit from "lodash.omit";
 import cloneDeep from "lodash.clonedeep";
 import { EventFilter, ProcessorSchemaType } from "../src/types/Processor";
+import { cloudProvidersData, cloudRegions } from "./cloudProvidersData";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
@@ -21,7 +22,8 @@ const apiUrl = `${process.env.BASE_URL ?? ""}${
 }`;
 
 // api response delay in ms
-const apiDelay = 1000;
+export const apiDelay = 1000;
+export const shortApiDelay = 200;
 
 // set up the model
 const db = factory({
@@ -57,6 +59,21 @@ const db = factory({
       parameters: String,
     },
   },
+  cloudProvider: {
+    kind: String,
+    id: primaryKey(String),
+    name: String,
+    href: String,
+    display_name: String,
+    enabled: Boolean,
+  },
+  cloudRegion: {
+    cloudProvider: oneOf("cloudProvider"),
+    kind: String,
+    name: primaryKey(String),
+    display_name: String,
+    enabled: Boolean,
+  },
 });
 
 // load demo data
@@ -68,6 +85,19 @@ instancesData.map((instance, index) => {
       db.processor.create({
         ...processorItem,
         bridge: bridge,
+      });
+    });
+  }
+});
+cloudProvidersData.map((provider) => {
+  const cloudProvider = db.cloudProvider.create(provider);
+  // adding regions for each provider
+  const regions = cloudRegions[provider.name];
+  if (regions.length) {
+    regions.map((region) => {
+      db.cloudRegion.create({
+        ...region,
+        cloudProvider: cloudProvider,
       });
     });
   }
@@ -817,6 +847,50 @@ export const handlers = [
     }
 
     return res(ctx.status(200), ctx.delay(100), ctx.json(requestedSchema));
+  }),
+  rest.get(`${apiUrl}/cloud_providers`, (_req, res, ctx) => {
+    const items = db.cloudProvider.getAll();
+
+    return res(
+      ctx.status(200),
+      ctx.delay(shortApiDelay),
+      ctx.json({
+        kind: "CloudProviderList",
+        items,
+        page: 0,
+        size: items.length,
+        total: items.length,
+      })
+    );
+  }),
+  rest.get(`${apiUrl}/cloud_providers/:providerId/regions`, (req, res, ctx) => {
+    const { providerId } = req.params;
+
+    const query = {
+      where: {
+        cloudProvider: {
+          id: {
+            equals: providerId as string,
+          },
+        },
+      },
+    };
+
+    const items = db.cloudRegion
+      .findMany(query)
+      .map((item) => omit(item, ["cloudProvider"]));
+
+    return res(
+      ctx.status(200),
+      ctx.delay(shortApiDelay),
+      ctx.json({
+        kind: "CloudRegionList",
+        items,
+        page: 0,
+        size: items.length,
+        total: items.length,
+      })
+    );
   }),
 ];
 

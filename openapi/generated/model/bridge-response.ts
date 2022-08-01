@@ -82,5 +82,17 @@ export interface BridgeResponse {
      * @memberof BridgeResponse
      */
     'error_handler'?: Action;
+    /**
+     * 
+     * @type {string}
+     * @memberof BridgeResponse
+     */
+    'cloud_provider'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BridgeResponse
+     */
+    'region'?: string;
 }
 

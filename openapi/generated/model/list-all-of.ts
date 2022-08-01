@@ -13,37 +13,30 @@
  */
 
 
-import { Action } from './action';
 
 /**
  * 
  * @export
- * @interface BridgeRequest
+ * @interface ListAllOf
  */
-export interface BridgeRequest {
+export interface ListAllOf {
     /**
      * 
-     * @type {string}
-     * @memberof BridgeRequest
+     * @type {number}
+     * @memberof ListAllOf
      */
-    'name': string;
+    'page': number;
     /**
      * 
-     * @type {Action}
-     * @memberof BridgeRequest
+     * @type {number}
+     * @memberof ListAllOf
      */
-    'error_handler'?: Action;
+    'size': number;
     /**
      * 
-     * @type {string}
-     * @memberof BridgeRequest
+     * @type {number}
+     * @memberof ListAllOf
      */
-    'cloud_provider': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof BridgeRequest
-     */
-    'region': string;
+    'total': number;
 }
 

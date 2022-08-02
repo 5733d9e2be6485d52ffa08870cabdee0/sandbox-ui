@@ -44,7 +44,7 @@ describe("Source Test", () => {
       cy.ouiaId("configuration").should("not.exist");
     });
 
-    describe("Send to Slack", () => {
+    describe("Slack Source", () => {
       beforeEach(() => {
         cy.ouiaId("source-type", "PF4/FormSelect")
           .should("be.visible")

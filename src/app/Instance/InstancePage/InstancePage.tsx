@@ -181,7 +181,6 @@ const InstancePage = (): JSX.Element => {
         );
       },
     },
-    { accessor: "id", label: t("common.id") },
     {
       accessor: "type",
       label: t("common.type"),
@@ -194,19 +193,19 @@ const InstancePage = (): JSX.Element => {
       },
     },
     {
-      accessor: "status",
-      label: t("common.status"),
-      formatter: (value: IRowData): JSX.Element => {
-        const statusString = (value as unknown as string) ?? "";
-        return <StatusLabel status={statusString} />;
-      },
-    },
-    {
       accessor: "submitted_at",
       label: t("common.submittedAt"),
       formatter: (value: IRowData): string => {
         const date = new Date(value as unknown as string);
         return formatDistance(date, new Date()) + " " + t("common.ago");
+      },
+    },
+    {
+      accessor: "status",
+      label: t("common.status"),
+      formatter: (value: IRowData): JSX.Element => {
+        const statusString = (value as unknown as string) ?? "";
+        return <StatusLabel status={statusString} />;
       },
     },
   ];

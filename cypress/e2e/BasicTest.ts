@@ -100,14 +100,14 @@ describe("Basic Elements", () => {
       .should("be.visible")
       .within(() => {
         cy.get("td:first").should("have.text", bridgeName);
-        cy.get("td:nth-child(2)").then(($state) => {
+        cy.get("td:nth-child(3)").then(($state) => {
           cy.wrap($state, { timeout: 60000 }).should("have.text", "ready");
         });
       });
   });
 
   it("Instance header details are available", () => {
-    const instanceHeaderDetails = ["Name", "Status", "Time created"];
+    const instanceHeaderDetails = ["Name", "Time created", "Status"];
     cy.ouiaId("Instances list table", "PF4/Table")
       .ouiaType("PF4/TableRow")
       .find("th")

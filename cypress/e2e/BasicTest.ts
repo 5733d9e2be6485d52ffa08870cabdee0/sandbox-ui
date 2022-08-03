@@ -75,7 +75,7 @@ describe("Basic Elements", () => {
         .should("be.visible")
         .within(($item) => {
           cy.get("td:first").should("have.text", bridgeName);
-          cy.get("td:nth-child(2)").then(($state) => {
+          cy.get("td:nth-child(3)").then(($state) => {
             cy.wrap($state).should("have.text", "deprovision");
           });
           cy.wrap($item, { timeout: 60000 }).should("not.exist");

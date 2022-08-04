@@ -1,4 +1,4 @@
-import { ManagedResourceStatus } from "@openapi/generated";
+import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 
 const canDeleteResource = (resourceStatus: ManagedResourceStatus): boolean => {
   /** It's only possible to delete a resource if it's in the "ready" or "failed" status

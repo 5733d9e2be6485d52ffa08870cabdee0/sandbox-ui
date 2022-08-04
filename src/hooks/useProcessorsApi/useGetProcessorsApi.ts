@@ -4,7 +4,7 @@ import {
   ProcessorListResponse,
   ProcessorsApi,
   ProcessorType,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import { useCallback, useRef, useState } from "react";
 import axios, { CancelTokenSource } from "axios";
 import { useSmartEvents } from "@contexts/SmartEventsContext";

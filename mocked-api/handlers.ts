@@ -7,7 +7,7 @@ import {
   ProcessorRequest,
   ProcessorResponse,
   ProcessorType,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import { v4 as uuid } from "uuid";
 import { instancesData, processorData } from "./data";
 import { schemaCatalogData, schemasData } from "./schemasData";

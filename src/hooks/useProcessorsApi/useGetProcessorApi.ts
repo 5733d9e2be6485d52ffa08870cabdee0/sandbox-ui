@@ -2,7 +2,7 @@ import {
   Configuration,
   ProcessorResponse,
   ProcessorsApi,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import { useCallback, useState } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 

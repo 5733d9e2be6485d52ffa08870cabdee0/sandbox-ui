@@ -3,7 +3,7 @@ import {
   Action,
   ProcessorSchemaEntryResponse,
   Source,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import { useTranslation } from "react-i18next";
 import {
   FormGroup,

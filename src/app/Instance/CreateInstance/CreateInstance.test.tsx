@@ -2,7 +2,10 @@ import React from "react";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import CreateInstance, { CreateInstanceProps } from "./CreateInstance";
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
-import { CloudProviderResponse, CloudRegionResponse } from "@openapi/generated";
+import {
+  CloudProviderResponse,
+  CloudRegionResponse,
+} from "@rhoas/smart-events-management-sdk";
 
 const setupCreateInstance = (
   props: Partial<CreateInstanceProps>

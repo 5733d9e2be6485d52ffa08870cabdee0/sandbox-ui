@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 describe("Delete Test", () => {
   it("Instance", () => {
     cy.visit("/");
@@ -29,6 +30,21 @@ describe("Delete Test", () => {
         .eq(2)
         .should("have.text", "deprovision");
 
+=======
+import { deleteInstance } from "./Util";
+
+describe("Delete Test", () => {
+  it("Instance", () => {
+    cy.visit("/");
+    deleteInstance("Instance ten");
+    cy.ouiaId("Instances list table", "PF4/Table").within(() => {
+      // once delete confirmed, state should change
+      cy.ouiaId("Instance ten", "PF4/TableRow")
+        .find("td")
+        .eq(1)
+        .should("have.text", "deprovision");
+
+>>>>>>> 8475636 (Fix review comments)
       // once deprovision is completed, entry should disappear
       cy.ouiaId("Instance ten", "PF4/TableRow", { timeout: 30000 }).should(
         "not.exist"

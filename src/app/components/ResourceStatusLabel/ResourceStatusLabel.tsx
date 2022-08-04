@@ -50,7 +50,7 @@ export const ResourceStatusLabel = forwardRef<
             <Spinner size="md" />
           </SplitItem>
           <SplitItem>
-            <Button ref={ref} variant={"link"} isInline>
+            <Button ref={ref} variant={"link"} isInline ouiaId="creating">
               {t("common.statuses.creating")}
             </Button>
             {!creationDelayed && (
@@ -86,9 +86,7 @@ export const ResourceStatusLabel = forwardRef<
       );
     case ResourceStatus.DELETING:
       return (
-        <div>
-          <p className="mas-m-deleting"> {t("common.statuses.deleting")}</p>
-        </div>
+        <span className="mas-m-deleting">{t("common.statuses.deleting")}</span>
       );
     default:
       return <></>;

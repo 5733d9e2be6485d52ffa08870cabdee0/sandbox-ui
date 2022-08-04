@@ -59,8 +59,10 @@ describe("Instances Test", () => {
         .within(() => {
           cy.get("td:first").should("have.text", newInstanceName);
           cy.get("td:nth-child(3)").then(($state) => {
-            cy.wrap($state).should("have.text", "accepted");
-            cy.wrap($state, { timeout: 180000 }).should("have.text", "ready");
+            cy.wrap($state)
+              .ouiaId("creating", "PF4/Button")
+              .should("have.text", "Creating");
+            cy.wrap($state, { timeout: 180000 }).should("have.text", "Ready");
           });
         });
     });
@@ -203,7 +205,9 @@ describe("Instances Test", () => {
           .should("be.visible")
           .within(() => {
             cy.get("td:first").should("have.html", instanceName);
-            cy.get("td:nth-child(3)").should("have.text", "accepted");
+            cy.get("td:nth-child(3)")
+              .ouiaId("creating", "PF4/Button")
+              .should("have.text", "Creating");
             cy.get("td:nth-child(4)")
               .click()
               .within(() => {
@@ -224,7 +228,9 @@ describe("Instances Test", () => {
           .should("be.visible")
           .within(() => {
             cy.get("td:first").should("have.html", instanceName);
-            cy.get("td:nth-child(3)").should("have.text", "provisioning");
+            cy.get("td:nth-child(3)")
+              .ouiaId("creating", "PF4/Button")
+              .should("have.text", "Creating");
             cy.get("td:nth-child(4)")
               .click()
               .within(() => {
@@ -249,7 +255,7 @@ describe("Instances Test", () => {
               .should("not.have.html", instanceName)
               .find("a")
               .should("be.visible");
-            cy.get("td:nth-child(3)").should("have.text", "ready");
+            cy.get("td:nth-child(3)").should("have.text", "Ready");
             cy.get("td:nth-child(4)")
               .click()
               .within(() => {
@@ -338,7 +344,10 @@ describe("Instances Test", () => {
               expect($cells).have.length(5);
               expect($cells.eq(0)).have.text("Processor three");
               expect($cells.eq(1)).have.text("Source");
-              expect($cells.eq(3)).have.text("accepted");
+              cy.wrap($cells)
+                .eq(3)
+                .ouiaId("creating", "PF4/Button")
+                .should("have.text", "Creating");
               cy.wrap($cells.eq(4))
                 .ouiaType("PF4/Dropdown")
                 .should("be.visible");

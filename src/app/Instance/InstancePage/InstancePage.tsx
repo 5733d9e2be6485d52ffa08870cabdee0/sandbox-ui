@@ -211,11 +211,11 @@ const InstancePage = (): JSX.Element => {
         const statusString = value as unknown as ManagedResourceStatus;
         const submittedAt = new Date((row as ProcessorResponse)?.submitted_at);
         return (
-            <SEStatusLabel
-                status={statusString}
-                resourceType={"processor"}
-                requestedAt={submittedAt}
-            />
+          <SEStatusLabel
+            status={statusString}
+            resourceType={"processor"}
+            requestedAt={submittedAt}
+          />
         );
       },
     },

@@ -75,7 +75,10 @@ const SEStatusLabel: VoidFunctionComponent<SEStatusLabelProps> = (props) => {
   }, [clearPolling, resourceStatus]);
 
   return (
-    <>
+    <div
+      data-ouia-component-id={status}
+      data-ouia-component-type="QE/ResourceStatus"
+    >
       {showPopover && (
         <SEStatusPopover
           title={title}
@@ -89,7 +92,7 @@ const SEStatusLabel: VoidFunctionComponent<SEStatusLabelProps> = (props) => {
         ref={labelRef}
         creationDelayed={alert}
       />
-    </>
+    </div>
   );
 };
 

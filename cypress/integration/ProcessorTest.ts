@@ -207,7 +207,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.ouiaId("cancel", "PF4/Button").should("be.enabled").click();
 
         //Processor Detail
-        cy.ouiaId("ready", "QE/ProcessorState").should("be.visible");
+        cy.ouiaId("ready", "QE/ResourceStatus").should("be.visible");
         cy.ouiaId("edit", "PF4/Button")
           .should("be.visible")
           .should("have.attr", "aria-disabled", "false");
@@ -243,7 +243,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
 
           //Processor Detail
-          cy.ouiaId("accepted", "QE/ProcessorState").should("be.visible");
+          cy.ouiaId("accepted", "QE/ResourceStatus").should("be.visible");
           cy.ouiaId("edit", "PF4/Button")
             .should("be.visible")
             .should("have.attr", "aria-disabled", "true");
@@ -297,7 +297,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.ouiaId("cancel", "PF4/Button").should("be.enabled").click();
 
         //Processor Detail
-        cy.ouiaId("ready", "QE/ProcessorState").should("be.visible");
+        cy.ouiaId("ready", "QE/ResourceStatus").should("be.visible");
         cy.ouiaId("edit", "PF4/Button")
           .should("be.visible")
           .should("have.attr", "aria-disabled", "false");
@@ -333,7 +333,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
 
           //Processor Detail
-          cy.ouiaId("accepted", "QE/ProcessorState").should("be.visible");
+          cy.ouiaId("accepted", "QE/ResourceStatus").should("be.visible");
           cy.ouiaId("edit", "PF4/Button")
             .should("be.visible")
             .should("have.attr", "aria-disabled", "true");
@@ -359,12 +359,13 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           cy.get("td")
             .eq(3)
             .then(($state) => {
-              cy.wrap($state).should("have.text", "accepted");
-              cy.wrap($state, { timeout: 15000 }).should(
-                "have.text",
-                "provisioning"
-              );
-              cy.wrap($state, { timeout: 30000 }).should("have.text", "ready");
+              cy.wrap($state)
+                .ouiaId("creating", "PF4/Button")
+                .should("have.text", "Creating");
+              cy.wrap($state, { timeout: 15000 })
+                .ouiaId("creating", "PF4/Button")
+                .should("have.text", "Creating");
+              cy.wrap($state, { timeout: 30000 }).should("have.text", "Ready");
             });
           cy.get("td")
             .eq(0)

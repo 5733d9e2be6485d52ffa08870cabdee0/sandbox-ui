@@ -7,7 +7,7 @@ describe("Delete Test", () => {
       .find("td")
       .then(($cells) => {
         expect($cells).have.length(4);
-        expect($cells.eq(1)).have.text("ready");
+        expect($cells.eq(2)).have.text("ready");
         cy.wrap($cells.eq(3)).ouiaType("PF4/Dropdown").click();
       });
 
@@ -26,7 +26,7 @@ describe("Delete Test", () => {
       // once delete confirmed, state should change
       cy.ouiaId("Instance ten", "PF4/TableRow")
         .find("td")
-        .eq(1)
+        .eq(2)
         .should("have.text", "deprovision");
 
       // once deprovision is completed, entry should disappear
@@ -44,7 +44,7 @@ describe("Delete Test", () => {
       .find("td")
       .then(($cells) => {
         expect($cells).have.length(4);
-        expect($cells.eq(1)).have.text("ready");
+        expect($cells.eq(2)).have.text("ready");
         cy.wrap($cells.eq(3)).ouiaType("PF4/Dropdown").click();
       });
 
@@ -72,10 +72,10 @@ describe("Delete Test", () => {
         .ouiaId("Processor one", "PF4/TableRow")
         .find("td")
         .then(($cells) => {
-          expect($cells).have.length(6);
+          expect($cells).have.length(5);
           expect($cells.eq(0)).have.text("Processor one");
           expect($cells.eq(3)).have.text("ready");
-          cy.wrap($cells.eq(5)).ouiaType("PF4/Dropdown").click();
+          cy.wrap($cells.eq(4)).ouiaType("PF4/Dropdown").click();
         });
     });
 

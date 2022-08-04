@@ -34,7 +34,7 @@ describe("Instances Test", () => {
         .should("be.visible")
         .within(() => {
           cy.get("td:first").should("have.text", newInstanceName);
-          cy.get("td:nth-child(2)").then(($state) => {
+          cy.get("td:nth-child(3)").then(($state) => {
             cy.wrap($state).should("have.text", "accepted");
             cy.wrap($state, { timeout: 30000 }).should("have.text", "ready");
           });
@@ -96,7 +96,7 @@ describe("Instances Test", () => {
         .should("be.visible")
         .within(() => {
           cy.get("td:first").should("have.html", instanceName);
-          cy.get("td:nth-child(2)").should("have.text", "accepted");
+          cy.get("td:nth-child(3)").should("have.text", "accepted");
           cy.get("td:nth-child(4)")
             .click()
             .within(() => {
@@ -117,7 +117,7 @@ describe("Instances Test", () => {
         .should("be.visible")
         .within(() => {
           cy.get("td:first").should("have.html", instanceName);
-          cy.get("td:nth-child(2)").should("have.text", "provisioning");
+          cy.get("td:nth-child(3)").should("have.text", "provisioning");
           cy.get("td:nth-child(4)")
             .click()
             .within(() => {
@@ -142,7 +142,7 @@ describe("Instances Test", () => {
             .should("not.have.html", instanceName)
             .find("a")
             .should("be.visible");
-          cy.get("td:nth-child(2)").should("have.text", "ready");
+          cy.get("td:nth-child(3)").should("have.text", "ready");
           cy.get("td:nth-child(4)")
             .click()
             .within(() => {
@@ -226,26 +226,17 @@ describe("Instances Test", () => {
           .ouiaId("Processor three", "PF4/TableRow")
           .find("td")
           .then(($cells) => {
-            expect($cells).have.length(6);
+            expect($cells).have.length(5);
             expect($cells.eq(0)).have.text("Processor three");
-            expect($cells.eq(1)).have.text(
-              "f8f34af4-caed-11ec-9d64-0242ac120002"
-            );
-            expect($cells.eq(2)).have.text("Source");
+            expect($cells.eq(1)).have.text("Source");
             expect($cells.eq(3)).have.text("accepted");
-            cy.wrap($cells.eq(5)).ouiaType("PF4/Dropdown").should("be.visible");
+            cy.wrap($cells.eq(4)).ouiaType("PF4/Dropdown").should("be.visible");
           });
       });
     });
 
     it("Processor header details are visible", () => {
-      const processorHeaderDetails = [
-        "Name",
-        "ID",
-        "Type",
-        "Status",
-        "Time created",
-      ];
+      const processorHeaderDetails = ["Name", "Type", "Time created", "Status"];
       cy.ouiaId("Processors list table", "PF4/Table")
         .ouiaId("table-head", "PF4/TableRow")
         .find("th")

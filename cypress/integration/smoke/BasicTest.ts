@@ -45,7 +45,7 @@ describe("Basic Elements", () => {
   });
 
   it("Instance header details are available", () => {
-    const instanceHeaderDetails = ["Name", "Status", "Time created"];
+    const instanceHeaderDetails = ["Name", "Time created", "Status"];
     cy.ouiaId("Instances list table", "PF4/Table")
       .ouiaType("PF4/TableRow")
       .find("th")

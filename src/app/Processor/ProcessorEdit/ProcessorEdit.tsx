@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import {
   ActionGroup,
   Alert,
@@ -15,6 +15,7 @@ import {
   Label,
   PageSection,
   PageSectionVariants,
+  Popover,
   Stack,
   StackItem,
   Text,
@@ -43,6 +44,8 @@ import ConfigurationEdit from "@app/Processor/ProcessorEdit/ConfigurationEdit/Co
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import "./ProcessorEdit.css";
 import { css } from "@patternfly/react-styles";
+import { HelpIcon } from "@patternfly/react-icons";
+import { ExternalLink } from "@rhoas/app-services-ui-components";
 
 export interface ProcessorEditProps {
   /** The processor data to populate the form. Used when updating an existing processor.
@@ -408,6 +411,37 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                   ouiaId={"transformation-description"}
                                 >
                                   {t("processor.addTransformationDescription")}
+                                  <Popover
+                                    headerContent={t(
+                                      "processor.transformationTemplate"
+                                    )}
+                                    bodyContent={
+                                      <Trans
+                                        i18nKey={
+                                          "openbridgeTempDictionary:processor.transformationTemplateTooltip"
+                                        }
+                                        components={[
+                                          <ExternalLink
+                                            key="qute-reference-link"
+                                            testId="qute-reference-link"
+                                            href="https://quarkus.io/guides/qute-reference"
+                                          />,
+                                        ]}
+                                      />
+                                    }
+                                  >
+                                    <button
+                                      type="button"
+                                      aria-label={t(
+                                        "processor.moreInfoForTransformationTemplate"
+                                      )}
+                                      onClick={(e): void => e.preventDefault()}
+                                      aria-describedby="form-group-label-info"
+                                      className="pf-c-form__group-label-help"
+                                    >
+                                      <HelpIcon noVerticalAlign={true} />
+                                    </button>
+                                  </Popover>
                                 </Text>
                               </TextContent>
                               <CodeEditor

@@ -2,8 +2,7 @@ import { useEffect, useRef } from "react";
 
 export function usePolling(
   callback: () => void,
-  delay: number,
-  startImmediately?: boolean
+  delay: number
 ): void | (() => void) {
   const savedCallback = useRef(callback);
 
@@ -16,14 +15,8 @@ export function usePolling(
       return;
     }
 
-    function tick(): void {
-      savedCallback.current && savedCallback.current();
-    }
-    if (startImmediately) {
-      tick();
-    }
-    const id = setInterval(tick, delay);
+    const id = setInterval(() => savedCallback.current(), delay);
 
     return (): void => clearInterval(id);
-  }, [delay, startImmediately]);
+  }, [delay]);
 }

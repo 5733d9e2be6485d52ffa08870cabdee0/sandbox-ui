@@ -64,6 +64,7 @@
     "@redhat-cloud-services/frontend-components-config": "4.6.18",
     "@testing-library/jest-dom": "5.16.2",
     "@testing-library/react": "12.1.4",
+    "@testing-library/react-hooks": "8.0.1",
     "@types/jest": "27.4.1",
     "@types/lodash.clonedeep": "4.5.7",
     "@types/lodash.isequal": "4.5.6",

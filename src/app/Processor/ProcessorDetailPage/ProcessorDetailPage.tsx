@@ -346,6 +346,7 @@ const ProcessorDetailPage = (): JSX.Element => {
                       status={currentProcessor.status}
                       resourceType={"processor"}
                       requestedAt={new Date(currentProcessor.submitted_at)}
+                      singleDelayedCheck={true}
                     />
                   </StackItem>
                 </Stack>

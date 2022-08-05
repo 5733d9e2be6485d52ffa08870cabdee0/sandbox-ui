@@ -65,6 +65,14 @@ export const schemaCatalogData = [
   },
   {
     kind: "ProcessorSchemaEntry",
+    id: "dummy_source_0.1",
+    name: "Dummy Source",
+    description: "Some dummy source for test purpose",
+    type: "source",
+    href: "/api/smartevents_mgmt/v1/schemas/sources/dummy_source_0.1",
+  },
+  {
+    kind: "ProcessorSchemaEntry",
     id: "aws_sqs_source_0.1",
     name: "Aws Sqs Source",
     description: "Ingest data from Aws Sqs.",
@@ -414,6 +422,20 @@ export const schemasData: { [key: string]: object } = {
         format: "base64",
       },
     },
+  },
+  "dummy_source_0.1": {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      dummyId: {
+        type: "string",
+        title: "Dummy ID",
+        description: "Dummy ID for test purpose.",
+        example: "f1fbd010-93cf-4be1-aa78-b37ba48858fe",
+        pattern: "[\\w]{8}-[\\w]{4}-[\\w]{4}-[\\w]{4}-[\\w]{12}",
+      },
+    },
+    optional: ["dummyId"],
   },
   "aws_s3_source_0.1": {
     type: "object",

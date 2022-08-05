@@ -26,6 +26,7 @@ describe("Source Test", () => {
         "Aws Sqs Source",
         "Slack Source",
         "Google PubSub Source",
+        "Azure EventHub Source",
       ];
 
       cy.ouiaId("source-type", "PF4/FormSelect")

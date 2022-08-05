@@ -15,7 +15,7 @@ export function createInstance(newInstanceName: string) {
   });
 }
 
-export function newInstanceStatus(instanceName: string) {
+export function waitTillInstanceIsReady(instanceName: string) {
   cy.ouiaId("Instances list table", "PF4/Table")
     .ouiaId(instanceName, "PF4/TableRow")
     .within(() => {
@@ -32,7 +32,11 @@ export function deleteInstance(deleteInstanceName: string) {
     .find("td")
     .then(($cells) => {
       expect($cells).have.length(4);
-      expect($cells.eq(1)).have.text("ready");
+      cy.wrap($cells.eq(1))
+        .invoke("text")
+        .then((status) => {
+          expect(status).to.match(/failed|ready/gi);
+        });
       cy.wrap($cells.eq(3)).ouiaType("PF4/Dropdown").click();
     });
   cy.ouiaType("PF4/DropdownItem").contains("Delete").click();
@@ -46,7 +50,7 @@ export function deleteInstance(deleteInstanceName: string) {
   cy.ouiaId("delete-instance", "PF4/ModalContent").should("not.exist");
 }
 
-export function deleteInstanceStatus(instanceName: string) {
+export function deletedInstanceNotExist(instanceName: string) {
   cy.ouiaId("Instances list table", "PF4/Table").within(() => {
     cy.ouiaId(instanceName, "PF4/TableRow", { timeout: 30000 }).should(
       "not.exist"

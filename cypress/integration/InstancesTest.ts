@@ -3,9 +3,14 @@ import { format } from "date-fns";
 =======
 import { createInstance } from "./Util";
 import { deleteInstance } from "./Util";
+<<<<<<< HEAD
 import { newInstanceStatus } from "./Util";
 import { deleteInstanceStatus } from "./Util";
 >>>>>>> 8475636 (Fix review comments)
+=======
+import { waitTillInstanceIsReady } from "./Util";
+import { deletedInstanceNotExist } from "./Util";
+>>>>>>> 57e9287 (MGDOBR-717 - renaming function name in Util.ts)
 
 const formatDate = (dateStr: string): string =>
   format(new Date(dateStr), "PPPP p");
@@ -54,6 +59,7 @@ describe("Instances Test", () => {
     it("Submit", () => {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       const newInstanceName: string = "Some new instance";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
       cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
@@ -78,11 +84,15 @@ describe("Instances Test", () => {
           cy.get("td:nth-child(3)").then(($state) => {
 =======
       createInstance("Some new instance");
+=======
+      const newInstanceName: string = "Some new instance";
+      createInstance(newInstanceName);
+>>>>>>> 57e9287 (MGDOBR-717 - renaming function name in Util.ts)
       cy.ouiaId("Instances list table", "PF4/Table")
-        .ouiaId("Some new instance", "PF4/TableRow")
+        .ouiaId(newInstanceName, "PF4/TableRow")
         .should("be.visible")
         .within(() => {
-          cy.get("td:first").should("have.text", "Some new instance");
+          cy.get("td:first").should("have.text", newInstanceName);
           cy.get("td:nth-child(2)").then(($state) => {
 >>>>>>> 8475636 (Fix review comments)
             cy.wrap($state).should("have.text", "accepted");
@@ -202,7 +212,7 @@ describe("Instances Test", () => {
           (count) => {
             let initialInstanceCount = parseInt(count.text());
             createInstance("newInstance");
-            newInstanceStatus("newInstance");
+            waitTillInstanceIsReady("newInstance");
             cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
               (count) => {
                 let instanceCountAfterCreate = parseInt(count.text());
@@ -220,7 +230,7 @@ describe("Instances Test", () => {
           (count) => {
             let initialInstanceCount = parseInt(count.text());
             deleteInstance("Instance ten");
-            deleteInstanceStatus("Instance ten");
+            deletedInstanceNotExist("Instance ten");
             cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
               (count) => {
                 let instanceCountAfterDelete = parseInt(count.text());

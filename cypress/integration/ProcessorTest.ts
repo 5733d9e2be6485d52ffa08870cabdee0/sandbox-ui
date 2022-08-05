@@ -362,10 +362,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
               cy.wrap($state)
                 .ouiaId("creating", "PF4/Button")
                 .should("have.text", "Creating");
-              cy.wrap($state, { timeout: 15000 })
-                .ouiaId("creating", "PF4/Button")
-                .should("have.text", "Creating");
-              cy.wrap($state, { timeout: 30000 }).should("have.text", "Ready");
+              cy.wrap($state, { timeout: 45000 }).should("have.text", "Ready");
             });
           cy.get("td")
             .eq(0)

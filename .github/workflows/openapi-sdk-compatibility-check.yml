@@ -1,18 +1,9 @@
-name: "Smart Events UI :: SDK <-> Openapi compatibility check"
+name: "Smart Events :: SDK :: Compatibility check :: (MGDOBR-868)"
 on: [pull_request, push]
 jobs:
   run-all-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: "Fetch latest sandbox/openapi/smartevents_mgmt.yaml"
+      - name: "Check latest SDK release"
         run: |
-          scripts/openapi-sdk/fetch_openapi.sh
-      - name: "Check 'git diff' result is 0"
-        run: |
-          if ! git diff --exit-code; then
-            echo "Run scripts/openapi-sdk/fetch_openapi.sh and scripts/openapi-sdk/generate_openapi_client.sh locally. Open PR afterwards."
-            exit 1
-          else
-            echo "SDK and Openapi are synced."
-          fi
+          echo "Check https://github.com/redhat-developer/app-services-sdk-js/releases for the latest release."

@@ -19,7 +19,7 @@ export function waitTillInstanceIsReady(instanceName: string) {
   cy.ouiaId("Instances list table", "PF4/Table")
     .ouiaId(instanceName, "PF4/TableRow")
     .within(() => {
-      cy.get("td:nth-child(2)", { timeout: 30000 }).should(
+      cy.get("td:nth-child(3)", { timeout: 30000 }).should(
         "have.text",
         "ready"
       );
@@ -32,7 +32,7 @@ export function deleteInstance(deleteInstanceName: string) {
     .find("td")
     .then(($cells) => {
       expect($cells).have.length(4);
-      cy.wrap($cells.eq(1))
+      cy.wrap($cells.eq(2))
         .invoke("text")
         .then((status) => {
           expect(status).to.match(/failed|ready/gi);

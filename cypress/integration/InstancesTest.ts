@@ -1,52 +1,12 @@
 import { format } from "date-fns";
-<<<<<<< HEAD
-=======
 import { createInstance } from "./Util";
 import { deleteInstance } from "./Util";
-<<<<<<< HEAD
-import { newInstanceStatus } from "./Util";
-import { deleteInstanceStatus } from "./Util";
->>>>>>> 8475636 (Fix review comments)
-=======
 import { waitTillInstanceIsReady } from "./Util";
 import { deletedInstanceNotExist } from "./Util";
->>>>>>> 57e9287 (MGDOBR-717 - renaming function name in Util.ts)
 
 const formatDate = (dateStr: string): string =>
   format(new Date(dateStr), "PPPP p");
 
-<<<<<<< HEAD
-function createnewInstance() {
-  const newInstanceName: string = "Some new instance";
-  cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
-  cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
-    cy.wrap($modal)
-      .should("be.visible")
-      .within(() => {
-        cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
-        cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
-          "have.text",
-          "Info alert:Your Smart Events instance will be ready for use shortly after creation."
-        );
-        cy.ouiaId("submit", "PF4/Button").click();
-      });
-    cy.wrap($modal, { timeout: 20000 }).should("not.exist");
-  });
-
-  cy.ouiaId("Instances list table", "PF4/Table")
-    .ouiaId(newInstanceName, "PF4/TableRow")
-    .should("be.visible")
-    .within(() => {
-      cy.get("td:first").should("have.text", newInstanceName);
-      cy.get("td:nth-child(2)").then(($state) => {
-        cy.wrap($state).should("have.text", "accepted");
-        cy.wrap($state, { timeout: 30000 }).should("have.text", "ready");
-      });
-    });
-}
-
-=======
->>>>>>> 8475636 (Fix review comments)
 describe("Instances Test", () => {
   describe("the 'Create a SE instance' Modal", () => {
     beforeEach(() => {
@@ -57,54 +17,18 @@ describe("Instances Test", () => {
     });
 
     it("Submit", () => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
       const newInstanceName: string = "Some new instance";
-      cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
-      cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
-        cy.wrap($modal)
-          .should("be.visible")
-          .within(() => {
-            cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
-            cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
-              "have.text",
-              "Info alert:Your Smart Events instance will be ready for use shortly after creation."
-            );
-            cy.ouiaId("submit", "PF4/Button").click();
-          });
-        cy.wrap($modal, { timeout: 20000 }).should("not.exist");
-      });
-
+      createInstance(newInstanceName);
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(newInstanceName, "PF4/TableRow")
         .should("be.visible")
         .within(() => {
           cy.get("td:first").should("have.text", newInstanceName);
           cy.get("td:nth-child(3)").then(($state) => {
-=======
-      createInstance("Some new instance");
-=======
-      const newInstanceName: string = "Some new instance";
-      createInstance(newInstanceName);
->>>>>>> 57e9287 (MGDOBR-717 - renaming function name in Util.ts)
-      cy.ouiaId("Instances list table", "PF4/Table")
-        .ouiaId(newInstanceName, "PF4/TableRow")
-        .should("be.visible")
-        .within(() => {
-          cy.get("td:first").should("have.text", newInstanceName);
-          cy.get("td:nth-child(2)").then(($state) => {
->>>>>>> 8475636 (Fix review comments)
             cy.wrap($state).should("have.text", "accepted");
             cy.wrap($state, { timeout: 30000 }).should("have.text", "ready");
           });
         });
-<<<<<<< HEAD
-=======
-      createnewInstance();
->>>>>>> 429d980 (Replacing existing test logic with a function)
-=======
->>>>>>> 8475636 (Fix review comments)
     });
 
     it("Submit and expect error", () => {
@@ -145,16 +69,7 @@ describe("Instances Test", () => {
         .ouiaId(newInstanceName, "PF4/TableRow")
         .should("not.exist");
     });
-  });
 
-<<<<<<< HEAD
-  describe("the Instance statuses", () => {
-    beforeEach(() => {
-      cy.visit("/");
-      cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
-        "not.exist"
-      );
-=======
     describe("Instance List pagination test", () => {
       it("Select other page", () => {
         cy.get("[aria-label='Go to first page']").should("be.disabled");
@@ -242,12 +157,9 @@ describe("Instances Test", () => {
           }
         );
       });
->>>>>>> 8475636 (Fix review comments)
     });
   });
 
-<<<<<<< HEAD
-=======
   describe("the Instance statuses", () => {
     beforeEach(() => {
       cy.visit("/");
@@ -256,7 +168,6 @@ describe("Instances Test", () => {
       );
     });
 
->>>>>>> 8475636 (Fix review comments)
     it("Accepted", () => {
       const instanceName: string = "Instance three";
       cy.ouiaId("Instances list table", "PF4/Table")
@@ -264,22 +175,14 @@ describe("Instances Test", () => {
         .should("be.visible")
         .within(() => {
           cy.get("td:first").should("have.html", instanceName);
-<<<<<<< HEAD
           cy.get("td:nth-child(3)").should("have.text", "accepted");
-=======
-          cy.get("td:nth-child(2)").should("have.text", "accepted");
->>>>>>> 8475636 (Fix review comments)
           cy.get("td:nth-child(4)")
             .click()
             .within(() => {
               cy.ouiaType("PF4/DropdownItem").then(($items) => {
                 expect($items.eq(0)).have.text("Details");
                 expect($items.eq(0)).be.enabled;
-<<<<<<< HEAD
                 expect($items.eq(1)).have.text("Delete instance");
-=======
-                expect($items.eq(1)).have.text("Delete");
->>>>>>> 8475636 (Fix review comments)
                 expect($items.eq(1)).have.attr("aria-disabled", "true");
               });
             });
@@ -293,22 +196,14 @@ describe("Instances Test", () => {
         .should("be.visible")
         .within(() => {
           cy.get("td:first").should("have.html", instanceName);
-<<<<<<< HEAD
           cy.get("td:nth-child(3)").should("have.text", "provisioning");
-=======
-          cy.get("td:nth-child(2)").should("have.text", "provisioning");
->>>>>>> 8475636 (Fix review comments)
           cy.get("td:nth-child(4)")
             .click()
             .within(() => {
               cy.ouiaType("PF4/DropdownItem").then(($items) => {
                 expect($items.eq(0)).have.text("Details");
                 expect($items.eq(0)).be.enabled;
-<<<<<<< HEAD
                 expect($items.eq(1)).have.text("Delete instance");
-=======
-                expect($items.eq(1)).have.text("Delete");
->>>>>>> 8475636 (Fix review comments)
                 expect($items.eq(1)).have.attr("aria-disabled", "true");
               });
             });
@@ -326,22 +221,14 @@ describe("Instances Test", () => {
             .should("not.have.html", instanceName)
             .find("a")
             .should("be.visible");
-<<<<<<< HEAD
           cy.get("td:nth-child(3)").should("have.text", "ready");
-=======
-          cy.get("td:nth-child(2)").should("have.text", "ready");
->>>>>>> 8475636 (Fix review comments)
           cy.get("td:nth-child(4)")
             .click()
             .within(() => {
               cy.ouiaType("PF4/DropdownItem").then(($items) => {
                 expect($items.eq(0)).have.text("Details");
                 expect($items.eq(0)).be.enabled;
-<<<<<<< HEAD
                 expect($items.eq(1)).have.text("Delete instance");
-=======
-                expect($items.eq(1)).have.text("Delete");
->>>>>>> 8475636 (Fix review comments)
                 expect($items.eq(0)).be.enabled;
               });
             });
@@ -385,7 +272,6 @@ describe("Instances Test", () => {
             .should("have.text", "3543edaa-1851-4ad7-96be-ebde7d20d717")
             .should("be.visible");
           cy.ouiaId("instance-details-endpoint")
-<<<<<<< HEAD
             .find("span")
             .should(
               "have.text",
@@ -395,14 +281,6 @@ describe("Instances Test", () => {
           cy.ouiaId("instance-details-owner")
             .should("have.text", "bebianco@redhat.com")
             .should("be.visible");
-=======
-            .find("input")
-            .should(
-              "have.value",
-              "https://3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events"
-            )
-            .should("be.visible");
->>>>>>> 8475636 (Fix review comments)
           cy.ouiaId("instance-details-submitted-date")
             .should("have.text", formatDate("2022-02-24T13:34:00Z"))
             .should("be.visible");
@@ -427,38 +305,17 @@ describe("Instances Test", () => {
           .ouiaId("Processor three", "PF4/TableRow")
           .find("td")
           .then(($cells) => {
-<<<<<<< HEAD
             expect($cells).have.length(5);
             expect($cells.eq(0)).have.text("Processor three");
             expect($cells.eq(1)).have.text("Source");
             expect($cells.eq(3)).have.text("accepted");
             cy.wrap($cells.eq(4)).ouiaType("PF4/Dropdown").should("be.visible");
-=======
-            expect($cells).have.length(6);
-            expect($cells.eq(0)).have.text("Processor three");
-            expect($cells.eq(1)).have.text(
-              "f8f34af4-caed-11ec-9d64-0242ac120002"
-            );
-            expect($cells.eq(2)).have.text("Source");
-            expect($cells.eq(3)).have.text("accepted");
-            cy.wrap($cells.eq(5)).ouiaType("PF4/Dropdown").should("be.visible");
->>>>>>> 8475636 (Fix review comments)
           });
       });
     });
 
     it("Processor header details are visible", () => {
-<<<<<<< HEAD
       const processorHeaderDetails = ["Name", "Type", "Time created", "Status"];
-=======
-      const processorHeaderDetails = [
-        "Name",
-        "ID",
-        "Type",
-        "Status",
-        "Time created",
-      ];
->>>>>>> 8475636 (Fix review comments)
       cy.ouiaId("Processors list table", "PF4/Table")
         .ouiaId("table-head", "PF4/TableRow")
         .find("th")

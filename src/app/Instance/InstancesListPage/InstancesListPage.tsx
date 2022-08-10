@@ -29,13 +29,18 @@ import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
-import { BridgeResponse, ManagedResourceStatus } from "@openapi/generated";
+import {
+  Action,
+  BridgeResponse,
+  ManagedResourceStatus,
+} from "@openapi/generated";
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
 import { ErrorWithDetail } from "../../../types/Error";
 import { useGetCloudProvidersApi } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersApi";
 import { useGetCloudProvidersRegions } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
+import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -135,12 +140,20 @@ const InstancesListPage = (): JSX.Element => {
     bridge,
   } = useCreateBridgeApi();
 
+  const { getSchema } = useGetSchemaApi();
+
   const handleCreateBridge = useCallback(
-    (name: string, cloudProviderId: string, cloudRegionId: string) => {
+    (
+      name: string,
+      cloudProviderId: string,
+      cloudRegionId: string,
+      errorHandlerAction?: Action
+    ) => {
       createBridge({
         name,
         cloud_provider: cloudProviderId,
         region: cloudRegionId,
+        error_handler: errorHandlerAction,
       });
     },
     [createBridge]
@@ -226,6 +239,7 @@ const InstancesListPage = (): JSX.Element => {
         createBridgeError={createBridgeError}
         getCloudProviders={getCloudProviders}
         getCloudRegions={getCloudProviderRegions}
+        getSchema={getSchema}
       />
     </>
   );

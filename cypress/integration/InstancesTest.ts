@@ -1,8 +1,10 @@
 import { format } from "date-fns";
-import { createInstance } from "./Util";
-import { deleteInstance } from "./Util";
-import { waitTillInstanceIsReady } from "./Util";
-import { deletedInstanceNotExist } from "./Util";
+import {
+  createInstance,
+  deleteInstance,
+  waitTillInstanceIsReady,
+  deletedInstanceNotExist,
+} from "./Util";
 
 const formatDate = (dateStr: string): string =>
   format(new Date(dateStr), "PPPP p");
@@ -88,6 +90,10 @@ describe("Instances Test", () => {
 
         // Go to previous page
         cy.get("[aria-label='Go to previous page']").first().click();
+        cy.get("[aria-label='Go to first page']").should("be.disabled");
+        cy.get("[aria-label='Go to previous page']").should("be.disabled");
+        cy.get("[aria-label='Go to last page']").should("not.be.disabled");
+        cy.get("[aria-label='Go to next page']").should("not.be.disabled");
       });
 
       it("Change page size", () => {
@@ -114,8 +120,8 @@ describe("Instances Test", () => {
             let perPageSize = parseInt(size.slice(-2));
             cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
               (count) => {
-                let pageSize = parseInt(count.text());
-                cy.wrap(perPageSize).should("be.lte", pageSize);
+                let totalInstanceCount = parseInt(count.text());
+                cy.wrap(perPageSize).should("be.lte", totalInstanceCount);
               }
             );
           }

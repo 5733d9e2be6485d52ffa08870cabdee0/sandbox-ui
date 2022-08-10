@@ -4,6 +4,7 @@ import { rest } from "msw";
 import { factory, oneOf, primaryKey } from "@mswjs/data";
 import {
   BridgeRequest,
+  BridgeResponse,
   ProcessorRequest,
   ProcessorResponse,
   ProcessorType,
@@ -37,6 +38,10 @@ const db = factory({
     published_at: String,
     status: String,
     endpoint: String,
+    error_handler: {
+      type: String,
+      parameters: String,
+    },
   },
   processor: {
     id: primaryKey(String),
@@ -110,13 +115,15 @@ export const handlers = [
     const page = parseInt(req.url.searchParams.get("page") ?? "0");
     const size = parseInt(req.url.searchParams.get("size") ?? "10");
 
-    const items = db.bridge.findMany({
-      take: size,
-      skip: page * size,
-      orderBy: {
-        submitted_at: "desc",
-      },
-    });
+    const items = db.bridge
+      .findMany({
+        take: size,
+        skip: page * size,
+        orderBy: {
+          submitted_at: "desc",
+        },
+      })
+      .map((item) => prepareBridge(item as unknown as Record<string, unknown>));
 
     return res(
       ctx.status(200),
@@ -143,7 +150,11 @@ export const handlers = [
     });
 
     if (bridge) {
-      return res(ctx.status(200), ctx.delay(apiDelay), ctx.json(bridge));
+      return res(
+        ctx.status(200),
+        ctx.delay(apiDelay),
+        ctx.json(prepareBridge(bridge as unknown as Record<string, unknown>))
+      );
     }
     return res(
       ctx.status(404),
@@ -163,7 +174,7 @@ export const handlers = [
   }),
   // create a bridge
   rest.post(`${apiUrl}/bridges`, (req, res, ctx) => {
-    const { name } = req.body as BridgeRequest;
+    const { name, error_handler: errorHandler } = req.body as BridgeRequest;
 
     const existingBridge = db.bridge.findFirst({
       where: {
@@ -210,6 +221,7 @@ export const handlers = [
       name,
       href: `/api/smartevents_mgmt/v1/bridges/${id}`,
       submitted_at: new Date().toISOString(),
+      error_handler: convertParametersToString(errorHandler),
       status: "accepted",
     };
 
@@ -997,6 +1009,35 @@ const resourceStatusFlow = (
   }
 };
 
+interface ActionSourceType {
+  type: string;
+  parameters: string;
+}
+
+/**
+ * Prepare bridge data to be returned by APIs
+ *
+ * @param data Bridge data to be processed
+ * */
+const prepareBridge = (data: Record<string, unknown>): BridgeResponse => {
+  let bridge = cloneDeep(data);
+
+  const errorHandler = bridge.error_handler as ActionSourceType;
+
+  if (errorHandler && errorHandler.type.length) {
+    const parsedParameters = JSON.parse(errorHandler.parameters) as {
+      [key: string]: unknown;
+    };
+
+    (bridge.error_handler as typeof parsedParameters).parameters =
+      parsedParameters;
+  } else {
+    bridge = omit(bridge, "error_handler");
+  }
+
+  return bridge as unknown as BridgeResponse;
+};
+
 /**
  * Prepare processor data to be returned by APIs
  *
@@ -1030,12 +1071,7 @@ const prepareProcessor = (
         ? ProcessorSchemaType.SOURCE
         : ProcessorSchemaType.ACTION;
     const parsedParameters = JSON.parse(
-      (
-        processor[configSection] as {
-          type: string;
-          parameters: string;
-        }
-      ).parameters
+      (processor[configSection] as ActionSourceType).parameters
     ) as { [key: string]: unknown };
     if (processor.type === ProcessorType.Source) {
       (processor.source as typeof parsedParameters).parameters =

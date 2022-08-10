@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -95,10 +96,17 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   const [errorHandlingSchemaLoading, setErrorHandlingSchemaLoading] =
     useState<boolean>(false);
   const [errorHandlingParameters, setErrorHandlingParameters] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const FORM_ID = "create-instance-form";
+
+  const validateParameters = useRef<(() => boolean) | undefined>();
+
+  const registerValidateParameters = (callback: () => boolean): void => {
+    validateParameters.current = callback;
+  };
 
   const validate = useCallback(() => {
     if (name.trim() === "") {
@@ -111,11 +119,23 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
     }
     setError(null);
     setGenericError(null);
-    return true;
+    return validateParameters.current?.() ?? true;
   }, [name, t, existingInstanceName]);
+
+  useEffect(() => {
+    if (isSubmitted) {
+      document.querySelector(".pf-m-error")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+      setIsSubmitted(false);
+    }
+  }, [isSubmitted]);
 
   const onSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
+      setIsSubmitted(true);
       event.preventDefault();
       if (validate()) {
         const newName = name.trim();
@@ -193,6 +213,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       setError(null);
       setGenericError(null);
       setCloudProviderUnavailable(false);
+      setErrorHandlingSchemaId(null);
+      setErrorHandlingParameters({});
 
       retrieveCloudProviders();
     } else {
@@ -371,7 +393,9 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
             <ErrorHandlingSelection
               defaultMethod={ERROR_HANDLING_METHODS.default.value}
               errorHandlingMethods={ERROR_HANDLING_METHODS}
+              isDisabled={formIsDisabled}
               onMethodSelection={(errorMethod: string): void => {
+                setErrorHandlingParameters({});
                 if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
                   setErrorHandlingSchemaId(null);
                 } else {
@@ -385,7 +409,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
               configuration={errorHandlingParameters}
               schema={errorHandlingSchema}
               onChange={setErrorHandlingParameters}
-              registerValidation={(): void => {}}
+              registerValidation={registerValidateParameters}
+              readOnly={formIsDisabled}
             />
           )}
         </FormSection>

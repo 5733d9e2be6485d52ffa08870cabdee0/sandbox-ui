@@ -11,12 +11,14 @@ import { ErrorHandlingMethods } from "../../../types/ErrorHandlingMethods";
 interface ErrorHandlingSelectionProps {
   defaultMethod: string;
   errorHandlingMethods: ErrorHandlingMethods;
+  isDisabled: boolean;
   onMethodSelection: (errorMethod: string) => void;
 }
 
 export const ErrorHandlingSelection = ({
   defaultMethod,
   errorHandlingMethods,
+  isDisabled,
   onMethodSelection,
 }: ErrorHandlingSelectionProps): JSX.Element => {
   const { t } = useTranslation("openbridgeTempDictionary");
@@ -46,6 +48,7 @@ export const ErrorHandlingSelection = ({
   return (
     <Select
       id="method-selector"
+      isDisabled={isDisabled}
       ouiaId="method-selector"
       aria-describedby={t("common.errorHandlingMethod")}
       variant={SelectVariant.single}

@@ -1,9 +1,0 @@
-name: "Smart Events :: SDK :: Compatibility check :: (MGDOBR-868)"
-on: [pull_request, push]
-jobs:
-  run-all-checks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Check latest SDK release"
-        run: |
-          echo "Check https://github.com/redhat-developer/app-services-sdk-js/releases for the latest release."

@@ -1,4 +1,10 @@
 import { format } from "date-fns";
+import {
+  createInstance,
+  deleteInstance,
+  waitTillInstanceIsReady,
+  deletedInstanceNotExist,
+} from "./Util";
 
 const formatDate = (dateStr: string): string =>
   format(new Date(dateStr), "PPPP p");
@@ -14,21 +20,7 @@ describe("Instances Test", () => {
 
     it("Submit", () => {
       const newInstanceName: string = "Some new instance";
-      cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
-      cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
-        cy.wrap($modal)
-          .should("be.visible")
-          .within(() => {
-            cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
-            cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
-              "have.text",
-              "Info alert:Your Smart Events instance will be ready for use shortly after creation."
-            );
-            cy.ouiaId("submit", "PF4/Button").click();
-          });
-        cy.wrap($modal, { timeout: 20000 }).should("not.exist");
-      });
-
+      createInstance(newInstanceName);
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(newInstanceName, "PF4/TableRow")
         .should("be.visible")
@@ -78,6 +70,99 @@ describe("Instances Test", () => {
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(newInstanceName, "PF4/TableRow")
         .should("not.exist");
+    });
+
+    describe("Instance List pagination test", () => {
+      it("Select other page", () => {
+        cy.get("[aria-label='Go to first page']").should("be.disabled");
+        cy.get("[aria-label='Go to previous page']").should("be.disabled");
+        cy.get("[aria-label='Go to last page']").should("not.be.disabled");
+        cy.get("[aria-label='Go to next page']").should("not.be.disabled");
+
+        // Go to next page
+        cy.get("[aria-label='Go to next page']").first().click();
+        cy.get("[aria-label='Go to first page']").should("not.be.disabled");
+        cy.get("[aria-label='Go to previous page']").should("not.be.disabled");
+
+        // as currently count of instances are covered in 2 pages
+        cy.get("[aria-label='Go to last page']").should("be.disabled");
+        cy.get("[aria-label='Go to next page']").should("be.disabled");
+
+        // Go to previous page
+        cy.get("[aria-label='Go to previous page']").first().click();
+        cy.get("[aria-label='Go to first page']").should("be.disabled");
+        cy.get("[aria-label='Go to previous page']").should("be.disabled");
+        cy.get("[aria-label='Go to last page']").should("not.be.disabled");
+        cy.get("[aria-label='Go to next page']").should("not.be.disabled");
+      });
+
+      it("Change page size", () => {
+        cy.ouiaType("PF4/DropdownToggle").should("be.visible");
+        cy.ouiaId(
+          "OUIA-Generated-DropdownToggle-1",
+          "PF4/DropdownToggle"
+        ).click();
+        cy.get(".pf-c-options-menu__menu")
+          .find("li")
+          .then(($cells) => {
+            expect($cells).have.length(4);
+            expect($cells.eq(0)).have.text("10 per page");
+            expect($cells.eq(1)).have.text("20 per page");
+            expect($cells.eq(2)).have.text("50 per page");
+            expect($cells.eq(3)).have.text("100 per page");
+          });
+
+        // page size is changed
+        cy.contains("20 per page").click();
+        cy.get(".pf-c-pagination__total-items >b:nth-of-type(1)").then(
+          (count) => {
+            let size = count.text();
+            let perPageSize = parseInt(size.slice(-2));
+            cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
+              (count) => {
+                let totalInstanceCount = parseInt(count.text());
+                cy.wrap(perPageSize).should("be.lte", totalInstanceCount);
+              }
+            );
+          }
+        );
+      });
+
+      it("Page size after creating a new Instance ", () => {
+        cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
+          (count) => {
+            let initialInstanceCount = parseInt(count.text());
+            createInstance("newInstance");
+            waitTillInstanceIsReady("newInstance");
+            cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
+              (count) => {
+                let instanceCountAfterCreate = parseInt(count.text());
+                expect(instanceCountAfterCreate).to.be.equal(
+                  initialInstanceCount + 1
+                );
+              }
+            );
+          }
+        );
+      });
+
+      it("Page size after deleting an Instance ", () => {
+        cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
+          (count) => {
+            let initialInstanceCount = parseInt(count.text());
+            deleteInstance("Instance ten");
+            deletedInstanceNotExist("Instance ten");
+            cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
+              (count) => {
+                let instanceCountAfterDelete = parseInt(count.text());
+                expect(instanceCountAfterDelete).to.be.equal(
+                  initialInstanceCount - 1
+                );
+              }
+            );
+          }
+        );
+      });
     });
   });
 

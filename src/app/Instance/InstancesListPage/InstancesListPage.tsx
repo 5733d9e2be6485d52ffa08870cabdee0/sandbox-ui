@@ -147,13 +147,13 @@ const InstancesListPage = (): JSX.Element => {
       name: string,
       cloudProviderId: string,
       cloudRegionId: string,
-      errorHandlerAction?: Action
+      errorHandlingConfiguration?: Action
     ) => {
       createBridge({
         name,
         cloud_provider: cloudProviderId,
         region: cloudRegionId,
-        error_handler: errorHandlerAction,
+        error_handler: errorHandlingConfiguration,
       });
     },
     [createBridge]

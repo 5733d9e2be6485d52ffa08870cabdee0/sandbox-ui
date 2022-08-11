@@ -1024,7 +1024,7 @@ const prepareBridge = (data: Record<string, unknown>): BridgeResponse => {
 
   const errorHandler = bridge.error_handler as ActionSourceType;
 
-  if (errorHandler && errorHandler.type.length) {
+  if (errorHandler && errorHandler.type && errorHandler.type.length) {
     const parsedParameters = JSON.parse(errorHandler.parameters) as {
       [key: string]: unknown;
     };

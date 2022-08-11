@@ -49,7 +49,7 @@ export interface CreateInstanceProps {
     name: string,
     cloudProviderId: string,
     cloudRegionId: string,
-    errorHandlerAction?: Action
+    errorHandlingConfiguration?: Action
   ) => void;
   /** API error related to bridge creation */
   createBridgeError: unknown;
@@ -124,11 +124,13 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
 
   useEffect(() => {
     if (isSubmitted) {
-      document.querySelector(".pf-m-error")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-        inline: "nearest",
-      });
+      document
+        .querySelector(".pf-m-error")
+        ?.previousElementSibling?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
       setIsSubmitted(false);
     }
   }, [isSubmitted]);
@@ -139,14 +141,19 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       event.preventDefault();
       if (validate()) {
         const newName = name.trim();
-        let errorHandlerAction;
+        let errorHandlingConfiguration;
         if (errorHandlingSchemaId) {
-          errorHandlerAction = {
+          errorHandlingConfiguration = {
             type: errorHandlingSchemaId,
             parameters: errorHandlingParameters,
           };
         }
-        onCreate(newName, cloudProviderId, cloudRegionId, errorHandlerAction);
+        onCreate(
+          newName,
+          cloudProviderId,
+          cloudRegionId,
+          errorHandlingConfiguration
+        );
         setNewBridgeName(newName);
       }
     },
@@ -243,7 +250,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   }, [cloudRegions, cloudProviders]);
 
   useEffect(() => {
-    setErrorHandlingSchema(undefined);
+    setErrorHandlingSchema({});
     if (errorHandlingSchemaId) {
       setErrorHandlingSchemaLoading(true);
       getSchema(errorHandlingSchemaId, ProcessorSchemaType.ACTION)

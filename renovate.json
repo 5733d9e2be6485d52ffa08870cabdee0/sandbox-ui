@@ -8,12 +8,13 @@
       "matchUpdateTypes": ["minor", "patch"],
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
-      "automerge": true,
+      "dependencyDashboardApproval": true,
       "labels": ["dependencies"]
     },
     {
       "matchPackagePatterns": ["*"],
       "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true,
       "labels": ["dependencies", "breaking"]
     }
   ]

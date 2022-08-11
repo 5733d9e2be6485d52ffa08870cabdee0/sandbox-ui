@@ -21,6 +21,7 @@ const setupCreateInstance = (
         resolve([cloudRegion]);
       }),
     createBridgeError,
+    getSchema = props.getSchema ?? jest.fn(),
   } = props;
 
   const comp = customRender(
@@ -32,6 +33,7 @@ const setupCreateInstance = (
       createBridgeError={createBridgeError}
       getCloudProviders={getCloudProviders}
       getCloudRegions={getCloudRegions}
+      getSchema={getSchema}
     />
   );
   return { comp };
@@ -49,6 +51,8 @@ describe("CreateInstance component", () => {
   });
 
   it("should ask for instance name before creating an instance", async () => {
+    const scrollIntoView = jest.fn();
+    window.HTMLElement.prototype.scrollIntoView = scrollIntoView;
     const onCreate = jest.fn();
     const { comp } = setupCreateInstance({ onCreate });
     await waitForI18n(comp);
@@ -62,6 +66,54 @@ describe("CreateInstance component", () => {
 
     expect(comp.getByText("Required")).toBeInTheDocument();
     expect(onCreate).toHaveBeenCalledTimes(0);
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+  });
+
+  it("should display error handling section", async () => {
+    const { comp } = setupCreateInstance({});
+    await waitForI18n(comp);
+
+    expect(comp.getByText("Error handling")).toBeInTheDocument();
+
+    expect(
+      comp.baseElement.querySelector(
+        "[data-ouia-component-id='method-selector']"
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("should have IGNORE as default method for error handling", async () => {
+    const { comp } = setupCreateInstance({});
+    await waitForI18n(comp);
+
+    expect(
+      comp.baseElement.querySelector(
+        "[data-ouia-component-id='method-selector'] .pf-c-select__toggle-text"
+      )
+    ).toHaveTextContent("Ignore");
+  });
+
+  it("should retrieve the schema of the selected handling strategy, when changing the method", async () => {
+    const getSchema = jest.fn(
+      (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve({});
+        })
+    );
+    const { comp } = setupCreateInstance({ getSchema });
+    await waitForI18n(comp);
+
+    const selector = comp.baseElement.querySelector(
+      "[data-ouia-component-id='method-selector']"
+    );
+    fireEvent.click(
+      selector?.querySelector(".pf-c-select__toggle-arrow") as Node
+    );
+    await waitFor(() => comp.getByText("Webhook"));
+    fireEvent.click(comp.getByText("Webhook"));
+
+    expect(getSchema).toHaveBeenCalledTimes(1);
+    expect(getSchema).toHaveBeenCalledWith("webhook_sink_0.1", "action");
   });
 
   it("should display cloud provider and region options", async () => {
@@ -104,7 +156,8 @@ describe("CreateInstance component", () => {
     expect(onCreate).toHaveBeenCalledWith(
       instanceName,
       cloudProvider.id,
-      cloudRegion.name
+      cloudRegion.name,
+      undefined
     );
   });
 

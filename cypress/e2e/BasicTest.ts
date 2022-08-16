@@ -1,3 +1,5 @@
+import { safeLogin } from "../integration/Util";
+
 describe("Basic Elements", () => {
   const bridgeName = uniqueName("myBridge");
   const restBaseUrl = Cypress.env("SANDBOX_DEV_REST_URL");
@@ -85,7 +87,7 @@ describe("Basic Elements", () => {
 
   beforeEach(() => {
     cy.visit("/");
-    cy.login();
+    safeLogin();
   });
 
   it("The Create SE Instance button is visible", () => {

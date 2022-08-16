@@ -57,3 +57,35 @@ export function deletedInstanceNotExist(instanceName: string) {
     );
   });
 }
+
+/**
+ * Assert if the test environment is set by the expected value.
+ * @param type a name of the desired test environment
+ * @returns
+ */
+export function isEnvironmentType(type: string) {
+  return Cypress.env("TEST_TYPE") === type;
+}
+
+/**
+ * Handle a login procedure for different environments.
+ */
+export function safeLogin() {
+  if (isEnvironmentType(EnvType.Mocked)) {
+    cy.log("Skip login - mocked env");
+  } else if (isEnvironmentType(EnvType.Dev)) {
+    cy.login();
+  } else {
+    throw new Error(
+      "The environment type is not recognized. Values of CYPRESS_TEST_TYPE are defined by the 'EnvType' enum. "
+    );
+  }
+}
+
+/**
+ * This enum represents values of the CYPRESS_TEST_TYPE env variable.
+ */
+export enum EnvType {
+  Mocked = "mocked",
+  Dev = "dev",
+}

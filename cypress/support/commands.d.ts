@@ -38,5 +38,10 @@ declare namespace Cypress {
       value?: string,
       opts?: Record<string, any>
     ): Chainable<JQuery<Element>>;
+
+    /**
+     *
+     */
+    login(): Chainable<JQuery<Element>>;
   }
 }

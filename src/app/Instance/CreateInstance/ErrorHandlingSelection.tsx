@@ -47,12 +47,12 @@ export const ErrorHandlingSelection = ({
 
   return (
     <Select
-      id="method-selector"
+      id="error-handling-method-selector"
       isDisabled={isDisabled}
-      ouiaId="method-selector"
+      ouiaId="error-handling-method-selector"
       aria-describedby={t("common.errorHandlingMethod")}
       variant={SelectVariant.single}
-      onToggle={(): void => setIsSelectorOpen((prevState) => !prevState)}
+      onToggle={(): void => setIsSelectorOpen((isOpen) => !isOpen)}
       onSelect={(_e, selection): void => {
         const handlingMethod = selection as string;
         setHandlingMethod(handlingMethod);

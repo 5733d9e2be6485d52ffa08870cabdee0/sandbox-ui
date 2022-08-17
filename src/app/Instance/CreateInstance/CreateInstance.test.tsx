@@ -77,7 +77,7 @@ describe("CreateInstance component", () => {
 
     expect(
       comp.baseElement.querySelector(
-        "[data-ouia-component-id='method-selector']"
+        "[data-ouia-component-id='error-handling-method-selector']"
       )
     ).toBeInTheDocument();
   });
@@ -88,7 +88,7 @@ describe("CreateInstance component", () => {
 
     expect(
       comp.baseElement.querySelector(
-        "[data-ouia-component-id='method-selector'] .pf-c-select__toggle-text"
+        "[data-ouia-component-id='error-handling-method-selector'] .pf-c-select__toggle-text"
       )
     ).toHaveTextContent("Ignore");
   });
@@ -104,7 +104,7 @@ describe("CreateInstance component", () => {
     await waitForI18n(comp);
 
     const selector = comp.baseElement.querySelector(
-      "[data-ouia-component-id='method-selector']"
+      "[data-ouia-component-id='error-handling-method-selector']"
     );
     fireEvent.click(
       selector?.querySelector(".pf-c-select__toggle-arrow") as Node

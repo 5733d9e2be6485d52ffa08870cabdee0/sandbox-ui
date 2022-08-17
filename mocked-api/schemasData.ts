@@ -244,13 +244,13 @@ export const schemasData: { [key: string]: object } = {
       slack_icon_url: {
         title: "Icon URL",
         description:
-          "The avatar that the component will use when sending message to a channel or user.",
+          "The avatar to use when sending a message to a channel or user.",
         type: "string",
       },
       slack_username: {
         title: "Username",
         description:
-          "This is the username that the bot will have when sending messages to a channel or user.",
+          "The username for the bot when it sends messages to a channel or user.",
         type: "string",
       },
     },
@@ -313,7 +313,7 @@ export const schemasData: { [key: string]: object } = {
     properties: {
       aws_function: {
         title: "Function Name",
-        description: "The Lambda Function name",
+        description: "The Lambda Function name.",
         type: "string",
       },
       aws_access_key: {
@@ -322,7 +322,7 @@ export const schemasData: { [key: string]: object } = {
         oneOf: [
           {
             title: "Access Key",
-            description: "The access key obtained from AWS",
+            description: "The access key obtained from AWS.",
             type: "string",
             format: "password",
           },
@@ -339,7 +339,7 @@ export const schemasData: { [key: string]: object } = {
         oneOf: [
           {
             title: "Secret Key",
-            description: "The secret key obtained from AWS",
+            description: "The secret key obtained from AWS.",
             type: "string",
             format: "password",
           },
@@ -352,7 +352,7 @@ export const schemasData: { [key: string]: object } = {
       },
       aws_region: {
         title: "AWS Region",
-        description: "The AWS region to connect to",
+        description: "The AWS region to access.",
         type: "string",
         example: "eu-west-1",
         enum: [
@@ -404,7 +404,7 @@ export const schemasData: { [key: string]: object } = {
     properties: {
       gcp_project_id: {
         title: "Project Id",
-        description: "The Google Cloud PubSub Project Id",
+        description: "The Google Cloud Pub/Sub Project ID.",
         type: "string",
       },
       gcp_destination_name: {
@@ -415,11 +415,21 @@ export const schemasData: { [key: string]: object } = {
       },
       gcp_service_account_key: {
         title: "Service Account Key",
-        description:
-          "The Service account key that can be used as credentials for the PubSub publisher/subscriber in base64 encoding.",
-        type: "string",
         "x-group": "credentials",
-        format: "base64",
+        oneOf: [
+          {
+            title: "Service Account Key",
+            description:
+              "The service account key to use as credentials for the Pub/Sub publisher/subscriber. You must encode this value in base64.",
+            type: "string",
+            format: "password",
+          },
+          {
+            description: "An opaque reference to the aws_access_key",
+            type: "object",
+            additionalProperties: false,
+          },
+        ],
       },
     },
   },
@@ -449,12 +459,12 @@ export const schemasData: { [key: string]: object } = {
     properties: {
       aws_bucket_name_or_arn: {
         title: "Bucket Name",
-        description: "The S3 Bucket name or ARN",
+        description: "The S3 Bucket name or Amazon Resource Name (ARN).",
         type: "string",
       },
       aws_delete_after_read: {
         title: "Auto-delete Objects",
-        description: "Delete objects after consuming them",
+        description: "Specifies to delete objects after consuming them.",
         type: "boolean",
         default: true,
       },
@@ -464,7 +474,7 @@ export const schemasData: { [key: string]: object } = {
         oneOf: [
           {
             title: "Access Key",
-            description: "The access key obtained from AWS",
+            description: "The access key obtained from AWS.",
             type: "string",
             format: "password",
           },
@@ -481,7 +491,7 @@ export const schemasData: { [key: string]: object } = {
         oneOf: [
           {
             title: "Secret Key",
-            description: "The secret key obtained from AWS",
+            description: "The secret key obtained from AWS.",
             type: "string",
             format: "password",
           },
@@ -494,7 +504,7 @@ export const schemasData: { [key: string]: object } = {
       },
       aws_region: {
         title: "AWS Region",
-        description: "The AWS region to connect to",
+        description: "The AWS region to access.",
         type: "string",
         example: "eu-west-1",
         enum: [
@@ -535,46 +545,47 @@ export const schemasData: { [key: string]: object } = {
       },
       aws_auto_create_bucket: {
         title: "Autocreate Bucket",
-        description: "Setting the autocreation of the S3 bucket bucketName.",
+        description: "Specifies to automatically create the S3 bucket.",
         type: "boolean",
         default: false,
       },
       aws_include_body: {
         title: "Include Body",
         description:
-          "If it is true, the exchange will be consumed and put into the body and closed. If false the S3Object stream will be put raw into the body and the headers will be set with the S3 object metadata.",
+          "If true, the exchange is consumed and put into the body and closed. If false, the S3Object stream is put raw into the body and the headers are set with the S3 object metadata.",
         type: "boolean",
         default: true,
       },
       aws_prefix: {
         title: "Prefix",
-        description: "The AWS S3 bucket prefix to consider while searching",
+        description: "The AWS S3 bucket prefix to consider while searching.",
         type: "string",
         example: "folder/",
       },
       aws_ignore_body: {
         title: "Ignore Body",
         description:
-          "If it is true, the S3 Object Body will be ignored completely, if it is set to false the S3 Object will be put in the body. Setting this to true, will override any behavior defined by includeBody option.",
+          "If true, the S3 Object body is ignored. Setting this to true overrides any behavior defined by the `includeBody` option. If false, the S3 object is put in the body.",
         type: "boolean",
         default: false,
       },
       aws_uri_endpoint_override: {
         title: "Overwrite Endpoint URI",
         description:
-          "Set the overriding endpoint URI. This option needs to be used in combination with overrideEndpoint option.",
+          "The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.",
         type: "string",
       },
       aws_override_endpoint: {
         title: "Endpoint Overwrite",
         description:
-          "Set the need for overiding the endpoint URI. This option needs to be used in combination with uriEndpointOverride setting.",
+          "Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.",
         type: "boolean",
         default: false,
       },
       aws_delay: {
         title: "Delay",
-        description: "Milliseconds before the next poll of the selected bucket",
+        description:
+          "The number of milliseconds before the next poll of the selected bucket.",
         type: "integer",
         default: 500,
       },
@@ -594,8 +605,6 @@ export const schemasData: { [key: string]: object } = {
         title: "Queue Name",
         description: "The SQS Queue Name or ARN",
         type: "string",
-        pattern:
-          "^https://sqs\\.([a-z]+-[a-z]+-[0-9])\\.amazonaws\\.com/[0-9]{12}/([^/]+)$",
       },
       aws_delete_after_read: {
         title: "Auto-delete Messages",
@@ -609,7 +618,7 @@ export const schemasData: { [key: string]: object } = {
         oneOf: [
           {
             title: "Access Key",
-            description: "The access key obtained from AWS",
+            description: "The access key obtained from AWS.",
             type: "string",
             format: "password",
           },
@@ -626,7 +635,7 @@ export const schemasData: { [key: string]: object } = {
         oneOf: [
           {
             title: "Secret Key",
-            description: "The secret key obtained from AWS",
+            description: "The secret key obtained from AWS.",
             type: "string",
             format: "password",
           },
@@ -639,7 +648,7 @@ export const schemasData: { [key: string]: object } = {
       },
       aws_region: {
         title: "AWS Region",
-        description: "The AWS region to connect to",
+        description: "The AWS region to access.",
         type: "string",
         example: "eu-west-1",
         enum: [
@@ -694,7 +703,7 @@ export const schemasData: { [key: string]: object } = {
         title: "Protocol",
         description: "The underlying protocol used to communicate with SQS",
         type: "string",
-        enum: ["http", "https"],
+        example: "http or https",
         default: "https",
       },
       aws_queue_u_r_l: {
@@ -705,19 +714,20 @@ export const schemasData: { [key: string]: object } = {
       aws_uri_endpoint_override: {
         title: "Overwrite Endpoint URI",
         description:
-          "Set the overriding endpoint URI. This option needs to be used in combination with overrideEndpoint option.",
+          "The overriding endpoint URI. To use this option, you must also select the `overrideEndpoint` option.",
         type: "string",
       },
       aws_override_endpoint: {
         title: "Endpoint Overwrite",
         description:
-          "Set the need for overiding the endpoint URI. This option needs to be used in combination with uriEndpointOverride setting.",
+          "Select this option to override the endpoint URI. To use this option, you must also provide a URI for the `uriEndpointOverride` option.",
         type: "boolean",
         default: false,
       },
       aws_delay: {
         title: "Delay",
-        description: "Milliseconds before the next poll of the selected stream",
+        description:
+          "The number of milliseconds before the next poll of the selected stream",
         type: "integer",
         default: 500,
       },
@@ -730,7 +740,7 @@ export const schemasData: { [key: string]: object } = {
     properties: {
       slack_channel: {
         title: "Channel",
-        description: "The Slack channel to receive messages from",
+        description: "The Slack channel to receive messages from.",
         type: "string",
         example: "#myroom",
       },
@@ -741,7 +751,7 @@ export const schemasData: { [key: string]: object } = {
           {
             title: "Token",
             description:
-              "The token to access Slack. A Slack app is needed. This app needs to have channels:history and channels:read permissions. The Bot User OAuth Access Token is the kind of token needed.",
+              "The Bot User OAuth Access Token to access Slack. A Slack app that has the following permissions is required: `channels:history`, `groups:history`, `im:history`, `mpim:history`, `channels:read`, `groups:read`, `im:read`, and `mpim:read`.",
             type: "string",
             format: "password",
           },
@@ -754,7 +764,7 @@ export const schemasData: { [key: string]: object } = {
       },
       slack_delay: {
         title: "Delay",
-        description: "The delay between polls",
+        description: "The delay between polls.",
         type: "string",
         example: "1s",
       },
@@ -776,40 +786,49 @@ export const schemasData: { [key: string]: object } = {
     properties: {
       gcp_project_id: {
         title: "Project Id",
-        description: "The Google Cloud PubSub Project Id",
+        description: "The Google Cloud Pub/Sub Project ID.",
         type: "string",
       },
       gcp_subscription_name: {
         title: "Subscription Name",
-        description: "The Subscription Name",
+        description: "The subscription name.",
         type: "string",
       },
       gcp_service_account_key: {
         title: "Service Account Key",
-        description:
-          "The Service account key that can be used as credentials for the PubSub publisher/subscriber",
-        type: "string",
         "x-group": "credentials",
-        format: "base64",
+        oneOf: [
+          {
+            title: "Service Account Key",
+            description:
+              "The service account key to use as credentials for the Pub/Sub publisher/subscriber. You must encode this value in base64.",
+            type: "string",
+            format: "password",
+          },
+          {
+            description: "An opaque reference to the aws_access_key",
+            type: "object",
+            additionalProperties: false,
+          },
+        ],
       },
       gcp_synchronous_pull: {
         title: "Synchronous Pull",
-        description:
-          "If Synchronously pull batches of messages is enabled or not",
+        description: "Specifies to synchronously pull batches of messages.",
         type: "boolean",
         default: false,
       },
       gcp_max_messages_per_poll: {
         title: "Max Messages Per Poll",
         description:
-          "The max number of messages to receive from the server in a single API call",
+          "The maximum number of messages to receive from the server in a single API call.",
         type: "integer",
         default: 1,
       },
       gcp_concurrent_consumers: {
         title: "Concurrent Consumers",
         description:
-          "The number of parallel streams consuming from the subscription",
+          "The number of parallel streams to consume from the subscription.",
         type: "integer",
         default: 1,
       },

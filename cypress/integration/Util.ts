@@ -63,7 +63,7 @@ export function deletedInstanceNotExist(instanceName: string) {
  * @param type a name of the desired test environment
  * @returns
  */
-export function isEnvironmentType(type: string) {
+export function isEnvironmentType(type: EnvType) {
   return Cypress.env("TEST_TYPE") === type;
 }
 

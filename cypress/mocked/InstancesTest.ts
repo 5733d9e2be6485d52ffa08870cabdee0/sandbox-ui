@@ -4,7 +4,7 @@ import {
   deleteInstance,
   waitTillInstanceIsReady,
   deletedInstanceNotExist,
-} from "./Util";
+} from "../utils/Util";
 
 const formatDate = (dateStr: string): string =>
   format(new Date(dateStr), "PPPP p");

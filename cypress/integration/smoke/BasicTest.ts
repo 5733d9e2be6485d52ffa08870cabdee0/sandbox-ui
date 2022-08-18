@@ -1,5 +1,5 @@
 import { onlyOn } from "@cypress/skip-test";
-import { EnvType, isEnvironmentType, safeLogin } from "../Util";
+import { EnvType, isEnvironmentType, safeLogin } from "../../utils/Util";
 
 describe("Basic Elements", () => {
   beforeEach(() => {
@@ -20,6 +20,7 @@ describe("Basic Elements", () => {
    * This test is relevant only for developing/demoing purposes.
    */
   it("The navigation panel is visible", () => {
+    cy.wait(4000); //prevent random failure
     cy.ouiaId("smart-events", "PF4/NavItem").then(($item) => {
       //toggle menu side bar - both directions
       if ($item.is(":visible")) {

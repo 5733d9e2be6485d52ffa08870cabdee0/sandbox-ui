@@ -1,4 +1,4 @@
-import { deleteInstance } from "./Util";
+import { deleteInstance } from "../utils/Util";
 
 describe("Delete Test", () => {
   it("Instance", () => {

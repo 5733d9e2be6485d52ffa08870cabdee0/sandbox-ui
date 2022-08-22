@@ -184,7 +184,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         pageWasLoaded();
       });
 
-      it("The editation is not allowed", () => {
+      it("The editing is allowed, except for the processor name", () => {
         const configOuiaId = [
           "slack_channel",
           "slack_webhook_url",
@@ -193,18 +193,19 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           "slack_username",
         ];
         cy.ouiaId("edit", "PF4/Button").click();
-        cy.ouiaId("action-type", "PF4/FormSelect").should("be.disabled");
+        cy.ouiaId("processor-name", "PF4/TextInput").should("be.disabled");
+        cy.ouiaId("action-type", "PF4/FormSelect").should("be.enabled");
         cy.ouiaId("actions", "form-section").within(() => {
           cy.ouiaType("config-parameter").should(
-            "have.length",
-            configOuiaId.length
+              "have.length",
+              configOuiaId.length
           );
           configOuiaId.forEach((ouiaId) => {
             cy.ouiaId(ouiaId, "config-parameter")
-              .find("input")
-              .scrollIntoView()
-              .should("be.visible")
-              .should("be.disabled");
+                .find("input")
+                .scrollIntoView()
+                .should("be.visible")
+                .should("be.enabled");
           });
         });
       });

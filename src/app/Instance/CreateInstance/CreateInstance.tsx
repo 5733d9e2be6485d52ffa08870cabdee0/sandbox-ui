@@ -29,7 +29,7 @@ import {
   Action,
   CloudProviderResponse,
   CloudRegionResponse,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import { GetCloudProvidersRegion } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
 import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/ErrorHandlingSelection";
 import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";

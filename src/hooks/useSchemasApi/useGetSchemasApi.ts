@@ -4,7 +4,7 @@ import {
   Configuration,
   ProcessorSchemaEntryResponse,
   SchemaCatalogApi,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 
 export function useGetSchemasApi(): {
   schemas?: Array<ProcessorSchemaEntryResponse>;

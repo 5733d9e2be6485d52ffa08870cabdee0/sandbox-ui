@@ -6,7 +6,10 @@ import {
   SinkProcessor,
   SourceProcessor,
 } from "../../../types/Processor";
-import { ManagedResourceStatus, ProcessorType } from "@openapi/generated";
+import {
+  ManagedResourceStatus,
+  ProcessorType,
+} from "@rhoas/smart-events-management-sdk";
 
 describe("ProcessorDetail component", () => {
   it("should display sink processor information", async () => {

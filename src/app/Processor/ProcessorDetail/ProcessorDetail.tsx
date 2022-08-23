@@ -31,7 +31,7 @@ import { getFilterValue } from "@utils/filterUtils";
 import {
   ProcessorSchemaEntryResponse,
   ProcessorType,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import ProcessorDetailConfigParameters from "@app/Processor/ProcessorDetail/ProcessorDetailConfigParameters";
 import axios from "axios";

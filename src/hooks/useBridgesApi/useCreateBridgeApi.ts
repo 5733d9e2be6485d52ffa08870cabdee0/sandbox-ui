@@ -3,7 +3,7 @@ import {
   BridgesApi,
   Configuration,
   BridgeResponse,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import { useState } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 

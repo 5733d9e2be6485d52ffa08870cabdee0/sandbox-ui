@@ -1,4 +1,4 @@
-name: "Smart Events UI :: Quality Checks"
+name: "Smart Events UI :: Mocked :: Quality Checks"
 on: [pull_request, push]
 jobs:
   run-all-checks:

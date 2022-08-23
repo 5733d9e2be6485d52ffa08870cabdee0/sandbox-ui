@@ -30,6 +30,7 @@ import { PlusCircleIcon } from "@patternfly/react-icons";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import {
+  Action,
   BridgeResponse,
   ManagedResourceStatus,
 } from "@rhoas/smart-events-management-sdk";

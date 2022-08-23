@@ -1,16 +1,39 @@
-export function createInstance(newInstanceName: string) {
+export function uniqueName(prefix: string) {
+  if (isEnvironmentType(EnvType.Mocked)) {
+    return prefix;
+  } else if (isEnvironmentType(EnvType.Dev)) {
+    return `testui-${prefix}-${Cypress._.uniqueId(Date.now().toString())}`;
+  } else {
+    throw new Error(
+      "The environment type is not recognized. Values of CYPRESS_TEST_TYPE are defined by the 'EnvType' enum."
+    );
+  }
+}
+
+export function pageWasLoaded() {
+  cy.get("#nav-toggle", { timeout: 30000 }).should("be.visible");
+  cy.ouiaId("loading-table", "PF4/Card").should("not.exist");
+}
+
+export function createInstance(newInstanceName: string, action?: string) {
   cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
   cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
     cy.wrap($modal)
       .should("be.visible")
-      .within(() => {
-        cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
-        cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
-          "have.text",
-          "Info alert:Your Smart Events instance will be ready for use shortly after creation."
-        );
-        cy.ouiaId("submit", "PF4/Button").click();
-      });
+      .ouiaId("cloud-provider", "skeleton")
+      .should("not.exist");
+    cy.wrap($modal).within(() => {
+      cy.ouiaId("cloud-region", "PF4/Select", { timeout: 20000 }).should(
+        "not.have.text",
+        "Select Region"
+      );
+      cy.ouiaId("new-name", "PF4/TextInput").type(newInstanceName);
+      cy.ouiaId("info-instance-available-soon", "PF4/Alert").should(
+        "have.text",
+        "Info alert:Your Smart Events instance will be ready for use shortly after creation."
+      );
+      cy.ouiaId(action ?? "submit", "PF4/Button").click();
+    });
     cy.wrap($modal, { timeout: 20000 }).should("not.exist");
   });
 }

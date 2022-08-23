@@ -1,5 +1,10 @@
 import { onlyOn } from "@cypress/skip-test";
-import { EnvType, isEnvironmentType, safeLogin } from "../../utils/Util";
+import {
+  EnvType,
+  isEnvironmentType,
+  safeLogin,
+  uniqueName,
+} from "../../utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Dev), () => {
   describe("UI react on the REST interactions", () => {
@@ -110,7 +115,3 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
     });
   });
 });
-
-function uniqueName(name: string) {
-  return `testui-${name}-${Cypress._.uniqueId(Date.now().toString())}`;
-}

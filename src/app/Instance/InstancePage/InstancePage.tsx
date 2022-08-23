@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
+  Alert,
   Button,
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
   Drawer,
   DrawerContent,
   Dropdown,
@@ -15,12 +20,15 @@ import {
   PageSectionVariants,
   Split,
   SplitItem,
+  Stack,
+  StackItem,
   Tab,
   TabContent,
   Tabs,
   TabTitleText,
   Text,
   TextContent,
+  TextVariants,
   Title,
 } from "@patternfly/react-core";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
@@ -54,6 +62,10 @@ import {
 import { APIErrorCodes } from "@openapi/generated/errors";
 import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
+import { getErrorHandlingMethodByType } from "../../../types/ErrorHandlingMethods";
+import ProcessorDetailConfigParameters from "@app/Processor/ProcessorDetail/ProcessorDetailConfigParameters";
+import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
+import { ProcessorSchemaType } from "../../../types/Processor";
 
 export interface InstanceRouteParams {
   instanceId: string;
@@ -66,6 +78,7 @@ const InstancePage = (): JSX.Element => {
   const history = useHistory();
 
   const processorsTabRef = React.createRef<HTMLElement>();
+  const errorHandlingTabRef = React.createRef<HTMLElement>();
 
   const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
   const [currentPageSize, setCurrentPageSize] =
@@ -75,6 +88,10 @@ const InstancePage = (): JSX.Element => {
   const [isDropdownActionOpen, setIsDropdownActionOpen] =
     useState<boolean>(false);
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
+
+  const [schema, setSchema] = useState<object>();
+  const [schemaError, setSchemaError] = useState<string | undefined>();
+  const [schemaLoading, setSchemaLoading] = useState(false);
 
   const {
     getBridge,
@@ -93,6 +110,8 @@ const InstancePage = (): JSX.Element => {
     isLoading: areProcessorsLoading,
     error: processorsError,
   } = useGetProcessorsApi();
+
+  const { getSchema } = useGetSchemaApi();
 
   const triggerGetProcessors = useCallback(
     (): void =>
@@ -157,6 +176,29 @@ const InstancePage = (): JSX.Element => {
       );
     }
   }, [bridge, bridgeError, getPageTitle, history, processorsError, t]);
+
+  useEffect(() => {
+    if (bridge?.error_handler?.type) {
+      setSchemaLoading(true);
+      setSchema(undefined);
+      setSchemaError(undefined);
+      getSchema(bridge?.error_handler?.type, ProcessorSchemaType.ACTION)
+        .then((data) => setSchema(data))
+        .catch((error) => {
+          if (error && axios.isAxiosError(error)) {
+            if (
+              isServiceApiError(error) &&
+              getErrorCode(error) === APIErrorCodes.ERROR_4
+            ) {
+              setSchemaError(t("errorHandling.errors.cantFindSchema"));
+            } else {
+              setSchemaError(t("errorHandling.errors.schemaGenericError"));
+            }
+          }
+        })
+        .finally(() => setSchemaLoading(false));
+    }
+  }, [bridge?.error_handler?.type, getSchema, t]);
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -281,7 +323,7 @@ const InstancePage = (): JSX.Element => {
             pageTitle={t("instance.loadingInstance")}
             hasActionDropdown={true}
             hasLabel={false}
-            totalTabs={1}
+            totalTabs={2}
           />
           <PageSection>
             <TabContent id="instance-skeleton__page__tabs-processors">
@@ -391,6 +433,15 @@ const InstancePage = (): JSX.Element => {
                       <TabTitleText>{t("common.processors")}</TabTitleText>
                     }
                   />
+                  <Tab
+                    eventKey={1}
+                    ouiaId="error-handling"
+                    tabContentId="instance-page__tabs-error-handling"
+                    tabContentRef={errorHandlingTabRef}
+                    title={
+                      <TabTitleText>{t("common.errorHandling")}</TabTitleText>
+                    }
+                  />
                 </Tabs>
               </PageSection>
               <PageSection>
@@ -424,6 +475,71 @@ const InstancePage = (): JSX.Element => {
                       </Title>
                     </EmptyState>
                   </TableWithPagination>
+                </TabContent>
+                <TabContent
+                  eventKey={1}
+                  id="instance-page__tabs-error-handling"
+                  ouiaId="error-handling"
+                  ref={errorHandlingTabRef}
+                  aria-label="Error handling tab"
+                  hidden
+                >
+                  <PageSection
+                    className="instance-page__tabs-error-handling__section"
+                    variant={PageSectionVariants.light}
+                    isFilled
+                  >
+                    <Stack hasGutter>
+                      <StackItem>
+                        <TextContent>
+                          <Text
+                            component={TextVariants.h2}
+                            ouiaId="error-handling-section"
+                          >
+                            {t("common.errorHandlingMethod")}
+                          </Text>
+                        </TextContent>
+                      </StackItem>
+                      <StackItem>
+                        <DescriptionList>
+                          <DescriptionListGroup key="error-handling-method">
+                            <DescriptionListTerm>
+                              {t("common.errorHandlingMethod")}
+                            </DescriptionListTerm>
+                            <DescriptionListDescription>
+                              {
+                                getErrorHandlingMethodByType(
+                                  bridge.error_handler?.type
+                                ).label
+                              }
+                            </DescriptionListDescription>
+                          </DescriptionListGroup>
+                          {schema && !schemaError && !schemaLoading && (
+                            <>
+                              <ProcessorDetailConfigParameters
+                                schema={schema}
+                                parameters={
+                                  bridge.error_handler?.parameters as {
+                                    [key: string]: unknown;
+                                  }
+                                }
+                              />
+                            </>
+                          )}
+                          {schemaError && (
+                            <Alert
+                              className="instance-page__tabs-error-handling__alert"
+                              ouiaId="error-schema"
+                              variant="danger"
+                              title={schemaError}
+                              aria-live="polite"
+                              isInline
+                            />
+                          )}
+                        </DescriptionList>
+                      </StackItem>
+                    </Stack>
+                  </PageSection>
                 </TabContent>
               </PageSection>
             </DrawerContent>

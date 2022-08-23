@@ -15,3 +15,13 @@ export const ERROR_HANDLING_METHODS: ErrorHandlingMethods = {
     { label: "Kafka topic", value: "kafka_topic_sink_0.1" },
   ],
 };
+
+export const getErrorHandlingMethodByType = (
+  type?: string
+): ErrorHandlingMethod => {
+  return (
+    ERROR_HANDLING_METHODS.deadLetterQueue.find(
+      (method) => type === method.value
+    ) ?? ERROR_HANDLING_METHODS.default
+  );
+};

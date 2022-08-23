@@ -1,4 +1,8 @@
-import { Action, ProcessorType, Source } from "@openapi/generated";
+import {
+  Action,
+  ProcessorType,
+  Source,
+} from "@rhoas/smart-events-management-sdk";
 
 export type Processor = SinkProcessor | SourceProcessor;
 

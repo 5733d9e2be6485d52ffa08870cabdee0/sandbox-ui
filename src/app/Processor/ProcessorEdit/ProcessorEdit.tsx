@@ -30,7 +30,7 @@ import {
   ProcessorResponse,
   ProcessorSchemaEntryResponse,
   ProcessorType,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import {
   EventFilter,
   FilterType,

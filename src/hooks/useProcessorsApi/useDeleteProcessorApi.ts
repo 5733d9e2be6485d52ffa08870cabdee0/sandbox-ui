@@ -1,4 +1,7 @@
-import { Configuration, ProcessorsApi } from "@openapi/generated";
+import {
+  Configuration,
+  ProcessorsApi,
+} from "@rhoas/smart-events-management-sdk";
 import { useState } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 

@@ -13,7 +13,7 @@ import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
 import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
 import { useAddProcessorToBridgeApi } from "../../../hooks/useProcessorsApi/useAddProcessorToBridgeApi";
-import { ProcessorRequest } from "@openapi/generated";
+import { ProcessorRequest } from "@rhoas/smart-events-management-sdk";
 import { ErrorWithDetail } from "../../../types/Error";
 import ProcessorEditSkeleton from "@app/Processor/ProcessorEdit/ProcessorEditSkeleton";
 import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";

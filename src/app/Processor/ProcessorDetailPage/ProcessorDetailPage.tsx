@@ -32,7 +32,7 @@ import {
   ManagedResourceStatus,
   ProcessorRequest,
   ProcessorResponse,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";

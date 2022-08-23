@@ -1,4 +1,8 @@
-import { BridgesApi, Configuration, BridgeResponse } from "@openapi/generated";
+import {
+  BridgesApi,
+  Configuration,
+  BridgeResponse,
+} from "@rhoas/smart-events-management-sdk";
 import { useCallback, useState } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 

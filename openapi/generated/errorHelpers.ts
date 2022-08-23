@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { ErrorListResponse,  ModelError } from "@openapi/generated/model";
+import { ErrorListResponse,  ModelError } from "@rhoas/smart-events-management-sdk";
 
 // @TODO Temporary workaround because the Error interface is not being
 // replaced with ModelError everywhere. See https://issues.redhat.com/browse/MGDOBR-979

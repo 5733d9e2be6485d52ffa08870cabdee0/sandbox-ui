@@ -8,7 +8,6 @@
     "support/**/*.ts",
     "integration/**/*.ts",
     "e2e/**/*.ts",
-    "mocked/**/*.ts",
     "utils/**/*.ts",
     "plugin/**/*.ts"
   ]

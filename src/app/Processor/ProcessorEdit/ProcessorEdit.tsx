@@ -408,7 +408,8 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                               <TextContent>
                                 <Text
                                   component="p"
-                                  ouiaId={"transformation-description"}
+                                  id="transformation-description"
+                                  ouiaId="transformation-description"
                                 >
                                   {t("processor.addTransformationDescription")}
                                   <Popover
@@ -436,7 +437,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                                         "processor.moreInfoForTransformationTemplate"
                                       )}
                                       onClick={(e): void => e.preventDefault()}
-                                      aria-describedby="form-group-label-info"
+                                      aria-describedby="transformation-description"
                                       className="pf-c-form__group-label-help"
                                     >
                                       <HelpIcon noVerticalAlign={true} />

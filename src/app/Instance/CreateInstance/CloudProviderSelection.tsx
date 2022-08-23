@@ -10,7 +10,10 @@ import {
   Skeleton,
   Tile,
 } from "@patternfly/react-core";
-import { CloudProviderResponse, CloudRegionResponse } from "@openapi/generated";
+import {
+  CloudProviderResponse,
+  CloudRegionResponse,
+} from "@rhoas/smart-events-management-sdk";
 import { AwsIcon } from "@patternfly/react-icons";
 import "./CloudProviderSelection.css";
 import { useTranslation } from "react-i18next";

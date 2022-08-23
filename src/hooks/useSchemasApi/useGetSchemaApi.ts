@@ -1,6 +1,9 @@
 import { useCallback, useState } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
-import { Configuration, SchemaCatalogApi } from "@openapi/generated";
+import {
+  Configuration,
+  SchemaCatalogApi,
+} from "@rhoas/smart-events-management-sdk";
 import { ProcessorSchemaType } from "../../types/Processor";
 
 export function useGetSchemaApi(): {

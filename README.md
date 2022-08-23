@@ -72,21 +72,6 @@ If you would like to format code manually, you can do it as:
 npm run format
 ```
 
-## OpenAPI TS SDK
-
-The OpenAPI SDK is located in the `openapi/generated` directory.
-
-It's possible to generate a fresh SDK by running:
-
-```sh
-npm run fetch-openapi
-npm run generate-openapi
-```
-
-The first script will download the OpenAPI spec from the `sandbox` repo, replacing `openapi/smart-events.yml`.
-
-The second one will delete the existing SDK and generate a new one.
-
 ## Error Catalog TS SDK
 
 The structure containing the error catalog is located in the `openapi/generated/error.ts` file.

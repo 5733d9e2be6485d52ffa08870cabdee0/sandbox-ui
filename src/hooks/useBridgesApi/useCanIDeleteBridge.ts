@@ -1,5 +1,8 @@
 import { useCallback, useState } from "react";
-import { Configuration, ProcessorsApi } from "@openapi/generated";
+import {
+  Configuration,
+  ProcessorsApi,
+} from "@rhoas/smart-events-management-sdk";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 
 export function useCanIDeleteBridge(): {

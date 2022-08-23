@@ -21,8 +21,6 @@
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "fetch-openapi": "./scripts/openapi-sdk/fetch_openapi.sh",
-    "generate-openapi": "./scripts/openapi-sdk/generate_openapi_client.sh",
     "generate-error-catalog": "node scripts/error-catalog-sdk/generate_error_catalog.mjs"
   },
   "author": "",
@@ -36,6 +34,7 @@
     "@patternfly/react-table": "4.71.16",
     "@rhoas/app-services-ui-components": "1.38.2",
     "@rhoas/app-services-ui-shared": "0.16.0",
+    "@rhoas/smart-events-management-sdk": "^0.42.0",
     "@types/json-schema": "^7.0.11",
     "ajv": "8.8.2",
     "ajv-errors": "^3.0.0",

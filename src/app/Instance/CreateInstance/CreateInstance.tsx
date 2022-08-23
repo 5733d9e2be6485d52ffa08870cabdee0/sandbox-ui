@@ -26,10 +26,9 @@ import { APIErrorCodes } from "@openapi/generated/errors";
 import CloudProviderSelection from "@app/Instance/CreateInstance/CloudProviderSelection";
 import { GetCloudProviders } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersApi";
 import {
-  Action,
   CloudProviderResponse,
   CloudRegionResponse,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import { GetCloudProvidersRegion } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
 import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/ErrorHandlingSelection";
 import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";

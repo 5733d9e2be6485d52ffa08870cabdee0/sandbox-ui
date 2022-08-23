@@ -2,7 +2,7 @@ import {
   CloudProviderResponse,
   CloudProvidersApi,
   Configuration,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import { useCallback } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 

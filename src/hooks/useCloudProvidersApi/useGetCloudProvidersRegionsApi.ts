@@ -4,7 +4,7 @@ import {
   CloudProvidersApi,
   CloudRegionResponse,
   Configuration,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 
 export function useGetCloudProvidersRegions(): {
   getCloudProviderRegions: GetCloudProvidersRegion;

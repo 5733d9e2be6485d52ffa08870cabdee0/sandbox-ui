@@ -30,10 +30,9 @@ import { PlusCircleIcon } from "@patternfly/react-icons";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import {
-  Action,
   BridgeResponse,
   ManagedResourceStatus,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";

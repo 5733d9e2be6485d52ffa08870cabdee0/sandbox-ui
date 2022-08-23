@@ -1,4 +1,8 @@
-import { ProcessorRequest, ProcessorType, Source } from "@openapi/generated";
+import {
+  ProcessorRequest,
+  ProcessorType,
+  Source,
+} from "@rhoas/smart-events-management-sdk";
 import { EventFilter, FilterType, ProcessorFormData } from "../types/Processor";
 import { isCommaSeparatedFilterType } from "@utils/filterUtils";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";

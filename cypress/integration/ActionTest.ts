@@ -184,7 +184,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         pageWasLoaded();
       });
 
-      it("The editing is allowed, except for the processor name", () => {
+      it("The editing is partially allowed", () => {
         const configOuiaId = [
           "slack_channel",
           "slack_webhook_url",
@@ -194,7 +194,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         ];
         cy.ouiaId("edit", "PF4/Button").click();
         cy.ouiaId("processor-name", "PF4/TextInput").should("be.disabled");
-        cy.ouiaId("action-type", "PF4/FormSelect").should("be.enabled");
+        cy.ouiaId("action-type", "PF4/FormSelect").should("be.disabled");
         cy.ouiaId("actions", "form-section").within(() => {
           cy.ouiaType("config-parameter").should(
               "have.length",

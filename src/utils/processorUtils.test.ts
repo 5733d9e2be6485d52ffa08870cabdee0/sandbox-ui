@@ -6,7 +6,7 @@ import {
   resolveReference,
 } from "@utils/processorUtils";
 import { JSONSchema7 } from "json-schema";
-import { ProcessorType } from "@openapi/generated";
+import { ProcessorType } from "@rhoas/smart-events-management-sdk";
 import omit from "lodash.omit";
 
 describe("prepareConfigParameters", () => {

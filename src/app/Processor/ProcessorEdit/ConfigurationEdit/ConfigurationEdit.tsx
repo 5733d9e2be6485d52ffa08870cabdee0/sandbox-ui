@@ -118,7 +118,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
           value={type}
           onChange={(type: string): void => updateType(type)}
           validated={typeValidation === false ? "error" : "default"}
-          isDisabled={readOnly}
+          isDisabled={readOnly || editMode}
         >
           {typeOptions.map((option, index) => (
             <FormSelectOption

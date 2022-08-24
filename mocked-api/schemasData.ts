@@ -131,10 +131,22 @@ export const schemasData: { [key: string]: object } = {
         example: "kermit",
       },
       basic_auth_password: {
-        type: "string",
         title: "Basic Auth Password",
-        description: "The password for basic auth.",
-        example: "mypassword",
+        "x-group": "credentials",
+        oneOf: [
+          {
+            title: "Basic Auth Password",
+            description: "The password for basic auth.",
+            type: "string",
+            format: "password",
+            example: "mypassword",
+          },
+          {
+            description: "An opaque reference to the basic_auth_password",
+            type: "object",
+            properties: {},
+          },
+        ],
       },
       ssl_verification_disabled: {
         type: "boolean",
@@ -177,10 +189,22 @@ export const schemasData: { [key: string]: object } = {
           "The Client Id part of the credentials to authenticate to Kafka",
       },
       kafka_client_secret: {
-        type: "string",
         title: "Client Secret",
-        description:
-          "The Client Secret part of the credentials to authenticate to Kafka",
+        "x-group": "credentials",
+        oneOf: [
+          {
+            title: "Client Secret",
+            description:
+              "The Client Secret part of the credentials to authenticate to Kafka",
+            type: "string",
+            format: "password",
+          },
+          {
+            description: "An opaque reference to the kafka_client_secret",
+            type: "object",
+            properties: {},
+          },
+        ],
       },
     },
     required: [
@@ -273,14 +297,24 @@ export const schemasData: { [key: string]: object } = {
         title: "Basic Auth Username",
         description: "The username for basic auth.",
         example: "kermit",
-        format: "password",
       },
       basic_auth_password: {
-        type: "string",
         title: "Basic Auth Password",
-        description: "The password for basic auth.",
-        example: "mypassword",
-        format: "password",
+        "x-group": "credentials",
+        oneOf: [
+          {
+            title: "Basic Auth Password",
+            description: "The password for basic auth.",
+            type: "string",
+            format: "password",
+            example: "mypassword",
+          },
+          {
+            description: "An opaque reference to the basic_auth_password",
+            type: "object",
+            properties: {},
+          },
+        ],
       },
       ssl_verification_disabled: {
         type: "boolean",

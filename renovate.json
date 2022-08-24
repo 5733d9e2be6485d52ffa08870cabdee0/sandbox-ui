@@ -1,21 +1,14 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
-  "assigneesFromCodeOwners": true,
+  "extends": ["github>redhat-developer/app-services-renovate-config"],
+  "ignoreDeps": ["parcel"],
   "packageRules": [
     {
-      "matchPackagePatterns": ["*"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch",
-      "dependencyDashboardApproval": true,
-      "labels": ["dependencies"]
+      "matchPackagePatterns": ["^uniforms"],
+      "groupName": "uniforms"
     },
     {
-      "matchPackagePatterns": ["*"],
-      "matchUpdateTypes": ["major"],
-      "dependencyDashboardApproval": true,
-      "labels": ["dependencies", "breaking"]
+      "matchPackagePatterns": ["^@?xstate"],
+      "groupName": "xstate"
     }
   ]
 }

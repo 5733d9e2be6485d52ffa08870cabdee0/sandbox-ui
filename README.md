@@ -72,6 +72,10 @@ If you would like to format code manually, you can do it as:
 npm run format
 ```
 
+## Dependencies upgrades
+
+Are automated with `Renovate` bot. See the configuration in `renovate.json` file. Similar can be found in other managed servies too, e.g. [cos-ui](https://github.com/bf2fc6cc711aee1a0c2a/cos-ui/blob/main/renovate.json)
+
 ## OpenAPI TS SDK
 
 The OpenAPI SDK is located in the `openapi/generated` directory.

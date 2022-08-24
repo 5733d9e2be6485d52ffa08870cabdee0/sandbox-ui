@@ -69,7 +69,7 @@ describe("CreateInstance component", () => {
 
     expect(comp.getByText("Required")).toBeInTheDocument();
     expect(onCreate).toHaveBeenCalledTimes(0);
-    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollIntoView).toHaveBeenCalled();
   });
 
   it("should display error handling section", async () => {

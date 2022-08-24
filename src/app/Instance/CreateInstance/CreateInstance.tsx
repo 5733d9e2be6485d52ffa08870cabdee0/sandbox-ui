@@ -144,7 +144,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   }, [hasValidName, hasValidParams]);
 
   useEffect(() => {
-    if (isSubmitted) {
+    if (isSubmitted || nameError) {
       document
         .querySelector(".pf-m-error")
         ?.previousElementSibling?.scrollIntoView({
@@ -154,7 +154,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         });
       setIsSubmitted(false);
     }
-  }, [isSubmitted]);
+  }, [isSubmitted, nameError]);
 
   const onSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {

@@ -76,21 +76,6 @@ npm run format
 
 Are automated with `Renovate` bot. See the configuration in `renovate.json` file. Similar can be found in other managed servies too, e.g. [cos-ui](https://github.com/bf2fc6cc711aee1a0c2a/cos-ui/blob/main/renovate.json)
 
-## OpenAPI TS SDK
-
-The OpenAPI SDK is located in the `openapi/generated` directory.
-
-It's possible to generate a fresh SDK by running:
-
-```sh
-npm run fetch-openapi
-npm run generate-openapi
-```
-
-The first script will download the OpenAPI spec from the `sandbox` repo, replacing `openapi/smart-events.yml`.
-
-The second one will delete the existing SDK and generate a new one.
-
 ## Error Catalog TS SDK
 
 The structure containing the error catalog is located in the `openapi/generated/error.ts` file.

@@ -20,7 +20,7 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
-import { BridgeResponse } from "@openapi/generated";
+import { BridgeResponse } from "@rhoas/smart-events-management-sdk";
 
 interface InstanceDetailsProps {
   instance: BridgeResponse;

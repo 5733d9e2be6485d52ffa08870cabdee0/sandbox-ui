@@ -23,7 +23,10 @@ import {
 import { APIErrorCodes } from "@openapi/generated/errors";
 import CloudProviderSelection from "@app/Instance/CreateInstance/CloudProviderSelection";
 import { GetCloudProviders } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersApi";
-import { CloudProviderResponse, CloudRegionResponse } from "@openapi/generated";
+import {
+  CloudProviderResponse,
+  CloudRegionResponse,
+} from "@rhoas/smart-events-management-sdk";
 import { GetCloudProvidersRegion } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
 
 export interface CreateInstanceProps {

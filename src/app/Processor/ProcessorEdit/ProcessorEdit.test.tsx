@@ -6,7 +6,7 @@ import {
   ManagedResourceStatus,
   ProcessorSchemaEntryResponse,
   ProcessorType,
-} from "@openapi/generated";
+} from "@rhoas/smart-events-management-sdk";
 import { EventFilter } from "../../../types/Processor";
 
 jest.mock("react-router-dom", () => ({

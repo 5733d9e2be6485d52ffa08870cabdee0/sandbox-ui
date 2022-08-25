@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, VoidFunctionComponent } from "react";
-import { ManagedResourceStatus } from "@openapi/generated";
+import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { ResourceStatusLabel } from "@app/components/ResourceStatusLabel/ResourceStatusLabel";
 import { ResourceStatus } from "@app/components/ResourceStatusLabel/types";
 

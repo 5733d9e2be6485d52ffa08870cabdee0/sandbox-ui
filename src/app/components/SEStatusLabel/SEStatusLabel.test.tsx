@@ -4,7 +4,7 @@ import { sub } from "date-fns";
 import SEStatusLabel, {
   SEStatusLabelProps,
 } from "@app/components/SEStatusLabel/SEStatusLabel";
-import { ManagedResourceStatus } from "@openapi/generated";
+import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 
 const labels = ["Creating", "Ready", "Failed", "Deleting"];

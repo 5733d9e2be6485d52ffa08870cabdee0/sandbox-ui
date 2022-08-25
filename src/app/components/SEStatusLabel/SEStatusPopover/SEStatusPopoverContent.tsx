@@ -7,7 +7,7 @@ import {
   TextContent,
   TextVariants,
 } from "@patternfly/react-core";
-import { ManagedResourceStatus } from "@openapi/generated";
+import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { useTranslation } from "react-i18next";
 import { ResourceStatusDelayed } from "@app/components/ResourceStatusLabel/types";
 import { CreationStatusOrder } from "@app/components/SEStatusLabel/SEStatusPopover/types";

@@ -1,6 +1,6 @@
 import React, { RefObject, useState, VoidFunctionComponent } from "react";
 import { Popover } from "@patternfly/react-core";
-import { ManagedResourceStatus } from "@openapi/generated";
+import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { ResourceStatusDelayed } from "@app/components/ResourceStatusLabel/types";
 import SEStatusPopoverContent from "@app/components/SEStatusLabel/SEStatusPopover/SEStatusPopoverContent";
 

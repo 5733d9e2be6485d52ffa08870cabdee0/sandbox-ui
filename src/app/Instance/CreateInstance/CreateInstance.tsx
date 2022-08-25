@@ -81,7 +81,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   const [cloudRegions, setCloudRegions] = useState<
     CloudRegionResponse[] | undefined
   >();
-  const [error, setError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [hasParametersError, setHasParametersError] = useState<boolean>(false);
   const [genericError, setGenericError] = useState<string | null>(null);
   const [cloudProviderUnavailable, setCloudProviderUnavailable] =
     useState(false);
@@ -108,22 +109,42 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
     validateParameters.current = callback;
   };
 
-  const validate = useCallback(() => {
+  const hasValidName = useCallback(() => {
     if (name.trim() === "") {
-      setError(t("common.required"));
+      setNameError(t("common.required"));
       return false;
     }
     if (existingInstanceName && name.trim() === existingInstanceName) {
-      setError(t("instance.errors.invalidName"));
+      setNameError(t("instance.errors.invalidName"));
       return false;
     }
-    setError(null);
+
+    return true;
+  }, [existingInstanceName, name, t]);
+
+  const hasValidParams = useCallback(() => {
+    const validParameters = validateParameters.current?.();
+    if (validParameters === false) {
+      setHasParametersError(true);
+      return false;
+    }
+
+    return true;
+  }, []);
+
+  const validate = useCallback(() => {
+    setNameError(null);
+    setHasParametersError(false);
     setGenericError(null);
-    return validateParameters.current?.() ?? true;
-  }, [name, t, existingInstanceName]);
+
+    const validName = hasValidName();
+    const validParams = hasValidParams();
+
+    return validName && validParams;
+  }, [hasValidName, hasValidParams]);
 
   useEffect(() => {
-    if (isSubmitted) {
+    if (isSubmitted || nameError) {
       document
         .querySelector(".pf-m-error")
         ?.previousElementSibling?.scrollIntoView({
@@ -133,7 +154,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         });
       setIsSubmitted(false);
     }
-  }, [isSubmitted]);
+  }, [isSubmitted, nameError]);
 
   const onSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
@@ -217,7 +238,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       setCloudProviderId("");
       setCloudRegionId("");
       setExistingInstanceName(null);
-      setError(null);
+      setNameError(null);
+      setHasParametersError(false);
       setGenericError(null);
       setCloudProviderUnavailable(false);
       setErrorHandlingSchemaId(null);
@@ -292,7 +314,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   );
 
   const getFormAlertError = (): string => {
-    if (error) {
+    if (nameError || hasParametersError) {
       return t("common.addressFormErrors");
     }
 
@@ -300,7 +322,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   };
 
   const onCloseModal = (): void => {
-    setError(null);
+    setNameError(null);
+    setHasParametersError(false);
     setGenericError(null);
     setExistingInstanceName(null);
     setErrorHandlingSchemaId(null);
@@ -339,7 +362,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       ]}
     >
       <Form id={FORM_ID} onSubmit={onSubmit}>
-        {(error || genericError) && (
+        {(nameError || genericError || hasParametersError) && (
           <FormAlert>
             <Alert
               ouiaId="error-instance-create-fail"
@@ -366,8 +389,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
           label={t("common.name")}
           isRequired
           fieldId="instance-name"
-          validated={error ? "error" : "default"}
-          helperTextInvalid={error}
+          validated={nameError ? "error" : "default"}
+          helperTextInvalid={nameError}
         >
           <TextInput
             isRequired
@@ -379,7 +402,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
             value={name}
             onChange={handleNameChange}
             onBlur={validate}
-            validated={error ? "error" : "default"}
+            validated={nameError ? "error" : "default"}
             isDisabled={formIsDisabled}
           />
         </FormGroup>
@@ -415,7 +438,10 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
             <ConfigurationForm
               configuration={errorHandlingParameters}
               schema={errorHandlingSchema}
-              onChange={setErrorHandlingParameters}
+              onChange={(model): void => {
+                setErrorHandlingParameters(model as Record<string, unknown>);
+                setHasParametersError(false);
+              }}
               registerValidation={registerValidateParameters}
               readOnly={formIsDisabled}
             />

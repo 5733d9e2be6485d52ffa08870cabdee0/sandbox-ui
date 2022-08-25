@@ -124,6 +124,7 @@
     "loadingProcessor": "Loading processor",
     "loadingProcessorType": "Loading processor type",
     "moreInfoForFilterValues": "More info for filter values",
+    "moreInfoForTransformationTemplate": "More info for transformation template",
     "multipleValues": "Filter multiple values",
     "noFilters": "No filters configured",
     "noProcessors": "No processors for this Smart Event instance",
@@ -155,6 +156,7 @@
     "token": "Token",
     "transformation": "Transformation",
     "transformationTemplate": "Transformation template",
+    "transformationTemplateTooltip": "You can write the template content by using the <strong>QUTE language</strong>.<br/>Please visit the <0>QUTE reference website</0> to learn more about this template engine.",
     "webhookUrl": "Webhook URL"
   }
 }

@@ -62,7 +62,7 @@
     "@cypress/skip-test": "2.6.1",
     "@mswjs/data": "0.10.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.4",
-    "@redhat-cloud-services/frontend-components-config": "4.6.2",
+    "@redhat-cloud-services/frontend-components-config": "4.6.18",
     "@testing-library/jest-dom": "5.16.2",
     "@testing-library/react": "12.1.4",
     "@types/jest": "27.4.1",

@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -12,6 +13,7 @@ import {
   Form,
   FormAlert,
   FormGroup,
+  FormSection,
   Modal,
   TextInput,
 } from "@patternfly/react-core";
@@ -24,10 +26,16 @@ import { APIErrorCodes } from "@openapi/generated/errors";
 import CloudProviderSelection from "@app/Instance/CreateInstance/CloudProviderSelection";
 import { GetCloudProviders } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersApi";
 import {
+  Action,
   CloudProviderResponse,
   CloudRegionResponse,
 } from "@rhoas/smart-events-management-sdk";
 import { GetCloudProvidersRegion } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
+import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/ErrorHandlingSelection";
+import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
+import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
+import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
+import { ProcessorSchemaType } from "../../../types/Processor";
 
 export interface CreateInstanceProps {
   /** Flag to indicate the creation request is in progress */
@@ -40,7 +48,8 @@ export interface CreateInstanceProps {
   onCreate: (
     name: string,
     cloudProviderId: string,
-    cloudRegionId: string
+    cloudRegionId: string,
+    errorHandlingConfiguration?: Action
   ) => void;
   /** API error related to bridge creation */
   createBridgeError: unknown;
@@ -48,6 +57,8 @@ export interface CreateInstanceProps {
   getCloudProviders: GetCloudProviders;
   /** Callback to retrieve cloud regions options **/
   getCloudRegions: GetCloudProvidersRegion;
+  /** Callback to retrieve the schema used in error handling configuration */
+  getSchema: GetSchema;
 }
 
 const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
@@ -59,6 +70,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
     createBridgeError,
     getCloudProviders,
     getCloudRegions,
+    getSchema,
   } = props;
   const [name, setName] = useState("");
   const [cloudProviderId, setCloudProviderId] = useState("");
@@ -69,7 +81,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   const [cloudRegions, setCloudRegions] = useState<
     CloudRegionResponse[] | undefined
   >();
-  const [error, setError] = useState<string | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [hasParametersError, setHasParametersError] = useState<boolean>(false);
   const [genericError, setGenericError] = useState<string | null>(null);
   const [cloudProviderUnavailable, setCloudProviderUnavailable] =
     useState(false);
@@ -77,35 +90,108 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
     string | null
   >(null);
   const [newBridgeName, setNewBridgeName] = useState("");
+  const [errorHandlingSchemaId, setErrorHandlingSchemaId] = useState<
+    string | null
+  >(null);
+  const [errorHandlingSchema, setErrorHandlingSchema] = useState<object>();
+  const [errorHandlingSchemaLoading, setErrorHandlingSchemaLoading] =
+    useState<boolean>(false);
+  const [errorHandlingParameters, setErrorHandlingParameters] = useState({});
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const FORM_ID = "create-instance-form";
 
-  const validate = useCallback(() => {
+  const validateParameters = useRef<(() => boolean) | undefined>();
+
+  const registerValidateParameters = (callback: () => boolean): void => {
+    validateParameters.current = callback;
+  };
+
+  const hasValidName = useCallback(() => {
     if (name.trim() === "") {
-      setError(t("common.required"));
+      setNameError(t("common.required"));
       return false;
     }
     if (existingInstanceName && name.trim() === existingInstanceName) {
-      setError(t("instance.errors.invalidName"));
+      setNameError(t("instance.errors.invalidName"));
       return false;
     }
-    setError(null);
-    setGenericError(null);
+
     return true;
-  }, [name, t, existingInstanceName]);
+  }, [existingInstanceName, name, t]);
+
+  const hasValidParams = useCallback(() => {
+    const validParameters = validateParameters.current?.();
+    if (validParameters === false) {
+      setHasParametersError(true);
+      return false;
+    }
+
+    return true;
+  }, []);
+
+  const validate = useCallback(() => {
+    setNameError(null);
+    setHasParametersError(false);
+    setGenericError(null);
+
+    const validName = hasValidName();
+    const validParams = hasValidParams();
+
+    return validName && validParams;
+  }, [hasValidName, hasValidParams]);
+
+  useEffect(() => {
+    if (isSubmitted || nameError || genericError) {
+      const firstError =
+        document.querySelector(".pf-m-error")?.previousElementSibling;
+      const genericError = document.querySelector(
+        ".error-instance-create-fail"
+      );
+      const elementToBeScrolled = firstError ?? genericError;
+
+      elementToBeScrolled?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+      setIsSubmitted(false);
+    }
+  }, [isSubmitted, nameError, genericError]);
 
   const onSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
+      setIsSubmitted(true);
       event.preventDefault();
       if (validate()) {
         const newName = name.trim();
-        onCreate(newName, cloudProviderId, cloudRegionId);
+        let errorHandlingConfiguration;
+        if (errorHandlingSchemaId) {
+          errorHandlingConfiguration = {
+            type: errorHandlingSchemaId,
+            parameters: errorHandlingParameters,
+          };
+        }
+        onCreate(
+          newName,
+          cloudProviderId,
+          cloudRegionId,
+          errorHandlingConfiguration
+        );
         setNewBridgeName(newName);
       }
     },
-    [name, cloudProviderId, cloudRegionId, onCreate, validate]
+    [
+      validate,
+      name,
+      onCreate,
+      cloudProviderId,
+      cloudRegionId,
+      errorHandlingSchemaId,
+      errorHandlingParameters,
+    ]
   );
 
   const handleNameChange = useCallback(
@@ -157,9 +243,12 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       setCloudProviderId("");
       setCloudRegionId("");
       setExistingInstanceName(null);
-      setError(null);
+      setNameError(null);
+      setHasParametersError(false);
       setGenericError(null);
       setCloudProviderUnavailable(false);
+      setErrorHandlingSchemaId(null);
+      setErrorHandlingParameters({});
 
       retrieveCloudProviders();
     } else {
@@ -186,6 +275,17 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
       setCloudProviderUnavailable(true);
     }
   }, [cloudRegions, cloudProviders]);
+
+  useEffect(() => {
+    setErrorHandlingSchema({});
+    if (errorHandlingSchemaId) {
+      setErrorHandlingSchemaLoading(true);
+      getSchema(errorHandlingSchemaId, ProcessorSchemaType.ACTION)
+        .then((data) => setErrorHandlingSchema(data))
+        .catch(() => setGenericError("Internal Server Error"))
+        .finally(() => setErrorHandlingSchemaLoading(false));
+    }
+  }, [errorHandlingSchemaId, getSchema]);
 
   useEffect(() => {
     if (createBridgeError) {
@@ -219,25 +319,30 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   );
 
   const getFormAlertError = (): string => {
-    if (error) {
+    if (nameError || hasParametersError) {
       return t("common.addressFormErrors");
     }
 
     return t("instance.errors.cantCreateInstance");
   };
 
+  const onCloseModal = (): void => {
+    setNameError(null);
+    setHasParametersError(false);
+    setGenericError(null);
+    setExistingInstanceName(null);
+    setErrorHandlingSchemaId(null);
+    onClose();
+  };
+
   return (
     <Modal
+      position="top"
       isOpen={isModalOpen}
       title={t("instance.createASEInstance")}
       ouiaId="create-instance"
       width={640}
-      onClose={(): void => {
-        setError(null);
-        setGenericError(null);
-        setExistingInstanceName(null);
-        onClose();
-      }}
+      onClose={onCloseModal}
       actions={[
         <Button
           key="submit"
@@ -251,16 +356,22 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         >
           {t("instance.createSEInstance")}
         </Button>,
-        <Button key="cancel" ouiaId="cancel" variant="link" onClick={onClose}>
+        <Button
+          key="cancel"
+          ouiaId="cancel"
+          variant="link"
+          onClick={onCloseModal}
+        >
           {t("common.cancel")}
         </Button>,
       ]}
     >
       <Form id={FORM_ID} onSubmit={onSubmit}>
-        {(error || genericError) && (
+        {(nameError || genericError || hasParametersError) && (
           <FormAlert>
             <Alert
               ouiaId="error-instance-create-fail"
+              className="error-instance-create-fail"
               variant="danger"
               title={getFormAlertError()}
               aria-live="polite"
@@ -284,8 +395,8 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
           label={t("common.name")}
           isRequired
           fieldId="instance-name"
-          validated={error ? "error" : "default"}
-          helperTextInvalid={error}
+          validated={nameError ? "error" : "default"}
+          helperTextInvalid={nameError}
         >
           <TextInput
             isRequired
@@ -297,7 +408,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
             value={name}
             onChange={handleNameChange}
             onBlur={validate}
-            validated={error ? "error" : "default"}
+            validated={nameError ? "error" : "default"}
             isDisabled={formIsDisabled}
           />
         </FormGroup>
@@ -308,6 +419,40 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
           onCloudProviderChange={handleProviderChange}
           isDisabled={formIsDisabled}
         />
+
+        <FormSection title={t("common.errorHandling")} titleElement="h2">
+          <FormGroup
+            label={t("common.errorHandlingMethod")}
+            fieldId={"error-handling-method"}
+            isRequired
+          >
+            <ErrorHandlingSelection
+              defaultMethod={ERROR_HANDLING_METHODS.default.value}
+              errorHandlingMethods={ERROR_HANDLING_METHODS}
+              isDisabled={formIsDisabled}
+              onMethodSelection={(errorMethod: string): void => {
+                setErrorHandlingParameters({});
+                if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
+                  setErrorHandlingSchemaId(null);
+                } else {
+                  setErrorHandlingSchemaId(errorMethod);
+                }
+              }}
+            />
+          </FormGroup>
+          {errorHandlingSchema && !errorHandlingSchemaLoading && (
+            <ConfigurationForm
+              configuration={errorHandlingParameters}
+              schema={errorHandlingSchema}
+              onChange={(model): void => {
+                setErrorHandlingParameters(model as Record<string, unknown>);
+                setHasParametersError(false);
+              }}
+              registerValidation={registerValidateParameters}
+              readOnly={formIsDisabled}
+            />
+          )}
+        </FormSection>
 
         <AlertGroup>
           <Alert

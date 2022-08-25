@@ -10,7 +10,14 @@ export function uniqueName(prefix: string) {
   }
 }
 
+/**
+ * Wait that page is loaded correctly and there is no skeleton.
+ * It means no ouiaId("loading-table", "PF4/Card")
+ */
 export function pageWasLoaded() {
+  //added waiting on any element to be clear that dom is not empty
+  //If you remove this line the next waiting rutine (loading-table) was succesful even if the page (DOM) was empty
+  //Tests was randomly failing that an element was reattached to DOM.
   cy.get("#nav-toggle", { timeout: 30000 }).should("be.visible");
   cy.ouiaId("loading-table", "PF4/Card").should("not.exist");
 }

@@ -144,17 +144,22 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   }, [hasValidName, hasValidParams]);
 
   useEffect(() => {
-    if (isSubmitted || nameError) {
-      document
-        .querySelector(".pf-m-error")
-        ?.previousElementSibling?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-          inline: "nearest",
-        });
+    if (isSubmitted || nameError || genericError) {
+      const firstError =
+        document.querySelector(".pf-m-error")?.previousElementSibling;
+      const genericError = document.querySelector(
+        ".error-instance-create-fail"
+      );
+      const elementToBeScrolled = firstError ?? genericError;
+
+      elementToBeScrolled?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
       setIsSubmitted(false);
     }
-  }, [isSubmitted, nameError]);
+  }, [isSubmitted, nameError, genericError]);
 
   const onSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
@@ -366,6 +371,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
           <FormAlert>
             <Alert
               ouiaId="error-instance-create-fail"
+              className="error-instance-create-fail"
               variant="danger"
               title={getFormAlertError()}
               aria-live="polite"

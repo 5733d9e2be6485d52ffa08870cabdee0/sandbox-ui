@@ -203,15 +203,15 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.ouiaId("source-type", "PF4/FormSelect").should("be.disabled");
         cy.ouiaId("sources", "form-section").within(() => {
           cy.ouiaType("config-parameter").should(
-              "have.length",
-              configOuiaId.length
+            "have.length",
+            configOuiaId.length
           );
           configOuiaId.forEach((ouiaId) => {
             cy.ouiaId(ouiaId, "config-parameter")
-                .find("input")
-                .scrollIntoView()
-                .should("be.visible")
-                .should("be.enabled");
+              .find("input")
+              .scrollIntoView()
+              .should("be.visible")
+              .should("be.enabled");
           });
         });
       });

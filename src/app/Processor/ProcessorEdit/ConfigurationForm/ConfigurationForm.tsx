@@ -58,24 +58,28 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
   }, [registerValidation, validate]);
 
   return (
-    <DynamicForm
-      validate={"onChangeAfterSubmit"}
-      schema={bridge}
-      model={convertedConfiguration}
-      onChangeModel={onChange}
-      ref={(ref: any): void => (newRef.current = ref)}
-      disabled={readOnly}
-    >
-      {Object.keys(properties as { [key: string]: unknown }).map((key) => (
-        <AutoField
-          key={key}
-          name={key}
+    <>
+      {properties && (
+        <DynamicForm
+          validate={"onChangeAfterSubmit"}
+          schema={bridge}
+          model={convertedConfiguration}
+          onChangeModel={onChange}
+          ref={(ref: any): void => (newRef.current = ref)}
           disabled={readOnly}
-          data-ouia-component-id={key}
-          data-ouia-component-type="config-parameter"
-        />
-      ))}
-    </DynamicForm>
+        >
+          {Object.keys(properties as { [key: string]: unknown }).map((key) => (
+            <AutoField
+              key={key}
+              name={key}
+              disabled={readOnly}
+              data-ouia-component-id={key}
+              data-ouia-component-type="config-parameter"
+            />
+          ))}
+        </DynamicForm>
+      )}
+    </>
   );
 };
 

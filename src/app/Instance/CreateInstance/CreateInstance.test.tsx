@@ -24,7 +24,7 @@ const setupCreateInstance = (
         resolve([cloudRegion]);
       }),
     createBridgeError,
-    getSchema = props.getSchema ?? jest.fn(),
+    getSchema = jest.fn(),
   } = props;
 
   const comp = customRender(
@@ -133,8 +133,6 @@ describe("CreateInstance component", () => {
     expect(
       comp.baseElement.querySelector("button#cloud-region")
     ).toHaveTextContent(cloudRegion.display_name);
-
-    await waitFor(() => {});
   });
 
   it("should create an instance when a name is provided", async () => {

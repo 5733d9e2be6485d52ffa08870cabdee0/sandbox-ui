@@ -60,3 +60,12 @@ Cypress.Commands.add(
     }
   }
 );
+
+Cypress.Commands.add("login", () => {
+  cy.get("#username-verification").type(Cypress.env("USER"));
+  cy.get("#login-show-step2").click();
+  cy.get("#password")
+    .should("be.visible")
+    .type(Cypress.env("PASSWORD"), { log: false });
+  cy.get("#rh-password-verification-submit-button").click();
+});

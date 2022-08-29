@@ -147,6 +147,7 @@ const CloudProviderSelection = (
           id="cloud-region"
           toggleId="cloud-region"
           name="cloud-region"
+          ouiaId="cloud-region"
           variant={SelectVariant.single}
           onToggle={toggleCloudRegionSelect}
           onSelect={handleCloudRegionSelect}
@@ -175,6 +176,8 @@ export const CloudProviderSelectionSkeleton = (): JSX.Element => {
           height="100%"
           width="100%"
           screenreaderText={t("instance.loadingCloudProviders")}
+          data-ouia-component-id="cloud-provider"
+          data-ouia-component-type="skeleton"
         />
       </div>
     </FlexItem>

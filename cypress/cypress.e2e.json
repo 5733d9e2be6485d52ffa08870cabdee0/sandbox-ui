@@ -1,6 +1,6 @@
 {
   "fixturesFolder": false,
-  "integrationFolder": "e2e",
+  "integrationFolder": "integration",
   "pluginsFile": "plugins/index.ts",
   "screenshotsFolder": "screenshots",
   "videosFolder": "videos",
@@ -14,8 +14,8 @@
   },
   "viewportWidth": 1920,
   "viewportHeight": 1080,
+  "defaultCommandTimeout": 10000,
   "env": {
-    "REST_URL": "https://event-bridge-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com",
-    "REST_PATH": "/api/smartevents_mgmt/v1"
+    "TEST_TYPE": "dev"
   }
 }

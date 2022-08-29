@@ -193,9 +193,7 @@ describe("Instances Test", () => {
     describe("the Instance statuses", () => {
       beforeEach(() => {
         cy.visit("/");
-        cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
-          "not.exist"
-        );
+        pageWasLoaded();
       });
 
       it("Accepted", () => {

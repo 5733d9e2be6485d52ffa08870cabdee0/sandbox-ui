@@ -1,13 +1,16 @@
 import { onlyOn } from "@cypress/skip-test";
-import { EnvType, isEnvironmentType, safeLogin } from "../../utils/Util";
+import {
+  EnvType,
+  isEnvironmentType,
+  safeLogin,
+  pageWasLoaded,
+} from "../../utils/Util";
 
 describe("Basic Elements", () => {
   beforeEach(() => {
     cy.visit("/");
     safeLogin();
-    cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
-      "not.exist"
-    );
+    pageWasLoaded();
   });
 
   it("The Create SE Instance button is visible", () => {

@@ -1,5 +1,5 @@
 import { onlyOn } from "@cypress/skip-test";
-import { isEnvironmentType, EnvType } from "../utils/Util";
+import { isEnvironmentType, EnvType, pageWasLoaded } from "../utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Source Test", () => {
@@ -13,9 +13,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       beforeEach(() => {
         const processorName: string = "Source processor";
         cy.visit(`${instanceUrl}/create-processor`);
-        cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
-          "not.exist"
-        );
+        pageWasLoaded();
         cy.ouiaId("source", "Tile").should("be.visible").click();
         cy.ouiaId("processor-name", "PF4/TextInput")
           .should("be.visible")
@@ -190,9 +188,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.visit(
           "instance/3543edaa-1851-4ad7-96be-ebde7d20d717/processor/sourcef4-ead8-6g8v-as8e-0642tdjek002"
         );
-        cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
-          "not.exist"
-        );
+        pageWasLoaded();
       });
 
       it("The editation is not allowed", () => {

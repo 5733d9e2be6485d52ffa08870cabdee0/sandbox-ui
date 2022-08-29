@@ -1,5 +1,5 @@
 import { onlyOn } from "@cypress/skip-test";
-import { isEnvironmentType, EnvType } from "../utils/Util";
+import { isEnvironmentType, EnvType, pageWasLoaded } from "../utils/Util";
 
 const bugPresent: string =
   "The detail/edit page might be broken please check state of MGDOBR-797";
@@ -13,9 +13,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     describe("Create a Processor", () => {
       beforeEach(() => {
         cy.visit("/instance/830c8f0d-c677-492f-8d7e-0f81893fbba6");
-        cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
-          "not.exist"
-        );
+        pageWasLoaded();
       });
 
       it("Sink processor", () => {
@@ -185,9 +183,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.visit(
           "instance/3543edaa-1851-4ad7-96be-ebde7d20d717/processor/fa373030-c0d2-11ec-9d64-0242ac120002"
         );
-        cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
-          "not.exist"
-        );
+        pageWasLoaded();
         cy.ouiaId("edit", "PF4/Button").should("be.visible").click();
 
         processorName = "Processor two";
@@ -278,9 +274,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.visit(
           "instance/3543edaa-1851-4ad7-96be-ebde7d20d717/processor/sourcef4-ead8-6g8v-as8e-0642tdjek002"
         );
-        cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
-          "not.exist"
-        );
+        pageWasLoaded();
         cy.ouiaId("edit", "PF4/Button").should("be.visible").click();
 
         processorName = "Processor four";
@@ -357,9 +351,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     });
 
     function assertNewProcessorOnList(processorName: string) {
-      cy.ouiaId("loading-table", "PF4/Card", { timeout: 30000 }).should(
-        "not.exist"
-      );
+      pageWasLoaded();
       cy.ouiaId("Processors list table", "PF4/Table")
         .ouiaId(processorName, "PF4/TableRow")
         .should("be.visible")

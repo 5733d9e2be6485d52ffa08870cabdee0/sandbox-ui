@@ -277,7 +277,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
   }, [cloudRegions, cloudProviders]);
 
   useEffect(() => {
-    setErrorHandlingSchema({});
+    setErrorHandlingSchema(undefined);
     if (errorHandlingSchemaId) {
       setErrorHandlingSchemaLoading(true);
       getSchema(errorHandlingSchemaId, ProcessorSchemaType.ACTION)
@@ -450,6 +450,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
               }}
               registerValidation={registerValidateParameters}
               readOnly={formIsDisabled}
+              editMode={false}
             />
           )}
         </FormSection>

@@ -1,6 +1,5 @@
 {
   "extends": ["github>redhat-developer/app-services-renovate-config"],
-  "dependencyDashboardApproval": true,
   "separateMajorMinor": true,
   "separateMultipleMajor": true,
   "packageRules": [

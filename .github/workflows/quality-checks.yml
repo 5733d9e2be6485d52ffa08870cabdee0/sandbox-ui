@@ -4,8 +4,8 @@ jobs:
   run-all-checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: "16"
           cache: "npm"
@@ -15,7 +15,7 @@ jobs:
       - run: npm run test
       - run: npm run test:it
       - name: "Upload artifacts"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always() && !cancelled()
         with:
           name: ui-artifacts

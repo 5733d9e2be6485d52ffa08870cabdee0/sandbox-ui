@@ -1,6 +1,8 @@
 import { EventFilter, FilterType } from "../types/Processor";
 
-export const isCommaSeparatedFilterType = (filter: EventFilter): boolean => {
+export const isCommaSeparatedFilterType = (
+  filter: Partial<EventFilter>
+): boolean => {
   return [FilterType.STRING_IN, FilterType.NUMBER_IN].includes(
     filter.type as FilterType
   );

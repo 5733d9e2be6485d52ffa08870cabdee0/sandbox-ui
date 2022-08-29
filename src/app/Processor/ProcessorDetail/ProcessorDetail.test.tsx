@@ -10,6 +10,7 @@ import {
   ManagedResourceStatus,
   ProcessorType,
 } from "@rhoas/smart-events-management-sdk";
+import { maskedValue } from "@app/Processor/ProcessorDetail/ProcessorDetailConfigParameters";
 
 describe("ProcessorDetail component", () => {
   it("should display sink processor information", async () => {
@@ -62,12 +63,7 @@ describe("ProcessorDetail component", () => {
           .slack_channel as string
       )
     ).toBeInTheDocument();
-    expect(
-      comp.queryByText(
-        (sinkProcessor.action.parameters as { [key: string]: unknown })
-          .slack_webhook_url as string
-      )
-    ).toBeInTheDocument();
+    expect(comp.queryByText(maskedValue)).toBeInTheDocument();
 
     expect(
       comp.queryByText(
@@ -122,12 +118,7 @@ describe("ProcessorDetail component", () => {
       )
     ).toBeInTheDocument();
 
-    expect(
-      comp.queryByText(
-        (sourceProcessor.source.parameters as { [key: string]: unknown })
-          .slack_token as string
-      )
-    ).toBeInTheDocument();
+    expect(comp.queryByText(maskedValue)).toBeInTheDocument();
     expect(
       comp.queryByText(
         (sourceProcessor.source.parameters as { [key: string]: unknown })

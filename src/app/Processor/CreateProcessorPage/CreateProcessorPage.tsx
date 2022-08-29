@@ -204,6 +204,7 @@ const CreateProcessorPage = (): JSX.Element => {
             malformedTransformationTemplate={malformedTemplate}
             schemaCatalog={schemas}
             getSchema={getSchema}
+            goBackToInstance={goToInstance}
           />
         </>
       )}

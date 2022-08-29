@@ -104,6 +104,75 @@ describe("ProcessorEdit component", () => {
     expect(comp.queryByText(saveButtonLabel)).toBeInTheDocument();
   });
 
+  it("handles basic validation of required fields", async () => {
+    Element.prototype.scrollIntoView = jest.fn();
+    const { comp, onSave } = setupProcessorEdit({
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(kakfaSinkSchema);
+        }),
+    });
+    await waitForI18n(comp);
+
+    const processorName = "processor name";
+    const topicName = "topic name";
+
+    fireEvent.click(comp.getByText("Sink processor"));
+    fireEvent.click(comp.getByText("Create"));
+    expect(onSave).toHaveBeenCalledTimes(0);
+
+    expect(comp.getByLabelText("Processor name *")).toBeInvalid();
+    expect(comp.getByLabelText("Action type *")).toBeInvalid();
+    expect(comp.getAllByText("Required")).toHaveLength(2);
+
+    fireEvent.change(comp.getByLabelText("Processor name *"), {
+      target: { value: processorName },
+    });
+
+    fireEvent.click(comp.getByText("Create"));
+    expect(onSave).toHaveBeenCalledTimes(0);
+
+    expect(comp.getByLabelText("Processor name *")).toBeValid();
+    expect(comp.getByLabelText("Action type *")).toBeInvalid();
+    expect(comp.getAllByText("Required").length).toBe(1);
+
+    fireEvent.change(comp.getByLabelText("Action type *"), {
+      target: { value: schemaCatalog[1].id },
+    });
+
+    await waitFor(() => {
+      expect(comp.getByLabelText("Processor name *")).toBeValid();
+      expect(comp.getByLabelText("Action type *")).toBeValid();
+      expect(comp.queryByText("Required")).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(comp.getByText("Create"));
+    expect(onSave).toHaveBeenCalledTimes(0);
+
+    expect(comp.getByLabelText("Topic Name *")).toBeInvalid();
+    expect(
+      comp.queryByText("must have required property 'topic'")
+    ).toBeInTheDocument();
+
+    fireEvent.change(comp.getByLabelText("Topic Name *"), {
+      target: { value: topicName },
+    });
+
+    fireEvent.click(comp.getByText("Create"));
+    expect(onSave).toHaveBeenCalledTimes(1);
+
+    expect(onSave).toHaveBeenCalledWith({
+      name: processorName,
+      action: {
+        type: schemaCatalog[1].id,
+        parameters: {
+          topic: topicName,
+          delay: kakfaSinkSchema.properties.delay.default,
+        },
+      },
+    });
+  });
+
   it("should display the information of the passed processor and the processor type section", async () => {
     const name = "Processor name";
     const type = "Sink";
@@ -133,6 +202,19 @@ describe("ProcessorEdit component", () => {
 
     expect(comp.baseElement.querySelector("#processor-name")).toHaveValue(name);
     expect(comp.getByTestId("processor-type-label")).toHaveTextContent(type);
+  });
+
+  it("should disable the editing of the name of an existing processor", async () => {
+    const { comp } = setupProcessorEdit({
+      processor: sourceProcessor,
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(SlackSourceSchema);
+        }),
+    });
+    await waitForI18n(comp);
+
+    expect(comp.getByLabelText("Processor name *")).toBeDisabled();
   });
 
   it("handles filters addition and removal", async () => {
@@ -170,6 +252,10 @@ describe("ProcessorEdit component", () => {
   it("handles filters with multiple values", async () => {
     const { comp, onSave } = setupProcessorEdit({
       processor: sinkProcessor,
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(kakfaSinkSchema);
+        }),
       saveButtonLabel: "Save",
     });
     await waitForI18n(comp);
@@ -301,36 +387,6 @@ describe("ProcessorEdit component", () => {
   });
 
   it("should prevent the user from changing the type of an existing processor", async () => {
-    const { comp } = setupProcessorEdit({ processor: sinkProcessor });
-    await waitForI18n(comp);
-
-    expect(
-      comp.queryByLabelText("Select processor type")
-    ).not.toBeInTheDocument();
-
-    expect(comp.getByTestId("processor-type-label")).toBeInTheDocument();
-    expect(comp.getByTestId("processor-type-label")).toHaveTextContent("Sink");
-  });
-
-  it("should disable the source section while editing an existing source processor", async () => {
-    const { comp } = setupProcessorEdit({
-      processor: sourceProcessor,
-      getSchema: (): Promise<object> =>
-        new Promise<object>((resolve) => {
-          resolve(SlackSourceSchema);
-        }),
-    });
-    await waitForI18n(comp);
-
-    expect(
-      (comp.getByLabelText("Source type") as HTMLSelectElement).value
-    ).toBe(sourceProcessor.source.type);
-    expect(comp.getByLabelText("Source type")).toBeDisabled();
-    expect(comp.getByLabelText("Channel *")).toBeDisabled();
-    expect(comp.getByLabelText("Token *")).toBeDisabled();
-  });
-
-  it("should disable the action section while editing an existing sink processor", async () => {
     const { comp } = setupProcessorEdit({
       processor: sinkProcessor,
       getSchema: (): Promise<object> =>
@@ -341,10 +397,11 @@ describe("ProcessorEdit component", () => {
     await waitForI18n(comp);
 
     expect(
-      (comp.getByLabelText("Action type") as HTMLSelectElement).value
-    ).toBe(sinkProcessor.action.type);
-    expect(comp.getByLabelText("Action type")).toBeDisabled();
-    expect(comp.getByLabelText("Topic Name *")).toBeDisabled();
+      comp.queryByLabelText("Select processor type")
+    ).not.toBeInTheDocument();
+
+    expect(comp.getByTestId("processor-type-label")).toBeInTheDocument();
+    expect(comp.getByTestId("processor-type-label")).toHaveTextContent("Sink");
   });
 
   it("saves default values inside action/source configuration when the user doesn't change them", async () => {
@@ -392,6 +449,94 @@ describe("ProcessorEdit component", () => {
         parameters: {
           topic,
           delay: defaultDelay,
+        },
+      },
+    });
+  });
+
+  it("handles secret values inside the form and displays a dedicated description", async () => {
+    const { comp, onSave } = setupProcessorEdit({
+      processor: sourceProcessor,
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(SlackSourceSchema);
+        }),
+      saveButtonLabel: "Save",
+    });
+    await waitForI18n(comp);
+
+    const processorName = "Test Processor";
+
+    fireEvent.change(comp.getByLabelText("Processor name *"), {
+      target: { value: processorName },
+    });
+
+    await waitFor(() => {
+      expect(
+        (comp.getByLabelText("Channel *") as HTMLSelectElement).value
+      ).toBe("#test");
+      // secret values are not displayed, hence the token value (empty object) has
+      // been converted to an empty string
+      expect((comp.getByLabelText("Token *") as HTMLSelectElement).value).toBe(
+        ""
+      );
+      expect(
+        comp.queryByText(
+          "This field is a credential and its value cannot be displayed. Entering a new value will update the processor configuration."
+        )
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(comp.getByText("Save"));
+
+    expect(onSave).toHaveBeenCalledTimes(1);
+    expect(onSave).toHaveBeenCalledWith({
+      name: processorName,
+      // source values are the same as the original ones because the token value
+      // has been converted back to an empty object on submit
+      source: sourceProcessor.source,
+    });
+  });
+
+  it("lets you overwrite a secret field with a new value", async () => {
+    const { comp, onSave } = setupProcessorEdit({
+      processor: sourceProcessor,
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(SlackSourceSchema);
+        }),
+      saveButtonLabel: "Save",
+    });
+    await waitForI18n(comp);
+
+    const newTokenValue = "12345";
+
+    await waitFor(() => {
+      // secret values are not displayed
+      expect((comp.getByLabelText("Token *") as HTMLSelectElement).value).toBe(
+        ""
+      );
+      expect(
+        comp.queryByText(
+          "This field is a credential and its value cannot be displayed. Entering a new value will update the processor configuration."
+        )
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.change(comp.getByLabelText("Token *"), {
+      target: { value: newTokenValue },
+    });
+
+    fireEvent.click(comp.getByText("Save"));
+
+    expect(onSave).toHaveBeenCalledTimes(1);
+    expect(onSave).toHaveBeenCalledWith({
+      name: sourceProcessor.name,
+      source: {
+        ...sourceProcessor.source,
+        parameters: {
+          ...sourceProcessor.source.parameters,
+          slack_token: newTokenValue,
         },
       },
     });
@@ -445,13 +590,8 @@ const sourceProcessor = {
   source: {
     type: "slack_source_0.1",
     parameters: {
-      slack_channel: "test",
-      slack_token: "XXXXXXXXXXXX",
-      data_shape: {
-        produces: {
-          format: "application/json",
-        },
-      },
+      slack_channel: "#test",
+      slack_token: {},
     },
   },
 };

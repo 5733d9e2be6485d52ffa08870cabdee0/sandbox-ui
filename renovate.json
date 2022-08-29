@@ -1,5 +1,7 @@
 {
   "extends": ["github>redhat-developer/app-services-renovate-config"],
+  "separateMajorMinor": true,
+  "separateMultipleMajor": true,
   "packageRules": [
     {
       "matchPackagePatterns": ["^uniforms"],

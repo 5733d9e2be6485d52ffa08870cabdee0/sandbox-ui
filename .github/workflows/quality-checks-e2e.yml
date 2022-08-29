@@ -1,4 +1,4 @@
-name: "Smart Events UI :: E2E :: Quality Checks"
+name: "Smart Events UI :: Dev :: Quality Checks"
 on:
   workflow_dispatch:
   pull_request_target:

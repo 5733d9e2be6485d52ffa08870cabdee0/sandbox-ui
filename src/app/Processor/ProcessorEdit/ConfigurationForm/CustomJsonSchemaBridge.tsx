@@ -80,6 +80,7 @@ export class CustomJsonSchemaBridge extends JSONSchemaBridge {
         name,
         label,
         type: "password",
+        autocomplete: "new-password",
       };
     }
     return {

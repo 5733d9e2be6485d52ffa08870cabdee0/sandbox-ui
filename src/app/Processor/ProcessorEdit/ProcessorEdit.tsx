@@ -272,7 +272,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                   grow={{ default: "grow" }}
                   className={"processor-edit__content-wrap"}
                 >
-                  <Form className={"processor-edit__form"}>
+                  <Form className={"processor-edit__form"} autoComplete="off">
                     <FormSection
                       title={t("processor.generalInformation")}
                       titleElement="h2"

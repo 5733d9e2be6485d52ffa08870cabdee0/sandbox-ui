@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
-  Alert,
-  DescriptionList,
-  DescriptionListDescription,
-  DescriptionListGroup,
-  DescriptionListTerm,
   Drawer,
   DrawerContent,
   Dropdown,
@@ -17,15 +12,12 @@ import {
   PageSectionVariants,
   Split,
   SplitItem,
-  Stack,
-  StackItem,
   Tab,
   TabContent,
   Tabs,
   TabTitleText,
   Text,
   TextContent,
-  TextVariants,
 } from "@patternfly/react-core";
 import { useHistory, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -45,11 +37,8 @@ import {
 import { APIErrorCodes } from "@openapi/generated/errors";
 import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
-import { getErrorHandlingMethodByType } from "../../../types/ErrorHandlingMethods";
-import ProcessorDetailConfigParameters from "@app/Processor/ProcessorDetail/ProcessorDetailConfigParameters";
-import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
-import { ProcessorSchemaType } from "../../../types/Processor";
 import { ProcessorsTabContent } from "@app/Instance/InstancePage/ProcessorsTabContent";
+import { ErrorHandlingTabContent } from "@app/Instance/InstancePage/ErrorHandlingTabContent";
 
 export interface InstanceRouteParams {
   instanceId: string;
@@ -68,10 +57,6 @@ const InstancePage = (): JSX.Element => {
     useState<boolean>(false);
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
 
-  const [schema, setSchema] = useState<object>();
-  const [schemaError, setSchemaError] = useState<string | undefined>();
-  const [schemaLoading, setSchemaLoading] = useState(false);
-
   const {
     getBridge,
     bridge,
@@ -82,8 +67,6 @@ const InstancePage = (): JSX.Element => {
   useEffect(() => {
     getBridge(instanceId);
   }, [getBridge, instanceId]);
-
-  const { getSchema } = useGetSchemaApi();
 
   const getPageTitle = useCallback(
     (bridge?: BridgeResponse) => {
@@ -121,29 +104,6 @@ const InstancePage = (): JSX.Element => {
       }
     }
   }, [bridge, bridgeError, getPageTitle, history, t]);
-
-  useEffect(() => {
-    if (bridge?.error_handler?.type) {
-      setSchemaLoading(true);
-      setSchema(undefined);
-      setSchemaError(undefined);
-      getSchema(bridge?.error_handler?.type, ProcessorSchemaType.ACTION)
-        .then((data) => setSchema(data))
-        .catch((error) => {
-          if (error && axios.isAxiosError(error)) {
-            if (
-              isServiceApiError(error) &&
-              getErrorCode(error) === APIErrorCodes.ERROR_4
-            ) {
-              setSchemaError(t("errorHandling.errors.cantFindSchema"));
-            } else {
-              setSchemaError(t("errorHandling.errors.schemaGenericError"));
-            }
-          }
-        })
-        .finally(() => setSchemaLoading(false));
-    }
-  }, [bridge?.error_handler?.type, getSchema, t]);
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -282,98 +242,48 @@ const InstancePage = (): JSX.Element => {
                   />
                 </Tabs>
               </PageSection>
+              <PageSection>
+                <TabContent
+                  eventKey={0}
+                  id="instance-page__tabs-processors"
+                  ouiaId="processors"
+                  ref={processorsTabRef}
+                  aria-label="Processors tab"
+                >
+                  <ProcessorsTabContent
+                    instanceId={instanceId}
+                    pageTitle={getPageTitle(bridge)}
+                  />
+                </TabContent>
+                <TabContent
+                  eventKey={1}
+                  id="instance-page__tabs-error-handling"
+                  ouiaId="error-handling"
+                  ref={errorHandlingTabRef}
+                  aria-label="Error handling tab"
+                  hidden
+                >
+                  <ErrorHandlingTabContent
+                    errorHandlerType={bridge?.error_handler?.type}
+                    errorHandlerParameters={
+                      bridge?.error_handler?.parameters as {
+                        [p: string]: unknown;
+                      }
+                    }
+                  />
+                </TabContent>
+              </PageSection>
+              <DeleteInstance
+                instanceId={bridge?.id}
+                instanceName={bridge?.name}
+                showDeleteModal={showInstanceDeleteModal}
+                onCanceled={(): void => setShowInstanceDeleteModal(false)}
+                onDeleted={handleOnDeleteInstanceSuccess}
+              />
             </DrawerContent>
           </Drawer>
         </>
       )}
-      <PageSection>
-        <TabContent
-          eventKey={0}
-          id="instance-page__tabs-processors"
-          ouiaId="processors"
-          ref={processorsTabRef}
-          aria-label="Processors tab"
-        >
-          <ProcessorsTabContent
-            instanceId={instanceId}
-            pageTitle={getPageTitle(bridge)}
-          />
-        </TabContent>
-        {bridge && (
-          <TabContent
-            eventKey={1}
-            id="instance-page__tabs-error-handling"
-            ouiaId="error-handling"
-            ref={errorHandlingTabRef}
-            aria-label="Error handling tab"
-            hidden
-          >
-            <PageSection
-              className="instance-page__tabs-error-handling__section"
-              variant={PageSectionVariants.light}
-              isFilled
-            >
-              <Stack hasGutter>
-                <StackItem>
-                  <TextContent>
-                    <Text
-                      component={TextVariants.h2}
-                      ouiaId="error-handling-section"
-                    >
-                      {t("common.errorHandlingMethod")}
-                    </Text>
-                  </TextContent>
-                </StackItem>
-                <StackItem>
-                  <DescriptionList>
-                    <DescriptionListGroup key="error-handling-method">
-                      <DescriptionListTerm>
-                        {t("common.errorHandlingMethod")}
-                      </DescriptionListTerm>
-                      <DescriptionListDescription>
-                        {
-                          getErrorHandlingMethodByType(
-                            bridge.error_handler?.type
-                          ).label
-                        }
-                      </DescriptionListDescription>
-                    </DescriptionListGroup>
-                    {schema && !schemaError && !schemaLoading && (
-                      <>
-                        <ProcessorDetailConfigParameters
-                          schema={schema}
-                          parameters={
-                            bridge.error_handler?.parameters as {
-                              [key: string]: unknown;
-                            }
-                          }
-                        />
-                      </>
-                    )}
-                    {schemaError && (
-                      <Alert
-                        className="instance-page__tabs-error-handling__alert"
-                        ouiaId="error-schema"
-                        variant="danger"
-                        title={schemaError}
-                        aria-live="polite"
-                        isInline
-                      />
-                    )}
-                  </DescriptionList>
-                </StackItem>
-              </Stack>
-            </PageSection>
-          </TabContent>
-        )}
-      </PageSection>
-      <DeleteInstance
-        instanceId={bridge?.id}
-        instanceName={bridge?.name}
-        showDeleteModal={showInstanceDeleteModal}
-        onCanceled={(): void => setShowInstanceDeleteModal(false)}
-        onDeleted={handleOnDeleteInstanceSuccess}
-      />
     </>
   );
 };

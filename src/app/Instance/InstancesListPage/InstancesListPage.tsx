@@ -96,12 +96,12 @@ const InstancesListPage = (): JSX.Element => {
       label: t("common.status"),
       formatter: (value: IRowData, row?: IRow): JSX.Element => {
         const statusString = value as unknown as ManagedResourceStatus;
-        const submittedAt = new Date((row as BridgeResponse)?.submitted_at);
+        const requestedAt = new Date((row as BridgeResponse)?.submitted_at);
         return (
           <SEStatusLabel
             status={statusString}
             resourceType={"bridge"}
-            requestedAt={submittedAt}
+            requestedAt={requestedAt}
           />
         );
       },

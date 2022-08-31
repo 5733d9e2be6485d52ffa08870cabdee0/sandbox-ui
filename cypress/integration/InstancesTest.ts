@@ -40,7 +40,7 @@ describe("Instances Test", () => {
           cy.ouiaId(instanceName, "PF4/TableRow")
             .find("td")
             .eq(2)
-            .should("have.text", "deprovision");
+            .should("have.text", "Deleting");
 
           // once deprovision is completed, entry should disappear
           cy.ouiaId(instanceName, "PF4/TableRow", { timeout: 120000 }).should(

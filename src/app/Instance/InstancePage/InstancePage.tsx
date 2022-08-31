@@ -13,7 +13,6 @@ import {
   Split,
   SplitItem,
   Tab,
-  TabContent,
   Tabs,
   TabTitleText,
   Text,
@@ -48,9 +47,6 @@ const InstancePage = (): JSX.Element => {
   const { instanceId } = useParams<InstanceRouteParams>();
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const history = useHistory();
-
-  const processorsTabRef = React.createRef<HTMLElement>();
-  const errorHandlingTabRef = React.createRef<HTMLElement>();
 
   const [activeTabKey, setActiveTabKey] = useState<number | string>(0);
   const [isDropdownActionOpen, setIsDropdownActionOpen] =
@@ -103,7 +99,7 @@ const InstancePage = (): JSX.Element => {
         );
       }
     }
-  }, [bridge, bridgeError, getPageTitle, history, t]);
+  }, [bridgeError, getPageTitle, history, t]);
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -124,167 +120,140 @@ const InstancePage = (): JSX.Element => {
   }, [history]);
 
   return (
-    <>
-      {isBridgeLoading && (
-        <>
+    <Drawer isExpanded={showInstanceDrawer}>
+      <DrawerContent
+        data-ouia-component-id="instance-drawer"
+        panelContent={
+          bridge && (
+            <InstanceDetails
+              onClosingDetails={(): void => setShowInstanceDrawer(false)}
+              instance={bridge}
+            />
+          )
+        }
+      >
+        {isBridgeLoading && (
           <PageHeaderSkeleton
             pageTitle={t("instance.loadingInstance")}
             hasActionDropdown={true}
             hasLabel={false}
-            totalTabs={2}
           />
-        </>
-      )}
-      {bridge && (
-        <>
-          <Drawer isExpanded={showInstanceDrawer}>
-            <DrawerContent
-              data-ouia-component-id="instance-drawer"
-              panelContent={
-                <InstanceDetails
-                  onClosingDetails={(): void => setShowInstanceDrawer(false)}
-                  instance={bridge}
-                />
-              }
-            >
-              <PageSection
-                variant={PageSectionVariants.light}
-                type="breadcrumb"
-              >
-                <Breadcrumb
-                  path={[
-                    { label: t("instance.smartEventInstances"), linkTo: "/" },
-                    { label: bridge.name ?? "" },
-                  ]}
-                />
-              </PageSection>
-              <PageSection variant={PageSectionVariants.light}>
-                <Split>
-                  <SplitItem isFilled>
-                    <TextContent>
-                      <Text ouiaId="instance-name" component="h1">
-                        {bridge.name}
-                      </Text>
-                    </TextContent>
-                  </SplitItem>
-                  <SplitItem>
-                    <Dropdown
-                      className="instance-page__actions"
-                      ouiaId="actions"
-                      onSelect={(): void => setIsDropdownActionOpen(false)}
-                      position={DropdownPosition.right}
-                      toggle={
-                        <DropdownToggle
-                          ouiaId="actions"
-                          onToggle={(isOpen: boolean): void =>
-                            setIsDropdownActionOpen(isOpen)
-                          }
-                          toggleIndicator={CaretDownIcon}
-                        >
-                          {t("common.actions")}
-                        </DropdownToggle>
-                      }
-                      isOpen={isDropdownActionOpen}
-                      dropdownItems={[
-                        <DropdownGroup
-                          key="details-group"
-                          label={t("instance.viewInformation")}
-                        >
-                          <DropdownItem
-                            key="details"
-                            ouiaId="details"
-                            onClick={(): void => {
-                              setShowInstanceDrawer(true);
-                            }}
-                          >
-                            {t("common.details")}
-                          </DropdownItem>
-                        </DropdownGroup>,
-                        <DropdownSeparator key="separator" />,
-                        <DropdownItem
-                          key="delete"
-                          ouiaId="delete"
-                          onClick={deleteInstance}
-                          isDisabled={!canDeleteResource(bridge.status)}
-                        >
-                          {t("instance.delete")}
-                        </DropdownItem>,
-                      ]}
-                    />
-                  </SplitItem>
-                </Split>
-              </PageSection>
-              <PageSection variant={PageSectionVariants.light} type="tabs">
-                <Tabs
-                  className="instance-page__tabs"
-                  ouiaId="instance-details"
-                  usePageInsets
-                  activeKey={activeTabKey}
-                  onSelect={handleTabClick}
-                >
-                  <Tab
-                    eventKey={0}
-                    ouiaId="processors"
-                    tabContentId="instance-page__tabs-processors"
-                    tabContentRef={processorsTabRef}
-                    title={
-                      <TabTitleText>{t("common.processors")}</TabTitleText>
-                    }
-                  />
-                  <Tab
-                    eventKey={1}
-                    ouiaId="error-handling"
-                    tabContentId="instance-page__tabs-error-handling"
-                    tabContentRef={errorHandlingTabRef}
-                    title={
-                      <TabTitleText>{t("common.errorHandling")}</TabTitleText>
-                    }
-                  />
-                </Tabs>
-              </PageSection>
-              <PageSection>
-                <TabContent
-                  eventKey={0}
-                  id="instance-page__tabs-processors"
-                  ouiaId="processors"
-                  ref={processorsTabRef}
-                  aria-label="Processors tab"
-                >
-                  <ProcessorsTabContent
-                    instanceId={instanceId}
-                    pageTitle={getPageTitle(bridge)}
-                  />
-                </TabContent>
-                <TabContent
-                  eventKey={1}
-                  id="instance-page__tabs-error-handling"
-                  ouiaId="error-handling"
-                  ref={errorHandlingTabRef}
-                  aria-label="Error handling tab"
-                  hidden
-                >
-                  <ErrorHandlingTabContent
-                    errorHandlerType={bridge?.error_handler?.type}
-                    errorHandlerParameters={
-                      bridge?.error_handler?.parameters as {
-                        [p: string]: unknown;
-                      }
-                    }
-                  />
-                </TabContent>
-              </PageSection>
-              <DeleteInstance
-                instanceId={bridge?.id}
-                instanceName={bridge?.name}
-                showDeleteModal={showInstanceDeleteModal}
-                onCanceled={(): void => setShowInstanceDeleteModal(false)}
-                onDeleted={handleOnDeleteInstanceSuccess}
+        )}
+        {bridge && (
+          <>
+            <PageSection variant={PageSectionVariants.light} type="breadcrumb">
+              <Breadcrumb
+                path={[
+                  { label: t("instance.smartEventInstances"), linkTo: "/" },
+                  { label: bridge.name ?? "" },
+                ]}
               />
-            </DrawerContent>
-          </Drawer>
-        </>
-      )}
-    </>
+            </PageSection>
+            <PageSection variant={PageSectionVariants.light}>
+              <Split>
+                <SplitItem isFilled>
+                  <TextContent>
+                    <Text ouiaId="instance-name" component="h1">
+                      {bridge.name}
+                    </Text>
+                  </TextContent>
+                </SplitItem>
+                <SplitItem>
+                  <Dropdown
+                    className="instance-page__actions"
+                    ouiaId="actions"
+                    onSelect={(): void => setIsDropdownActionOpen(false)}
+                    position={DropdownPosition.right}
+                    toggle={
+                      <DropdownToggle
+                        ouiaId="actions"
+                        onToggle={(isOpen: boolean): void =>
+                          setIsDropdownActionOpen(isOpen)
+                        }
+                        toggleIndicator={CaretDownIcon}
+                      >
+                        {t("common.actions")}
+                      </DropdownToggle>
+                    }
+                    isOpen={isDropdownActionOpen}
+                    dropdownItems={[
+                      <DropdownGroup
+                        key="details-group"
+                        label={t("instance.viewInformation")}
+                      >
+                        <DropdownItem
+                          key="details"
+                          ouiaId="details"
+                          onClick={(): void => {
+                            setShowInstanceDrawer(true);
+                          }}
+                        >
+                          {t("common.details")}
+                        </DropdownItem>
+                      </DropdownGroup>,
+                      <DropdownSeparator key="separator" />,
+                      <DropdownItem
+                        key="delete"
+                        ouiaId="delete"
+                        onClick={deleteInstance}
+                        isDisabled={!canDeleteResource(bridge.status)}
+                      >
+                        {t("instance.delete")}
+                      </DropdownItem>,
+                    ]}
+                  />
+                </SplitItem>
+              </Split>
+            </PageSection>
+          </>
+        )}
+        <PageSection variant={PageSectionVariants.light} type="tabs">
+          <Tabs
+            mountOnEnter
+            unmountOnExit
+            className="instance-page__tabs"
+            ouiaId="instance-details"
+            usePageInsets
+            activeKey={activeTabKey}
+            onSelect={handleTabClick}
+          >
+            <Tab
+              eventKey={0}
+              ouiaId="processors"
+              tabContentId="instance-page__tabs-processors"
+              title={<TabTitleText>{t("common.processors")}</TabTitleText>}
+            >
+              <ProcessorsTabContent
+                instanceId={instanceId}
+                pageTitle={getPageTitle(bridge)}
+              />
+            </Tab>
+            <Tab
+              eventKey={1}
+              ouiaId="error-handling"
+              tabContentId="instance-page__tabs-error-handling"
+              title={<TabTitleText>{t("common.errorHandling")}</TabTitleText>}
+            >
+              <ErrorHandlingTabContent
+                errorHandlingType={bridge?.error_handler?.type}
+                errorHandlingParameters={
+                  bridge?.error_handler?.parameters as {
+                    [p: string]: unknown;
+                  }
+                }
+              />
+            </Tab>
+          </Tabs>
+        </PageSection>
+        <DeleteInstance
+          instanceId={bridge?.id}
+          instanceName={bridge?.name}
+          showDeleteModal={showInstanceDeleteModal}
+          onCanceled={(): void => setShowInstanceDeleteModal(false)}
+          onDeleted={handleOnDeleteInstanceSuccess}
+        />
+      </DrawerContent>
+    </Drawer>
   );
 };
 

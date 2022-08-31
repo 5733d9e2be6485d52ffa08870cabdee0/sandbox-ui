@@ -209,7 +209,10 @@ const InstancePage = (): JSX.Element => {
       label: t("common.status"),
       formatter: (value: IRowData, row?: IRow): JSX.Element => {
         const statusString = value as unknown as ManagedResourceStatus;
-        const submittedAt = new Date((row as ProcessorResponse)?.submitted_at);
+        const submittedAt = new Date(
+          (row as ProcessorResponse).modified_at ??
+            (row as ProcessorResponse).submitted_at
+        );
         return (
           <SEStatusLabel
             status={statusString}

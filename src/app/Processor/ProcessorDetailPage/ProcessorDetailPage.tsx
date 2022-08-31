@@ -345,7 +345,12 @@ const ProcessorDetailPage = (): JSX.Element => {
                     <SEStatusLabel
                       status={currentProcessor.status}
                       resourceType={"processor"}
-                      requestedAt={new Date(currentProcessor.submitted_at)}
+                      requestedAt={
+                        new Date(
+                          currentProcessor.modified_at ??
+                            currentProcessor.submitted_at
+                        )
+                      }
                       singleDelayedCheck={true}
                     />
                   </StackItem>

@@ -16,13 +16,15 @@ export function useResourceDelayedStatus(
   const [alert, setAlert] = useState<ResourceStatusDelayed>();
 
   const checkCreatedAt = useCallback(() => {
-    const elapsed = differenceInMinutes(new Date(), requestedAt);
-    if (elapsed >= errorAfterMinutes) {
-      setAlert(ResourceStatusDelayed.ERROR);
-    } else if (elapsed >= warningAfterMinutes) {
-      setAlert(ResourceStatusDelayed.WARNING);
+    if (status === ResourceStatus.CREATING) {
+      const elapsed = differenceInMinutes(new Date(), requestedAt);
+      if (elapsed >= errorAfterMinutes) {
+        setAlert(ResourceStatusDelayed.ERROR);
+      } else if (elapsed >= warningAfterMinutes) {
+        setAlert(ResourceStatusDelayed.WARNING);
+      }
     }
-  }, [requestedAt, errorAfterMinutes, warningAfterMinutes]);
+  }, [requestedAt, errorAfterMinutes, warningAfterMinutes, status]);
 
   useEffect(() => {
     checkCreatedAt();

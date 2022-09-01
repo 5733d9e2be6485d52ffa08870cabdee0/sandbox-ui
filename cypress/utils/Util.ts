@@ -51,7 +51,7 @@ export function waitTillInstanceIsReady(instanceName: string) {
     .within(() => {
       cy.get("td:nth-child(3)", { timeout: 30000 }).should(
         "have.text",
-        "ready"
+        "Ready"
       );
     });
 }

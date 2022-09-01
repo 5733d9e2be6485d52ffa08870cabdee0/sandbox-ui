@@ -38,9 +38,29 @@
     "save": "Save",
     "selectType": "Select type",
     "status": "Status",
+    "statuses": {
+      "ready": "Ready",
+      "creating": "Creating",
+      "deleting": "Deleting",
+      "failed": "Failed"
+    },
+    "resourceSteps": {
+      "pending": {
+        "title": "Creation pending"
+      },
+      "preparing": {
+        "title": "Preparing"
+      },
+      "provisioning": {
+        "title": "Provisioning"
+      },
+      "stepsCount": "{{currentStep}} of {{total}} steps completed"
+    },
     "submittedAt": "Time created",
     "submittingRequest": "Submitting request",
     "temporaryUnavailable": "Temporary unavailable",
+    "thisWillBeReadyShortly": "This will be ready shortly.",
+    "thisIsTakingLongerThanExpected": "This is taking longer than expected.",
     "tryAgainLater": "Try again later.",
     "type": "Type",
     "typeNameToConfirmHTML": "Type <strong>{{name}}</strong> to confirm deletion.",
@@ -51,6 +71,7 @@
   "instance": {
     "createASEInstance": "Create a Smart Events instance",
     "createSEInstance": "Create Smart Events instance",
+    "creatingInstance": "Creating instance",
     "cloudProvider": "Cloud Provider",
     "cloudRegion": "Cloud Region",
     "cloudRegionsUnavailable": "Cloud provider regions are temporarily unavailable. Try again later.",
@@ -91,6 +112,7 @@
     "channel": "Channel",
     "commaSeparatedValuesTooltip": "For this filter type, it is necessary to specify a list of values separated by a comma.",
     "createProcessor": "Create processor",
+    "creatingProcessor": "Creating processor",
     "credentialEditFieldHelpText": "This field is a credential and its value cannot be displayed. Entering a new value will update the processor configuration.",
     "delete": "Delete processor",
     "deleteFilter": "Delete filter",

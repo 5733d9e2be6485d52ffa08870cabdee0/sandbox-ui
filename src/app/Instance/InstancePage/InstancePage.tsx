@@ -36,13 +36,16 @@ import { IAction, IRow, IRowData } from "@patternfly/react-table";
 import { formatDistance } from "date-fns";
 import "./InstancePage.css";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
-import StatusLabel from "@app/components/StatusLabel/StatusLabel";
 import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
 import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
-import { BridgeResponse } from "@rhoas/smart-events-management-sdk";
+import {
+  BridgeResponse,
+  ManagedResourceStatus,
+  ProcessorResponse,
+} from "@rhoas/smart-events-management-sdk";
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
@@ -54,6 +57,7 @@ import {
 import { APIErrorCodes } from "@openapi/generated/errors";
 import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
+import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 
 export interface InstanceRouteParams {
   instanceId: string;
@@ -203,9 +207,19 @@ const InstancePage = (): JSX.Element => {
     {
       accessor: "status",
       label: t("common.status"),
-      formatter: (value: IRowData): JSX.Element => {
-        const statusString = (value as unknown as string) ?? "";
-        return <StatusLabel status={statusString} />;
+      formatter: (value: IRowData, row?: IRow): JSX.Element => {
+        const statusString = value as unknown as ManagedResourceStatus;
+        const requestedAt = new Date(
+          (row as ProcessorResponse).modified_at ??
+            (row as ProcessorResponse).submitted_at
+        );
+        return (
+          <SEStatusLabel
+            status={statusString}
+            resourceType={"processor"}
+            requestedAt={requestedAt}
+          />
+        );
       },
     },
   ];

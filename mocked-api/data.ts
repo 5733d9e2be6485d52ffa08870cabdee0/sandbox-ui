@@ -12,7 +12,7 @@ export const instancesData = [
       "https://3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     error_handler: {
       type: "webhook_sink_0.1",
-      parameters: `{"endpoint":"http://google.com","basic_auth_password":"user","basic_auth_username":"my-password","ssl_verification_disabled":false}`,
+      parameters: `{"endpoint":"http://google.com","basic_auth_password":"my-password","basic_auth_username":"user","ssl_verification_disabled":false}`,
     },
   },
   {

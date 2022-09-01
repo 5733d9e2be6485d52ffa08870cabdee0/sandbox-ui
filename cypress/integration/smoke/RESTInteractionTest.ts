@@ -85,7 +85,7 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
           .within(($item) => {
             cy.get("td:first").should("have.text", bridgeName);
             cy.get("td:nth-child(3)").then(($state) => {
-              cy.wrap($state).should("have.text", "deprovision");
+              cy.wrap($state).should("have.text", "Deleting");
             });
             cy.wrap($item, { timeout: 60000 }).should("not.exist");
           });
@@ -109,7 +109,7 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
         .within(() => {
           cy.get("td:first").should("have.text", bridgeName);
           cy.get("td:nth-child(3)").then(($state) => {
-            cy.wrap($state, { timeout: 60000 }).should("have.text", "ready");
+            cy.wrap($state, { timeout: 60000 }).should("have.text", "Ready");
           });
         });
     });

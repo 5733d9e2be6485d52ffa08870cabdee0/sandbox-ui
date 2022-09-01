@@ -1,6 +1,9 @@
 import { useEffect, useRef } from "react";
 
-export function usePolling(callback: () => void, delay: number): void {
+export function usePolling(
+  callback: () => void,
+  delay: number
+): void | (() => void) {
   const savedCallback = useRef(callback);
 
   useEffect(() => {

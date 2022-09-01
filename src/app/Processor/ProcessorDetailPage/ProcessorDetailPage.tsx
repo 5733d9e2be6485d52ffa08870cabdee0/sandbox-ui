@@ -20,7 +20,6 @@ import { useTranslation } from "react-i18next";
 import ProcessorDetail from "@app/Processor/ProcessorDetail/ProcessorDetail";
 import { CaretDownIcon } from "@patternfly/react-icons";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
-import StatusLabel from "@app/components/StatusLabel/StatusLabel";
 import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
 import { useGetProcessorApi } from "../../../hooks/useProcessorsApi/useGetProcessorApi";
 import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
@@ -46,6 +45,7 @@ import {
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
 import { ActionModal } from "@app/components/ActionModal/ActionModal";
+import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
@@ -342,7 +342,17 @@ const ProcessorDetailPage = (): JSX.Element => {
                     </TextContent>
                   </StackItem>
                   <StackItem>
-                    <StatusLabel status={currentProcessor.status ?? ""} />
+                    <SEStatusLabel
+                      status={currentProcessor.status}
+                      resourceType={"processor"}
+                      requestedAt={
+                        new Date(
+                          currentProcessor.modified_at ??
+                            currentProcessor.submitted_at
+                        )
+                      }
+                      singleDelayedCheck={true}
+                    />
                   </StackItem>
                 </Stack>
               </SplitItem>

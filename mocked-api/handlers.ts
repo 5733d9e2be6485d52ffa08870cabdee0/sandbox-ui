@@ -54,6 +54,7 @@ const db = factory({
     href: String,
     submitted_at: String,
     published_at: String,
+    modified_at: String,
     status: String,
     filters: Array,
     transformationTemplate: String,
@@ -682,6 +683,7 @@ export const handlers = [
         data: {
           name,
           status: "accepted",
+          modified_at: new Date().toISOString(),
           filters: filters as unknown as EventFilter[],
           transformationTemplate,
           ...(action ? { action: convertParametersToString(action) } : {}),
@@ -1082,6 +1084,10 @@ const prepareProcessor = (
       (processor.action as typeof parsedParameters).parameters =
         parsedParameters;
     }
+  }
+
+  if (processor.modified_at === "") {
+    omitProperties.push("modified_at");
   }
 
   return omit(processor, omitProperties) as ProcessorResponse;

@@ -11,7 +11,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.ouiaId("Instance ten", "PF4/TableRow")
           .find("td")
           .eq(2)
-          .should("have.text", "deprovision");
+          .should("have.text", "Deleting");
 
         // once deprovision is completed, entry should disappear
         cy.ouiaId("Instance ten", "PF4/TableRow", { timeout: 30000 }).should(
@@ -28,7 +28,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         .find("td")
         .then(($cells) => {
           expect($cells).have.length(4);
-          expect($cells.eq(2)).have.text("ready");
+          expect($cells.eq(2)).have.text("Ready");
           cy.wrap($cells.eq(3)).ouiaType("PF4/Dropdown").click();
         });
 
@@ -60,7 +60,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           .then(($cells) => {
             expect($cells).have.length(5);
             expect($cells.eq(0)).have.text("Processor one");
-            expect($cells.eq(3)).have.text("ready");
+            expect($cells.eq(3)).have.text("Ready");
             cy.wrap($cells.eq(4)).ouiaType("PF4/Dropdown").click();
           });
       });
@@ -82,7 +82,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           cy.ouiaId("Processor one", "PF4/TableRow")
             .find("td")
             .eq(3)
-            .should("have.text", "deprovision");
+            .should("have.text", "Deleting");
 
           // once deprovision is completed, entry should disappear
           cy.ouiaId("Processor one", "PF4/TableRow", { timeout: 30000 }).should(

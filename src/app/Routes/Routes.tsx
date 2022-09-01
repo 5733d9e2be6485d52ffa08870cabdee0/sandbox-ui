@@ -20,7 +20,12 @@ const Routes = (): JSX.Element => {
         <Route path={`/instance/:instanceId/create-processor`}>
           <CreateProcessorPage />
         </Route>
-        <Route path={`/instance/:instanceId`}>
+        <Route
+          path={`/instance/:instanceId/:tabName(processors|error-handling)`}
+        >
+          <InstancePage />
+        </Route>
+        <Route exact path={`/instance/:instanceId`}>
           <InstancePage />
         </Route>
         <Route path="*" component={PageNotFound} />

@@ -13,7 +13,10 @@ import {
   TextContent,
   TextVariants,
 } from "@patternfly/react-core";
-import { getErrorHandlingMethodByType } from "../../../types/ErrorHandlingMethods";
+import {
+  ERROR_HANDLING_METHODS,
+  getErrorHandlingMethodByType,
+} from "../../../types/ErrorHandlingMethods";
 import ProcessorDetailConfigParameters from "@app/Processor/ProcessorDetail/ProcessorDetailConfigParameters";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -29,11 +32,13 @@ import { APIErrorCodes } from "@openapi/generated/errors";
 interface ErrorHandlingTabContentProps {
   errorHandlingType?: string;
   errorHandlingParameters?: { [p: string]: unknown };
+  isBridgeLoading: boolean;
 }
 
 export const ErrorHandlingTabContent = ({
   errorHandlingType,
   errorHandlingParameters,
+  isBridgeLoading,
 }: ErrorHandlingTabContentProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
@@ -70,17 +75,31 @@ export const ErrorHandlingTabContent = ({
     const parametersLength = errorHandlingParameters
       ? Object.keys(errorHandlingParameters).length
       : 1;
-    return [...(Array(parametersLength) as unknown[])].map(() => (
+    return (
       <DescriptionListGroup key="error-handling-loading-skeletons">
-        <DescriptionListTerm>
-          <Skeleton fontSize="2xl" width={"60px"} />
-        </DescriptionListTerm>
-        <DescriptionListDescription>
-          <Skeleton fontSize="2xl" width={"100px"} />
-        </DescriptionListDescription>
+        {[...(Array(parametersLength) as unknown[])].map((_, index) => (
+          <React.Fragment key={index}>
+            <DescriptionListTerm>
+              <Skeleton fontSize="2xl" width={"60px"} />
+            </DescriptionListTerm>
+            <DescriptionListDescription>
+              <Skeleton fontSize="2xl" width={"100px"} />
+            </DescriptionListDescription>
+          </React.Fragment>
+        ))}
       </DescriptionListGroup>
-    ));
+    );
   }, [errorHandlingParameters]);
+
+  const getErrorHandlingMethodLabel = useMemo(() => {
+    if (errorHandlingType) {
+      return getErrorHandlingMethodByType(errorHandlingType).label;
+    }
+    if (isBridgeLoading) {
+      return <Skeleton fontSize="2xl" width={"60px"} />;
+    }
+    return ERROR_HANDLING_METHODS.default.label;
+  }, [errorHandlingType, isBridgeLoading]);
 
   return (
     <PageSection
@@ -103,11 +122,7 @@ export const ErrorHandlingTabContent = ({
                 {t("common.errorHandlingMethod")}
               </DescriptionListTerm>
               <DescriptionListDescription>
-                {errorHandlingType ? (
-                  getErrorHandlingMethodByType(errorHandlingType).label
-                ) : (
-                  <Skeleton fontSize="2xl" width={"60px"} />
-                )}
+                {getErrorHandlingMethodLabel}
               </DescriptionListDescription>
             </DescriptionListGroup>
             {errorHandlingParameters &&

@@ -39,16 +39,25 @@ import { ErrorWithDetail } from "../../../types/Error";
 import { ProcessorsTabContent } from "@app/Instance/InstancePage/ProcessorsTabContent";
 import { ErrorHandlingTabContent } from "@app/Instance/InstancePage/ErrorHandlingTabContent";
 
+const INSTANCE_PAGE_TAB_KEYS = {
+  processors: 0,
+  "error-handling": 1,
+};
+
 export interface InstanceRouteParams {
   instanceId: string;
+  tabName?: keyof typeof INSTANCE_PAGE_TAB_KEYS;
 }
 
 const InstancePage = (): JSX.Element => {
-  const { instanceId } = useParams<InstanceRouteParams>();
+  const { instanceId, tabName = "processors" } =
+    useParams<InstanceRouteParams>();
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const history = useHistory();
 
-  const [activeTabKey, setActiveTabKey] = useState<number | string>(0);
+  const [activeTabKey, setActiveTabKey] = useState<number | string>(
+    INSTANCE_PAGE_TAB_KEYS[tabName]
+  );
   const [isDropdownActionOpen, setIsDropdownActionOpen] =
     useState<boolean>(false);
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
@@ -103,9 +112,17 @@ const InstancePage = (): JSX.Element => {
 
   const handleTabClick = (
     _: React.MouseEvent<HTMLElement, MouseEvent>,
-    eventKey: number | string
+    tabNumber: number | string
   ): void => {
-    setActiveTabKey(eventKey);
+    setActiveTabKey(tabNumber);
+
+    const selectedTabName =
+      Object.keys(INSTANCE_PAGE_TAB_KEYS).find(
+        (tabName) =>
+          (INSTANCE_PAGE_TAB_KEYS as { [tabName: string]: number })[tabName] ===
+          (tabNumber as number)
+      ) ?? "";
+    history.push(`/instance/${instanceId}/${selectedTabName}`);
   };
 
   const [showInstanceDeleteModal, setShowInstanceDeleteModal] = useState(false);
@@ -218,7 +235,7 @@ const InstancePage = (): JSX.Element => {
             onSelect={handleTabClick}
           >
             <Tab
-              eventKey={0}
+              eventKey={INSTANCE_PAGE_TAB_KEYS.processors}
               ouiaId="processors"
               tabContentId="instance-page__tabs-processors"
               title={<TabTitleText>{t("common.processors")}</TabTitleText>}
@@ -229,12 +246,13 @@ const InstancePage = (): JSX.Element => {
               />
             </Tab>
             <Tab
-              eventKey={1}
+              eventKey={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
               ouiaId="error-handling"
               tabContentId="instance-page__tabs-error-handling"
               title={<TabTitleText>{t("common.errorHandling")}</TabTitleText>}
             >
               <ErrorHandlingTabContent
+                isBridgeLoading={isBridgeLoading}
                 errorHandlingType={bridge?.error_handler?.type}
                 errorHandlingParameters={
                   bridge?.error_handler?.parameters as {

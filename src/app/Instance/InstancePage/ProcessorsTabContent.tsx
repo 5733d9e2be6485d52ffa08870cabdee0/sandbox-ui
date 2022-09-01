@@ -18,7 +18,7 @@ import {
   ManagedResourceStatus,
   ProcessorResponse,
 } from "@rhoas/smart-events-management-sdk";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
@@ -40,7 +40,6 @@ export const ProcessorsTabContent = ({
   pageTitle,
 }: ProcessorTabContentProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
-  const location = useLocation();
 
   const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
   const [currentPageSize, setCurrentPageSize] =
@@ -60,7 +59,7 @@ export const ProcessorsTabContent = ({
         return (
           <Link
             data-testid="tableProcessors-linkProcessor"
-            to={`${location.pathname}/processor/${processorId}`}
+            to={`/instance/${instanceId}/processor/${processorId}`}
           >
             {value}
           </Link>
@@ -107,7 +106,7 @@ export const ProcessorsTabContent = ({
   ];
 
   const customToolbarElement = (
-    <Link to={`${location.pathname}/create-processor`}>
+    <Link to={`/instance/${instanceId}/create-processor`}>
       <Button ouiaId="create-processor" variant="primary">
         {t("processor.createProcessor")}
       </Button>

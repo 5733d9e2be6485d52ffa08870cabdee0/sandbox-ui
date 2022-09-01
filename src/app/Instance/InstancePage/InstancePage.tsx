@@ -240,10 +240,12 @@ const InstancePage = (): JSX.Element => {
               tabContentId="instance-page__tabs-processors"
               title={<TabTitleText>{t("common.processors")}</TabTitleText>}
             >
-              <ProcessorsTabContent
-                instanceId={instanceId}
-                pageTitle={getPageTitle(bridge)}
-              />
+              <PageSection>
+                <ProcessorsTabContent
+                  instanceId={instanceId}
+                  pageTitle={getPageTitle(bridge)}
+                />
+              </PageSection>
             </Tab>
             <Tab
               eventKey={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
@@ -251,15 +253,17 @@ const InstancePage = (): JSX.Element => {
               tabContentId="instance-page__tabs-error-handling"
               title={<TabTitleText>{t("common.errorHandling")}</TabTitleText>}
             >
-              <ErrorHandlingTabContent
-                isBridgeLoading={isBridgeLoading}
-                errorHandlingType={bridge?.error_handler?.type}
-                errorHandlingParameters={
-                  bridge?.error_handler?.parameters as {
-                    [p: string]: unknown;
+              <PageSection>
+                <ErrorHandlingTabContent
+                  isBridgeLoading={isBridgeLoading}
+                  errorHandlingType={bridge?.error_handler?.type}
+                  errorHandlingParameters={
+                    bridge?.error_handler?.parameters as {
+                      [p: string]: unknown;
+                    }
                   }
-                }
-              />
+                />
+              </PageSection>
             </Tab>
           </Tabs>
         </PageSection>

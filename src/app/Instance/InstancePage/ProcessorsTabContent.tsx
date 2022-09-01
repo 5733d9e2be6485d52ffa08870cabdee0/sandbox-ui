@@ -13,10 +13,13 @@ import {
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import React, { useCallback, useEffect, useState } from "react";
 import { IAction, IRow, IRowData } from "@patternfly/react-table";
-import { BridgeResponse } from "@rhoas/smart-events-management-sdk";
+import {
+  BridgeResponse,
+  ManagedResourceStatus,
+  ProcessorResponse,
+} from "@rhoas/smart-events-management-sdk";
 import { Link, useLocation } from "react-router-dom";
 import { formatDistance } from "date-fns";
-import StatusLabel from "@app/components/StatusLabel/StatusLabel";
 import { useTranslation } from "react-i18next";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
@@ -25,6 +28,7 @@ import { TableWithPaginationSkeleton } from "@app/components/TableWithPagination
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
+import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 
 interface ProcessorTabContentProps {
   instanceId: string;
@@ -85,9 +89,19 @@ export const ProcessorsTabContent = ({
     {
       accessor: "status",
       label: t("common.status"),
-      formatter: (value: IRowData): JSX.Element => {
-        const statusString = (value as unknown as string) ?? "";
-        return <StatusLabel status={statusString} />;
+      formatter: (value: IRowData, row?: IRow): JSX.Element => {
+        const statusString = value as unknown as ManagedResourceStatus;
+        const requestedAt = new Date(
+          (row as ProcessorResponse).modified_at ??
+            (row as ProcessorResponse).submitted_at
+        );
+        return (
+          <SEStatusLabel
+            status={statusString}
+            resourceType={"processor"}
+            requestedAt={requestedAt}
+          />
+        );
       },
     },
   ];

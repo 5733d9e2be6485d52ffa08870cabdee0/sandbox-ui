@@ -62,6 +62,10 @@ const InstancePage = (): JSX.Element => {
     useState<boolean>(false);
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
 
+  useEffect(() => {
+    setActiveTabKey(INSTANCE_PAGE_TAB_KEYS[tabName]);
+  }, [tabName]);
+
   const {
     getBridge,
     bridge,

@@ -272,6 +272,41 @@ describe("Instances Test", () => {
   });
 
   onlyOn(isEnvironmentType(EnvType.Mocked), () => {
+    describe("Instance Error Handler", () => {
+      it("View error handler details", () => {
+        // visit 'Instance one'
+        cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
+
+        cy.ouiaId("error-handling", "PF4/TabButton").click();
+
+        cy.ouiaId("error-handling-section", "PF4/Text")
+          .should("contain.text", "Error handling method")
+          .should("be.visible");
+
+        cy.get(".pf-c-description-list__term")
+          .should("have.length.gt", 1)
+          .should(($items) => {
+            expect($items).to.have.length(5);
+            expect($items.eq(0)).to.contain.text("Error handling method");
+            expect($items.eq(1)).to.contain.text("Endpoint");
+            expect($items.eq(2)).to.contain.text("Basic Auth Username");
+            expect($items.eq(3)).to.contain.text("Basic Auth Password");
+            expect($items.eq(4)).to.contain.text("SSL Verification Disabled");
+          });
+
+        cy.get(".pf-c-description-list__description")
+          .should("have.length.gt", 1)
+          .should(($items) => {
+            expect($items).to.have.length(5);
+            expect($items.eq(0)).to.contain.text("Webhook");
+            expect($items.eq(1)).to.contain.text("http://google.com");
+            expect($items.eq(2)).to.contain.text("user");
+            expect($items.eq(3)).to.contain.text("***");
+            expect($items.eq(4)).to.contain.text("No");
+          });
+      });
+    });
+
     describe("Instance Page - Instance one", () => {
       beforeEach(() => {
         cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");

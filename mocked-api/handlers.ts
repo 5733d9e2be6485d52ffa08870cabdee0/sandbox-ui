@@ -176,8 +176,9 @@ export const handlers = [
     );
   }),
   // create a bridge
-  rest.post(`${apiUrl}/bridges`, (req, res, ctx) => {
-    const { name, error_handler: errorHandler } = req.body as BridgeRequest;
+  rest.post(`${apiUrl}/bridges`, async (req, res, ctx) => {
+    const bridgeRequest: BridgeRequest = await req.json();
+    const { name, error_handler: errorHandler } = bridgeRequest;
 
     const existingBridge = db.bridge.findFirst({
       where: {
@@ -471,10 +472,11 @@ export const handlers = [
     }
   ),
   // create a processor
-  rest.post(`${apiUrl}/bridges/:bridgeId/processors`, (req, res, ctx) => {
+  rest.post(`${apiUrl}/bridges/:bridgeId/processors`, async (req, res, ctx) => {
     const { bridgeId } = req.params;
+    const processorRequest: MockProcessorRequest = await req.json();
     const { name, transformationTemplate, filters, action, source } =
-      req.body as MockProcessorRequest;
+      processorRequest;
 
     const bridge = db.bridge.findFirst({
       where: {
@@ -584,10 +586,11 @@ export const handlers = [
   // update a processor
   rest.put(
     `${apiUrl}/bridges/:bridgeId/processors/:processorId`,
-    (req, res, ctx) => {
+    async (req, res, ctx) => {
       const { bridgeId, processorId } = req.params;
+      const processorRequest: ProcessorRequest = await req.json();
       const { name, filters, transformationTemplate, source, action } =
-        req.body as ProcessorRequest;
+        processorRequest;
 
       const existingBridge = db.bridge.findFirst({
         where: {

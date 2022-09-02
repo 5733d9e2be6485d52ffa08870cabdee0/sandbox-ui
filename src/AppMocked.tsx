@@ -12,7 +12,7 @@ import {
   I18nProvider,
 } from "@rhoas/app-services-ui-components";
 import { SmartEventsContextProvider } from "@contexts/SmartEventsContext";
-import { SetupWorkerApi } from "msw/lib/types/setupWorker/glossary";
+import { SetupWorkerApi } from "msw";
 
 // App using mocked apis trough msw
 

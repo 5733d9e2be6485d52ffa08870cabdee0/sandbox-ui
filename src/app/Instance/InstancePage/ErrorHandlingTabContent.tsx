@@ -91,7 +91,7 @@ export const ErrorHandlingTabContent = ({
     );
   }, [errorHandlingParameters]);
 
-  const getErrorHandlingMethodLabel = useMemo(() => {
+  const errorHandlingMethodLabel = useMemo(() => {
     if (errorHandlingType) {
       return getErrorHandlingMethodByType(errorHandlingType).label;
     }
@@ -122,7 +122,7 @@ export const ErrorHandlingTabContent = ({
                 {t("common.errorHandlingMethod")}
               </DescriptionListTerm>
               <DescriptionListDescription>
-                {getErrorHandlingMethodLabel}
+                {errorHandlingMethodLabel}
               </DescriptionListDescription>
             </DescriptionListGroup>
             {errorHandlingParameters &&

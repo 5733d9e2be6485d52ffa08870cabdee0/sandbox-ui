@@ -17,7 +17,7 @@ import {
   ERROR_HANDLING_METHODS,
   getErrorHandlingMethodByType,
 } from "../../../types/ErrorHandlingMethods";
-import ProcessorDetailConfigParameters from "@app/Processor/ProcessorDetail/ProcessorDetailConfigParameters";
+import ProcessorConfigParameters from "@app/Processor/ProcessorConfigParameters/ProcessorConfigParameters";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
@@ -129,7 +129,7 @@ export const ErrorHandlingTabContent = ({
               schema &&
               !schemaLoading &&
               !schemaError && (
-                <ProcessorDetailConfigParameters
+                <ProcessorConfigParameters
                   schema={schema}
                   parameters={errorHandlingParameters}
                 />

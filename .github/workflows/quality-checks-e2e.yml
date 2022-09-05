@@ -9,6 +9,7 @@ jobs:
     if: github.repository == '5733d9e2be6485d52ffa08870cabdee0/sandbox-ui'
     steps:
       - uses: actions/checkout@v2.4.2
+        if: ${{ contains( github.event, 'number') }}
         with:
           ref: "refs/pull/${{ github.event.number }}/merge"
       - name: Check labels

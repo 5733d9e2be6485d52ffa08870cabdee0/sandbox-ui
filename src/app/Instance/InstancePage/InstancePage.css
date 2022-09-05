@@ -6,7 +6,6 @@
   min-width: 13rem;
 }
 
-#instance-page__tabs-error-handling
-  .instance-page__tabs-error-handling__section {
-  height: 37rem;
+.instance-page__tabs-error-handling__section {
+  min-height: 37rem;
 }

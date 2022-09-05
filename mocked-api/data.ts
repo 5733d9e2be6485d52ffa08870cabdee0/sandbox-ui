@@ -10,6 +10,10 @@ export const instancesData = [
     published_at: "2022-02-24T13:35:00Z",
     endpoint:
       "https://3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
+    error_handler: {
+      type: "webhook_sink_0.1",
+      parameters: `{"endpoint":"http://google.com","basic_auth_password":"my-password","basic_auth_username":"user","ssl_verification_disabled":false}`,
+    },
   },
   {
     kind: "Bridge",
@@ -22,6 +26,10 @@ export const instancesData = [
     published_at: "2022-02-20T11:24:00Z",
     endpoint:
       "https://830c8f0d-c677-492f-8d7e-0f81893fbba6.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
+    error_handler: {
+      type: "kafka_topic_sink_0.1",
+      parameters: `{"topic":"my-topic","kafka_client_id":"my-client","kafka_broker_url":"username-c--hj---mhlksdfss-p--a.bf2.kafka.rhcloud.com:443","kafka_client_secret":"my-secret"}`,
+    },
   },
   {
     kind: "Bridge",
@@ -32,8 +40,6 @@ export const instancesData = [
     status: "accepted",
     submitted_at: "2022-02-15T12:03:00Z",
     published_at: "2022-02-15T12:04:00Z",
-    endpoint:
-      "https://ee22ce62-1f23-4dd7-b106-e4158baf8228.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
   },
   {
     kind: "Bridge",
@@ -44,8 +50,6 @@ export const instancesData = [
     status: "provisioning",
     submitted_at: "2022-02-10T16:34:00Z",
     published_at: "2022-02-10T16:35:00Z",
-    endpoint:
-      "https://21ac90ba-76d2-4f88-b08b-2547ef359bae.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
   },
   {
     kind: "Bridge",

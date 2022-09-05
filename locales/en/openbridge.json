@@ -68,6 +68,12 @@
     "value": "Value",
     "yes": "Yes"
   },
+  "errorHandling": {
+    "errors": {
+      "cantFindSchema": "The information related to the error handling strategy for this Smart Events instance is currently missing.",
+      "schemaGenericError": "Error while retrieving the information related to the error handling strategy for this Smart Events instance."
+    }
+  },
   "instance": {
     "createASEInstance": "Create a Smart Events instance",
     "createSEInstance": "Create Smart Events instance",

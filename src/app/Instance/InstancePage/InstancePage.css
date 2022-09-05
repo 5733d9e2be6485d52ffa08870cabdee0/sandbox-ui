@@ -5,3 +5,7 @@
 .instance-page__actions .pf-c-dropdown__menu {
   min-width: 13rem;
 }
+
+.instance-page__tabs-error-handling__section {
+  min-height: 37rem;
+}

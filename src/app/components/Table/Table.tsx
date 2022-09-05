@@ -26,11 +26,11 @@ export interface TableRow extends IRowData {
   originalData?: IRowData;
 }
 
-export type RenderActions = <TRow>(props: {
+export type RenderActions = (props: {
   /** PF ActionsColumn component used to render the actions  */
   ActionsColumn: typeof ActionsColumn;
   /** The row data passed to the actions */
-  row: TRow;
+  row: TableRow;
 }) => ReactElement<ActionsColumnProps> | undefined;
 
 interface TableProps {

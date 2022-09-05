@@ -11,6 +11,7 @@ import {
   DropdownToggle,
   PageSection,
   PageSectionVariants,
+  Skeleton,
   Split,
   SplitItem,
   Tab,
@@ -160,6 +161,7 @@ const InstancePage = (): JSX.Element => {
             pageTitle={t("instance.loadingInstance")}
             hasActionDropdown={true}
             hasLabel={false}
+            noShadowBottom
           />
         )}
         {bridge && (
@@ -244,7 +246,13 @@ const InstancePage = (): JSX.Element => {
               eventKey={INSTANCE_PAGE_TAB_KEYS.processors}
               ouiaId="processors"
               tabContentId="instance-page__tabs-processors"
-              title={<TabTitleText>{t("common.processors")}</TabTitleText>}
+              title={
+                isBridgeLoading ? (
+                  <Skeleton fontSize="xl" width={"100px"} />
+                ) : (
+                  <TabTitleText>{t("common.processors")}</TabTitleText>
+                )
+              }
             >
               <PageSection>
                 <ProcessorsTabContent
@@ -257,7 +265,13 @@ const InstancePage = (): JSX.Element => {
               eventKey={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
               ouiaId="error-handling"
               tabContentId="instance-page__tabs-error-handling"
-              title={<TabTitleText>{t("common.errorHandling")}</TabTitleText>}
+              title={
+                isBridgeLoading ? (
+                  <Skeleton fontSize="xl" width={"100px"} />
+                ) : (
+                  <TabTitleText>{t("common.errorHandling")}</TabTitleText>
+                )
+              }
             >
               <PageSection>
                 <ErrorHandlingTabContent

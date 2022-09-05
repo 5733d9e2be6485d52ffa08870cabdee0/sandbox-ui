@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Drawer,
+  DrawerColorVariant,
   DrawerContent,
   Dropdown,
   DropdownGroup,
@@ -143,6 +144,7 @@ const InstancePage = (): JSX.Element => {
   return (
     <Drawer isExpanded={showInstanceDrawer}>
       <DrawerContent
+        colorVariant={DrawerColorVariant.light200}
         data-ouia-component-id="instance-drawer"
         panelContent={
           bridge && (

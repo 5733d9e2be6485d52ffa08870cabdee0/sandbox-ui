@@ -173,7 +173,8 @@ export const schemasData: { [key: string]: object } = {
       topic: {
         type: "string",
         title: "Topic Name",
-        description: "The topic where to send the event.",
+        description:
+          "The topic where to send the event. The topic must exists already. It won't be created automatically.",
         example: "my-topic",
       },
       kafka_broker_url: {
@@ -186,7 +187,7 @@ export const schemasData: { [key: string]: object } = {
         type: "string",
         title: "Client Id",
         description:
-          "The Client Id part of the credentials to authenticate to Kafka",
+          "The Client Id part of the credentials to authenticate to Kafka. It is recommended the client has no 'admin' rights.",
       },
       kafka_client_secret: {
         title: "Client Secret",

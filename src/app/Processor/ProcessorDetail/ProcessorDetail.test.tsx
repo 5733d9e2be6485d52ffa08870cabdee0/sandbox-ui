@@ -10,7 +10,7 @@ import {
   ManagedResourceStatus,
   ProcessorType,
 } from "@rhoas/smart-events-management-sdk";
-import { maskedValue } from "@app/Processor/ProcessorDetail/ProcessorDetailConfigParameters";
+import { maskedValue } from "@app/Processor/ProcessorConfigParameters/ProcessorConfigParameters";
 
 describe("ProcessorDetail component", () => {
   it("should display sink processor information", async () => {

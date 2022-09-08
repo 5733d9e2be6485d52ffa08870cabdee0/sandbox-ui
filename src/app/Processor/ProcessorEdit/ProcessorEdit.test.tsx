@@ -7,7 +7,7 @@ import {
   ProcessorSchemaEntryResponse,
   ProcessorType,
 } from "@rhoas/smart-events-management-sdk";
-import { EventFilter } from "../../../types/Processor";
+import { EventFilter, FilterType } from "../../../types/Processor";
 
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"),
@@ -262,24 +262,34 @@ describe("ProcessorEdit component", () => {
 
     const demoStringFilter = {
       key: "name",
-      type: "StringIn",
+      type: FilterType.STRING_IN,
+      values: ["one", "two", "three"],
+    };
+    const demoStringContainsFilter = {
+      key: "name",
+      type: FilterType.STRING_CONTAINS,
+      values: ["one", "two", "three"],
+    };
+    const demoStringBeginsWithFilter = {
+      key: "name",
+      type: FilterType.STRING_BEGINS,
       values: ["one", "two", "three"],
     };
     const demoNumberFilter = {
       key: "name",
-      type: "NumberIn",
+      type: FilterType.NUMBER_IN,
       values: [2, 4, 8],
     };
 
     const demoNotValidFilter = {
       key: "name",
-      type: "NumberIn",
+      type: FilterType.NUMBER_IN,
       values: ["one", "two", "three"],
     };
 
     const demoEmptyValuesFilter = {
       key: "name",
-      type: "StringIn",
+      type: FilterType.STRING_IN,
       values: [],
     };
 
@@ -309,6 +319,10 @@ describe("ProcessorEdit component", () => {
     fillUpFilterValues(demoNotValidFilter, 2);
     addFilter();
     fillUpFilterValues(demoEmptyValuesFilter, 3);
+    addFilter();
+    fillUpFilterValues(demoStringContainsFilter, 4);
+    addFilter();
+    fillUpFilterValues(demoStringBeginsWithFilter, 5);
     fireEvent.click(comp.getByText("Save"));
 
     expect(onSave).toHaveBeenCalledTimes(1);
@@ -317,7 +331,12 @@ describe("ProcessorEdit component", () => {
       name,
       action,
       // filters with invalid or empty values are ignored and not included in the request
-      filters: [demoStringFilter, demoNumberFilter],
+      filters: [
+        demoStringFilter,
+        demoNumberFilter,
+        demoStringContainsFilter,
+        demoStringBeginsWithFilter,
+      ],
     });
   });
 

@@ -8,8 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository == '5733d9e2be6485d52ffa08870cabdee0/sandbox-ui'
     steps:
-      - uses: actions/checkout@v2.4.2
-        if: ${{ github.event.type == 'PullRequestEvent' && contains( github.event, 'number')}}
+      - uses: actions/checkout@v2
         with:
           ref: "refs/pull/${{ github.event.number }}/merge"
       - name: Check labels

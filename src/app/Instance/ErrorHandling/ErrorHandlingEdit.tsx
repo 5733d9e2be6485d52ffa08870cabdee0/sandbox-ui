@@ -9,6 +9,7 @@ interface ErrorHandlingEditProps {
   errorHandlingParameters?: object;
   errorHandlingSchema?: object;
   errorHandlingSchemaLoading: boolean;
+  errorHandlingType?: string;
   formIsDisabled: boolean;
   onErrorHandlingMethodSelection: (errorMethod: string) => void;
   onErrorHandlingParametersChange: (model: object) => void;
@@ -19,6 +20,7 @@ export const ErrorHandlingEdit = ({
   errorHandlingParameters,
   errorHandlingSchema,
   errorHandlingSchemaLoading,
+  errorHandlingType,
   formIsDisabled,
   onErrorHandlingMethodSelection,
   onErrorHandlingParametersChange,
@@ -34,7 +36,9 @@ export const ErrorHandlingEdit = ({
         isRequired
       >
         <ErrorHandlingSelection
-          defaultMethod={ERROR_HANDLING_METHODS.default.value}
+          selectedMethod={
+            errorHandlingType ?? ERROR_HANDLING_METHODS.default.value
+          }
           errorHandlingMethods={ERROR_HANDLING_METHODS}
           isDisabled={formIsDisabled}
           onMethodSelection={onErrorHandlingMethodSelection}

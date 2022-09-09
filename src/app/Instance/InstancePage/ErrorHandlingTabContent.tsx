@@ -144,6 +144,7 @@ export const ErrorHandlingTabContent = ({
                 errorHandlingParameters={errorHandlingParameters}
                 errorHandlingSchema={schema}
                 errorHandlingSchemaLoading={isSchemaLoading}
+                errorHandlingType={errorHandlingType}
                 formIsDisabled={formIsDisabled}
                 onErrorHandlingMethodSelection={onErrorHandlingMethodSelection}
                 onErrorHandlingParametersChange={

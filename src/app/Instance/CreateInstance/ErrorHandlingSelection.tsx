@@ -9,14 +9,14 @@ import { useTranslation } from "react-i18next";
 import { ErrorHandlingMethods } from "../../../types/ErrorHandlingMethods";
 
 interface ErrorHandlingSelectionProps {
-  defaultMethod: string;
+  selectedMethod: string;
   errorHandlingMethods: ErrorHandlingMethods;
   isDisabled: boolean;
   onMethodSelection: (errorMethod: string) => void;
 }
 
 export const ErrorHandlingSelection = ({
-  defaultMethod,
+  selectedMethod,
   errorHandlingMethods,
   isDisabled,
   onMethodSelection,
@@ -24,7 +24,7 @@ export const ErrorHandlingSelection = ({
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const [isSelectorOpen, setIsSelectorOpen] = useState<boolean>(false);
-  const [handlingMethod, setHandlingMethod] = useState<string>(defaultMethod);
+  const [handlingMethod, setHandlingMethod] = useState<string>(selectedMethod);
 
   const defaultMethodOption = useMemo(() => {
     return (

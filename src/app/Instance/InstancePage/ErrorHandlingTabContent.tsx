@@ -22,7 +22,7 @@ import {
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
-import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk/src/generated/model/managed-resource-status";
+import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { ErrorHandlingDetail } from "@app/Instance/ErrorHandling/ErrorHandlingDetail";
 import { ErrorHandlingEdit } from "@app/Instance/ErrorHandling/ErrorHandlingEdit";
 

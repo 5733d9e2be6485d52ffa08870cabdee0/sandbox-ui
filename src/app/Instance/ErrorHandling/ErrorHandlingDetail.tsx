@@ -6,13 +6,13 @@ import {
   DescriptionListTerm,
   Skeleton,
 } from "@patternfly/react-core";
-import ProcessorDetailConfigParameters from "@app/Processor/ProcessorDetail/ProcessorDetailConfigParameters";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ERROR_HANDLING_METHODS,
   getErrorHandlingMethodByType,
 } from "../../../types/ErrorHandlingMethods";
+import ProcessorConfigParameters from "@app/Processor/ProcessorConfigParameters/ProcessorConfigParameters";
 
 interface ErrorHandlingDetailProps {
   errorHandlingType?: string;
@@ -77,7 +77,7 @@ export const ErrorHandlingDetail = ({
         schema &&
         !isSchemaLoading &&
         !schemaError && (
-          <ProcessorDetailConfigParameters
+          <ProcessorConfigParameters
             schema={schema}
             parameters={errorHandlingParameters}
           />

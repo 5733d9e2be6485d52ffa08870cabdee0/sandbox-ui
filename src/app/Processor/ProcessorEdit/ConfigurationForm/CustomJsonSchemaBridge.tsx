@@ -138,7 +138,7 @@ export class CustomJsonSchemaBridge extends JSONSchemaBridge {
       return {
         name,
         ...field,
-        ...(typeof newEnumValues !== undefined && { enum: newEnumValues }),
+        ...(typeof newEnumValues !== "undefined" && { enum: newEnumValues }),
       };
     }
   }

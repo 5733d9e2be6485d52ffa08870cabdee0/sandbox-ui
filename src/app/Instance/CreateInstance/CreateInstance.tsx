@@ -31,11 +31,10 @@ import {
   CloudRegionResponse,
 } from "@rhoas/smart-events-management-sdk";
 import { GetCloudProvidersRegion } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
-import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/ErrorHandlingSelection";
 import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
-import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import { ProcessorSchemaType } from "../../../types/Processor";
+import { ErrorHandlingEdit } from "@app/Instance/ErrorHandling/ErrorHandlingEdit";
 
 export interface CreateInstanceProps {
   /** Flag to indicate the creation request is in progress */
@@ -231,6 +230,23 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
     [getCloudRegions]
   );
 
+  const onErrorHandlingMethodSelection = useCallback(
+    (errorMethod: string): void => {
+      setErrorHandlingParameters({});
+      if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
+        setErrorHandlingSchemaId(null);
+      } else {
+        setErrorHandlingSchemaId(errorMethod);
+      }
+    },
+    []
+  );
+
+  const onErrorHandlingParametersChange = useCallback((model): void => {
+    setErrorHandlingParameters(model as Record<string, unknown>);
+    setHasParametersError(false);
+  }, []);
+
   useEffect(() => {
     if (existingInstanceName) {
       validate();
@@ -421,38 +437,15 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         />
 
         <FormSection title={t("common.errorHandling")} titleElement="h2">
-          <FormGroup
-            label={t("common.errorHandlingMethod")}
-            fieldId={"error-handling-method"}
-            isRequired
-          >
-            <ErrorHandlingSelection
-              defaultMethod={ERROR_HANDLING_METHODS.default.value}
-              errorHandlingMethods={ERROR_HANDLING_METHODS}
-              isDisabled={formIsDisabled}
-              onMethodSelection={(errorMethod: string): void => {
-                setErrorHandlingParameters({});
-                if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
-                  setErrorHandlingSchemaId(null);
-                } else {
-                  setErrorHandlingSchemaId(errorMethod);
-                }
-              }}
-            />
-          </FormGroup>
-          {errorHandlingSchema && !errorHandlingSchemaLoading && (
-            <ConfigurationForm
-              configuration={errorHandlingParameters}
-              schema={errorHandlingSchema}
-              onChange={(model): void => {
-                setErrorHandlingParameters(model as Record<string, unknown>);
-                setHasParametersError(false);
-              }}
-              registerValidation={registerValidateParameters}
-              readOnly={formIsDisabled}
-              editMode={false}
-            />
-          )}
+          <ErrorHandlingEdit
+            errorHandlingParameters={errorHandlingParameters}
+            errorHandlingSchema={errorHandlingSchema}
+            errorHandlingSchemaLoading={errorHandlingSchemaLoading}
+            formIsDisabled={formIsDisabled}
+            onErrorHandlingMethodSelection={onErrorHandlingMethodSelection}
+            onErrorHandlingParametersChange={onErrorHandlingParametersChange}
+            registerValidateParameters={registerValidateParameters}
+          />
         </FormSection>
 
         <AlertGroup>

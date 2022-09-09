@@ -276,6 +276,7 @@ const InstancePage = (): JSX.Element => {
               <PageSection>
                 <ErrorHandlingTabContent
                   isBridgeLoading={isBridgeLoading}
+                  bridgeStatus={bridge?.status}
                   errorHandlingType={bridge?.error_handler?.type}
                   errorHandlingParameters={
                     bridge?.error_handler?.parameters as {

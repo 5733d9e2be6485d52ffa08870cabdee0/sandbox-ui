@@ -18,7 +18,7 @@ interface ProcessorDetailConfigParametersProps {
   parameters: { [key: string]: unknown };
 }
 
-const ProcessorDetailConfigParameters = (
+const ProcessorConfigParameters = (
   props: ProcessorDetailConfigParametersProps
 ): JSX.Element => {
   const { schema, parameters } = props;
@@ -30,11 +30,6 @@ const ProcessorDetailConfigParameters = (
         {schema.properties &&
           Object.entries(schema.properties)
             .filter(([key, value]) => {
-              // Processors property shouldn't be here.
-              // To be removed after https://github.com/5733d9e2be6485d52ffa08870cabdee0/sandbox/pull/834
-              if (key === "processors") {
-                return false;
-              }
               // Keeping objects and arrays only if they are a data_shape
               if (
                 isJSONSchema(value) &&
@@ -70,7 +65,7 @@ const ProcessorDetailConfigParameters = (
   );
 };
 
-export default ProcessorDetailConfigParameters;
+export default ProcessorConfigParameters;
 
 const displayFieldName = (
   key: string,
@@ -84,14 +79,21 @@ const displayFieldName = (
     return (
       <DescriptionListTermHelpText>
         <Popover bodyContent={description}>
-          <DescriptionListTermHelpTextButton className={cssClass}>
+          <DescriptionListTermHelpTextButton
+            className={cssClass}
+            data-testid={key}
+          >
             {name}
           </DescriptionListTermHelpTextButton>
         </Popover>
       </DescriptionListTermHelpText>
     );
   }
-  return <DescriptionListTerm className={cssClass}>{name}</DescriptionListTerm>;
+  return (
+    <DescriptionListTerm className={cssClass} data-testid={key}>
+      {name}
+    </DescriptionListTerm>
+  );
 };
 
 const displayFieldValue = (
@@ -106,6 +108,7 @@ const displayFieldValue = (
     const noPropertySet = (): JSX.Element => (
       <DescriptionListDescription
         className={"processor-detail__property--not-set"}
+        data-testid={`${propertyKey}-value`}
       >
         {t("processor.propertyNotConfigured")}
       </DescriptionListDescription>
@@ -118,7 +121,7 @@ const displayFieldValue = (
         }
         if (value) {
           return (
-            <DescriptionListDescription>
+            <DescriptionListDescription data-testid={`${propertyKey}-value`}>
               {JSON.stringify(value)}
             </DescriptionListDescription>
           );
@@ -127,7 +130,7 @@ const displayFieldValue = (
       case "boolean":
         if (value !== undefined) {
           return (
-            <DescriptionListDescription>
+            <DescriptionListDescription data-testid={`${propertyKey}-value`}>
               {value ? t("common.yes") : t("common.no")}
             </DescriptionListDescription>
           );
@@ -136,7 +139,7 @@ const displayFieldValue = (
       case "string":
         if (value !== undefined) {
           return (
-            <DescriptionListDescription>
+            <DescriptionListDescription data-testid={`${propertyKey}-value`}>
               {value as string}
             </DescriptionListDescription>
           );
@@ -146,7 +149,7 @@ const displayFieldValue = (
       case "integer":
         if (value !== undefined) {
           return (
-            <DescriptionListDescription>
+            <DescriptionListDescription data-testid={`${propertyKey}-value`}>
               {value as number}
             </DescriptionListDescription>
           );
@@ -157,9 +160,9 @@ const displayFieldValue = (
           const passwordField = oneOf.filter(
             (item) => typeof item !== "boolean" && item?.format === "password"
           );
-          if (passwordField) {
+          if (passwordField && value) {
             return (
-              <DescriptionListDescription>
+              <DescriptionListDescription data-testid={`${propertyKey}-value`}>
                 {maskedValue}
               </DescriptionListDescription>
             );
@@ -176,7 +179,7 @@ export const DataShape = ({ data }: { data: DataShapeValue }): JSX.Element => {
     <>
       {Object.keys(data).map((key) => {
         return (
-          <DescriptionListDescription key={key}>
+          <DescriptionListDescription key={key} data-testid="data_shape-value">
             {data?.[key]?.format}
           </DescriptionListDescription>
         );

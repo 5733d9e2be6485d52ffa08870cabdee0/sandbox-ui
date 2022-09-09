@@ -382,7 +382,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         </Button>,
       ]}
     >
-      <Form id={FORM_ID} onSubmit={onSubmit}>
+      <Form id={FORM_ID} onSubmit={onSubmit} autoComplete="off">
         {(nameError || genericError || hasParametersError) && (
           <FormAlert>
             <Alert

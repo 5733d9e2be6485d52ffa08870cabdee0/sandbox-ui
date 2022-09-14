@@ -41,6 +41,7 @@ import { useGetCloudProvidersApi } from "../../../hooks/useCloudProvidersApi/use
 import { useGetCloudProvidersRegions } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
+import CreateBridge from "@app/Instance/CreateBridge/CreateBridge";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -147,6 +148,7 @@ const InstancesListPage = (): JSX.Element => {
   }, [error, pageTitleElement, t]);
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
+  const [showCreateBridge, setShowCreateBridge] = useState(false);
 
   const {
     error: createBridgeError,
@@ -246,6 +248,12 @@ const InstancesListPage = (): JSX.Element => {
       >
         {t("instance.createSEInstance")}
       </Button>
+      <Button
+        ouiaId="create-smart-event-bridge"
+        onClick={(): void => setShowCreateBridge(true)}
+      >
+        Create Bridge
+      </Button>
       <CreateInstance
         isLoading={createBridgeLoading}
         isModalOpen={showCreateInstance}
@@ -255,6 +263,11 @@ const InstancesListPage = (): JSX.Element => {
         getCloudProviders={getCloudProviders}
         getCloudRegions={getCloudProviderRegions}
         getSchema={getSchema}
+      />
+      &nbsp;
+      <CreateBridge
+        isOpen={showCreateBridge}
+        onClose={(): void => setShowCreateBridge((prev) => !prev)}
       />
     </>
   );

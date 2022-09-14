@@ -3,6 +3,7 @@ import { customRender, waitForI18n } from "@utils/testUtils";
 import ProcessorDetail from "./ProcessorDetail";
 import {
   DataShapeValue,
+  FilterType,
   SinkProcessor,
   SourceProcessor,
 } from "../../../types/Processor";
@@ -152,12 +153,12 @@ const sinkProcessor: SinkProcessor = {
   filters: [
     {
       key: "source",
-      type: "StringContains",
+      type: FilterType.STRING_CONTAINS,
       value: "aws.ec2",
     },
     {
       key: "detail-type",
-      type: "StringEquals",
+      type: FilterType.STRING_EQUALS,
       value: "EC2 Instance State-change Notification",
     },
   ],
@@ -182,7 +183,7 @@ const sourceProcessor: SourceProcessor = {
   filters: [
     {
       key: "section",
-      type: "StringContains",
+      type: FilterType.STRING_CONTAINS,
       value: "33",
     },
   ],

@@ -8,6 +8,7 @@ import {
 import { JSONSchema7 } from "json-schema";
 import { ProcessorType } from "@rhoas/smart-events-management-sdk";
 import omit from "lodash.omit";
+import { FilterType } from "../types/Processor";
 
 describe("prepareConfigParameters", () => {
   it("converts secret parameters values to empty strings in order to use them inside the processor form", () => {
@@ -132,7 +133,7 @@ describe("prepareFilters", () => {
   it("keeps a filter when all the properties are present", () => {
     const basicFilter = {
       key: "name",
-      type: "StringEquals",
+      type: FilterType.STRING_EQUALS,
       value: "test",
     };
 
@@ -145,7 +146,7 @@ describe("prepareFilters", () => {
     const result1 = prepareFilters([{ key: "name" }]);
     expect(result1).toHaveLength(0);
 
-    const result2 = prepareFilters([{ type: "NumberIn" }]);
+    const result2 = prepareFilters([{ type: FilterType.NUMBER_IN }]);
     expect(result2).toHaveLength(0);
 
     const result3 = prepareFilters([{ value: "one, two" }]);
@@ -154,7 +155,7 @@ describe("prepareFilters", () => {
     const result4 = prepareFilters([
       {
         key: "name",
-        type: "NumberIn",
+        type: FilterType.NUMBER_IN,
       },
     ]);
     expect(result4).toHaveLength(0);
@@ -163,7 +164,7 @@ describe("prepareFilters", () => {
   it("converts a StringIn filter", () => {
     const validFilter = {
       key: "name",
-      type: "StringIn",
+      type: FilterType.STRING_IN,
       value: "one, two, three",
     };
 
@@ -182,7 +183,7 @@ describe("prepareFilters", () => {
   it("converts NumberIn filters when the values are valid", () => {
     const validFilter = {
       key: "name",
-      type: "NumberIn",
+      type: FilterType.NUMBER_IN,
       value: "1, 2, 3",
     };
 
@@ -203,7 +204,7 @@ describe("prepareFilters", () => {
   it("skips NumberIn filters when the values are not numbers", () => {
     const validFilter = {
       key: "name",
-      type: "NumberIn",
+      type: FilterType.NUMBER_IN,
       value: "one, two, three",
     };
 
@@ -276,7 +277,7 @@ describe("prepareRequest", () => {
           slack_channel: "#test",
         },
       },
-      filters: [{ key: "name", type: "StringEquals", value: "test" }],
+      filters: [{ key: "name", type: FilterType.STRING_EQUALS, value: "test" }],
       transformationTemplate: "hello",
     };
 

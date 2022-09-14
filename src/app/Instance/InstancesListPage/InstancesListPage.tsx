@@ -126,8 +126,16 @@ const InstancesListPage = (): JSX.Element => {
     if (bridgeListResponse) {
       setCurrentPage(bridgeListResponse.page ?? FIRST_PAGE);
       setTotalRows(bridgeListResponse.total ?? 0);
+      if (selectedInstance) {
+        const updatedInstance = bridgeListResponse.items?.find(
+          (bridge) => bridge.id === selectedInstance.id
+        );
+        if (updatedInstance) {
+          setSelectedInstance(updatedInstance);
+        }
+      }
     }
-  }, [bridgeListResponse]);
+  }, [bridgeListResponse, selectedInstance]);
 
   useEffect(() => {
     if (error) {

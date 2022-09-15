@@ -84,7 +84,7 @@
     "css-loader": "5.2.7",
     "css-minimizer-webpack-plugin": "3.4.1",
     "cssnano": "5.0.17",
-    "cypress": "9.6.0",
+    "cypress": "10.8.0",
     "dotenv-webpack": "8.0.1",
     "eslint": "8.10.0",
     "eslint-config-prettier": "8.5.0",

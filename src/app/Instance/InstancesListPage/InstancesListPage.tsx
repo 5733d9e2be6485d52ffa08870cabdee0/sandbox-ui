@@ -268,6 +268,7 @@ const InstancesListPage = (): JSX.Element => {
       <CreateBridge
         isOpen={showCreateBridge}
         onClose={(): void => setShowCreateBridge((prev) => !prev)}
+        getSchema={getSchema}
       />
     </>
   );

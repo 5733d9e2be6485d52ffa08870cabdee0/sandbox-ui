@@ -1,4 +1,9 @@
-import React, { FormEvent, useCallback, VoidFunctionComponent } from "react";
+import React, {
+  FormEvent,
+  useCallback,
+  useRef,
+  VoidFunctionComponent,
+} from "react";
 import CreateBridgeMachine from "@app/Instance/CreateBridge/machines/createBridgeMachine";
 import { useMachine } from "@xstate/react";
 import {
@@ -10,32 +15,47 @@ import {
 } from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
 import CloudProviders from "@app/Instance/CreateBridge/components/CloudProviders";
+import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
+import ErrorHandler from "@app/Instance/CreateBridge/components/ErrorHandler";
 
 interface CreateBridgeProps {
+  /** Flag to indicate if the dialog is open */
   isOpen: boolean;
+  /** Callback to close the dialog */
   onClose: () => void;
+  /** Callback to retrieve the schema used in error handling configuration */
+  getSchema: GetSchema;
 }
 
 const FORM_ID = "create-instance-form";
 
 const CreateBridge: VoidFunctionComponent<CreateBridgeProps> = (props) => {
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, getSchema } = props;
 
-  return <>{isOpen && <CreatBridgeDialog onClose={onClose} />}</>;
+  return (
+    <>
+      {isOpen && <CreatBridgeDialog onClose={onClose} getSchema={getSchema} />}
+    </>
+  );
 };
 
 export default CreateBridge;
 
-interface CreateBridgeDialogProps {
-  onClose: () => void;
-}
+type CreateBridgeDialogProps = Omit<CreateBridgeProps, "isOpen">;
 
-const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = ({
-  onClose,
-}) => {
+const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
+  props
+) => {
+  const { getSchema, onClose } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const validateErrorHandlerParameters = useRef<(() => boolean) | undefined>();
 
-  const [current, send] = useMachine(CreateBridgeMachine);
+  const [current, send] = useMachine(CreateBridgeMachine, {
+    guards: {
+      errorHandlerIsValid: () =>
+        validateErrorHandlerParameters.current?.() ?? true,
+    },
+  });
 
   const { name } = current.context;
   // const isFormInvalid = current.hasTag("formInvalid");
@@ -43,6 +63,11 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = ({
   const isNameEmpty = current.hasTag("nameEmpty") && isSubmitted;
   const setName = useCallback(
     (name: string) => send({ type: "nameChange", name }),
+    [send]
+  );
+  const setProviders = useCallback(
+    (providerId?: string, regionId?: string) =>
+      send({ type: "providerChange", providerId, regionId }),
     [send]
   );
 
@@ -54,6 +79,19 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = ({
     [send]
   );
 
+  const registerValidateErrorHandlerParameters = (
+    callback: () => boolean
+  ): void => {
+    validateErrorHandlerParameters.current = callback;
+  };
+
+  // service.onTransition((state) => {
+  //   if (state.changed) {
+  //     console.log("PARENT MACHINE STATE CHANGE FOLLOWS");
+  //     console.log(state);
+  //     console.log(state.context);
+  //   }
+  // });
   return (
     <Modal
       position="top"
@@ -87,7 +125,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = ({
           isRequired
           fieldId="instance-name"
           validated={isNameEmpty ? "error" : "default"}
-          helperTextInvalid={"name error"}
+          helperTextInvalid={t("common.required")}
         >
           <TextInput
             isRequired
@@ -103,7 +141,11 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = ({
             // isDisabled={formIsDisabled}
           />
         </FormGroup>
-        <CloudProviders />
+        <CloudProviders onChange={setProviders} />
+        <ErrorHandler
+          getSchema={getSchema}
+          registerValidation={registerValidateErrorHandlerParameters}
+        />
       </Form>
     </Modal>
   );

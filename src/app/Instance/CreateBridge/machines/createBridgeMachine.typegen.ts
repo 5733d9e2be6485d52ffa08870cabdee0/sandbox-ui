@@ -10,21 +10,29 @@ export interface Typegen0 {
   missingImplementations: {
     actions: never;
     services: never;
-    guards: never;
+    guards: "errorHandlerIsValid";
     delays: never;
   };
   eventsCausingActions: {
     fieldInvalid: "";
     setName: "nameChange";
+    setProvider: "providerChange";
   };
   eventsCausingServices: {};
   eventsCausingGuards: {
+    errorHandlerIsValid: "";
     nameIsEmpty: "";
+    nameIsValid: "";
   };
   eventsCausingDelays: {};
   matchesStates:
     | "configuring"
     | "configuring.fields"
+    | "configuring.fields.errorHandler"
+    | "configuring.fields.errorHandler.idle"
+    | "configuring.fields.errorHandler.invalid"
+    | "configuring.fields.errorHandler.valid"
+    | "configuring.fields.errorHandler.validate"
     | "configuring.fields.name"
     | "configuring.fields.name.empty"
     | "configuring.fields.name.invalid"
@@ -47,13 +55,19 @@ export interface Typegen0 {
           | "status"
           | {
               fields?:
+                | "errorHandler"
                 | "name"
-                | { name?: "empty" | "invalid" | "valid" | "validate" };
+                | {
+                    errorHandler?: "idle" | "invalid" | "valid" | "validate";
+                    name?: "empty" | "invalid" | "valid" | "validate";
+                  };
               form?: "invalid" | "saved" | "saving" | "valid";
               status?: "submitted" | "unsubmitted";
             };
       };
   tags:
+    | "EHInvalid"
+    | "EHvalid"
     | "creatable"
     | "formInvalid"
     | "nameEmpty"

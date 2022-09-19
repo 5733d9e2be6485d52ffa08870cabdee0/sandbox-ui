@@ -1,4 +1,9 @@
-import React, { useMemo, useState, VFC } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  VoidFunctionComponent,
+} from "react";
 
 import { useMachine } from "@xstate/react";
 import CloudProvidersMachine from "@app/Instance/CreateBridge/machines/cloudProvidersMachine";
@@ -17,11 +22,20 @@ import { CloudProviderSelectionSkeleton } from "@app/Instance/CreateInstance/Clo
 import { useTranslation } from "react-i18next";
 import { AwsIcon } from "@patternfly/react-icons";
 
-const CloudProviders: VFC = () => {
+interface CloudProvidersProps {
+  /** Callback to update the selected provider in the parent machine */
+  onChange: (
+    providerId: string | undefined,
+    regionId: string | undefined
+  ) => void;
+}
+
+const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
+  const { onChange } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const { getCloudProvidersWithRegions } = useGetCloudProvidersWithRegionsApi();
-  const [current, send, service] = useMachine(CloudProvidersMachine, {
+  const [current, send] = useMachine(CloudProvidersMachine, {
     services: {
       fetchCloudProviders: () => getCloudProvidersWithRegions(),
     },
@@ -31,11 +45,16 @@ const CloudProviders: VFC = () => {
   const { cloudProviders, selectedCloudProvider, selectedCloudRegion } =
     current.context;
 
-  service.onTransition((state) => {
-    if (state.changed) {
-      console.log(state);
-    }
-  });
+  // service.onTransition((state) => {
+  //   if (state.changed) {
+  //     console.log(state);
+  //     console.log(state.context);
+  //   }
+  // });
+
+  useEffect(() => {
+    onChange(selectedCloudProvider, selectedCloudRegion);
+  }, [selectedCloudRegion, selectedCloudProvider, onChange]);
 
   const handleCloudProviderClick = (id?: string): void => {
     if (id && id !== selectedCloudProvider) {

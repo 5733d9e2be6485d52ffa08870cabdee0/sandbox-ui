@@ -1,10 +1,19 @@
 import { assign, createMachine, send } from "xstate";
+import { ERROR_HANDLING_METHODS } from "../../../../types/ErrorHandlingMethods";
 
 interface CreateBridgeMachineContext {
   name?: string;
   providers: {
     selectedCloudProvider: string | undefined;
     selectedCloudRegion: string | undefined;
+  };
+  selectedProvider: {
+    providerId: string | undefined;
+    regionId: string | undefined;
+  };
+  errorHandler: {
+    type: string;
+    parameters?: Record<string, unknown>;
   };
   error: string | null;
   info: string | null;
@@ -20,6 +29,7 @@ const createBridgeMachine = createMachine(
       events: {} as
         | { type: "fieldInvalid" }
         | { type: "nameChange"; name: string }
+        | { type: "providerChange"; providerId?: string; regionId?: string }
         | { type: "create" }
         | { type: "cloudProvidersError" },
     },
@@ -28,6 +38,14 @@ const createBridgeMachine = createMachine(
       providers: {
         selectedCloudProvider: undefined,
         selectedCloudRegion: undefined,
+      },
+      selectedProvider: {
+        providerId: undefined,
+        regionId: undefined,
+      },
+      errorHandler: {
+        type: ERROR_HANDLING_METHODS.default.value,
+        parameters: undefined,
       },
       error: null,
       info: "hello create bridge",
@@ -105,8 +123,13 @@ const createBridgeMachine = createMachine(
                   validate: {
                     always: [
                       {
+                        // get rid of name empty and just use name invalid
                         cond: "nameIsEmpty",
                         target: "empty",
+                      },
+                      {
+                        cond: "nameIsValid",
+                        target: "valid",
                       },
                       {
                         target: "invalid",
@@ -124,6 +147,40 @@ const createBridgeMachine = createMachine(
                   },
                 },
               },
+              errorHandler: {
+                initial: "idle",
+                states: {
+                  idle: {},
+                  invalid: {
+                    entry: "fieldInvalid",
+                    tags: "EHInvalid",
+                  },
+                  valid: {
+                    tags: "EHvalid",
+                  },
+                  validate: {
+                    always: [
+                      {
+                        cond: "errorHandlerIsValid",
+                        target: "valid",
+                      },
+                      {
+                        target: "invalid",
+                      },
+                    ],
+                  },
+                },
+                on: {
+                  create: {
+                    target: ".validate",
+                  },
+                },
+              },
+            },
+            on: {
+              providerChange: {
+                actions: "setProvider",
+              },
             },
           },
         },
@@ -137,10 +194,20 @@ const createBridgeMachine = createMachine(
       setName: assign((context, { name }) => {
         return { ...context, name };
       }),
+      setProvider: assign((context, { providerId, regionId }) => {
+        return {
+          ...context,
+          selectedProvider: {
+            providerId,
+            regionId,
+          },
+        };
+      }),
       fieldInvalid: send("fieldInvalid"),
     },
     guards: {
       nameIsEmpty: ({ name }) => name === undefined || name.trim().length === 0,
+      nameIsValid: ({ name }) => name !== undefined && name.trim().length > 0,
     },
   }
 );

@@ -7,7 +7,6 @@
   "include": [
     "support/**/*.ts",
     "integration/**/*.ts",
-    "e2e/**/*.ts",
     "utils/**/*.ts",
     "plugin/**/*.ts"
   ]

@@ -1,54 +1,131 @@
-import { assign, createMachine } from "xstate";
-import {
-  CloudProviderResponse,
-  CloudRegionResponse,
-} from "@rhoas/smart-events-management-sdk";
+import { assign, createMachine, send } from "xstate";
 
 interface CreateBridgeMachineContext {
+  name?: string;
   providers: {
-    cloudProviders: CloudProviderResponse[] | null;
-    selectedCloudProvider: string | null;
-    cloudRegions: CloudRegionResponse[] | null;
-    selectedCloudRegion: string | null;
+    selectedCloudProvider: string | undefined;
+    selectedCloudRegion: string | undefined;
   };
   error: string | null;
+  info: string | null;
 }
 
 const createBridgeMachine = createMachine(
   {
     id: "createBridge",
-    initial: "idle",
+    initial: "configuring",
     tsTypes: {} as import("./createBridgeMachine.typegen").Typegen0,
     schema: {
       context: {} as CreateBridgeMachineContext,
-      services: {} as {
-        fetchCloudProviders: {
-          data: CloudProviderResponse[];
-        };
-      },
+      events: {} as
+        | { type: "fieldInvalid" }
+        | { type: "nameChange"; name: string }
+        | { type: "create" }
+        | { type: "cloudProvidersError" },
     },
     context: {
+      name: undefined,
       providers: {
-        cloudProviders: null,
-        selectedCloudProvider: null,
-        cloudRegions: null,
-        selectedCloudRegion: null,
+        selectedCloudProvider: undefined,
+        selectedCloudRegion: undefined,
       },
       error: null,
+      info: "hello create bridge",
     },
     states: {
-      idle: {
-        invoke: {
-          id: "getUser",
-          src: "fetchCloudProviders",
-          onDone: {
-            actions: "setProviders",
-            target: "success",
+      configuring: {
+        type: "parallel",
+        states: {
+          status: {
+            initial: "unsubmitted",
+            states: {
+              unsubmitted: {
+                tags: "unsubmitted",
+              },
+              submitted: {
+                // entry: "triggerSubmit",
+                tags: "submitted",
+              },
+            },
+            on: {
+              create: {
+                description:
+                  "Save is enabled all the time, if it's clicked before the form is completely filled out we should show the validation for all errored fields",
+                target: ".submitted",
+              },
+            },
           },
-          // onError: {
-          //   target: "failure",
-          //   actions: assign({ error: "error" }),
-          // },
+          form: {
+            initial: "invalid",
+            states: {
+              invalid: {
+                tags: "formInvalid",
+              },
+              valid: {
+                tags: "creatable",
+                on: {
+                  fieldInvalid: {
+                    target: "invalid",
+                  },
+                  // submit: {
+                  //   target: "saving",
+                  // },
+                },
+              },
+              saving: {},
+              saved: {
+                type: "final",
+              },
+            },
+            on: {
+              fieldInvalid: {
+                description:
+                  "sent by the fields when their value change to an invalid value. This will transition the form to the invalid state, to then eventually transition to the valid state if the field state is marked as done (which means that all fields have a valid value selected)",
+                target: ".invalid",
+              },
+            },
+          },
+          fields: {
+            type: "parallel",
+            states: {
+              name: {
+                initial: "validate",
+                states: {
+                  empty: {
+                    tags: "nameEmpty",
+                  },
+                  invalid: {
+                    entry: "fieldInvalid",
+                    tags: "nameInvalid",
+                  },
+                  valid: {
+                    tags: "nameValid",
+                    type: "final",
+                  },
+                  validate: {
+                    always: [
+                      {
+                        cond: "nameIsEmpty",
+                        target: "empty",
+                      },
+                      {
+                        target: "invalid",
+                      },
+                    ],
+                  },
+                },
+                on: {
+                  create: {
+                    target: ".validate",
+                  },
+                  nameChange: {
+                    actions: "setName",
+                    target: ".validate",
+                  },
+                },
+              },
+            },
+          },
         },
       },
       failure: {},
@@ -57,15 +134,13 @@ const createBridgeMachine = createMachine(
   },
   {
     actions: {
-      setProviders: assign((context, event) => {
-        return {
-          ...context,
-          providers: {
-            ...context.providers,
-            cloudProviders: event.data,
-          },
-        };
+      setName: assign((context, { name }) => {
+        return { ...context, name };
       }),
+      fieldInvalid: send("fieldInvalid"),
+    },
+    guards: {
+      nameIsEmpty: ({ name }) => name === undefined || name.trim().length === 0,
     },
   }
 );

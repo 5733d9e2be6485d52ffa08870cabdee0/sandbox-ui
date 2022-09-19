@@ -36,7 +36,7 @@
     "@rhoas/app-services-ui-shared": "0.16.4",
     "@rhoas/smart-events-management-sdk": "0.45.0",
     "@types/json-schema": "7.0.11",
-    "@xstate/react": "^3.0.0",
+    "@xstate/react": "3.0.0",
     "ajv": "8.11.0",
     "ajv-errors": "3.0.0",
     "keycloak-js": "9.0.0",
@@ -52,7 +52,7 @@
     "uniforms": "3.10.0",
     "uniforms-bridge-json-schema": "3.10.0",
     "uniforms-patternfly": "4.7.6",
-    "xstate": "^4.32.1"
+    "xstate": "4.32.1"
   },
   "devDependencies": {
     "@babel/preset-env": "7.19.3",

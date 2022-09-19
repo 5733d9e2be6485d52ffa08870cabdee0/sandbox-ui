@@ -3,31 +3,62 @@
 export interface Typegen0 {
   "@@xstate/typegen": true;
   internalEvents: {
-    "done.invoke.getUser": {
-      type: "done.invoke.getUser";
-      data: unknown;
-      __tip: "See the XState TS docs to learn how to strongly type this.";
-    };
-    "error.platform.getUser": { type: "error.platform.getUser"; data: unknown };
+    "": { type: "" };
     "xstate.init": { type: "xstate.init" };
   };
-  invokeSrcNameMap: {
-    fetchCloudProviders: "done.invoke.getUser";
-  };
+  invokeSrcNameMap: {};
   missingImplementations: {
     actions: never;
-    services: "fetchCloudProviders";
+    services: never;
     guards: never;
     delays: never;
   };
   eventsCausingActions: {
-    setProviders: "done.invoke.getUser";
+    fieldInvalid: "";
+    setName: "nameChange";
   };
-  eventsCausingServices: {
-    fetchCloudProviders: "xstate.init";
+  eventsCausingServices: {};
+  eventsCausingGuards: {
+    nameIsEmpty: "";
   };
-  eventsCausingGuards: {};
   eventsCausingDelays: {};
-  matchesStates: "failure" | "idle" | "success";
-  tags: never;
+  matchesStates:
+    | "configuring"
+    | "configuring.fields"
+    | "configuring.fields.name"
+    | "configuring.fields.name.empty"
+    | "configuring.fields.name.invalid"
+    | "configuring.fields.name.valid"
+    | "configuring.fields.name.validate"
+    | "configuring.form"
+    | "configuring.form.invalid"
+    | "configuring.form.saved"
+    | "configuring.form.saving"
+    | "configuring.form.valid"
+    | "configuring.status"
+    | "configuring.status.submitted"
+    | "configuring.status.unsubmitted"
+    | "failure"
+    | "success"
+    | {
+        configuring?:
+          | "fields"
+          | "form"
+          | "status"
+          | {
+              fields?:
+                | "name"
+                | { name?: "empty" | "invalid" | "valid" | "validate" };
+              form?: "invalid" | "saved" | "saving" | "valid";
+              status?: "submitted" | "unsubmitted";
+            };
+      };
+  tags:
+    | "creatable"
+    | "formInvalid"
+    | "nameEmpty"
+    | "nameInvalid"
+    | "nameValid"
+    | "submitted"
+    | "unsubmitted";
 }

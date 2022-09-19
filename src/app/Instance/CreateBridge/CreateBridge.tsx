@@ -1,14 +1,22 @@
-import React, { VoidFunctionComponent } from "react";
+import React, { FormEvent, useCallback, VoidFunctionComponent } from "react";
 import CreateBridgeMachine from "@app/Instance/CreateBridge/machines/createBridgeMachine";
 import { useMachine } from "@xstate/react";
-import { useGetCloudProvidersApi } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersApi";
-import { Button, Modal } from "@patternfly/react-core";
+import {
+  Button,
+  Form,
+  FormGroup,
+  Modal,
+  TextInput,
+} from "@patternfly/react-core";
 import { useTranslation } from "react-i18next";
+import CloudProviders from "@app/Instance/CreateBridge/components/CloudProviders";
 
 interface CreateBridgeProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const FORM_ID = "create-instance-form";
 
 const CreateBridge: VoidFunctionComponent<CreateBridgeProps> = (props) => {
   const { isOpen, onClose } = props;
@@ -25,11 +33,26 @@ interface CreateBridgeDialogProps {
 const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = ({
   onClose,
 }) => {
-  const { getCloudProviders } = useGetCloudProvidersApi();
-  const [current] = useMachine(CreateBridgeMachine, {
-    services: { fetchCloudProviders: () => getCloudProviders() },
-  });
   const { t } = useTranslation(["openbridgeTempDictionary"]);
+
+  const [current, send] = useMachine(CreateBridgeMachine);
+
+  const { name } = current.context;
+  // const isFormInvalid = current.hasTag("formInvalid");
+  const isSubmitted = current.hasTag("submitted");
+  const isNameEmpty = current.hasTag("nameEmpty") && isSubmitted;
+  const setName = useCallback(
+    (name: string) => send({ type: "nameChange", name }),
+    [send]
+  );
+
+  const onSubmit = useCallback(
+    (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      send({ type: "create" });
+    },
+    [send]
+  );
 
   return (
     <Modal
@@ -38,14 +61,14 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = ({
       title={t("instance.createASEInstance")}
       ouiaId="create-instance"
       width={640}
-      // onClose={onCloseModal}
+      onClose={onClose}
       actions={[
         <Button
           key="submit"
           ouiaId="submit"
           variant="primary"
           type="submit"
-          form={"FORM_ID"}
+          form={FORM_ID}
           // isDisabled={formIsDisabled}
           spinnerAriaValueText={t("common.submittingRequest")}
           // isLoading={isLoading}
@@ -57,12 +80,31 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = ({
         </Button>,
       ]}
     >
-      <ul>
-        {current.context.providers.cloudProviders &&
-          current.context.providers.cloudProviders.map((provider) => (
-            <li key={provider.id}>{provider.name}</li>
-          ))}
-      </ul>
+      <h1>{current.context.info}</h1>
+      <Form id={FORM_ID} onSubmit={onSubmit}>
+        <FormGroup
+          label={t("common.name")}
+          isRequired
+          fieldId="instance-name"
+          validated={isNameEmpty ? "error" : "default"}
+          helperTextInvalid={"name error"}
+        >
+          <TextInput
+            isRequired
+            ouiaId="new-name"
+            type="text"
+            maxLength={255}
+            id="instance-name"
+            name="instance-name"
+            value={name}
+            onChange={setName}
+            // onBlur={validate}
+            validated={isNameEmpty ? "error" : "default"}
+            // isDisabled={formIsDisabled}
+          />
+        </FormGroup>
+        <CloudProviders />
+      </Form>
     </Modal>
   );
 };

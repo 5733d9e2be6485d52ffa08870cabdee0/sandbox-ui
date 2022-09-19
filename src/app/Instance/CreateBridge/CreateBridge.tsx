@@ -65,9 +65,16 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
     (name: string) => send({ type: "nameChange", name }),
     [send]
   );
+
   const setProviders = useCallback(
     (providerId?: string, regionId?: string) =>
       send({ type: "providerChange", providerId, regionId }),
+    [send]
+  );
+
+  const setErrorHandler = useCallback(
+    (method: string, parameters?: Record<string, unknown>) =>
+      send({ type: "errorHandlerChange", method, parameters }),
     [send]
   );
 
@@ -145,6 +152,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
         <ErrorHandler
           getSchema={getSchema}
           registerValidation={registerValidateErrorHandlerParameters}
+          onChange={setErrorHandler}
         />
       </Form>
     </Modal>

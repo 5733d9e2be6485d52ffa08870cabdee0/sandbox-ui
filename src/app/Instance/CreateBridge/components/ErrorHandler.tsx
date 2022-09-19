@@ -10,10 +10,11 @@ import { GetSchema } from "../../../../hooks/useSchemasApi/useGetSchemaApi";
 interface ErrorHandlerProps {
   getSchema: GetSchema;
   registerValidation: (validationFunction: () => boolean) => void;
+  onChange: (method: string, parameters?: Record<string, unknown>) => void;
 }
 
 const ErrorHandler: VoidFunctionComponent<ErrorHandlerProps> = (props) => {
-  const { getSchema, registerValidation } = props;
+  const { getSchema, registerValidation, onChange } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const [errorHandlingSchemaId, setErrorHandlingSchemaId] = useState<
@@ -35,6 +36,12 @@ const ErrorHandler: VoidFunctionComponent<ErrorHandlerProps> = (props) => {
         .finally(() => setErrorHandlingSchemaLoading(false));
     }
   }, [errorHandlingSchemaId, getSchema]);
+
+  useEffect(() => {
+    if (errorHandlingSchemaId) {
+      onChange(errorHandlingSchemaId, errorHandlingParameters);
+    }
+  }, [errorHandlingSchemaId, errorHandlingParameters, onChange]);
 
   return (
     <FormSection title={t("common.errorHandling")} titleElement="h3">

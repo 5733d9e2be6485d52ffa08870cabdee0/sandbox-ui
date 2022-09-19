@@ -1,5 +1,4 @@
 import { assign, createMachine, send } from "xstate";
-import { ERROR_HANDLING_METHODS } from "../../../../types/ErrorHandlingMethods";
 
 interface CreateBridgeMachineContext {
   name?: string;
@@ -12,7 +11,7 @@ interface CreateBridgeMachineContext {
     regionId: string | undefined;
   };
   errorHandler: {
-    type: string;
+    method: string | undefined;
     parameters?: Record<string, unknown>;
   };
   error: string | null;
@@ -30,6 +29,11 @@ const createBridgeMachine = createMachine(
         | { type: "fieldInvalid" }
         | { type: "nameChange"; name: string }
         | { type: "providerChange"; providerId?: string; regionId?: string }
+        | {
+            type: "errorHandlerChange";
+            method: string;
+            parameters?: Record<string, unknown>;
+          }
         | { type: "create" }
         | { type: "cloudProvidersError" },
     },
@@ -44,7 +48,7 @@ const createBridgeMachine = createMachine(
         regionId: undefined,
       },
       errorHandler: {
-        type: ERROR_HANDLING_METHODS.default.value,
+        method: undefined,
         parameters: undefined,
       },
       error: null,
@@ -181,6 +185,9 @@ const createBridgeMachine = createMachine(
               providerChange: {
                 actions: "setProvider",
               },
+              errorHandlerChange: {
+                actions: "setErrorHandler",
+              },
             },
           },
         },
@@ -200,6 +207,15 @@ const createBridgeMachine = createMachine(
           selectedProvider: {
             providerId,
             regionId,
+          },
+        };
+      }),
+      setErrorHandler: assign((context, { method, parameters }) => {
+        return {
+          ...context,
+          errorHandler: {
+            method,
+            parameters,
           },
         };
       }),

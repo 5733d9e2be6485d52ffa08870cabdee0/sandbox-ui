@@ -15,6 +15,7 @@ export interface Typegen0 {
   };
   eventsCausingActions: {
     fieldInvalid: "";
+    setErrorHandler: "errorHandlerChange";
     setName: "nameChange";
     setProvider: "providerChange";
   };

@@ -76,6 +76,7 @@
     "@types/react-router-dom": "5.3.3",
     "@typescript-eslint/eslint-plugin": "5.38.1",
     "@typescript-eslint/parser": "5.38.1",
+    "@xstate/inspect": "0.7.0",
     "babel-jest": "27.5.1",
     "babel-loader": "8.2.5",
     "bundle-loader": "0.5.6",

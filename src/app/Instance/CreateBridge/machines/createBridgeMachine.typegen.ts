@@ -4,24 +4,40 @@ export interface Typegen0 {
   "@@xstate/typegen": true;
   internalEvents: {
     "": { type: "" };
+    "done.invoke.saveBridge": {
+      type: "done.invoke.saveBridge";
+      data: unknown;
+      __tip: "See the XState TS docs to learn how to strongly type this.";
+    };
+    "error.platform.saveBridge": {
+      type: "error.platform.saveBridge";
+      data: unknown;
+    };
     "xstate.init": { type: "xstate.init" };
   };
-  invokeSrcNameMap: {};
+  invokeSrcNameMap: {
+    createBridge: "done.invoke.saveBridge";
+  };
   missingImplementations: {
-    actions: never;
-    services: never;
+    actions: "onCloseDialog";
+    services: "createBridge";
     guards: "errorHandlerIsValid";
     delays: never;
   };
   eventsCausingActions: {
     fieldInvalid: "";
+    onCloseDialog: "done.invoke.saveBridge";
     setErrorHandler: "errorHandlerChange";
     setName: "nameChange";
     setProvider: "providerChange";
+    triggerSubmit: "create";
   };
-  eventsCausingServices: {};
+  eventsCausingServices: {
+    createBridge: "submit";
+  };
   eventsCausingGuards: {
     errorHandlerIsValid: "";
+    isSubmitted: "errorHandlerChange";
     nameIsEmpty: "";
     nameIsValid: "";
   };
@@ -30,7 +46,6 @@ export interface Typegen0 {
     | "configuring"
     | "configuring.fields"
     | "configuring.fields.errorHandler"
-    | "configuring.fields.errorHandler.idle"
     | "configuring.fields.errorHandler.invalid"
     | "configuring.fields.errorHandler.valid"
     | "configuring.fields.errorHandler.validate"
@@ -48,7 +63,7 @@ export interface Typegen0 {
     | "configuring.status.submitted"
     | "configuring.status.unsubmitted"
     | "failure"
-    | "success"
+    | "saved"
     | {
         configuring?:
           | "fields"
@@ -59,7 +74,7 @@ export interface Typegen0 {
                 | "errorHandler"
                 | "name"
                 | {
-                    errorHandler?: "idle" | "invalid" | "valid" | "validate";
+                    errorHandler?: "invalid" | "valid" | "validate";
                     name?: "empty" | "invalid" | "valid" | "validate";
                   };
               form?: "invalid" | "saved" | "saving" | "valid";
@@ -69,6 +84,7 @@ export interface Typegen0 {
   tags:
     | "EHInvalid"
     | "EHvalid"
+    | "configurable"
     | "creatable"
     | "formInvalid"
     | "nameEmpty"

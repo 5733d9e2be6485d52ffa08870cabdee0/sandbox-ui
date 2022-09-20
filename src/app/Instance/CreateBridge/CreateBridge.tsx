@@ -6,17 +6,13 @@ import React, {
 } from "react";
 import CreateBridgeMachine from "@app/Instance/CreateBridge/machines/createBridgeMachine";
 import { useMachine } from "@xstate/react";
-import {
-  Button,
-  Form,
-  FormGroup,
-  Modal,
-  TextInput,
-} from "@patternfly/react-core";
-import { useTranslation } from "react-i18next";
+import { Form } from "@patternfly/react-core";
 import CloudProviders from "@app/Instance/CreateBridge/components/CloudProviders";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import ErrorHandler from "@app/Instance/CreateBridge/components/ErrorHandler";
+import CreateBridgeModal from "@app/Instance/CreateBridge/components/CreateBridgeModal";
+import BridgeNameField from "@app/Instance/CreateBridge/components/BridgeNameField";
+import { CreateBridgePromise } from "../../../hooks/useBridgesApi/useCreateBridgePromiseApi";
 
 interface CreateBridgeProps {
   /** Flag to indicate if the dialog is open */
@@ -25,18 +21,16 @@ interface CreateBridgeProps {
   onClose: () => void;
   /** Callback to retrieve the schema used in error handling configuration */
   getSchema: GetSchema;
+  /** Callback to create a bridge */
+  createBridge: CreateBridgePromise;
 }
 
 const FORM_ID = "create-instance-form";
 
 const CreateBridge: VoidFunctionComponent<CreateBridgeProps> = (props) => {
-  const { isOpen, onClose, getSchema } = props;
+  const { isOpen, ...rest } = props;
 
-  return (
-    <>
-      {isOpen && <CreatBridgeDialog onClose={onClose} getSchema={getSchema} />}
-    </>
-  );
+  return <>{isOpen && <CreatBridgeDialog {...rest} />}</>;
 };
 
 export default CreateBridge;
@@ -46,21 +40,49 @@ type CreateBridgeDialogProps = Omit<CreateBridgeProps, "isOpen">;
 const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
   props
 ) => {
-  const { getSchema, onClose } = props;
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { getSchema, onClose, createBridge } = props;
+
   const validateErrorHandlerParameters = useRef<(() => boolean) | undefined>();
 
   const [current, send] = useMachine(CreateBridgeMachine, {
     guards: {
-      errorHandlerIsValid: () =>
-        validateErrorHandlerParameters.current?.() ?? true,
+      errorHandlerIsValid: () => {
+        console.log(
+          `ERROR HANDLER IS VALID: ${
+            validateErrorHandlerParameters.current?.() ?? true
+              ? "true"
+              : "false"
+          }`
+        );
+        return validateErrorHandlerParameters.current?.() ?? true;
+      },
     },
+    services: {
+      createBridge: (context) => {
+        const {
+          name,
+          selectedProvider: { providerId, regionId },
+        } = context;
+        console.log("SAVING THE BRIDGE!");
+        return createBridge({
+          name: name as string,
+          cloud_provider: providerId as string,
+          region: regionId as string,
+          error_handler: undefined,
+        });
+      },
+    },
+    actions: {
+      onCloseDialog: () => onClose(),
+    },
+    devTools: true,
   });
 
   const { name } = current.context;
   // const isFormInvalid = current.hasTag("formInvalid");
   const isSubmitted = current.hasTag("submitted");
   const isNameEmpty = current.hasTag("nameEmpty") && isSubmitted;
+
   const setName = useCallback(
     (name: string) => send({ type: "nameChange", name }),
     [send]
@@ -100,54 +122,13 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
   //   }
   // });
   return (
-    <Modal
-      position="top"
-      isOpen={true}
-      title={t("instance.createASEInstance")}
-      ouiaId="create-instance"
-      width={640}
-      onClose={onClose}
-      actions={[
-        <Button
-          key="submit"
-          ouiaId="submit"
-          variant="primary"
-          type="submit"
-          form={FORM_ID}
-          // isDisabled={formIsDisabled}
-          spinnerAriaValueText={t("common.submittingRequest")}
-          // isLoading={isLoading}
-        >
-          {t("instance.createSEInstance")}
-        </Button>,
-        <Button key="cancel" ouiaId="cancel" variant="link" onClick={onClose}>
-          {t("common.cancel")}
-        </Button>,
-      ]}
-    >
-      <h1>{current.context.info}</h1>
+    <CreateBridgeModal onClose={onClose} formId={FORM_ID}>
       <Form id={FORM_ID} onSubmit={onSubmit}>
-        <FormGroup
-          label={t("common.name")}
-          isRequired
-          fieldId="instance-name"
-          validated={isNameEmpty ? "error" : "default"}
-          helperTextInvalid={t("common.required")}
-        >
-          <TextInput
-            isRequired
-            ouiaId="new-name"
-            type="text"
-            maxLength={255}
-            id="instance-name"
-            name="instance-name"
-            value={name}
-            onChange={setName}
-            // onBlur={validate}
-            validated={isNameEmpty ? "error" : "default"}
-            // isDisabled={formIsDisabled}
-          />
-        </FormGroup>
+        <BridgeNameField
+          isNameEmpty={isNameEmpty}
+          onChange={setName}
+          value={name ?? ""}
+        />
         <CloudProviders onChange={setProviders} />
         <ErrorHandler
           getSchema={getSchema}
@@ -155,6 +136,6 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
           onChange={setErrorHandler}
         />
       </Form>
-    </Modal>
+    </CreateBridgeModal>
   );
 };

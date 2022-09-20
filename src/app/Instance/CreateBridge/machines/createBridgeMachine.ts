@@ -1,4 +1,5 @@
 import { assign, createMachine, send } from "xstate";
+import { BridgeResponse } from "@rhoas/smart-events-management-sdk";
 
 interface CreateBridgeMachineContext {
   name?: string;
@@ -15,12 +16,11 @@ interface CreateBridgeMachineContext {
     parameters?: Record<string, unknown>;
   };
   error: string | null;
-  info: string | null;
 }
 
 const createBridgeMachine = createMachine(
   {
-    id: "createBridge",
+    id: "createBridgeMachine",
     initial: "configuring",
     tsTypes: {} as import("./createBridgeMachine.typegen").Typegen0,
     schema: {
@@ -35,7 +35,13 @@ const createBridgeMachine = createMachine(
             parameters?: Record<string, unknown>;
           }
         | { type: "create" }
-        | { type: "cloudProvidersError" },
+        | { type: "cloudProvidersError" }
+        | { type: "submit" },
+      services: {} as {
+        createBridge: {
+          data: BridgeResponse;
+        };
+      },
     },
     context: {
       name: undefined,
@@ -52,7 +58,6 @@ const createBridgeMachine = createMachine(
         parameters: undefined,
       },
       error: null,
-      info: "hello create bridge",
     },
     states: {
       configuring: {
@@ -65,7 +70,7 @@ const createBridgeMachine = createMachine(
                 tags: "unsubmitted",
               },
               submitted: {
-                // entry: "triggerSubmit",
+                entry: "triggerSubmit",
                 tags: "submitted",
               },
             },
@@ -89,14 +94,27 @@ const createBridgeMachine = createMachine(
                   fieldInvalid: {
                     target: "invalid",
                   },
-                  // submit: {
-                  //   target: "saving",
-                  // },
+                  submit: {
+                    target: "saving",
+                  },
                 },
               },
-              saving: {},
+              saving: {
+                invoke: {
+                  id: "saveBridge",
+                  src: "createBridge",
+                  onDone: {
+                    // actions: "setProviders",
+                    target: "saved",
+                  },
+                  onError: {
+                    target: "invalid",
+                  },
+                },
+              },
               saved: {
                 type: "final",
+                entry: "onCloseDialog",
               },
             },
             on: {
@@ -108,6 +126,7 @@ const createBridgeMachine = createMachine(
             },
           },
           fields: {
+            tags: "configurable",
             type: "parallel",
             states: {
               name: {
@@ -152,15 +171,15 @@ const createBridgeMachine = createMachine(
                 },
               },
               errorHandler: {
-                initial: "idle",
+                initial: "validate",
                 states: {
-                  idle: {},
                   invalid: {
                     entry: "fieldInvalid",
                     tags: "EHInvalid",
                   },
                   valid: {
                     tags: "EHvalid",
+                    type: "final",
                   },
                   validate: {
                     always: [
@@ -178,6 +197,10 @@ const createBridgeMachine = createMachine(
                   create: {
                     target: ".validate",
                   },
+                  errorHandlerChange: {
+                    target: ".validate",
+                    cond: "isSubmitted",
+                  },
                 },
               },
             },
@@ -189,11 +212,16 @@ const createBridgeMachine = createMachine(
                 actions: "setErrorHandler",
               },
             },
+            onDone: {
+              target: "#createBridgeMachine.configuring.form.valid",
+            },
           },
         },
       },
       failure: {},
-      success: {},
+      saved: {
+        type: "final",
+      },
     },
   },
   {
@@ -220,10 +248,12 @@ const createBridgeMachine = createMachine(
         };
       }),
       fieldInvalid: send("fieldInvalid"),
+      triggerSubmit: send("submit"),
     },
     guards: {
       nameIsEmpty: ({ name }) => name === undefined || name.trim().length === 0,
       nameIsValid: ({ name }) => name !== undefined && name.trim().length > 0,
+      isSubmitted: (_context, _event, meta) => meta.state.hasTag("submitted"),
     },
   }
 );

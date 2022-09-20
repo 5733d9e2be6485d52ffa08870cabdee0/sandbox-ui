@@ -42,6 +42,7 @@ import { useGetCloudProvidersRegions } from "../../../hooks/useCloudProvidersApi
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import CreateBridge from "@app/Instance/CreateBridge/CreateBridge";
+import { useCreateBridgePromiseApi } from "../../../hooks/useBridgesApi/useCreateBridgePromiseApi";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -157,6 +158,8 @@ const InstancesListPage = (): JSX.Element => {
     bridge,
   } = useCreateBridgeApi();
 
+  const { createBridgePromise } = useCreateBridgePromiseApi();
+
   const { getSchema } = useGetSchemaApi();
 
   const handleCreateBridge = useCallback(
@@ -269,6 +272,7 @@ const InstancesListPage = (): JSX.Element => {
         isOpen={showCreateBridge}
         onClose={(): void => setShowCreateBridge((prev) => !prev)}
         getSchema={getSchema}
+        createBridge={createBridgePromise}
       />
     </>
   );

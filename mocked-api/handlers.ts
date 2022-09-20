@@ -44,6 +44,8 @@ const db = factory({
       type: String,
       parameters: String,
     },
+    cloud_provider: String,
+    region: String,
   },
   processor: {
     id: primaryKey(String),
@@ -178,7 +180,12 @@ export const handlers = [
   // create a bridge
   rest.post(`${apiUrl}/bridges`, async (req, res, ctx) => {
     const bridgeRequest: BridgeRequest = await req.json();
-    const { name, error_handler: errorHandler } = bridgeRequest;
+    const {
+      name,
+      error_handler: errorHandler,
+      cloud_provider,
+      region,
+    } = bridgeRequest;
 
     const existingBridge = db.bridge.findFirst({
       where: {
@@ -223,10 +230,13 @@ export const handlers = [
       kind: "Bridge",
       id,
       name,
+      owner: "rsanchez",
       href: `/api/smartevents_mgmt/v1/bridges/${id}`,
       submitted_at: new Date().toISOString(),
       error_handler: convertParametersToString(errorHandler),
       status: "accepted",
+      cloud_provider,
+      region,
     };
 
     const newBridge = db.bridge.create(bridge);

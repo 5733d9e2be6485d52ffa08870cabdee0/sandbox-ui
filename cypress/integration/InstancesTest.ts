@@ -10,6 +10,8 @@ import {
   isEnvironmentType,
   EnvType,
   pageWasLoaded,
+  progressStepStatus,
+  SEStepStatus,
 } from "../utils/Util";
 
 const formatDate = (dateStr: string): string =>
@@ -53,17 +55,58 @@ describe("Instances Test", () => {
     it("Submit", () => {
       const newInstanceName: string = createdInstances[0];
       createInstance(newInstanceName);
+
+      //Assertation that the process of creation the instance is monitored
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(newInstanceName, "PF4/TableRow")
         .should("be.visible")
         .within(() => {
           cy.get("td:first").should("have.text", newInstanceName);
-          cy.get("td:nth-child(3)").then(($state) => {
-            cy.wrap($state)
-              .ouiaId("creating", "PF4/Button")
-              .should("have.text", "Creating");
-            cy.wrap($state, { timeout: 180000 }).should("have.text", "Ready");
-          });
+          cy.get("td:nth-child(3)")
+            .ouiaId("accepted", "QE/ResourceStatus")
+            .within(() => {
+              cy.get("span[role='progressbar']").should("exist");
+              cy.ouiaId("creating", "PF4/Button").should(
+                "have.text",
+                "Creating"
+              );
+              cy.ouiaId("ready-shortly", "QE/HelperTextItem").should(
+                "have.text",
+                "This will be ready shortly."
+              );
+            });
+          cy.ouiaId("creating", "PF4/Button").click();
+        });
+
+      cy.ouiaId("se-status", "QE/Popover")
+        .should("be.visible")
+        .within(() => {
+          cy.ouiaType("QE/StackItem").should("have.length", "3");
+          cy.ouiaId("info-banner", "QE/StackItem")
+            .ouiaId("ready-shortly", "PF4/Text")
+            .should("be.visible");
+          cy.ouiaId("steps-count", "QE/StackItem").should(
+            "have.text",
+            "0 of 3 steps completed"
+          );
+          //TODO: There should be a check that all steps are met but I did not know how to do it for Mocked Env
+          //It seems that '1 of 3' is skipped and `2 of 3` is here only for few secs.
+          //Each step is asserted with the mocked version
+        });
+      cy.ouiaId("se-status", "QE/Popover", { timeout: 180000 }).should(
+        "not.exist"
+      );
+
+      //Assertation that the instance was created
+      cy.ouiaId("Instances list table", "PF4/Table")
+        .ouiaId(newInstanceName, "PF4/TableRow")
+        .within(() => {
+          cy.get(
+            "td:first a[data-testid='tableInstances-linkInstance']"
+          ).should("be.visible");
+          cy.ouiaId("ready", "QE/ResourceStatus")
+            .should("be.visible")
+            .should("have.text", "Ready");
         });
     });
 
@@ -204,10 +247,22 @@ describe("Instances Test", () => {
           .ouiaId(instanceName, "PF4/TableRow")
           .should("be.visible")
           .within(() => {
+            //the name does not contain a link at the detail page
             cy.get("td:first").should("have.html", instanceName);
+            //the status
             cy.get("td:nth-child(3)")
-              .ouiaId("creating", "PF4/Button")
-              .should("have.text", "Creating");
+              .ouiaId("accepted", "QE/ResourceStatus")
+              .within(() => {
+                cy.get("span[role='progressbar']").should("exist");
+                cy.ouiaId("creating", "PF4/Button").should(
+                  "have.text",
+                  "Creating"
+                );
+                cy.ouiaId("longer-than-expected", "PF4/Alert").should(
+                  "have.text",
+                  "Danger alert:This is taking longer than expected."
+                );
+              });
             cy.get("td:nth-child(4)")
               .click()
               .within(() => {
@@ -218,6 +273,36 @@ describe("Instances Test", () => {
                   expect($items.eq(1)).have.attr("aria-disabled", "true");
                 });
               });
+            cy.ouiaId("creating", "PF4/Button").click();
+          });
+        cy.ouiaId("se-status", "QE/Popover")
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaType("QE/StackItem").should("have.length", "3");
+            cy.ouiaId("info-banner", "QE/StackItem")
+              .ouiaId("longer-than-expected", "PF4/Alert")
+              .should("be.visible");
+            cy.ouiaId("steps-count", "QE/StackItem").should(
+              "have.text",
+              "0 of 3 steps completed"
+            );
+            cy.ouiaId("steps", "QE/StackItem").within(() => {
+              progressStepStatus(
+                SEStepStatus.Info,
+                "pending",
+                "Creation pending"
+              );
+              progressStepStatus(
+                SEStepStatus.Default,
+                "preparing",
+                "Preparing"
+              );
+              progressStepStatus(
+                SEStepStatus.Default,
+                "provisioning",
+                "Provisioning"
+              );
+            });
           });
       });
 
@@ -227,10 +312,22 @@ describe("Instances Test", () => {
           .ouiaId(instanceName, "PF4/TableRow")
           .should("be.visible")
           .within(() => {
+            //the name does not contain a link at the detail page
             cy.get("td:first").should("have.html", instanceName);
+            //the status
             cy.get("td:nth-child(3)")
-              .ouiaId("creating", "PF4/Button")
-              .should("have.text", "Creating");
+              .ouiaId("provisioning", "QE/ResourceStatus")
+              .within(() => {
+                cy.get("span[role='progressbar']").should("exist");
+                cy.ouiaId("creating", "PF4/Button").should(
+                  "have.text",
+                  "Creating"
+                );
+                cy.ouiaId("longer-than-expected", "PF4/Alert").should(
+                  "have.text",
+                  "Danger alert:This is taking longer than expected."
+                );
+              });
             cy.get("td:nth-child(4)")
               .click()
               .within(() => {
@@ -241,6 +338,36 @@ describe("Instances Test", () => {
                   expect($items.eq(1)).have.attr("aria-disabled", "true");
                 });
               });
+            cy.ouiaId("creating", "PF4/Button").click();
+          });
+        cy.ouiaId("se-status", "QE/Popover")
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaType("QE/StackItem").should("have.length", "3");
+            cy.ouiaId("info-banner", "QE/StackItem")
+              .ouiaId("longer-than-expected", "PF4/Alert")
+              .should("be.visible");
+            cy.ouiaId("steps-count", "QE/StackItem").should(
+              "have.text",
+              "2 of 3 steps completed"
+            );
+            cy.ouiaId("steps", "QE/StackItem").within(() => {
+              progressStepStatus(
+                SEStepStatus.Success,
+                "pending",
+                "Creation pending"
+              );
+              progressStepStatus(
+                SEStepStatus.Success,
+                "preparing",
+                "Preparing"
+              );
+              progressStepStatus(
+                SEStepStatus.Info,
+                "provisioning",
+                "Provisioning"
+              );
+            });
           });
       });
 
@@ -405,7 +532,7 @@ describe("Instances Test", () => {
           .should("have.attr", "hidden");
       });
 
-      it("Processors Content", () => {
+      it("Pending processor", () => {
         cy.ouiaId("instance-details", "PF4/Tabs")
           .ouiaId("processors", "PF4/TabButton")
           .click();
@@ -424,6 +551,59 @@ describe("Instances Test", () => {
                 .eq(3)
                 .ouiaId("creating", "PF4/Button")
                 .should("have.text", "Creating");
+              cy.wrap($cells.eq(4))
+                .ouiaType("PF4/Dropdown")
+                .should("be.visible");
+            });
+          cy.ouiaId("creating", "PF4/Button").click();
+        });
+        cy.ouiaId("se-status", "QE/Popover")
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaType("QE/StackItem").should("have.length", "3");
+            cy.ouiaId("info-banner", "QE/StackItem")
+              .ouiaId("longer-than-expected", "PF4/Alert")
+              .should("be.visible");
+            cy.ouiaId("steps-count", "QE/StackItem").should(
+              "have.text",
+              "0 of 3 steps completed"
+            );
+            cy.ouiaId("steps", "QE/StackItem").within(() => {
+              progressStepStatus(
+                SEStepStatus.Info,
+                "pending",
+                "Creation pending"
+              );
+              progressStepStatus(
+                SEStepStatus.Default,
+                "preparing",
+                "Preparing"
+              );
+              progressStepStatus(
+                SEStepStatus.Default,
+                "provisioning",
+                "Provisioning"
+              );
+            });
+          });
+      });
+
+      it("Ready processor", () => {
+        cy.ouiaId("instance-details", "PF4/Tabs")
+          .ouiaId("processors", "PF4/TabButton")
+          .click();
+        cy.ouiaId("processors", "PF4/TabContent").within(() => {
+          cy.ouiaId("rows-toolbar", "PF4/Toolbar")
+            .ouiaId("create-processor", "PF4/Button")
+            .should("be.visible");
+          cy.ouiaId("Processors list table", "PF4/Table")
+            .ouiaId("Processor one", "PF4/TableRow")
+            .find("td")
+            .then(($cells) => {
+              expect($cells).have.length(5);
+              expect($cells.eq(0)).have.text("Processor one");
+              expect($cells.eq(1)).have.text("Sink");
+              cy.wrap($cells).eq(3).should("have.text", "Ready");
               cy.wrap($cells.eq(4))
                 .ouiaType("PF4/Dropdown")
                 .should("be.visible");

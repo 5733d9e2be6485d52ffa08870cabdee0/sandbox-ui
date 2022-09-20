@@ -315,7 +315,7 @@ describe("Instances Test", () => {
               )
               .should("be.visible");
             cy.ouiaId("instance-details-owner")
-              .should("have.text", "bebianco@redhat.com")
+              .should("have.text", "bebianco")
               .should("be.visible");
             cy.ouiaId("instance-details-submitted-date")
               .should("have.text", formatDate("2022-02-24T13:34:00Z"))

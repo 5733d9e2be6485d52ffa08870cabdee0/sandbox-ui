@@ -6,12 +6,13 @@ interface BridgeNameFieldProps {
   value: string;
   isNameEmpty: boolean;
   onChange: (name: string) => void;
+  isDisabled: boolean;
 }
 
 const BridgeNameField: VoidFunctionComponent<BridgeNameFieldProps> = (
   props
 ) => {
-  const { isNameEmpty, onChange, value } = props;
+  const { isNameEmpty, onChange, value, isDisabled } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
   return (
@@ -33,7 +34,7 @@ const BridgeNameField: VoidFunctionComponent<BridgeNameFieldProps> = (
         onChange={onChange}
         // onBlur={validate}
         validated={isNameEmpty ? "error" : "default"}
-        // isDisabled={formIsDisabled}
+        isDisabled={isDisabled}
       />
     </FormGroup>
   );

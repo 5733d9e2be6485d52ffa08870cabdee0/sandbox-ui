@@ -28,10 +28,11 @@ interface CloudProvidersProps {
     providerId: string | undefined,
     regionId: string | undefined
   ) => void;
+  isDisabled: boolean;
 }
 
 const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
-  const { onChange } = props;
+  const { onChange, isDisabled } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const { getCloudProvidersWithRegions } = useGetCloudProvidersWithRegionsApi();
@@ -141,7 +142,7 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
                     onClick={(): void => {
                       handleCloudProviderClick(provider.id);
                     }}
-                    // isDisabled={isDisabled}
+                    isDisabled={isDisabled}
                   />
                 </FlexItem>
               ))}
@@ -168,8 +169,7 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
           isOpen={isCloudRegionSelectOpen}
           aria-describedby={"cloud-region"}
           menuAppendTo={"parent"}
-          // isDisabled={isDisabled || !cloudRegions}
-          isDisabled={!selectedCloudProvider}
+          isDisabled={isDisabled || !selectedCloudProvider}
         >
           {cloudRegionsOptions}
         </Select>

@@ -11,10 +11,11 @@ interface ErrorHandlerProps {
   getSchema: GetSchema;
   registerValidation: (validationFunction: () => boolean) => void;
   onChange: (method: string, parameters?: Record<string, unknown>) => void;
+  isDisabled: boolean;
 }
 
 const ErrorHandler: VoidFunctionComponent<ErrorHandlerProps> = (props) => {
-  const { getSchema, registerValidation, onChange } = props;
+  const { getSchema, registerValidation, onChange, isDisabled } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const [errorHandlingSchemaId, setErrorHandlingSchemaId] = useState<
@@ -53,8 +54,7 @@ const ErrorHandler: VoidFunctionComponent<ErrorHandlerProps> = (props) => {
         <ErrorHandlingSelection
           defaultMethod={ERROR_HANDLING_METHODS.default.value}
           errorHandlingMethods={ERROR_HANDLING_METHODS}
-          // isDisabled={formIsDisabled}
-          isDisabled={false}
+          isDisabled={isDisabled}
           onMethodSelection={(errorMethod: string): void => {
             setErrorHandlingParameters({});
             if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
@@ -74,7 +74,7 @@ const ErrorHandler: VoidFunctionComponent<ErrorHandlerProps> = (props) => {
             // setHasParametersError(false);
           }}
           registerValidation={registerValidation}
-          // readOnly={formIsDisabled}
+          readOnly={isDisabled}
           editMode={false}
         />
       )}

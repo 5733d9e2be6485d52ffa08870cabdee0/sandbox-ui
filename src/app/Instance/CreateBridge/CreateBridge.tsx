@@ -82,6 +82,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
   // const isFormInvalid = current.hasTag("formInvalid");
   const isSubmitted = current.hasTag("submitted");
   const isNameEmpty = current.hasTag("nameEmpty") && isSubmitted;
+  const isSaving = current.matches("configuring.form.saving");
 
   const setName = useCallback(
     (name: string) => send({ type: "nameChange", name }),
@@ -122,18 +123,25 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
   //   }
   // });
   return (
-    <CreateBridgeModal onClose={onClose} formId={FORM_ID}>
+    <CreateBridgeModal
+      onClose={onClose}
+      formId={FORM_ID}
+      isDisabled={isSaving}
+      isLoading={isSaving}
+    >
       <Form id={FORM_ID} onSubmit={onSubmit}>
         <BridgeNameField
           isNameEmpty={isNameEmpty}
           onChange={setName}
           value={name ?? ""}
+          isDisabled={isSaving}
         />
-        <CloudProviders onChange={setProviders} />
+        <CloudProviders onChange={setProviders} isDisabled={isSaving} />
         <ErrorHandler
           getSchema={getSchema}
           registerValidation={registerValidateErrorHandlerParameters}
           onChange={setErrorHandler}
+          isDisabled={isSaving}
         />
       </Form>
     </CreateBridgeModal>

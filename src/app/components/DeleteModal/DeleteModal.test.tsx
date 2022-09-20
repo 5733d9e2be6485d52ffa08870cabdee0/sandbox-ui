@@ -83,9 +83,9 @@ describe("Delete Modal component", () => {
 
     expect(comp.queryByText("Delete")).not.toBeInTheDocument();
     expect(comp.queryByText("Cancel")).not.toBeInTheDocument();
-    expect(onCancel).toBeCalledTimes(0);
+    expect(onCancel).toHaveBeenCalledTimes(0);
     fireEvent.click(comp.getByText("Close"));
-    expect(onCancel).toBeCalledTimes(1);
+    expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
   test("should ask the user to type the name of the resource to confirm deletion", async () => {
@@ -107,7 +107,7 @@ describe("Delete Modal component", () => {
     });
     expect(comp.getByText("Delete")).toBeEnabled();
     fireEvent.click(comp.getByText("Delete"));
-    expect(onConfirm).toBeCalledTimes(1);
+    expect(onConfirm).toHaveBeenCalledTimes(1);
   });
 
   test("should error when deletion was not confirmed properly", async () => {
@@ -141,9 +141,9 @@ describe("Delete Modal component", () => {
     expect(await comp.findByText(title)).toBeInTheDocument();
     expect(comp.getByText("Delete")).toBeDisabled();
     expect(comp.getByText("Cancel")).toBeEnabled();
-    expect(onCancel).toBeCalledTimes(0);
+    expect(onCancel).toHaveBeenCalledTimes(0);
     fireEvent.click(comp.getByText("Cancel"));
-    expect(onCancel).toBeCalledTimes(1);
+    expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
   test("should disable the delete button while the deletion is in progress", async () => {

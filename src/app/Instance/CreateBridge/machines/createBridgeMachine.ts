@@ -13,7 +13,7 @@ interface CreateBridgeMachineContext {
   };
   errorHandler: {
     method: string | undefined;
-    parameters?: Record<string, unknown>;
+    parameters: Record<string, unknown> | undefined;
   };
   error: string | null;
 }
@@ -31,8 +31,8 @@ const createBridgeMachine = createMachine(
         | { type: "providerChange"; providerId?: string; regionId?: string }
         | {
             type: "errorHandlerChange";
-            method: string;
-            parameters?: Record<string, unknown>;
+            method: string | undefined;
+            parameters: Record<string, unknown> | undefined;
           }
         | { type: "create" }
         | { type: "cloudProvidersError" }
@@ -70,7 +70,6 @@ const createBridgeMachine = createMachine(
                 tags: "unsubmitted",
               },
               submitted: {
-                entry: "triggerSubmit",
                 tags: "submitted",
               },
             },
@@ -78,6 +77,7 @@ const createBridgeMachine = createMachine(
               create: {
                 description:
                   "Save is enabled all the time, if it's clicked before the form is completely filled out we should show the validation for all errored fields",
+                actions: "triggerSubmit",
                 target: ".submitted",
               },
             },
@@ -94,9 +94,15 @@ const createBridgeMachine = createMachine(
                   fieldInvalid: {
                     target: "invalid",
                   },
-                  submit: {
-                    target: "saving",
-                  },
+                  submit: [
+                    {
+                      cond: "errorHandlerIsValid",
+                      target: "saving",
+                    },
+                    {
+                      target: "invalid",
+                    },
+                  ],
                 },
               },
               saving: {
@@ -104,7 +110,6 @@ const createBridgeMachine = createMachine(
                   id: "saveBridge",
                   src: "createBridge",
                   onDone: {
-                    // actions: "setProviders",
                     target: "saved",
                   },
                   onError: {
@@ -114,7 +119,7 @@ const createBridgeMachine = createMachine(
               },
               saved: {
                 type: "final",
-                entry: "onCloseDialog",
+                entry: "onCreateBridge",
               },
             },
             on: {
@@ -198,6 +203,7 @@ const createBridgeMachine = createMachine(
                     target: ".validate",
                   },
                   errorHandlerChange: {
+                    actions: "setErrorHandler",
                     target: ".validate",
                     cond: "isSubmitted",
                   },
@@ -208,9 +214,9 @@ const createBridgeMachine = createMachine(
               providerChange: {
                 actions: "setProvider",
               },
-              errorHandlerChange: {
-                actions: "setErrorHandler",
-              },
+              // errorHandlerChange: {
+              //   actions: "setErrorHandler",
+              // },
             },
             onDone: {
               target: "#createBridgeMachine.configuring.form.valid",

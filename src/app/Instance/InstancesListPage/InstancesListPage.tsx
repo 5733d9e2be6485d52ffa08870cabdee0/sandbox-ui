@@ -242,6 +242,10 @@ const InstancesListPage = (): JSX.Element => {
       ),
     },
   ];
+  const onCreateBridge = useCallback(() => {
+    setShowCreateBridge(false);
+    getBridges(currentPage, currentPageSize);
+  }, [getBridges, currentPage, currentPageSize]);
 
   const customToolbarElement = (
     <>
@@ -271,6 +275,7 @@ const InstancesListPage = (): JSX.Element => {
       <CreateBridge
         isOpen={showCreateBridge}
         onClose={(): void => setShowCreateBridge((prev) => !prev)}
+        onCreateBridge={onCreateBridge}
         getSchema={getSchema}
         createBridge={createBridgePromise}
       />

@@ -19,6 +19,8 @@ interface CreateBridgeProps {
   isOpen: boolean;
   /** Callback to close the dialog */
   onClose: () => void;
+  /** Callback to notify parent that a new bridge was created */
+  onCreateBridge: () => void;
   /** Callback to retrieve the schema used in error handling configuration */
   getSchema: GetSchema;
   /** Callback to create a bridge */
@@ -40,7 +42,7 @@ type CreateBridgeDialogProps = Omit<CreateBridgeProps, "isOpen">;
 const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
   props
 ) => {
-  const { getSchema, onClose, createBridge } = props;
+  const { getSchema, onClose, onCreateBridge, createBridge } = props;
 
   const validateErrorHandlerParameters = useRef<(() => boolean) | undefined>();
 
@@ -62,18 +64,20 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
         const {
           name,
           selectedProvider: { providerId, regionId },
+          errorHandler: { method, parameters },
         } = context;
-        console.log("SAVING THE BRIDGE!");
         return createBridge({
           name: name as string,
           cloud_provider: providerId as string,
           region: regionId as string,
-          error_handler: undefined,
+          ...(method !== undefined && parameters !== undefined
+            ? { error_handler: { type: method, parameters } }
+            : {}),
         });
       },
     },
     actions: {
-      onCloseDialog: () => onClose(),
+      onCreateBridge: () => onCreateBridge(),
     },
     devTools: true,
   });
@@ -96,7 +100,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
   );
 
   const setErrorHandler = useCallback(
-    (method: string, parameters?: Record<string, unknown>) =>
+    (method?: string, parameters?: Record<string, unknown>) =>
       send({ type: "errorHandlerChange", method, parameters }),
     [send]
   );
@@ -109,11 +113,12 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
     [send]
   );
 
-  const registerValidateErrorHandlerParameters = (
-    callback: () => boolean
-  ): void => {
-    validateErrorHandlerParameters.current = callback;
-  };
+  const registerValidateErrorHandlerParameters = useCallback(
+    (callback: () => boolean): void => {
+      validateErrorHandlerParameters.current = callback;
+    },
+    []
+  );
 
   // service.onTransition((state) => {
   //   if (state.changed) {

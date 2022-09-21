@@ -10,7 +10,7 @@ import { GetSchema } from "../../../../hooks/useSchemasApi/useGetSchemaApi";
 interface ErrorHandlerProps {
   getSchema: GetSchema;
   registerValidation: (validationFunction: () => boolean) => void;
-  onChange: (method: string, parameters?: Record<string, unknown>) => void;
+  onChange: (method?: string, parameters?: Record<string, unknown>) => void;
   isDisabled: boolean;
 }
 
@@ -41,8 +41,16 @@ const ErrorHandler: VoidFunctionComponent<ErrorHandlerProps> = (props) => {
   useEffect(() => {
     if (errorHandlingSchemaId) {
       onChange(errorHandlingSchemaId, errorHandlingParameters);
+    } else {
+      registerValidation(() => true);
+      onChange(undefined, undefined);
     }
-  }, [errorHandlingSchemaId, errorHandlingParameters, onChange]);
+  }, [
+    errorHandlingSchemaId,
+    errorHandlingParameters,
+    onChange,
+    registerValidation,
+  ]);
 
   return (
     <FormSection title={t("common.errorHandling")} titleElement="h3">

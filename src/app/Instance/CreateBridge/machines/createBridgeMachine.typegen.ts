@@ -19,14 +19,14 @@ export interface Typegen0 {
     createBridge: "done.invoke.saveBridge";
   };
   missingImplementations: {
-    actions: "onCloseDialog";
+    actions: "onCreateBridge";
     services: "createBridge";
     guards: "errorHandlerIsValid";
     delays: never;
   };
   eventsCausingActions: {
     fieldInvalid: "";
-    onCloseDialog: "done.invoke.saveBridge";
+    onCreateBridge: "done.invoke.saveBridge";
     setErrorHandler: "errorHandlerChange";
     setName: "nameChange";
     setProvider: "providerChange";
@@ -36,7 +36,7 @@ export interface Typegen0 {
     createBridge: "submit";
   };
   eventsCausingGuards: {
-    errorHandlerIsValid: "";
+    errorHandlerIsValid: "" | "submit";
     isSubmitted: "errorHandlerChange";
     nameIsEmpty: "";
     nameIsValid: "";

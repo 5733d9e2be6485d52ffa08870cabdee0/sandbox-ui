@@ -182,7 +182,7 @@ describe("ProcessorEdit component", () => {
       "/api/smartevents_mgmt/v1/bridges/d7e13602-b046-4120-b377-15d61e21c31a";
     const submitted_at = "2022-02-01T12:02:00Z";
     const published_at = "2022-02-01T12:03:00Z";
-    const owner = "bebianco@redhat.com";
+    const owner = "bebianco";
     const status = "ready";
     const { comp } = setupProcessorEdit({
       saveButtonLabel: "Save",
@@ -578,7 +578,7 @@ describe("ProcessorEdit component", () => {
         type: ProcessorType.Sink,
         kind: "Bridge",
         href: "/api/smartevents_mgmt/v1/bridges/f8f34af4-caed-11ec-9d64-0242ac120002",
-        owner: "bebianco@redhat.com",
+        owner: "bebianco",
       },
     });
     await waitForI18n(comp);
@@ -600,7 +600,7 @@ const baseProcessor = {
   status: ManagedResourceStatus.Ready,
   kind: "Bridge",
   href: "/api/smartevents_mgmt/v1/bridges/f8f34af4-caed-11ec-9d64-0242ac120002",
-  owner: "bebianco@redhat.com",
+  owner: "bebianco",
 };
 
 const sourceProcessor = {

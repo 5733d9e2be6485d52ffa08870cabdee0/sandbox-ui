@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/explicit-function-return-type */
 
 import React from "react";
-import { TFunction } from "react-i18next";
+import { TFunction } from "@rhoas/app-services-ui-components";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { Popover } from "@patternfly/react-core";
 import { HelpIcon } from "@patternfly/react-icons";

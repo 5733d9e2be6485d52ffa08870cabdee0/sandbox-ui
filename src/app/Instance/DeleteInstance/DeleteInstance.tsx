@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DeleteModal } from "@app/components/DeleteModal/DeleteModal";
 import { useDeleteBridgeApi } from "../../../hooks/useBridgesApi/useDeleteBridgeApi";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import axios from "axios";
 import {
   getErrorCode,

@@ -3,7 +3,7 @@ import { ProgressStep, ProgressStepper } from "@patternfly/react-core";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { CreationStatusOrder } from "@app/components/SEStatusLabel/SEStatusPopover/types";
 import { ProgressStepProps } from "@patternfly/react-core/dist/esm/components/ProgressStepper/ProgressStep";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 
 interface SEStatusStepperProps {
   status: ManagedResourceStatus;

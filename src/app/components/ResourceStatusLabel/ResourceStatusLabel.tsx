@@ -18,7 +18,7 @@ import {
   CheckCircleIcon,
   ExclamationTriangleIcon,
 } from "@patternfly/react-icons";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import "./ResourceStatusLabel.css";
 
 export interface ResourceStatusLabelProps {

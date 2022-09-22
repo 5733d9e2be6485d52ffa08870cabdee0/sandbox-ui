@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "@rhoas/app-services-ui-components";
 import {
   Bullseye,
   Button,

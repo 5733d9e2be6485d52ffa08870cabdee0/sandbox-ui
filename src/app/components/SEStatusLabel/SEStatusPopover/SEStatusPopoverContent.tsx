@@ -8,7 +8,7 @@ import {
   TextVariants,
 } from "@patternfly/react-core";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { ResourceStatusDelayed } from "@app/components/ResourceStatusLabel/types";
 import { CreationStatusOrder } from "@app/components/SEStatusLabel/SEStatusPopover/types";
 import SEStatusStepper from "@app/components/SEStatusLabel/SEStatusPopover/SEStatusStepper";

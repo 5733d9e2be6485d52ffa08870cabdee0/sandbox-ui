@@ -18,7 +18,7 @@ import {
   TextContent,
   TextVariants,
 } from "@patternfly/react-core";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { format } from "date-fns";
 import { BridgeResponse } from "@rhoas/smart-events-management-sdk";
 

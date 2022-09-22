@@ -4,7 +4,7 @@ import {
   ProcessorSchemaEntryResponse,
   Source,
 } from "@rhoas/smart-events-management-sdk";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import {
   FormGroup,
   FormSelect,

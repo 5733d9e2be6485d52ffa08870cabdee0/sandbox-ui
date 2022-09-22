@@ -6,7 +6,7 @@ import {
   TextContent,
 } from "@patternfly/react-core";
 import { useHistory, useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import axios from "axios";
 import ProcessorEdit from "@app/Processor/ProcessorEdit/ProcessorEdit";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";

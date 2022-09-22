@@ -16,7 +16,7 @@ import {
 } from "@rhoas/smart-events-management-sdk";
 import { AwsIcon } from "@patternfly/react-icons";
 import "./CloudProviderSelection.css";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 
 interface CloudProviderSelectionProps {
   cloudProviders: CloudProviderResponse[];

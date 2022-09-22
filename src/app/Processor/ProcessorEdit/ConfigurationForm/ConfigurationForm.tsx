@@ -4,7 +4,7 @@ import { AutoField } from "uniforms-patternfly/dist/es6";
 import { AutoForm, ValidatedQuickForm, context } from "uniforms";
 import { createValidator } from "@app/Processor/ProcessorEdit/ConfigurationForm/validator";
 import { CustomJsonSchemaBridge } from "@app/Processor/ProcessorEdit/ConfigurationForm/CustomJsonSchemaBridge";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { prepareConfigParameters } from "@utils/processorUtils";
 
 interface ConfigurationFormProps {

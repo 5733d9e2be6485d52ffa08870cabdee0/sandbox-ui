@@ -9,7 +9,7 @@ import {
   TextVariants,
 } from "@patternfly/react-core";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 
 export interface ActionModalProps {
   /** Action to execute when the modal gets closed */

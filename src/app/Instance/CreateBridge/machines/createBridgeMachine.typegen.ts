@@ -26,7 +26,9 @@ export interface Typegen0 {
   };
   eventsCausingActions: {
     fieldInvalid: "";
-    onCreateBridge: "done.invoke.saveBridge";
+    onCreateBridge: "createSuccess";
+    resetCreationErrorMessage: "submit";
+    setCreationError: "createError";
     setErrorHandler: "errorHandlerChange";
     setName: "nameChange";
     setProvider: "providerChange";

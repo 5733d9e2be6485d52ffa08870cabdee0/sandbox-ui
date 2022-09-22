@@ -1,5 +1,5 @@
 import { assign, createMachine, send } from "xstate";
-import { BridgeResponse } from "@rhoas/smart-events-management-sdk";
+import { CreateBridgeError } from "@app/Instance/CreateBridge/types";
 
 interface CreateBridgeMachineContext {
   name?: string;
@@ -15,6 +15,7 @@ interface CreateBridgeMachineContext {
     method: string | undefined;
     parameters: Record<string, unknown> | undefined;
   };
+  creationError: CreateBridgeError | undefined;
   error: string | null;
 }
 
@@ -35,13 +36,15 @@ const createBridgeMachine = createMachine(
             parameters: Record<string, unknown> | undefined;
           }
         | { type: "create" }
+        | { type: "createSuccess" }
+        | { type: "createError"; error: CreateBridgeError }
         | { type: "cloudProvidersError" }
         | { type: "submit" },
-      services: {} as {
-        createBridge: {
-          data: BridgeResponse;
-        };
-      },
+      // services: {} as {
+      //   createBridge: {
+      //     data: BridgeResponse;
+      //   };
+      // },
     },
     context: {
       name: undefined,
@@ -58,6 +61,7 @@ const createBridgeMachine = createMachine(
         parameters: undefined,
       },
       error: null,
+      creationError: undefined,
     },
     states: {
       configuring: {
@@ -106,13 +110,26 @@ const createBridgeMachine = createMachine(
                 },
               },
               saving: {
+                entry: ["resetCreationErrorMessage"],
                 invoke: {
                   id: "saveBridge",
                   src: "createBridge",
-                  onDone: {
+                  // onDone: {
+                  //   target: "saved",
+                  // },
+                  // onError: {
+                  //   target: "invalid",
+                  // },
+                },
+                on: {
+                  createSuccess: {
                     target: "saved",
+                    // target: "#createKafkaInstance.complete",
                   },
-                  onError: {
+                  createError: {
+                    // actions: "notifyCreateErrorToStandardPlan",
+                    // target: "idle",
+                    actions: "setCreationError",
                     target: "invalid",
                   },
                 },
@@ -233,7 +250,13 @@ const createBridgeMachine = createMachine(
   {
     actions: {
       setName: assign((context, { name }) => {
-        return { ...context, name };
+        return {
+          ...context,
+          name,
+          ...(context.creationError === "name-taken"
+            ? { creationError: undefined }
+            : {}),
+        };
       }),
       setProvider: assign((context, { providerId, regionId }) => {
         return {
@@ -253,12 +276,25 @@ const createBridgeMachine = createMachine(
           },
         };
       }),
+      setCreationError: assign((context, { error }) => {
+        return {
+          ...context,
+          creationError: error,
+        };
+      }),
+      resetCreationErrorMessage: assign((context) => ({
+        ...context,
+        creationError: undefined,
+      })),
       fieldInvalid: send("fieldInvalid"),
       triggerSubmit: send("submit"),
     },
     guards: {
       nameIsEmpty: ({ name }) => name === undefined || name.trim().length === 0,
-      nameIsValid: ({ name }) => name !== undefined && name.trim().length > 0,
+      nameIsValid: ({ name, creationError }) =>
+        name !== undefined &&
+        name.trim().length > 0 &&
+        creationError !== "name-taken",
       isSubmitted: (_context, _event, meta) => meta.state.hasTag("submitted"),
     },
   }

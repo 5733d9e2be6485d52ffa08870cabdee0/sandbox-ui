@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 interface BridgeNameFieldProps {
   value: string;
   isNameEmpty: boolean;
+  isNameTaken: boolean;
   onChange: (name: string) => void;
   isDisabled: boolean;
 }
@@ -12,16 +13,23 @@ interface BridgeNameFieldProps {
 const BridgeNameField: VoidFunctionComponent<BridgeNameFieldProps> = (
   props
 ) => {
-  const { isNameEmpty, onChange, value, isDisabled } = props;
+  const { isNameEmpty, isNameTaken, onChange, value, isDisabled } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
+
+  const validity = isNameEmpty || isNameTaken;
+  const errorMessage = isNameTaken
+    ? t("instance.errors.invalidName")
+    : isNameEmpty
+    ? t("common.required")
+    : "";
 
   return (
     <FormGroup
       label={t("common.name")}
       isRequired
       fieldId="instance-name"
-      validated={isNameEmpty ? "error" : "default"}
-      helperTextInvalid={t("common.required")}
+      validated={validity ? "error" : "default"}
+      helperTextInvalid={errorMessage}
     >
       <TextInput
         isRequired
@@ -33,7 +41,7 @@ const BridgeNameField: VoidFunctionComponent<BridgeNameFieldProps> = (
         value={value}
         onChange={onChange}
         // onBlur={validate}
-        validated={isNameEmpty ? "error" : "default"}
+        validated={validity ? "error" : "default"}
         isDisabled={isDisabled}
       />
     </FormGroup>

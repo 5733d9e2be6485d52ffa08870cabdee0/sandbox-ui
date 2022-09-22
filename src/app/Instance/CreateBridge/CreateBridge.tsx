@@ -12,9 +12,11 @@ import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import ErrorHandler from "@app/Instance/CreateBridge/components/ErrorHandler";
 import CreateBridgeModal from "@app/Instance/CreateBridge/components/CreateBridgeModal";
 import BridgeNameField from "@app/Instance/CreateBridge/components/BridgeNameField";
-import { CreateBridgePromise } from "../../../hooks/useBridgesApi/useCreateBridgePromiseApi";
+import { BridgeRequest } from "@rhoas/smart-events-management-sdk";
+import { CreateBridgeError } from "@app/Instance/CreateBridge/types";
+import BridgeAlert from "@app/Instance/CreateBridge/components/BridgeAlert";
 
-interface CreateBridgeProps {
+export interface CreateBridgeProps {
   /** Flag to indicate if the dialog is open */
   isOpen: boolean;
   /** Callback to close the dialog */
@@ -24,7 +26,11 @@ interface CreateBridgeProps {
   /** Callback to retrieve the schema used in error handling configuration */
   getSchema: GetSchema;
   /** Callback to create a bridge */
-  createBridge: CreateBridgePromise;
+  createBridge: (
+    data: BridgeRequest,
+    onSuccess: () => void,
+    onError: (error: CreateBridgeError) => void
+  ) => Promise<void>;
 }
 
 const FORM_ID = "create-instance-form";
@@ -66,14 +72,26 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
           selectedProvider: { providerId, regionId },
           errorHandler: { method, parameters },
         } = context;
-        return createBridge({
-          name: name as string,
-          cloud_provider: providerId as string,
-          region: regionId as string,
-          ...(method !== undefined && parameters !== undefined
-            ? { error_handler: { type: method, parameters } }
-            : {}),
-        });
+        return (send) => {
+          function onSuccess(): void {
+            send("createSuccess");
+          }
+          function onError(error: CreateBridgeError): void {
+            send({ type: "createError", error });
+          }
+          void createBridge(
+            {
+              name: name as string,
+              cloud_provider: providerId as string,
+              region: regionId as string,
+              ...(method !== undefined && parameters !== undefined
+                ? { error_handler: { type: method, parameters } }
+                : {}),
+            },
+            onSuccess,
+            onError
+          );
+        };
       },
     },
     actions: {
@@ -82,10 +100,11 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
     devTools: true,
   });
 
-  const { name } = current.context;
-  // const isFormInvalid = current.hasTag("formInvalid");
+  const { name, creationError } = current.context;
   const isSubmitted = current.hasTag("submitted");
+  const isFormInvalid = current.hasTag("formInvalid") && isSubmitted;
   const isNameEmpty = current.hasTag("nameEmpty") && isSubmitted;
+  const isNameTaken = creationError === "name-taken";
   const isSaving = current.matches("configuring.form.saving");
 
   const setName = useCallback(
@@ -135,8 +154,10 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
       isLoading={isSaving}
     >
       <Form id={FORM_ID} onSubmit={onSubmit}>
+        <BridgeAlert isFormInvalid={isFormInvalid} />
         <BridgeNameField
           isNameEmpty={isNameEmpty}
+          isNameTaken={isNameTaken}
           onChange={setName}
           value={name ?? ""}
           isDisabled={isSaving}

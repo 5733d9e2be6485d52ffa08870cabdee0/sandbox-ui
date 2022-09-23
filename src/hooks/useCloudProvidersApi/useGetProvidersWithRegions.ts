@@ -4,10 +4,11 @@ import {
 } from "@rhoas/smart-events-management-sdk";
 import { useCallback } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
-import { CloudProviderWithRegions } from "../../types/Providers";
+import { CloudProviderWithRegions } from "@app/Instance/CreateBridge/types";
+import { CreateBridgeProps } from "@app/Instance/CreateBridge/CreateBridge";
 
 export function useGetCloudProvidersWithRegionsApi(): {
-  getCloudProvidersWithRegions: GetCloudProvidersWithRegions;
+  getCloudProvidersWithRegions: CreateBridgeProps["getCloudProviders"];
 } {
   const { getToken, apiBaseUrl } = useSmartEvents();
 
@@ -42,7 +43,3 @@ export function useGetCloudProvidersWithRegionsApi(): {
 
   return { getCloudProvidersWithRegions };
 }
-
-export type GetCloudProvidersWithRegions = () => Promise<
-  CloudProviderWithRegions[]
->;

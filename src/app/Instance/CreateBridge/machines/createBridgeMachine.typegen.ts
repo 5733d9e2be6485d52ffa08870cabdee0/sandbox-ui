@@ -19,14 +19,13 @@ export interface Typegen0 {
     createBridge: "done.invoke.saveBridge";
   };
   missingImplementations: {
-    actions: "onCreateBridge";
+    actions: never;
     services: "createBridge";
     guards: "errorHandlerIsValid";
     delays: never;
   };
   eventsCausingActions: {
     fieldInvalid: "";
-    onCreateBridge: "createSuccess";
     resetCreationErrorMessage: "submit";
     setCreationError: "createError" | "providersAvailabilityError";
     setErrorHandler: "errorHandlerChange";

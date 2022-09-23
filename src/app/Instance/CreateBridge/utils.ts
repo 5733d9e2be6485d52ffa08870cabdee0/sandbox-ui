@@ -1,4 +1,4 @@
-import { CloudProviderWithRegions } from "../../../types/Providers";
+import { CloudProviderWithRegions } from "@app/Instance/CreateBridge/types";
 
 export const getFirstAvailableRegion = (
   providers: CloudProviderWithRegions[]

@@ -7,7 +7,6 @@ import React, {
 
 import { useMachine } from "@xstate/react";
 import CloudProvidersMachine from "@app/Instance/CreateBridge/machines/cloudProvidersMachine";
-import { useGetCloudProvidersWithRegionsApi } from "../../../../hooks/useCloudProvidersApi/useGetProvidersWithRegions";
 import {
   Flex,
   FlexItem,
@@ -22,8 +21,11 @@ import { CloudProviderSelectionSkeleton } from "@app/Instance/CreateInstance/Clo
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { AwsIcon } from "@patternfly/react-icons";
 import { CreateBridgeError } from "@app/Instance/CreateBridge/types";
+import { CreateBridgeProps } from "@app/Instance/CreateBridge/CreateBridge";
 
 interface CloudProvidersProps {
+  /** Callback to retrieve providers and regions */
+  getCloudProviders: CreateBridgeProps["getCloudProviders"];
   /** Callback to update the selected provider in the parent machine */
   onChange: (
     providerId: string | undefined,
@@ -34,13 +36,12 @@ interface CloudProvidersProps {
 }
 
 const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
-  const { onChange, onProviderError, isDisabled } = props;
+  const { getCloudProviders, onChange, onProviderError, isDisabled } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
-  const { getCloudProvidersWithRegions } = useGetCloudProvidersWithRegionsApi();
   const [current, send] = useMachine(CloudProvidersMachine, {
     services: {
-      fetchCloudProviders: () => getCloudProvidersWithRegions(),
+      fetchCloudProviders: () => getCloudProviders(),
     },
     actions: {
       notifyProviderUnavailable: () => onProviderError("region-unavailable"),

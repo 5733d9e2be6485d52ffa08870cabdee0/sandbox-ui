@@ -13,7 +13,10 @@ import ErrorHandler from "@app/Instance/CreateBridge/components/ErrorHandler";
 import CreateBridgeModal from "@app/Instance/CreateBridge/components/CreateBridgeModal";
 import BridgeNameField from "@app/Instance/CreateBridge/components/BridgeNameField";
 import { BridgeRequest } from "@rhoas/smart-events-management-sdk";
-import { CreateBridgeError } from "@app/Instance/CreateBridge/types";
+import {
+  CloudProviderWithRegions,
+  CreateBridgeError,
+} from "@app/Instance/CreateBridge/types";
 import BridgeAlert from "@app/Instance/CreateBridge/components/BridgeAlert";
 
 export interface CreateBridgeProps {
@@ -21,16 +24,16 @@ export interface CreateBridgeProps {
   isOpen: boolean;
   /** Callback to close the dialog */
   onClose: () => void;
-  /** Callback to notify parent that a new bridge was created */
-  onCreateBridge: () => void;
   /** Callback to retrieve the schema used in error handling configuration */
   getSchema: GetSchema;
+  /** Callback to retrieve cloud providers and regions */
+  getCloudProviders: () => Promise<CloudProviderWithRegions[]>;
   /** Callback to create a bridge */
   createBridge: (
     data: BridgeRequest,
     onSuccess: () => void,
     onError: (error: CreateBridgeError) => void
-  ) => Promise<void>;
+  ) => void;
 }
 
 const FORM_ID = "create-instance-form";
@@ -48,7 +51,7 @@ type CreateBridgeDialogProps = Omit<CreateBridgeProps, "isOpen">;
 const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
   props
 ) => {
-  const { getSchema, onClose, onCreateBridge, createBridge } = props;
+  const { getSchema, getCloudProviders, onClose, createBridge } = props;
 
   const validateErrorHandlerParameters = useRef<(() => boolean) | undefined>();
 
@@ -79,7 +82,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
           function onError(error: CreateBridgeError): void {
             send({ type: "createError", error });
           }
-          void createBridge(
+          createBridge(
             {
               name: name as string,
               cloud_provider: providerId as string,
@@ -93,9 +96,6 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
           );
         };
       },
-    },
-    actions: {
-      onCreateBridge: () => onCreateBridge(),
     },
     devTools: true,
   });
@@ -175,6 +175,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
           isDisabled={isDisabled}
         />
         <CloudProviders
+          getCloudProviders={getCloudProviders}
           onChange={setProviders}
           isDisabled={isDisabled}
           onProviderError={onProviderError}

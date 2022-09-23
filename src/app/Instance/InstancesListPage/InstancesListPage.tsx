@@ -41,8 +41,11 @@ import { useGetCloudProvidersApi } from "../../../hooks/useCloudProvidersApi/use
 import { useGetCloudProvidersRegions } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
-import CreateBridge from "@app/Instance/CreateBridge/CreateBridge";
+import CreateBridge, {
+  CreateBridgeProps,
+} from "@app/Instance/CreateBridge/CreateBridge";
 import { useCreateBridgeWithCallbacks } from "../../../hooks/useBridgesApi/useCreateBridgeWithCallbacks";
+import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegions";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -158,8 +161,8 @@ const InstancesListPage = (): JSX.Element => {
     bridge,
   } = useCreateBridgeApi();
 
-  // const { createBridgePromise } = useCreateBridgePromiseApi();
   const { createBridgeAlt } = useCreateBridgeWithCallbacks();
+  const { getCloudProvidersWithRegions } = useGetCloudProvidersWithRegionsApi();
 
   const { getSchema } = useGetSchemaApi();
 
@@ -243,10 +246,22 @@ const InstancesListPage = (): JSX.Element => {
       ),
     },
   ];
+
   const onCreateBridge = useCallback(() => {
     setShowCreateBridge(false);
     getBridges(currentPage, currentPageSize);
   }, [getBridges, currentPage, currentPageSize]);
+
+  const handleCreateAlt = useCallback<CreateBridgeProps["createBridge"]>(
+    function (data, onSuccess, onError) {
+      const handleOnSuccess = (): void => {
+        onSuccess();
+        onCreateBridge();
+      };
+      createBridgeAlt(data, handleOnSuccess, onError);
+    },
+    [onCreateBridge, createBridgeAlt]
+  );
 
   const customToolbarElement = (
     <>
@@ -256,11 +271,12 @@ const InstancesListPage = (): JSX.Element => {
       >
         {t("instance.createSEInstance")}
       </Button>
+      <span>&nbsp;&nbsp;</span>
       <Button
         ouiaId="create-smart-event-bridge"
         onClick={(): void => setShowCreateBridge(true)}
       >
-        Create Bridge
+        {t("instance.createSEInstance")} w/ XState
       </Button>
       <CreateInstance
         isLoading={createBridgeLoading}
@@ -276,9 +292,9 @@ const InstancesListPage = (): JSX.Element => {
       <CreateBridge
         isOpen={showCreateBridge}
         onClose={(): void => setShowCreateBridge((prev) => !prev)}
-        onCreateBridge={onCreateBridge}
+        getCloudProviders={getCloudProvidersWithRegions}
         getSchema={getSchema}
-        createBridge={createBridgeAlt}
+        createBridge={handleCreateAlt}
       />
     </>
   );

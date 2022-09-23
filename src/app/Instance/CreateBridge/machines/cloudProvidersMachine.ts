@@ -1,6 +1,6 @@
 import { assign, createMachine } from "xstate";
-import { CloudProviderWithRegions } from "../../../../types/Providers";
 import { getFirstAvailableRegion } from "@app/Instance/CreateBridge/utils";
+import { CloudProviderWithRegions } from "@app/Instance/CreateBridge/types";
 
 interface CloudProvidersMachineContext {
   cloudProviders: CloudProviderWithRegions[];

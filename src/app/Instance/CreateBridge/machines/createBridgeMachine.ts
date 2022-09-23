@@ -138,7 +138,6 @@ const createBridgeMachine = createMachine(
               },
               saved: {
                 type: "final",
-                entry: "onCreateBridge",
               },
             },
             on: {

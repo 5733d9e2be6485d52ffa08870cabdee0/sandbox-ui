@@ -1,6 +1,6 @@
 import React, { VoidFunctionComponent } from "react";
 import { FormGroup, TextInput } from "@patternfly/react-core";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 
 interface BridgeNameFieldProps {
   value: string;

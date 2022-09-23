@@ -3,7 +3,7 @@ import { FormGroup, FormSection } from "@patternfly/react-core";
 import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/ErrorHandlingSelection";
 import { ERROR_HANDLING_METHODS } from "../../../../types/ErrorHandlingMethods";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { ProcessorSchemaType } from "../../../../types/Processor";
 import { GetSchema } from "../../../../hooks/useSchemasApi/useGetSchemaApi";
 

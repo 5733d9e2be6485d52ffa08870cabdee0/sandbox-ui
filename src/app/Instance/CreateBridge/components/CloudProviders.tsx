@@ -19,7 +19,7 @@ import {
   Tile,
 } from "@patternfly/react-core";
 import { CloudProviderSelectionSkeleton } from "@app/Instance/CreateInstance/CloudProviderSelection";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { AwsIcon } from "@patternfly/react-icons";
 import { CreateBridgeError } from "@app/Instance/CreateBridge/types";
 

@@ -1,6 +1,6 @@
 import React, { useMemo, VoidFunctionComponent } from "react";
 import { Alert, AlertProps, FormAlert } from "@patternfly/react-core";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { CreateBridgeError } from "@app/Instance/CreateBridge/types";
 
 interface BridgeAlertProps {

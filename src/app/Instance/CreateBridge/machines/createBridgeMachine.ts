@@ -21,8 +21,6 @@ interface CreateBridgeMachineContext {
 
 const createBridgeMachine = createMachine(
   {
-    id: "createBridgeMachine",
-    initial: "configuring",
     tsTypes: {} as import("./createBridgeMachine.typegen").Typegen0,
     schema: {
       context: {} as CreateBridgeMachineContext,
@@ -38,6 +36,7 @@ const createBridgeMachine = createMachine(
         | { type: "create" }
         | { type: "createSuccess" }
         | { type: "createError"; error: CreateBridgeError }
+        | { type: "providersAvailabilityError"; error: CreateBridgeError }
         | { type: "cloudProvidersError" }
         | { type: "submit" },
       // services: {} as {
@@ -63,6 +62,8 @@ const createBridgeMachine = createMachine(
       error: null,
       creationError: undefined,
     },
+    id: "createBridgeMachine",
+    initial: "configuring",
     states: {
       configuring: {
         type: "parallel",
@@ -91,6 +92,16 @@ const createBridgeMachine = createMachine(
             states: {
               invalid: {
                 tags: "formInvalid",
+                always: [
+                  {
+                    cond: "isProviderUnavailable",
+                    target: "#createBridgeMachine.unavailable",
+                  },
+                  {
+                    cond: "isGenericError",
+                    target: "valid",
+                  },
+                ],
               },
               valid: {
                 tags: "creatable",
@@ -114,21 +125,12 @@ const createBridgeMachine = createMachine(
                 invoke: {
                   id: "saveBridge",
                   src: "createBridge",
-                  // onDone: {
-                  //   target: "saved",
-                  // },
-                  // onError: {
-                  //   target: "invalid",
-                  // },
                 },
                 on: {
                   createSuccess: {
                     target: "saved",
-                    // target: "#createKafkaInstance.complete",
                   },
                   createError: {
-                    // actions: "notifyCreateErrorToStandardPlan",
-                    // target: "idle",
                     actions: "setCreationError",
                     target: "invalid",
                   },
@@ -145,6 +147,9 @@ const createBridgeMachine = createMachine(
                   "sent by the fields when their value change to an invalid value. This will transition the form to the invalid state, to then eventually transition to the valid state if the field state is marked as done (which means that all fields have a valid value selected)",
                 target: ".invalid",
               },
+            },
+            onDone: {
+              target: "#createBridgeMachine.saved",
             },
           },
           fields: {
@@ -240,9 +245,18 @@ const createBridgeMachine = createMachine(
             },
           },
         },
+        on: {
+          providersAvailabilityError: {
+            actions: "setCreationError",
+            target: "#createBridgeMachine.unavailable",
+          },
+        },
       },
-      failure: {},
       saved: {
+        type: "final",
+      },
+      unavailable: {
+        tags: "creationUnavailable",
         type: "final",
       },
     },
@@ -296,6 +310,9 @@ const createBridgeMachine = createMachine(
         name.trim().length > 0 &&
         creationError !== "name-taken",
       isSubmitted: (_context, _event, meta) => meta.state.hasTag("submitted"),
+      isGenericError: ({ creationError }) => creationError === "generic-error",
+      isProviderUnavailable: ({ creationError }) =>
+        creationError === "region-unavailable",
     },
   }
 );

@@ -21,6 +21,7 @@ import {
 import { CloudProviderSelectionSkeleton } from "@app/Instance/CreateInstance/CloudProviderSelection";
 import { useTranslation } from "react-i18next";
 import { AwsIcon } from "@patternfly/react-icons";
+import { CreateBridgeError } from "@app/Instance/CreateBridge/types";
 
 interface CloudProvidersProps {
   /** Callback to update the selected provider in the parent machine */
@@ -28,11 +29,12 @@ interface CloudProvidersProps {
     providerId: string | undefined,
     regionId: string | undefined
   ) => void;
+  onProviderError: (error: CreateBridgeError) => void;
   isDisabled: boolean;
 }
 
 const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
-  const { onChange, isDisabled } = props;
+  const { onChange, onProviderError, isDisabled } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const { getCloudProvidersWithRegions } = useGetCloudProvidersWithRegionsApi();
@@ -40,9 +42,13 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
     services: {
       fetchCloudProviders: () => getCloudProvidersWithRegions(),
     },
+    actions: {
+      notifyProviderUnavailable: () => onProviderError("region-unavailable"),
+    },
+    devTools: true,
   });
   const isLoading = current.matches("fetching providers");
-  const isError = current.matches("failure");
+  // const isError = current.matches("failure");
   const { cloudProviders, selectedCloudProvider, selectedCloudRegion } =
     current.context;
 
@@ -117,7 +123,6 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
 
   return (
     <>
-      {isError && <h1>There was an error fetching providers</h1>}
       <FormGroup
         label={t("instance.cloudProvider")}
         isRequired
@@ -128,7 +133,7 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
           spacer={{ default: "spacerNone" }}
           spaceItems={{ default: "spaceItemsXs" }}
         >
-          {cloudProviders.length > 0 && (
+          {!isLoading && (
             <>
               {cloudProviders.map((provider) => (
                 <FlexItem grow={{ default: "grow" }} key={provider.id}>
@@ -146,9 +151,20 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
                   />
                 </FlexItem>
               ))}
+              {cloudProviders.length === 0 && (
+                <FlexItem grow={{ default: "grow" }} key={0}>
+                  <Tile
+                    className={"pf-u-w-100"}
+                    title={t("common.temporaryUnavailable")}
+                    key={0}
+                    style={{ height: "100%" }}
+                    isDisabled={isDisabled}
+                  />
+                </FlexItem>
+              )}
             </>
           )}
-          {cloudProviders.length === 0 && <CloudProviderSelectionSkeleton />}
+          {isLoading && <CloudProviderSelectionSkeleton />}
         </Flex>
       </FormGroup>
 

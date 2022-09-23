@@ -29,7 +29,6 @@ export function useCreateBridgeWithCallbacks(): {
           const errorCode = getErrorCode(error);
           switch (errorCode) {
             case APIErrorCodes.ERROR_1:
-              // setExistingInstanceName(newBridgeName);
               onError("name-taken");
               break;
             case APIErrorCodes.ERROR_33:
@@ -38,7 +37,6 @@ export function useCreateBridgeWithCallbacks(): {
               // become unavailable, we can disable the creation form because
               // we only support 1 provider and 1 region.
               // This will of course change when we'll expand the cloud provider support.
-              // setCloudProviderUnavailable(true);
               onError("region-unavailable");
               break;
           }

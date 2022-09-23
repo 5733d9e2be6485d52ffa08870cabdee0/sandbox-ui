@@ -34,13 +34,16 @@ const BridgeAlert: VoidFunctionComponent<BridgeAlertProps> = (props) => {
           />
         );
       default:
-        return (
-          <ShowAlert title={t("common.addressFormErrors")} variant="danger" />
-        );
+        if (isFormInvalid) {
+          return (
+            <ShowAlert title={t("common.addressFormErrors")} variant="danger" />
+          );
+        }
+        return null;
     }
-  }, [creationError, t]);
+  }, [creationError, t, isFormInvalid]);
 
-  return <>{isFormInvalid && alert}</>;
+  return <>{alert}</>;
 };
 
 export default BridgeAlert;

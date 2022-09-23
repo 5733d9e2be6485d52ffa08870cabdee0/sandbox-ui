@@ -6,6 +6,7 @@ interface CreateBridgeModalProps {
   children: ReactNode;
   formId: string;
   onClose: () => void;
+  isSaving: boolean;
   isDisabled: boolean;
   isLoading: boolean;
 }
@@ -14,7 +15,7 @@ const CreateBridgeModal: VoidFunctionComponent<CreateBridgeModalProps> = (
   props
 ) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
-  const { children, formId, onClose, isDisabled, isLoading } = props;
+  const { children, formId, onClose, isSaving, isDisabled, isLoading } = props;
 
   return (
     <Modal
@@ -42,7 +43,7 @@ const CreateBridgeModal: VoidFunctionComponent<CreateBridgeModalProps> = (
           ouiaId="cancel"
           variant="link"
           onClick={onClose}
-          isDisabled={isDisabled}
+          isDisabled={isSaving}
         >
           {t("common.cancel")}
         </Button>,

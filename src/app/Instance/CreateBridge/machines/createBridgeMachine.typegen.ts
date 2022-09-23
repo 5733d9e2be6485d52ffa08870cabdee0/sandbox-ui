@@ -28,7 +28,7 @@ export interface Typegen0 {
     fieldInvalid: "";
     onCreateBridge: "createSuccess";
     resetCreationErrorMessage: "submit";
-    setCreationError: "createError";
+    setCreationError: "createError" | "providersAvailabilityError";
     setErrorHandler: "errorHandlerChange";
     setName: "nameChange";
     setProvider: "providerChange";
@@ -39,6 +39,8 @@ export interface Typegen0 {
   };
   eventsCausingGuards: {
     errorHandlerIsValid: "" | "submit";
+    isGenericError: "";
+    isProviderUnavailable: "";
     isSubmitted: "errorHandlerChange";
     nameIsEmpty: "";
     nameIsValid: "";
@@ -64,8 +66,8 @@ export interface Typegen0 {
     | "configuring.status"
     | "configuring.status.submitted"
     | "configuring.status.unsubmitted"
-    | "failure"
     | "saved"
+    | "unavailable"
     | {
         configuring?:
           | "fields"
@@ -88,6 +90,7 @@ export interface Typegen0 {
     | "EHvalid"
     | "configurable"
     | "creatable"
+    | "creationUnavailable"
     | "formInvalid"
     | "nameEmpty"
     | "nameInvalid"

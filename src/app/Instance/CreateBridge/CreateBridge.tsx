@@ -106,6 +106,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
   const isNameEmpty = current.hasTag("nameEmpty") && isSubmitted;
   const isNameTaken = creationError === "name-taken";
   const isSaving = current.matches("configuring.form.saving");
+  const isDisabled = current.hasTag("creationUnavailable") || isSaving;
 
   const setName = useCallback(
     (name: string) => send({ type: "nameChange", name }),
@@ -139,6 +140,13 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
     []
   );
 
+  const onProviderError = useCallback(
+    (error: CreateBridgeError) => {
+      send({ type: "providersAvailabilityError", error });
+    },
+    [send]
+  );
+
   // service.onTransition((state) => {
   //   if (state.changed) {
   //     console.log("PARENT MACHINE STATE CHANGE FOLLOWS");
@@ -150,24 +158,32 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
     <CreateBridgeModal
       onClose={onClose}
       formId={FORM_ID}
-      isDisabled={isSaving}
+      isSaving={isSaving}
+      isDisabled={isDisabled}
       isLoading={isSaving}
     >
       <Form id={FORM_ID} onSubmit={onSubmit}>
-        <BridgeAlert isFormInvalid={isFormInvalid} />
+        <BridgeAlert
+          isFormInvalid={isFormInvalid}
+          creationError={creationError}
+        />
         <BridgeNameField
           isNameEmpty={isNameEmpty}
           isNameTaken={isNameTaken}
           onChange={setName}
           value={name ?? ""}
-          isDisabled={isSaving}
+          isDisabled={isDisabled}
         />
-        <CloudProviders onChange={setProviders} isDisabled={isSaving} />
+        <CloudProviders
+          onChange={setProviders}
+          isDisabled={isDisabled}
+          onProviderError={onProviderError}
+        />
         <ErrorHandler
           getSchema={getSchema}
           registerValidation={registerValidateErrorHandlerParameters}
           onChange={setErrorHandler}
-          isDisabled={isSaving}
+          isDisabled={isDisabled}
         />
       </Form>
     </CreateBridgeModal>

@@ -19,12 +19,13 @@ export interface Typegen0 {
     fetchCloudProviders: "done.invoke.getProviders";
   };
   missingImplementations: {
-    actions: never;
+    actions: "notifyProviderUnavailable";
     services: "fetchCloudProviders";
     guards: never;
     delays: never;
   };
   eventsCausingActions: {
+    notifyProviderUnavailable: "" | "error.platform.getProviders";
     setProvider: "providerChange";
     setProviders: "done.invoke.getProviders";
     setRegion: "regionChange";

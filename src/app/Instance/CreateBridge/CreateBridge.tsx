@@ -59,13 +59,13 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
   const [current, send] = useMachine(CreateBridgeMachine, {
     guards: {
       errorHandlerIsValid: () => {
-        console.log(
-          `ERROR HANDLER IS VALID: ${
-            validateErrorHandlerParameters.current?.() ?? true
-              ? "true"
-              : "false"
-          }`
-        );
+        // console.log(
+        //   `ERROR HANDLER IS VALID: ${
+        //     validateErrorHandlerParameters.current?.() ?? true
+        //       ? "true"
+        //       : "false"
+        //   }`
+        // );
         return validateErrorHandlerParameters.current?.() ?? true;
       },
     },

@@ -60,7 +60,7 @@ const ShowAlert: VoidFunctionComponent<ShowAlertProps> = (props) => {
     <FormAlert>
       <Alert
         ouiaId="error-instance-create-fail"
-        className="error-instance-create-fail"
+        className="create-bridge-error"
         variant={variant}
         title={title}
         aria-live="polite"

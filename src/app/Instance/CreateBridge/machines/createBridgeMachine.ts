@@ -39,11 +39,6 @@ const createBridgeMachine = createMachine(
         | { type: "providersAvailabilityError"; error: CreateBridgeError }
         | { type: "cloudProvidersError" }
         | { type: "submit" },
-      // services: {} as {
-      //   createBridge: {
-      //     data: BridgeResponse;
-      //   };
-      // },
     },
     context: {
       name: undefined,
@@ -80,8 +75,6 @@ const createBridgeMachine = createMachine(
             },
             on: {
               create: {
-                description:
-                  "Save is enabled all the time, if it's clicked before the form is completely filled out we should show the validation for all errored fields",
                 actions: "triggerSubmit",
                 target: ".submitted",
               },
@@ -172,7 +165,6 @@ const createBridgeMachine = createMachine(
                   validate: {
                     always: [
                       {
-                        // get rid of name empty and just use name invalid
                         cond: "nameIsEmpty",
                         target: "empty",
                       },
@@ -235,9 +227,6 @@ const createBridgeMachine = createMachine(
               providerChange: {
                 actions: "setProvider",
               },
-              // errorHandlerChange: {
-              //   actions: "setErrorHandler",
-              // },
             },
             onDone: {
               target: "#createBridgeMachine.configuring.form.valid",

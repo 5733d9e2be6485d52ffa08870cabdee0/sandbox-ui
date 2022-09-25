@@ -1,6 +1,7 @@
 import React, {
   FormEvent,
   useCallback,
+  useLayoutEffect,
   useRef,
   VoidFunctionComponent,
 } from "react";
@@ -107,6 +108,17 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
   const isNameTaken = creationError === "name-taken";
   const isSaving = current.matches("configuring.form.saving");
   const isDisabled = current.hasTag("creationUnavailable") || isSaving;
+
+  useLayoutEffect(() => {
+    if (isFormInvalid) {
+      const firstError = document.querySelector(".pf-m-error");
+      const alert = document.querySelector(".create-bridge-error");
+      (firstError ?? alert)?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [isFormInvalid]);
 
   const setName = useCallback(
     (name: string) => send({ type: "nameChange", name }),

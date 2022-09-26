@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import CreateInstanceMachine from "@app/Instance/CreateInstance/machines/createInstanceMachine";
 import { useMachine } from "@xstate/react";
-import { Form } from "@patternfly/react-core";
+import { Form, FormSection } from "@patternfly/react-core";
 import CloudProviders from "@app/Instance/CreateInstance/components/CloudProviders";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import CreateInstanceModal from "@app/Instance/CreateInstance/components/CreateInstanceModal";
@@ -19,6 +19,7 @@ import {
 } from "@app/Instance/CreateInstance/types";
 import InstanceAlert from "@app/Instance/CreateInstance/components/InstanceAlert";
 import ErrorHandling from "@app/Instance/CreateInstance/components/ErrorHandling";
+import InstanceAvailableSoonInfo from "@app/Instance/CreateInstance/components/InstanceAvailableSoonInfo";
 
 export interface CreateInstanceProps {
   /** Flag to indicate if the dialog is open */
@@ -163,29 +164,32 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
       isLoading={isSaving}
     >
       <Form id={FORM_ID} onSubmit={onSubmit}>
-        <InstanceAlert
-          isFormInvalid={isFormInvalid}
-          creationError={creationError}
-        />
-        <InstanceNameField
-          isNameEmpty={isNameEmpty}
-          isNameTaken={isNameTaken}
-          onChange={setName}
-          value={name ?? ""}
-          isDisabled={isDisabled}
-        />
-        <CloudProviders
-          getCloudProviders={getCloudProviders}
-          onChange={setProviders}
-          isDisabled={isDisabled}
-          onProviderError={onProviderError}
-        />
+        <FormSection>
+          <InstanceAlert
+            isFormInvalid={isFormInvalid}
+            creationError={creationError}
+          />
+          <InstanceNameField
+            isNameEmpty={isNameEmpty}
+            isNameTaken={isNameTaken}
+            onChange={setName}
+            value={name ?? ""}
+            isDisabled={isDisabled}
+          />
+          <CloudProviders
+            getCloudProviders={getCloudProviders}
+            onChange={setProviders}
+            isDisabled={isDisabled}
+            onProviderError={onProviderError}
+          />
+        </FormSection>
         <ErrorHandling
           getSchema={getSchema}
           registerValidation={registerValidateErrorHandlerParameters}
           onChange={setErrorHandler}
           isDisabled={isDisabled}
         />
+        <InstanceAvailableSoonInfo />
       </Form>
     </CreateInstanceModal>
   );

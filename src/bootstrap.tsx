@@ -4,12 +4,15 @@ import App from "./App";
 import AppMocked from "./AppMocked";
 import { inspect } from "@xstate/inspect";
 
-// rendering the app with mocked APIs or the regular one based on env MOCKED_API
-if (process.env.MOCKED_API) {
-  // xstate inspection
+// xstate inspection
+if (process.env.INSPECT) {
   inspect({
     iframe: false,
   });
+}
+
+// rendering the app with mocked APIs or the regular one based on env MOCKED_API
+if (process.env.MOCKED_API) {
   ReactDOM.render(<AppMocked />, document.getElementById("root"));
 } else {
   ReactDOM.render(<App />, document.getElementById("root"));

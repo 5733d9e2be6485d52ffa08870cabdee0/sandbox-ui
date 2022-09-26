@@ -7,7 +7,7 @@
     "prepare": "husky install",
     "build": "FEDERATE=1 webpack --mode production --config webpack.prod.js",
     "start": "DEMO_APP=true webpack serve --https --host prod.foo.redhat.com --port 1337 --hot --config webpack.dev.js",
-    "start:mocked": "DEMO_APP=true MOCKED_API=true webpack serve --hot --config webpack.dev.js",
+    "start:mocked": "DEMO_APP=true MOCKED_API=true INSPECT=true webpack serve --hot --config webpack.dev.js",
     "start:mocked:it": "DEMO_APP=true MOCKED_API=true webpack serve --hot --config webpack.dev.js --no-open",
     "start:federate": "webpack serve --host localhost --port 9006 --config webpack.dev.js",
     "test": "jest --verbose",

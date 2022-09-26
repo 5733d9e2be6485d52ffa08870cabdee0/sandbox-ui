@@ -53,13 +53,6 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
   const { cloudProviders, selectedCloudProvider, selectedCloudRegion } =
     current.context;
 
-  // service.onTransition((state) => {
-  //   if (state.changed) {
-  //     console.log(state);
-  //     console.log(state.context);
-  //   }
-  // });
-
   useEffect(() => {
     onChange(selectedCloudProvider, selectedCloudRegion);
   }, [selectedCloudRegion, selectedCloudProvider, onChange]);

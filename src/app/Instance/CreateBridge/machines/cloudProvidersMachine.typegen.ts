@@ -31,7 +31,7 @@ export interface Typegen0 {
     setRegion: "regionChange";
   };
   eventsCausingServices: {
-    fetchCloudProviders: "providerChange" | "regionChange" | "xstate.init";
+    fetchCloudProviders: "xstate.init";
   };
   eventsCausingGuards: {
     availableProviders: "";

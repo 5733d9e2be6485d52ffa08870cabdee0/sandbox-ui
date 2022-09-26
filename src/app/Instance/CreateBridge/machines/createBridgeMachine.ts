@@ -16,7 +16,6 @@ interface CreateBridgeMachineContext {
     parameters: Record<string, unknown> | undefined;
   };
   creationError: CreateBridgeError | undefined;
-  error: string | null;
 }
 
 const createBridgeMachine = createMachine(
@@ -54,7 +53,6 @@ const createBridgeMachine = createMachine(
         method: undefined,
         parameters: undefined,
       },
-      error: null,
       creationError: undefined,
     },
     id: "createBridgeMachine",
@@ -165,11 +163,11 @@ const createBridgeMachine = createMachine(
                   validate: {
                     always: [
                       {
-                        cond: "nameIsEmpty",
+                        cond: "isNameEmpty",
                         target: "empty",
                       },
                       {
-                        cond: "nameIsValid",
+                        cond: "isNameValid",
                         target: "valid",
                       },
                       {
@@ -292,8 +290,8 @@ const createBridgeMachine = createMachine(
       triggerSubmit: send("submit"),
     },
     guards: {
-      nameIsEmpty: ({ name }) => name === undefined || name.trim().length === 0,
-      nameIsValid: ({ name, creationError }) =>
+      isNameEmpty: ({ name }) => name === undefined || name.trim().length === 0,
+      isNameValid: ({ name, creationError }) =>
         name !== undefined &&
         name.trim().length > 0 &&
         creationError !== "name-taken",

@@ -54,7 +54,17 @@ const cloudProvidersMachine = createMachine(
           },
         ],
       },
-      ready: {},
+      ready: {
+        type: "final",
+        on: {
+          providerChange: {
+            actions: "setProvider",
+          },
+          regionChange: {
+            actions: "setRegion",
+          },
+        },
+      },
       failure: {
         type: "final",
         entry: "notifyProviderUnavailable",
@@ -62,16 +72,6 @@ const cloudProvidersMachine = createMachine(
       "service unavailable": {
         type: "final",
         entry: "notifyProviderUnavailable",
-      },
-    },
-    on: {
-      providerChange: {
-        actions: "setProvider",
-        target: "ready",
-      },
-      regionChange: {
-        actions: "setRegion",
-        target: "ready",
       },
     },
   },

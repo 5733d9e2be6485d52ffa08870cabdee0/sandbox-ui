@@ -39,10 +39,10 @@ export interface Typegen0 {
   eventsCausingGuards: {
     errorHandlerIsValid: "" | "submit";
     isGenericError: "";
+    isNameEmpty: "";
+    isNameValid: "";
     isProviderUnavailable: "";
     isSubmitted: "errorHandlerChange";
-    nameIsEmpty: "";
-    nameIsValid: "";
   };
   eventsCausingDelays: {};
   matchesStates:

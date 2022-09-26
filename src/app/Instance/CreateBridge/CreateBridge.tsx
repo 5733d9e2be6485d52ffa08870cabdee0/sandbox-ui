@@ -115,7 +115,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateBridgeDialogProps> = (
       const alert = document.querySelector(".create-bridge-error");
       (firstError ?? alert)?.scrollIntoView({
         behavior: "smooth",
-        block: "end",
+        block: firstError ? "start" : "end",
       });
     }
   }, [isFormInvalid]);

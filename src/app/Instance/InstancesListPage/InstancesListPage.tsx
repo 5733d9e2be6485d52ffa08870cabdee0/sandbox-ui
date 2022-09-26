@@ -21,15 +21,15 @@ import {
   FIRST_PAGE,
   TableWithPagination,
 } from "@app/components/TableWithPagination/TableWithPagination";
-import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
+import CreateInstance, {
+  CreateInstanceProps,
+} from "@app/Instance/CreateInstance/CreateInstance";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
 import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
-import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import {
-  Action,
   BridgeResponse,
   ManagedResourceStatus,
 } from "@rhoas/smart-events-management-sdk";
@@ -37,13 +37,8 @@ import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
 import { ErrorWithDetail } from "../../../types/Error";
-import { useGetCloudProvidersApi } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersApi";
-import { useGetCloudProvidersRegions } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
-import CreateBridge, {
-  CreateBridgeProps,
-} from "@app/Instance/CreateBridge/CreateBridge";
 import { useCreateBridgeWithCallbacks } from "../../../hooks/useBridgesApi/useCreateBridgeWithCallbacks";
 import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegions";
 
@@ -151,48 +146,48 @@ const InstancesListPage = (): JSX.Element => {
     }
   }, [error, pageTitleElement, t]);
 
-  const [showCreateInstance, setShowCreateInstance] = useState(false);
+  // const [showCreateInstance, setShowCreateInstance] = useState(false);
   const [showCreateBridge, setShowCreateBridge] = useState(false);
 
-  const {
-    error: createBridgeError,
-    isLoading: createBridgeLoading,
-    createBridge,
-    bridge,
-  } = useCreateBridgeApi();
+  // const {
+  //   error: createBridgeError,
+  //   isLoading: createBridgeLoading,
+  //   createBridge,
+  //   bridge,
+  // } = useCreateBridgeApi();
 
   const { createBridgeAlt } = useCreateBridgeWithCallbacks();
   const { getCloudProvidersWithRegions } = useGetCloudProvidersWithRegionsApi();
 
   const { getSchema } = useGetSchemaApi();
 
-  const handleCreateBridge = useCallback(
-    (
-      name: string,
-      cloudProviderId: string,
-      cloudRegionId: string,
-      errorHandlingConfiguration?: Action
-    ) => {
-      createBridge({
-        name,
-        cloud_provider: cloudProviderId,
-        region: cloudRegionId,
-        error_handler: errorHandlingConfiguration,
-      });
-    },
-    [createBridge]
-  );
+  // const handleCreateBridge = useCallback(
+  //   (
+  //     name: string,
+  //     cloudProviderId: string,
+  //     cloudRegionId: string,
+  //     errorHandlingConfiguration?: Action
+  //   ) => {
+  //     createBridge({
+  //       name,
+  //       cloud_provider: cloudProviderId,
+  //       region: cloudRegionId,
+  //       error_handler: errorHandlingConfiguration,
+  //     });
+  //   },
+  //   [createBridge]
+  // );
 
-  useEffect(() => {
-    if (bridge) {
-      closeCreateInstanceDialog();
-      getBridges(currentPage, currentPageSize);
-    }
-  }, [bridge, getBridges, currentPage, currentPageSize]);
+  // useEffect(() => {
+  //   if (bridge) {
+  //     closeCreateInstanceDialog();
+  //     getBridges(currentPage, currentPageSize);
+  //   }
+  // }, [bridge, getBridges, currentPage, currentPageSize]);
 
-  const closeCreateInstanceDialog = (): void => {
-    setShowCreateInstance(false);
-  };
+  // const closeCreateInstanceDialog = (): void => {
+  //   setShowCreateInstance(false);
+  // };
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteInstanceId, setDeleteInstanceId] = useState<string>();
@@ -220,9 +215,9 @@ const InstancesListPage = (): JSX.Element => {
     resetDeleteInstance();
   }, [resetDeleteInstance]);
 
-  const { getCloudProviders } = useGetCloudProvidersApi();
+  // const { getCloudProviders } = useGetCloudProvidersApi();
 
-  const { getCloudProviderRegions } = useGetCloudProvidersRegions();
+  // const { getCloudProviderRegions } = useGetCloudProvidersRegions();
 
   const tableActions = (rowData: TableRow): IAction[] => [
     {
@@ -252,7 +247,7 @@ const InstancesListPage = (): JSX.Element => {
     getBridges(currentPage, currentPageSize);
   }, [getBridges, currentPage, currentPageSize]);
 
-  const handleCreateAlt = useCallback<CreateBridgeProps["createBridge"]>(
+  const handleCreateAlt = useCallback<CreateInstanceProps["createBridge"]>(
     function (data, onSuccess, onError) {
       const handleOnSuccess = (): void => {
         onSuccess();
@@ -267,29 +262,11 @@ const InstancesListPage = (): JSX.Element => {
     <>
       <Button
         ouiaId="create-smart-event-instance"
-        onClick={(): void => setShowCreateInstance(true)}
+        onClick={(): void => setShowCreateBridge(true)}
       >
         {t("instance.createSEInstance")}
       </Button>
-      <span>&nbsp;&nbsp;</span>
-      <Button
-        ouiaId="create-smart-event-bridge"
-        onClick={(): void => setShowCreateBridge(true)}
-      >
-        {t("instance.createSEInstance")} w/ XState
-      </Button>
       <CreateInstance
-        isLoading={createBridgeLoading}
-        isModalOpen={showCreateInstance}
-        onClose={closeCreateInstanceDialog}
-        onCreate={handleCreateBridge}
-        createBridgeError={createBridgeError}
-        getCloudProviders={getCloudProviders}
-        getCloudRegions={getCloudProviderRegions}
-        getSchema={getSchema}
-      />
-      &nbsp;
-      <CreateBridge
         isOpen={showCreateBridge}
         onClose={(): void => setShowCreateBridge((prev) => !prev)}
         getCloudProviders={getCloudProvidersWithRegions}

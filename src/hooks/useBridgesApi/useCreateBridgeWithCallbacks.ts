@@ -6,14 +6,14 @@ import {
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
-import { CreateBridgeProps } from "@app/Instance/CreateBridge/CreateBridge";
+import { CreateInstanceProps } from "@app/Instance/CreateInstance/CreateInstance";
 
 export function useCreateBridgeWithCallbacks(): {
-  createBridgeAlt: CreateBridgeProps["createBridge"];
+  createBridgeAlt: CreateInstanceProps["createBridge"];
 } {
   const { getToken, apiBaseUrl } = useSmartEvents();
 
-  const createBridgeAlt = useCallback<CreateBridgeProps["createBridge"]>(
+  const createBridgeAlt = useCallback<CreateInstanceProps["createBridge"]>(
     async (data, onSuccess, onError) => {
       const bridgeApi = new BridgesApi(
         new Configuration({

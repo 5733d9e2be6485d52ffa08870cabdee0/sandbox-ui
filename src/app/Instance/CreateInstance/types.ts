@@ -3,7 +3,7 @@ import {
   CloudRegionResponse,
 } from "@rhoas/smart-events-management-sdk";
 
-export type CreateBridgeError =
+export type CreateInstanceError =
   | "name-taken"
   | "region-unavailable"
   | "generic-error";

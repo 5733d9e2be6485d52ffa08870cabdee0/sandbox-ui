@@ -1,42 +1,31 @@
 import React from "react";
+import CreateInstance, {
+  CreateInstanceProps,
+} from "@app/Instance/CreateInstance/CreateInstance";
+import { act, fireEvent, RenderResult, waitFor } from "@testing-library/react";
 import { customRender, waitForI18n } from "@utils/testUtils";
-import CreateInstance, { CreateInstanceProps } from "./CreateInstance";
-import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
-import {
-  CloudProviderResponse,
-  CloudRegionResponse,
-} from "@rhoas/smart-events-management-sdk";
+import { CloudProviderWithRegions } from "@app/Instance/CreateInstance/types";
 
 const setupCreateInstance = (
   props: Partial<CreateInstanceProps>
 ): { comp: RenderResult } => {
   const {
+    isOpen = true,
     onClose = jest.fn(),
-    onCreate = jest.fn(),
-    isModalOpen = true,
-    isLoading = false,
-    getCloudProviders = (): Promise<CloudProviderResponse[]> =>
-      new Promise<CloudProviderResponse[]>((resolve) => {
+    getSchema = jest.fn(),
+    getCloudProviders = (): Promise<CloudProviderWithRegions[]> =>
+      new Promise<CloudProviderWithRegions[]>((resolve) => {
         resolve([cloudProvider]);
       }),
-    getCloudRegions = (): Promise<CloudRegionResponse[]> =>
-      new Promise<CloudRegionResponse[]>((resolve) => {
-        resolve([cloudRegion]);
-      }),
-    createBridgeError,
-    getSchema = jest.fn(),
+    createBridge = jest.fn(),
   } = props;
-
   const comp = customRender(
     <CreateInstance
+      isOpen={isOpen}
       onClose={onClose}
-      onCreate={onCreate}
-      isLoading={isLoading}
-      isModalOpen={isModalOpen}
-      createBridgeError={createBridgeError}
-      getCloudProviders={getCloudProviders}
-      getCloudRegions={getCloudRegions}
       getSchema={getSchema}
+      getCloudProviders={getCloudProviders}
+      createBridge={createBridge}
     />
   );
   return { comp };
@@ -44,7 +33,7 @@ const setupCreateInstance = (
 
 describe("CreateInstance component", () => {
   it("should not display anything if the modal is closed", async () => {
-    const { comp } = setupCreateInstance({ isModalOpen: false });
+    const { comp } = setupCreateInstance({ isOpen: false });
     await waitForI18n(comp);
 
     expect(comp.container).toBeEmptyDOMElement();
@@ -56,8 +45,8 @@ describe("CreateInstance component", () => {
   it("should ask for instance name before creating an instance", async () => {
     const scrollIntoView = jest.fn();
     window.HTMLElement.prototype.scrollIntoView = scrollIntoView;
-    const onCreate = jest.fn();
-    const { comp } = setupCreateInstance({ onCreate });
+    const createBridge = jest.fn();
+    const { comp } = setupCreateInstance({ createBridge });
     await waitForI18n(comp);
     await waitFor(() => {
       expect(
@@ -68,7 +57,7 @@ describe("CreateInstance component", () => {
     fireEvent.click(comp.getByText("Create Smart Events instance"));
 
     expect(comp.getByText("Required")).toBeInTheDocument();
-    expect(onCreate).toHaveBeenCalledTimes(0);
+    expect(createBridge).toHaveBeenCalledTimes(0);
     expect(scrollIntoView).toHaveBeenCalled();
   });
 
@@ -85,7 +74,7 @@ describe("CreateInstance component", () => {
     ).toBeInTheDocument();
   });
 
-  it("should have IGNORE as default method for error handling", async () => {
+  it("should have 'Ignore' as default method for error handling", async () => {
     const { comp } = setupCreateInstance({});
     await waitForI18n(comp);
 
@@ -115,13 +104,16 @@ describe("CreateInstance component", () => {
     await waitFor(() => comp.getByText("Webhook"));
     fireEvent.click(comp.getByText("Webhook"));
 
+    await act(async () => {
+      /* let component do its updates */
+    });
+
     expect(getSchema).toHaveBeenCalledTimes(1);
     expect(getSchema).toHaveBeenCalledWith("webhook_sink_0.1", "action");
   });
 
   it("should display cloud provider and region options", async () => {
-    const onCreate = jest.fn();
-    const { comp } = setupCreateInstance({ onCreate });
+    const { comp } = setupCreateInstance({});
     await waitForI18n(comp);
 
     expect(comp.queryByLabelText("Name *")).toBeInTheDocument();
@@ -132,39 +124,44 @@ describe("CreateInstance component", () => {
     );
     expect(
       comp.baseElement.querySelector("button#cloud-region")
-    ).toHaveTextContent(cloudRegion.display_name);
+    ).toHaveTextContent(cloudProvider.regions[0].display_name);
   });
 
   it("should create an instance when a name is provided", async () => {
-    const onCreate = jest.fn();
-    const { comp } = setupCreateInstance({ onCreate });
+    const createBridge = jest.fn();
+    const { comp } = setupCreateInstance({ createBridge });
     await waitForI18n(comp);
 
     const instanceName = "my instance";
 
-    expect(comp.queryByLabelText("Name *")).toBeInTheDocument();
-    expect(comp.queryByLabelText("Name *")).toBeEnabled();
-
-    fireEvent.change(comp.getByLabelText("Name *"), {
-      target: { value: instanceName },
-    });
+    setName(comp, instanceName);
 
     fireEvent.click(comp.getByText("Create Smart Events instance"));
 
     expect(comp.queryByText("Required")).not.toBeInTheDocument();
 
-    expect(onCreate).toHaveBeenCalledTimes(1);
-    expect(onCreate).toHaveBeenCalledWith(
-      instanceName,
-      cloudProvider.id,
-      cloudRegion.name,
-      undefined
+    expect(createBridge).toHaveBeenCalledTimes(1);
+    expect(createBridge).toHaveBeenCalledWith(
+      {
+        name: instanceName,
+        cloud_provider: cloudProvider.id,
+        region: cloudProvider.regions[0].name,
+        undefined,
+      },
+      expect.anything(),
+      expect.anything()
     );
   });
 
   it("should disable create button and inputs while loading", async () => {
-    const { comp } = setupCreateInstance({ isLoading: true });
+    const { comp } = setupCreateInstance({});
     await waitForI18n(comp);
+
+    const instanceName = "my instance";
+
+    setName(comp, instanceName);
+
+    fireEvent.click(comp.getByText("Create Smart Events instance"));
 
     expect(comp.getByRole("progressbar")).toBeInTheDocument();
     inputsAreDisabled(comp);
@@ -184,9 +181,9 @@ describe("CreateInstance component", () => {
 
   it("should disable the instance creation if no cloud regions are enabled", async () => {
     const { comp } = setupCreateInstance({
-      getCloudRegions: () =>
-        new Promise<CloudRegionResponse[]>((resolve) => {
-          resolve([{ ...cloudRegion, enabled: false }]);
+      getCloudProviders: () =>
+        new Promise<CloudProviderWithRegions[]>((resolve) => {
+          resolve([cloudProviderUnavailable]);
         }),
     });
     await waitForI18n(comp);
@@ -203,24 +200,17 @@ describe("CreateInstance component", () => {
 
   it("should disable the instance creation if no cloud regions are enabled after submitting a request", async () => {
     const { comp } = setupCreateInstance({
-      createBridgeError: {
-        response: {
-          data: {
-            kind: "ErrorsResponse",
-            items: [
-              {
-                kind: "Error",
-                id: "1",
-                href: "/api/v1/errors/34",
-                code: "OPENBRIDGE-34",
-              },
-            ],
-          },
-          status: 400,
-        },
+      createBridge: (_data, _onSuccess, onError) => {
+        onError("region-unavailable");
       },
     });
     await waitForI18n(comp);
+
+    const instanceName = "my instance";
+
+    setName(comp, instanceName);
+
+    fireEvent.click(comp.getByText("Create Smart Events instance"));
 
     await waitFor(() => {
       expect(
@@ -236,19 +226,19 @@ describe("CreateInstance component", () => {
   });
 });
 
+const setName = (comp: RenderResult, name: string): void => {
+  expect(comp.queryByLabelText("Name *")).toBeInTheDocument();
+  expect(comp.queryByLabelText("Name *")).toBeEnabled();
+
+  fireEvent.change(comp.getByLabelText("Name *"), {
+    target: { value: name },
+  });
+};
+
 const inputsAreDisabled = (comp: RenderResult): void => {
   expect(comp.getByLabelText("Name *")).toBeDisabled();
   expect(comp.getByRole("option")).toHaveAttribute("aria-disabled", "true");
   expect(comp.baseElement.querySelector("button#cloud-region")).toBeDisabled();
-};
-
-const cloudProvider = {
-  kind: "CloudProvider",
-  id: "aws",
-  name: "aws",
-  href: "/api/v1/cloud_providers/aws",
-  display_name: "Amazon Web Services",
-  enabled: true,
 };
 
 const cloudRegion = {
@@ -256,4 +246,19 @@ const cloudRegion = {
   name: "us-east-1",
   display_name: "US East, N. Virginia",
   enabled: true,
+};
+
+const cloudProvider: CloudProviderWithRegions = {
+  kind: "CloudProvider",
+  id: "aws",
+  name: "aws",
+  href: "/api/v1/cloud_providers/aws",
+  display_name: "Amazon Web Services",
+  enabled: true,
+  regions: [cloudRegion],
+};
+
+const cloudProviderUnavailable: CloudProviderWithRegions = {
+  ...cloudProvider,
+  regions: [{ ...cloudRegion, enabled: false }],
 };

@@ -2,7 +2,7 @@ import React, { VoidFunctionComponent } from "react";
 import { FormGroup, TextInput } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 
-interface BridgeNameFieldProps {
+interface InstanceNameFieldProps {
   value: string;
   isNameEmpty: boolean;
   isNameTaken: boolean;
@@ -10,13 +10,13 @@ interface BridgeNameFieldProps {
   isDisabled: boolean;
 }
 
-const BridgeNameField: VoidFunctionComponent<BridgeNameFieldProps> = (
+const InstanceNameField: VoidFunctionComponent<InstanceNameFieldProps> = (
   props
 ) => {
   const { isNameEmpty, isNameTaken, onChange, value, isDisabled } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
-  const validity = isNameEmpty || isNameTaken;
+  const isInvalid = isNameEmpty || isNameTaken;
   const errorMessage = isNameTaken
     ? t("instance.errors.invalidName")
     : isNameEmpty
@@ -28,8 +28,9 @@ const BridgeNameField: VoidFunctionComponent<BridgeNameFieldProps> = (
       label={t("common.name")}
       isRequired
       fieldId="instance-name"
-      validated={validity ? "error" : "default"}
+      validated={isInvalid ? "error" : "default"}
       helperTextInvalid={errorMessage}
+      className={isInvalid ? "instance-field-error" : ""}
     >
       <TextInput
         isRequired
@@ -41,11 +42,11 @@ const BridgeNameField: VoidFunctionComponent<BridgeNameFieldProps> = (
         value={value}
         onChange={onChange}
         // onBlur={validate}
-        validated={validity ? "error" : "default"}
+        validated={isInvalid ? "error" : "default"}
         isDisabled={isDisabled}
       />
     </FormGroup>
   );
 };
 
-export default BridgeNameField;
+export default InstanceNameField;

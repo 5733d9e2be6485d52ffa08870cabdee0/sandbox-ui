@@ -2,7 +2,7 @@ import React, { ReactNode, VoidFunctionComponent } from "react";
 import { Button, Modal } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 
-interface CreateBridgeModalProps {
+interface CreateInstanceModalProps {
   children: ReactNode;
   formId: string;
   onClose: () => void;
@@ -11,7 +11,7 @@ interface CreateBridgeModalProps {
   isLoading: boolean;
 }
 
-const CreateBridgeModal: VoidFunctionComponent<CreateBridgeModalProps> = (
+const CreateInstanceModal: VoidFunctionComponent<CreateInstanceModalProps> = (
   props
 ) => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -54,4 +54,4 @@ const CreateBridgeModal: VoidFunctionComponent<CreateBridgeModalProps> = (
   );
 };
 
-export default CreateBridgeModal;
+export default CreateInstanceModal;

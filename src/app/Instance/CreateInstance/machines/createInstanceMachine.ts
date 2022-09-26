@@ -1,7 +1,7 @@
 import { assign, createMachine, send } from "xstate";
-import { CreateBridgeError } from "@app/Instance/CreateBridge/types";
+import { CreateInstanceError } from "@app/Instance/CreateInstance/types";
 
-interface CreateBridgeMachineContext {
+interface CreateInstanceMachineContext {
   name?: string;
   providers: {
     selectedCloudProvider: string | undefined;
@@ -15,14 +15,14 @@ interface CreateBridgeMachineContext {
     method: string | undefined;
     parameters: Record<string, unknown> | undefined;
   };
-  creationError: CreateBridgeError | undefined;
+  creationError: CreateInstanceError | undefined;
 }
 
-const createBridgeMachine = createMachine(
+const createInstanceMachine = createMachine(
   {
-    tsTypes: {} as import("./createBridgeMachine.typegen").Typegen0,
+    tsTypes: {} as import("./createInstanceMachine.typegen").Typegen0,
     schema: {
-      context: {} as CreateBridgeMachineContext,
+      context: {} as CreateInstanceMachineContext,
       events: {} as
         | { type: "fieldInvalid" }
         | { type: "nameChange"; name: string }
@@ -34,8 +34,8 @@ const createBridgeMachine = createMachine(
           }
         | { type: "create" }
         | { type: "createSuccess" }
-        | { type: "createError"; error: CreateBridgeError }
-        | { type: "providersAvailabilityError"; error: CreateBridgeError }
+        | { type: "createError"; error: CreateInstanceError }
+        | { type: "providersAvailabilityError"; error: CreateInstanceError }
         | { type: "cloudProvidersError" }
         | { type: "submit" },
     },
@@ -55,7 +55,7 @@ const createBridgeMachine = createMachine(
       },
       creationError: undefined,
     },
-    id: "createBridgeMachine",
+    id: "createInstanceMachine",
     initial: "configuring",
     states: {
       configuring: {
@@ -86,7 +86,7 @@ const createBridgeMachine = createMachine(
                 always: [
                   {
                     cond: "isProviderUnavailable",
-                    target: "#createBridgeMachine.unavailable",
+                    target: "#createInstanceMachine.unavailable",
                   },
                   {
                     cond: "isGenericError",
@@ -139,7 +139,7 @@ const createBridgeMachine = createMachine(
               },
             },
             onDone: {
-              target: "#createBridgeMachine.saved",
+              target: "#createInstanceMachine.saved",
             },
           },
           fields: {
@@ -227,14 +227,14 @@ const createBridgeMachine = createMachine(
               },
             },
             onDone: {
-              target: "#createBridgeMachine.configuring.form.valid",
+              target: "#createInstanceMachine.configuring.form.valid",
             },
           },
         },
         on: {
           providersAvailabilityError: {
             actions: "setCreationError",
-            target: "#createBridgeMachine.unavailable",
+            target: "#createInstanceMachine.unavailable",
           },
         },
       },
@@ -303,4 +303,4 @@ const createBridgeMachine = createMachine(
   }
 );
 
-export default createBridgeMachine;
+export default createInstanceMachine;

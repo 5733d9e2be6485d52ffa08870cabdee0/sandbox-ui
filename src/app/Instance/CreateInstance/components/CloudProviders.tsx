@@ -6,7 +6,7 @@ import React, {
 } from "react";
 
 import { useMachine } from "@xstate/react";
-import CloudProvidersMachine from "@app/Instance/CreateBridge/machines/cloudProvidersMachine";
+import CloudProvidersMachine from "@app/Instance/CreateInstance/machines/cloudProvidersMachine";
 import {
   Flex,
   FlexItem,
@@ -15,23 +15,24 @@ import {
   SelectOption,
   SelectProps,
   SelectVariant,
+  Skeleton,
   Tile,
 } from "@patternfly/react-core";
-import { CloudProviderSelectionSkeleton } from "@app/Instance/CreateInstance/CloudProviderSelection";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { AwsIcon } from "@patternfly/react-icons";
-import { CreateBridgeError } from "@app/Instance/CreateBridge/types";
-import { CreateBridgeProps } from "@app/Instance/CreateBridge/CreateBridge";
+import { CreateInstanceError } from "@app/Instance/CreateInstance/types";
+import { CreateInstanceProps } from "@app/Instance/CreateInstance/CreateInstance";
+import "./CloudProviders.css";
 
 interface CloudProvidersProps {
   /** Callback to retrieve providers and regions */
-  getCloudProviders: CreateBridgeProps["getCloudProviders"];
+  getCloudProviders: CreateInstanceProps["getCloudProviders"];
   /** Callback to update the selected provider in the parent machine */
   onChange: (
     providerId: string | undefined,
     regionId: string | undefined
   ) => void;
-  onProviderError: (error: CreateBridgeError) => void;
+  onProviderError: (error: CreateInstanceError) => void;
   isDisabled: boolean;
 }
 
@@ -158,7 +159,7 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
               )}
             </>
           )}
-          {isLoading && <CloudProviderSelectionSkeleton />}
+          {isLoading && <CloudProviderSkeleton />}
         </Flex>
       </FormGroup>
 
@@ -189,6 +190,24 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
 };
 
 export default CloudProviders;
+
+export const CloudProviderSkeleton = (): JSX.Element => {
+  const { t } = useTranslation("openbridgeTempDictionary");
+
+  return (
+    <FlexItem grow={{ default: "grow" }} key={"skeleton"}>
+      <div className="cloud-provider__skeleton">
+        <Skeleton
+          height="100%"
+          width="100%"
+          screenreaderText={t("instance.loadingCloudProviders")}
+          data-ouia-component-id="cloud-provider"
+          data-ouia-component-type="skeleton"
+        />
+      </div>
+    </FlexItem>
+  );
+};
 
 const getTileIcon = (id?: string): JSX.Element => {
   let icon;

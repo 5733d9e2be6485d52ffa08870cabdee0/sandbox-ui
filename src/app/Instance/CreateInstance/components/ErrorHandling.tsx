@@ -1,20 +1,20 @@
 import React, { useEffect, useState, VoidFunctionComponent } from "react";
 import { FormGroup, FormSection } from "@patternfly/react-core";
-import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/ErrorHandlingSelection";
+import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/components/ErrorHandlingSelection";
 import { ERROR_HANDLING_METHODS } from "../../../../types/ErrorHandlingMethods";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { ProcessorSchemaType } from "../../../../types/Processor";
 import { GetSchema } from "../../../../hooks/useSchemasApi/useGetSchemaApi";
 
-interface ErrorHandlerProps {
+interface ErrorHandlingProps {
   getSchema: GetSchema;
   registerValidation: (validationFunction: () => boolean) => void;
   onChange: (method?: string, parameters?: Record<string, unknown>) => void;
   isDisabled: boolean;
 }
 
-const ErrorHandler: VoidFunctionComponent<ErrorHandlerProps> = (props) => {
+const ErrorHandling: VoidFunctionComponent<ErrorHandlingProps> = (props) => {
   const { getSchema, registerValidation, onChange, isDisabled } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
@@ -90,4 +90,4 @@ const ErrorHandler: VoidFunctionComponent<ErrorHandlerProps> = (props) => {
   );
 };
 
-export default ErrorHandler;
+export default ErrorHandling;

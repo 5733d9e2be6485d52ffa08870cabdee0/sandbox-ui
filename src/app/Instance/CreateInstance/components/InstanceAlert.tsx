@@ -1,14 +1,14 @@
 import React, { useMemo, VoidFunctionComponent } from "react";
 import { Alert, AlertProps, FormAlert } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
-import { CreateBridgeError } from "@app/Instance/CreateBridge/types";
+import { CreateInstanceError } from "@app/Instance/CreateInstance/types";
 
-interface BridgeAlertProps {
+interface InstanceAlertProps {
   isFormInvalid: boolean;
-  creationError?: CreateBridgeError;
+  creationError?: CreateInstanceError;
 }
 
-const BridgeAlert: VoidFunctionComponent<BridgeAlertProps> = (props) => {
+const InstanceAlert: VoidFunctionComponent<InstanceAlertProps> = (props) => {
   const { isFormInvalid, creationError } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
@@ -46,7 +46,7 @@ const BridgeAlert: VoidFunctionComponent<BridgeAlertProps> = (props) => {
   return <>{alert}</>;
 };
 
-export default BridgeAlert;
+export default InstanceAlert;
 
 interface ShowAlertProps {
   title: string;

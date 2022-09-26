@@ -1,5 +1,10 @@
 import React, { useEffect, useState, VoidFunctionComponent } from "react";
-import { FormGroup, FormSection } from "@patternfly/react-core";
+import {
+  Alert,
+  AlertActionCloseButton,
+  FormGroup,
+  FormSection,
+} from "@patternfly/react-core";
 import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/components/ErrorHandlingSelection";
 import { ERROR_HANDLING_METHODS } from "../../../../types/ErrorHandlingMethods";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
@@ -25,15 +30,19 @@ const ErrorHandling: VoidFunctionComponent<ErrorHandlingProps> = (props) => {
   const [errorHandlingSchemaLoading, setErrorHandlingSchemaLoading] =
     useState<boolean>(false);
   const [errorHandlingParameters, setErrorHandlingParameters] = useState({});
+  const [loadingError, setLoadingError] = useState(false);
 
   useEffect(() => {
     setErrorHandlingSchema(undefined);
     if (errorHandlingSchemaId) {
       setErrorHandlingSchemaLoading(true);
+      setLoadingError(false);
       getSchema(errorHandlingSchemaId, ProcessorSchemaType.ACTION)
         .then((data) => setErrorHandlingSchema(data))
-        // .catch(() => setGenericError("Internal Server Error"))
-        .catch(() => console.log("Internal Server Error"))
+        .catch(() => {
+          setErrorHandlingSchemaId(null);
+          setLoadingError(true);
+        })
         .finally(() => setErrorHandlingSchemaLoading(false));
     }
   }, [errorHandlingSchemaId, getSchema]);
@@ -60,7 +69,7 @@ const ErrorHandling: VoidFunctionComponent<ErrorHandlingProps> = (props) => {
         isRequired
       >
         <ErrorHandlingSelection
-          defaultMethod={ERROR_HANDLING_METHODS.default.value}
+          selectedMethod={errorHandlingSchemaId}
           errorHandlingMethods={ERROR_HANDLING_METHODS}
           isDisabled={isDisabled}
           onMethodSelection={(errorMethod: string): void => {
@@ -73,13 +82,24 @@ const ErrorHandling: VoidFunctionComponent<ErrorHandlingProps> = (props) => {
           }}
         />
       </FormGroup>
+      {loadingError && (
+        <Alert
+          variant="warning"
+          isInline
+          title={t("errorHandling.errors.schemaGenericErrorDuringCreation")}
+          actionClose={
+            <AlertActionCloseButton
+              onClose={(): void => setLoadingError(false)}
+            />
+          }
+        />
+      )}
       {errorHandlingSchema && !errorHandlingSchemaLoading && (
         <ConfigurationForm
           configuration={errorHandlingParameters}
           schema={errorHandlingSchema}
           onChange={(model): void => {
             setErrorHandlingParameters(model as Record<string, unknown>);
-            // setHasParametersError(false);
           }}
           registerValidation={registerValidation}
           readOnly={isDisabled}

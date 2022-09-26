@@ -1,39 +1,52 @@
-import {
-  BridgeRequest,
-  BridgesApi,
-  Configuration,
-  BridgeResponse,
-} from "@rhoas/smart-events-management-sdk";
-import { useState } from "react";
+import { BridgesApi, Configuration } from "@rhoas/smart-events-management-sdk";
+import { useCallback } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
+import { CreateInstanceProps } from "@app/Instance/CreateInstance/CreateInstance";
 
 export function useCreateBridgeApi(): {
-  createBridge: (bridgeRequest: BridgeRequest) => void;
-  bridge?: BridgeResponse;
-  isLoading: boolean;
-  error: unknown;
+  createBridge: CreateInstanceProps["createBridge"];
 } {
-  const [bridge, setBridge] = useState<BridgeResponse>();
-  const [error, setError] = useState<unknown>();
-  const [isLoading, setIsLoading] = useState(false);
   const { getToken, apiBaseUrl } = useSmartEvents();
 
-  const createBridge = (bridgeRequest: BridgeRequest): void => {
-    setIsLoading(true);
-    setBridge(undefined);
-    setError(undefined);
-    const bridgeApi = new BridgesApi(
-      new Configuration({
-        accessToken: getToken,
-        basePath: apiBaseUrl,
-      })
-    );
-    bridgeApi
-      .createBridge(bridgeRequest)
-      .then((response) => setBridge(response.data))
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
-  };
+  const createBridge = useCallback<CreateInstanceProps["createBridge"]>(
+    async (data, onSuccess, onError) => {
+      const bridgeApi = new BridgesApi(
+        new Configuration({
+          accessToken: getToken,
+          basePath: apiBaseUrl,
+        })
+      );
+      try {
+        await bridgeApi.createBridge(data);
+        onSuccess();
+      } catch (error) {
+        if (isServiceApiError(error)) {
+          const errorCode = getErrorCode(error);
+          switch (errorCode) {
+            case APIErrorCodes.ERROR_1:
+              onError("name-taken");
+              break;
+            case APIErrorCodes.ERROR_33:
+            case APIErrorCodes.ERROR_34:
+              // When the cloud provider or region used to create a bridge
+              // become unavailable, we can disable the creation form because
+              // we only support 1 provider and 1 region.
+              // This will of course change when we'll expand the cloud provider support.
+              onError("region-unavailable");
+              break;
+          }
+        } else {
+          onError("generic-error");
+        }
+      }
+    },
+    [apiBaseUrl, getToken]
+  );
 
-  return { createBridge, isLoading, bridge, error };
+  return { createBridge };
 }

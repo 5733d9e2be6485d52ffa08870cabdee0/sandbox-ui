@@ -39,8 +39,8 @@ import { canDeleteResource } from "@utils/resourceUtils";
 import { ErrorWithDetail } from "../../../types/Error";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
-import { useCreateBridgeWithCallbacks } from "../../../hooks/useBridgesApi/useCreateBridgeWithCallbacks";
-import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegions";
+import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
+import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegionsApi";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -146,48 +146,26 @@ const InstancesListPage = (): JSX.Element => {
     }
   }, [error, pageTitleElement, t]);
 
-  // const [showCreateInstance, setShowCreateInstance] = useState(false);
-  const [showCreateBridge, setShowCreateBridge] = useState(false);
-
-  // const {
-  //   error: createBridgeError,
-  //   isLoading: createBridgeLoading,
-  //   createBridge,
-  //   bridge,
-  // } = useCreateBridgeApi();
-
-  const { createBridgeAlt } = useCreateBridgeWithCallbacks();
+  const [showCreateInstance, setShowCreateInstance] = useState(false);
+  const { createBridge } = useCreateBridgeApi();
   const { getCloudProvidersWithRegions } = useGetCloudProvidersWithRegionsApi();
-
   const { getSchema } = useGetSchemaApi();
 
-  // const handleCreateBridge = useCallback(
-  //   (
-  //     name: string,
-  //     cloudProviderId: string,
-  //     cloudRegionId: string,
-  //     errorHandlingConfiguration?: Action
-  //   ) => {
-  //     createBridge({
-  //       name,
-  //       cloud_provider: cloudProviderId,
-  //       region: cloudRegionId,
-  //       error_handler: errorHandlingConfiguration,
-  //     });
-  //   },
-  //   [createBridge]
-  // );
+  const onCreateBridge = useCallback(() => {
+    setShowCreateInstance(false);
+    getBridges(currentPage, currentPageSize);
+  }, [getBridges, currentPage, currentPageSize]);
 
-  // useEffect(() => {
-  //   if (bridge) {
-  //     closeCreateInstanceDialog();
-  //     getBridges(currentPage, currentPageSize);
-  //   }
-  // }, [bridge, getBridges, currentPage, currentPageSize]);
-
-  // const closeCreateInstanceDialog = (): void => {
-  //   setShowCreateInstance(false);
-  // };
+  const handleCreate = useCallback<CreateInstanceProps["createBridge"]>(
+    function (data, onSuccess, onError) {
+      const handleOnSuccess = (): void => {
+        onSuccess();
+        onCreateBridge();
+      };
+      createBridge(data, handleOnSuccess, onError);
+    },
+    [onCreateBridge, createBridge]
+  );
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteInstanceId, setDeleteInstanceId] = useState<string>();
@@ -215,10 +193,6 @@ const InstancesListPage = (): JSX.Element => {
     resetDeleteInstance();
   }, [resetDeleteInstance]);
 
-  // const { getCloudProviders } = useGetCloudProvidersApi();
-
-  // const { getCloudProviderRegions } = useGetCloudProvidersRegions();
-
   const tableActions = (rowData: TableRow): IAction[] => [
     {
       title: t("common.details"),
@@ -242,36 +216,20 @@ const InstancesListPage = (): JSX.Element => {
     },
   ];
 
-  const onCreateBridge = useCallback(() => {
-    setShowCreateBridge(false);
-    getBridges(currentPage, currentPageSize);
-  }, [getBridges, currentPage, currentPageSize]);
-
-  const handleCreateAlt = useCallback<CreateInstanceProps["createBridge"]>(
-    function (data, onSuccess, onError) {
-      const handleOnSuccess = (): void => {
-        onSuccess();
-        onCreateBridge();
-      };
-      createBridgeAlt(data, handleOnSuccess, onError);
-    },
-    [onCreateBridge, createBridgeAlt]
-  );
-
   const customToolbarElement = (
     <>
       <Button
         ouiaId="create-smart-event-instance"
-        onClick={(): void => setShowCreateBridge(true)}
+        onClick={(): void => setShowCreateInstance(true)}
       >
         {t("instance.createSEInstance")}
       </Button>
       <CreateInstance
-        isOpen={showCreateBridge}
-        onClose={(): void => setShowCreateBridge((prev) => !prev)}
+        isOpen={showCreateInstance}
+        onClose={(): void => setShowCreateInstance((prev) => !prev)}
         getCloudProviders={getCloudProvidersWithRegions}
         getSchema={getSchema}
-        createBridge={handleCreateAlt}
+        createBridge={handleCreate}
       />
     </>
   );

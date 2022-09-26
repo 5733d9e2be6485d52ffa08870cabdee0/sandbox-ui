@@ -59,13 +59,6 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
   const [current, send] = useMachine(CreateInstanceMachine, {
     guards: {
       errorHandlerIsValid: () => {
-        // console.log(
-        //   `ERROR HANDLER IS VALID: ${
-        //     validateErrorHandlerParameters.current?.() ?? true
-        //       ? "true"
-        //       : "false"
-        //   }`
-        // );
         return validateErrorHandlerParameters.current?.() ?? true;
       },
     },
@@ -161,13 +154,6 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
     [send]
   );
 
-  // service.onTransition((state) => {
-  //   if (state.changed) {
-  //     console.log("PARENT MACHINE STATE CHANGE FOLLOWS");
-  //     console.log(state);
-  //     console.log(state.context);
-  //   }
-  // });
   return (
     <CreateInstanceModal
       onClose={onClose}

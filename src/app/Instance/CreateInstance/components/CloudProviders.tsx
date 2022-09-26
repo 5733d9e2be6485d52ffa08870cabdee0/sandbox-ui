@@ -32,7 +32,9 @@ interface CloudProvidersProps {
     providerId: string | undefined,
     regionId: string | undefined
   ) => void;
+  /** Callback to notify about errors while retrieving providers */
   onProviderError: (error: CreateInstanceError) => void;
+  /** Flag to disable the form */
   isDisabled: boolean;
 }
 
@@ -50,7 +52,6 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
     devTools: true,
   });
   const isLoading = current.matches("fetching providers");
-  // const isError = current.matches("failure");
   const { cloudProviders, selectedCloudProvider, selectedCloudRegion } =
     current.context;
 

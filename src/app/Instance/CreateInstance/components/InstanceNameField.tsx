@@ -41,7 +41,6 @@ const InstanceNameField: VoidFunctionComponent<InstanceNameFieldProps> = (
         name="instance-name"
         value={value}
         onChange={onChange}
-        // onBlur={validate}
         validated={isInvalid ? "error" : "default"}
         isDisabled={isDisabled}
       />

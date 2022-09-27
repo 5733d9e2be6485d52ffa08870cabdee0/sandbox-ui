@@ -21,6 +21,7 @@ import {
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { format } from "date-fns";
 import { BridgeResponse } from "@rhoas/smart-events-management-sdk";
+import { getUpdatedCloudProviders } from "../../../types/CloudProviders";
 
 interface InstanceDetailsProps {
   instance: BridgeResponse;
@@ -35,6 +36,9 @@ export const InstanceDetails = ({
 
   const formatDate = (dateStr: string): string =>
     format(new Date(dateStr), "PPPP p");
+
+  const { updatedCloudProvider, updatedCloudRegion } =
+    getUpdatedCloudProviders(instance);
 
   return (
     <DrawerPanelContent
@@ -89,6 +93,26 @@ export const InstanceDetails = ({
             <DescriptionListTerm>{t("common.publishedAt")}</DescriptionListTerm>
             <DescriptionListDescription data-ouia-component-id="instance-details-published-date">
               {instance.published_at && formatDate(instance.published_at)}
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>
+              {t("instance.cloudProvider")}
+            </DescriptionListTerm>
+            <DescriptionListDescription data-ouia-component-id="instance-details-cloud-provider">
+              {updatedCloudProvider?.label == undefined
+                ? "Not available"
+                : updatedCloudProvider.label}
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>
+              {t("instance.cloudRegion")}
+            </DescriptionListTerm>
+            <DescriptionListDescription data-ouia-component-id="instance-details-cloud-region">
+              {updatedCloudRegion?.label == undefined
+                ? "Not available"
+                : updatedCloudRegion.label}
             </DescriptionListDescription>
           </DescriptionListGroup>
         </DescriptionList>

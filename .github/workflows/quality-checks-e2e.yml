@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository == '5733d9e2be6485d52ffa08870cabdee0/sandbox-ui'
     steps:
-      - uses: actions/checkout@v2.4.2
+      - uses: actions/checkout@v3.0.2
         with:
           ref: "refs/pull/${{ github.event.number }}/merge"
       - name: Check labels
@@ -22,7 +22,7 @@ jobs:
           echo "::add-mask::${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }}"
           echo "::add-mask::${{ secrets.CY_USER }}"
           echo "::add-mask::${{ secrets.CY_PASSWORD }}"
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: "16"
           cache: "npm"
@@ -51,7 +51,7 @@ jobs:
           CYPRESS_SANDBOX_DEV_REST_URL: ${{ secrets.CY_SANDBOX_DEV_REST_URL }}
           CYPRESS_SANDBOX_DEV_REST_PATH: ${{ secrets.CY_SANDBOX_DEV_REST_PATH  }}
       - name: "Upload artifacts"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always() && !cancelled()
         with:
           name: ui-artifacts

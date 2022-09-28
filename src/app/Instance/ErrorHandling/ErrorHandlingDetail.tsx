@@ -13,10 +13,16 @@ import {
   getErrorHandlingMethodByType,
 } from "../../../types/ErrorHandlingMethods";
 import ProcessorConfigParameters from "@app/Processor/ProcessorConfigParameters/ProcessorConfigParameters";
+import axios from "axios";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
 
 interface ErrorHandlingDetailProps {
   errorHandlingType?: string;
-  errorHandlingParameters?: { [p: string]: unknown };
+  errorHandlingParameters?: object;
   isBridgeLoading: boolean;
   schema?: object;
   isSchemaLoading: boolean;
@@ -63,6 +69,17 @@ export const ErrorHandlingDetail = ({
     );
   }, [errorHandlingParameters]);
 
+  const renderSchemaError = useMemo(() => {
+    if (
+      axios.isAxiosError(schemaError) &&
+      isServiceApiError(schemaError) &&
+      getErrorCode(schemaError) === APIErrorCodes.ERROR_4
+    ) {
+      return t("errorHandling.errors.cantFindSchema");
+    }
+    return t("errorHandling.errors.schemaGenericError");
+  }, [schemaError, t]);
+
   return (
     <DescriptionList>
       <DescriptionListGroup key="error-handling-method">
@@ -79,7 +96,7 @@ export const ErrorHandlingDetail = ({
         !schemaError && (
           <ProcessorConfigParameters
             schema={schema}
-            parameters={errorHandlingParameters}
+            parameters={errorHandlingParameters as { [key: string]: unknown }}
           />
         )}
       {isSchemaLoading && errorHandlingParametersSkeleton}
@@ -88,7 +105,7 @@ export const ErrorHandlingDetail = ({
           className="instance-page__tabs-error-handling__alert"
           ouiaId="error-schema"
           variant="danger"
-          title={schemaError}
+          title={renderSchemaError}
           aria-live="polite"
           isInline
         />

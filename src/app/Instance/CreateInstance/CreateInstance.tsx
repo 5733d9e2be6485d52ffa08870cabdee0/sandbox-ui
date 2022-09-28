@@ -34,7 +34,7 @@ import { GetCloudProvidersRegion } from "../../../hooks/useCloudProvidersApi/use
 import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import { ProcessorSchemaType } from "../../../types/Processor";
-import { ErrorHandlingEdit } from "@app/Instance/ErrorHandling/ErrorHandlingEdit";
+import { ErrorHandlingCreate } from "@app/Instance/ErrorHandling/ErrorHandlingCreate";
 
 export interface CreateInstanceProps {
   /** Flag to indicate the creation request is in progress */
@@ -437,7 +437,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
         />
 
         <FormSection title={t("common.errorHandling")} titleElement="h2">
-          <ErrorHandlingEdit
+          <ErrorHandlingCreate
             errorHandlingParameters={errorHandlingParameters}
             errorHandlingSchema={errorHandlingSchema}
             errorHandlingSchemaLoading={errorHandlingSchemaLoading}

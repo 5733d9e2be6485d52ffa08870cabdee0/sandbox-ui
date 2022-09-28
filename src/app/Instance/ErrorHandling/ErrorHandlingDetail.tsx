@@ -26,7 +26,7 @@ interface ErrorHandlingDetailProps {
   isBridgeLoading: boolean;
   schema?: object;
   isSchemaLoading: boolean;
-  schemaError?: string;
+  schemaError?: unknown;
 }
 
 export const ErrorHandlingDetail = ({

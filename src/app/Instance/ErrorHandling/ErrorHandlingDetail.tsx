@@ -7,7 +7,7 @@ import {
   Skeleton,
 } from "@patternfly/react-core";
 import React, { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import {
   ERROR_HANDLING_METHODS,
   getErrorHandlingMethodByType,

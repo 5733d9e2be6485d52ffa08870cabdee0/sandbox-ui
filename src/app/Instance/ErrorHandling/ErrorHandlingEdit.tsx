@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useState } from "react";
+import React, { FormEvent, useCallback, useEffect, useState } from "react";
 import {
   ActionGroup,
   Alert,
@@ -37,6 +37,7 @@ export const ErrorHandlingEdit = ({
 }: ErrorHandlingEditProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isSchemaLoading, setIsSchemaLoading] = useState(false);
   const [currentSchema, setCurrentSchema] = useState<object | undefined>(
     schema
@@ -76,6 +77,7 @@ export const ErrorHandlingEdit = ({
         errorHandlingParameters,
         currentSchema
       );
+      setIsSubmitted(true);
     },
     [
       currentSchema,
@@ -84,6 +86,19 @@ export const ErrorHandlingEdit = ({
       onErrorHandlingSubmit,
     ]
   );
+
+  useEffect(() => {
+    if (isSubmitted) {
+      document
+        .querySelector(".pf-m-error")
+        ?.parentElement?.previousElementSibling?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
+      setIsSubmitted(false);
+    }
+  }, [isSubmitted]);
 
   return (
     <Form id="error-handling-edit-form" autoComplete="off" onSubmit={onSubmit}>

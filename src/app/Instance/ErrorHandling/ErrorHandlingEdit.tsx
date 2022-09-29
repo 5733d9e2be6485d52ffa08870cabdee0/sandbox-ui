@@ -6,6 +6,7 @@ import {
   Form,
   FormAlert,
   FormGroup,
+  PageSection,
 } from "@patternfly/react-core";
 import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/ErrorHandlingSelection";
 import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
@@ -101,7 +102,11 @@ export const ErrorHandlingEdit = ({
   }, [isSubmitted]);
 
   return (
-    <Form id="error-handling-edit-form" autoComplete="off" onSubmit={onSubmit}>
+    <Form
+      className="error-handling-edit-form"
+      autoComplete="off"
+      onSubmit={onSubmit}
+    >
       {apiError && (
         <FormAlert>
           <Alert
@@ -136,25 +141,31 @@ export const ErrorHandlingEdit = ({
           editMode={false}
         />
       )}
-      <ActionGroup className={"error-handling-edit__actions"}>
-        <Button
-          variant="primary"
-          ouiaId="submit"
-          type="submit"
-          isLoading={isLoading}
-          isDisabled={isLoading || apiError !== undefined}
-        >
-          {t("common.save")}
-        </Button>
-        <Button
-          variant="link"
-          ouiaId="cancel"
-          onClick={onCancelEditing}
-          isDisabled={isLoading}
-        >
-          {t("common.cancel")}
-        </Button>
-      </ActionGroup>
+      <PageSection
+        stickyOnBreakpoint={{ default: "bottom" }}
+        padding={{ default: "noPadding" }}
+        style={{ boxShadow: "none" }}
+      >
+        <ActionGroup className="error-handling-edit__actions">
+          <Button
+            variant="primary"
+            ouiaId="submit"
+            type="submit"
+            isLoading={isLoading}
+            isDisabled={isLoading || apiError !== undefined}
+          >
+            {t("common.save")}
+          </Button>
+          <Button
+            variant="link"
+            ouiaId="cancel"
+            onClick={onCancelEditing}
+            isDisabled={isLoading}
+          >
+            {t("common.cancel")}
+          </Button>
+        </ActionGroup>
+      </PageSection>
     </Form>
   );
 };

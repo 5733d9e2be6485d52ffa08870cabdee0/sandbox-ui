@@ -176,7 +176,6 @@ export const ErrorHandlingTabContent = ({
     <PageSection
       className="instance-page__tabs-error-handling__section"
       variant={PageSectionVariants.light}
-      isFilled
     >
       <Stack hasGutter>
         <StackItem>

@@ -6,6 +6,7 @@ import {
   CloudProviderResponse,
   CloudRegionResponse,
 } from "@rhoas/smart-events-management-sdk";
+import { act } from "react-dom/test-utils";
 
 const setupCreateInstance = (
   props: Partial<CreateInstanceProps>
@@ -106,14 +107,16 @@ describe("CreateInstance component", () => {
     const { comp } = setupCreateInstance({ getSchema });
     await waitForI18n(comp);
 
-    const selector = comp.baseElement.querySelector(
-      "[data-ouia-component-id='error-handling-method-selector']"
-    );
-    fireEvent.click(
-      selector?.querySelector(".pf-c-select__toggle-arrow") as Node
-    );
-    await waitFor(() => comp.getByText("Webhook"));
-    fireEvent.click(comp.getByText("Webhook"));
+    await act(async () => {
+      const selector = comp.baseElement.querySelector(
+        "[data-ouia-component-id='error-handling-method-selector']"
+      );
+      fireEvent.click(
+        selector?.querySelector(".pf-c-select__toggle-arrow") as Node
+      );
+      await waitFor(() => comp.getByText("Webhook"));
+      fireEvent.click(comp.getByText("Webhook"));
+    });
 
     expect(getSchema).toHaveBeenCalledTimes(1);
     expect(getSchema).toHaveBeenCalledWith("webhook_sink_0.1", "action");

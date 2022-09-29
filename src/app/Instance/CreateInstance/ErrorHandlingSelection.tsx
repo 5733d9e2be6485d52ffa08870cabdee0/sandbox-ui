@@ -5,7 +5,7 @@ import {
   SelectOption,
   SelectVariant,
 } from "@patternfly/react-core";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { ErrorHandlingMethods } from "../../../types/ErrorHandlingMethods";
 
 interface ErrorHandlingSelectionProps {

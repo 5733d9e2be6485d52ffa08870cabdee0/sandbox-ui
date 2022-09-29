@@ -16,7 +16,7 @@ import {
   Text,
   TextContent,
 } from "@patternfly/react-core";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import ProcessorDetail from "@app/Processor/ProcessorDetail/ProcessorDetail";
 import { CaretDownIcon } from "@patternfly/react-icons";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";

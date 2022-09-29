@@ -1,0 +1,16 @@
+name: "Update Pull Request Title for Dependency Updates"
+
+on:
+  pull_request:
+    types:
+      - opened
+jobs:
+  run_if:
+    if: startsWith(github.head_ref, 'renovate/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: tzkhan/pr-update-action@v2
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          title-template: "[Renovate] "
+          title-update-action: "prefix"

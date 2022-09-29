@@ -9,7 +9,7 @@ import {
   Popover,
 } from "@patternfly/react-core";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { DataShapeValue } from "../../../types/Processor";
 import { isJSONSchema } from "@utils/processorUtils";
 

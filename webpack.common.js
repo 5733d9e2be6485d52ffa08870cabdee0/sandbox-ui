@@ -51,39 +51,27 @@ module.exports = (env, argv) => {
         },
         {
           test: /\.(ttf|eot|woff|woff2)$/,
-          use: {
-            loader: "file-loader",
-            options: {
-              limit: 5000,
-              name: isProduction ? "[contenthash:8].[ext]" : "[name].[ext]",
-            },
+          type: "asset/resource",
+          generator: {
+            filename: isProduction ? "[contenthash:8].[ext]" : "[name].[ext]",
           },
         },
         {
           test: /\.(svg|jpg|jpeg|png|gif)$/i,
-          use: [
-            {
-              loader: "url-loader",
-              options: {
-                limit: 5000,
-                name: isProduction ? "[contenthash:8].[ext]" : "[name].[ext]",
-              },
-            },
-          ],
+          type: "asset",
+          generator: {
+            filename: isProduction ? "[contenthash:8].[ext]" : "[name].[ext]",
+          },
         },
         {
           test: /\.(json)$/i,
           include: path.resolve(__dirname, "src/locales"),
-          use: [
-            {
-              loader: "url-loader",
-              options: {
-                limit: 5000,
-                outputPath: "locales",
-                name: isProduction ? "[contenthash:8].[ext]" : "[name].[ext]",
-              },
-            },
-          ],
+          type: "asset",
+          generator: {
+            filename: isProduction
+              ? "locales/[contenthash:8].[ext]"
+              : "locales/[name].[ext]",
+          },
         },
       ],
     },

@@ -20,7 +20,7 @@ import {
 } from "@rhoas/smart-events-management-sdk";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { ErrorWithDetail } from "../../../types/Error";

@@ -1,10 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/explicit-function-return-type */
 
 import React from "react";
-import { TFunction } from "react-i18next";
+import { TFunction } from "@rhoas/app-services-ui-components";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { Popover } from "@patternfly/react-core";
 import { HelpIcon } from "@patternfly/react-icons";
+import { filterDOMProps } from "uniforms";
+
+declare module "uniforms" {
+  interface FilterDOMProps {
+    $comment: never;
+    isSecret: never;
+  }
+}
+
+filterDOMProps.register("$comment", "isSecret");
 
 /**
  * Returns an example string formatted (not localized) for the form or undefined if the field has no example text
@@ -138,7 +148,7 @@ export class CustomJsonSchemaBridge extends JSONSchemaBridge {
       return {
         name,
         ...field,
-        ...(typeof newEnumValues !== undefined && { enum: newEnumValues }),
+        ...(typeof newEnumValues !== "undefined" && { enum: newEnumValues }),
       };
     }
   }

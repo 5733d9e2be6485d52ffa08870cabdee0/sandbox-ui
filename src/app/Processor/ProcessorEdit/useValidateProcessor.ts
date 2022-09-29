@@ -4,7 +4,7 @@ import {
   ProcessorValidation,
 } from "../../../types/Processor";
 import { omit } from "lodash";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 
 export function useValidateProcessor(
   processor: ProcessorFormData,

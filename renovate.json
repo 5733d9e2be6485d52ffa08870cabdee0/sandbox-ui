@@ -1,4 +1,5 @@
 {
+  "labels": ["dependency update", "safe to test"],
   "extends": ["github>redhat-developer/app-services-renovate-config"],
   "separateMajorMinor": true,
   "separateMultipleMajor": true,

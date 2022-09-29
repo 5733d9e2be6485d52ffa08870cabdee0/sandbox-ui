@@ -18,7 +18,7 @@ import {
   PlusCircleIcon,
   TrashAltIcon,
 } from "@patternfly/react-icons";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { EventFilter, FilterType } from "../../../../types/Processor";
 import { getFilterValue, isCommaSeparatedFilterType } from "@utils/filterUtils";
 

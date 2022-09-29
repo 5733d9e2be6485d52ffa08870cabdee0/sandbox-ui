@@ -10,7 +10,7 @@ import {
   Stack,
   StackItem,
 } from "@patternfly/react-core";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 
 const ProcessorDetailSkeleton = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);

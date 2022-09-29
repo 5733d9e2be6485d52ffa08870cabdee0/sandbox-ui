@@ -3,7 +3,7 @@ import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { ResourceStatusLabel } from "@app/components/ResourceStatusLabel/ResourceStatusLabel";
 import { ResourceStatus } from "@app/components/ResourceStatusLabel/types";
 
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { CreationStatusOrder } from "@app/components/SEStatusLabel/SEStatusPopover/types";
 import SEStatusPopover from "@app/components/SEStatusLabel/SEStatusPopover/SEStatusPopover";
 import { useResourceDelayedStatus } from "@app/components/SEStatusLabel/useResourceDelayedStatus";

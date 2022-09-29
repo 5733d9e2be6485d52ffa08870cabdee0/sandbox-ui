@@ -103,6 +103,14 @@ export const schemaCatalogData = [
     type: "source",
     href: "/api/smartevents_mgmt/v1/schemas/sources/azure_eventhubs_source_0.1",
   },
+  {
+    kind: "ProcessorSchemaEntry",
+    id: "azure_eventhubs_sink_0.1",
+    name: "Azure EventHubs",
+    description: "Send the event to an Azure EventHubs.",
+    type: "action",
+    href: "/api/smartevents_mgmt/v1/schemas/actions/azure_eventhubs_sink_0.1",
+  },
 ];
 
 export const schemasData: { [key: string]: object } = {
@@ -463,6 +471,51 @@ export const schemasData: { [key: string]: object } = {
             description: "An opaque reference to the aws_access_key",
             type: "object",
             additionalProperties: false,
+          },
+        ],
+      },
+    },
+  },
+  "azure_eventhubs_sink_0.1": {
+    type: "object",
+    additionalProperties: false,
+    required: [
+      "azure_namespace_name",
+      "azure_eventhub_name",
+      "azure_shared_access_name",
+      "azure_shared_access_key",
+    ],
+    properties: {
+      azure_namespace_name: {
+        title: "Eventhubs Namespace",
+        description: "The eventhubs namespace",
+        type: "string",
+      },
+      azure_eventhub_name: {
+        title: "Eventhubs Name",
+        description: "The eventhub name",
+        type: "string",
+      },
+      azure_shared_access_name: {
+        title: "Share Access Name",
+        description: "EventHubs SAS key name",
+        type: "string",
+        "x-group": "credentials",
+      },
+      azure_shared_access_key: {
+        title: "Share Access Key",
+        "x-group": "credentials",
+        oneOf: [
+          {
+            title: "Share Access Key",
+            description: "The key for EventHubs SAS key name",
+            type: "string",
+            format: "password",
+          },
+          {
+            description: "An opaque reference to the azure_shared_access_key",
+            type: "object",
+            properties: {},
           },
         ],
       },

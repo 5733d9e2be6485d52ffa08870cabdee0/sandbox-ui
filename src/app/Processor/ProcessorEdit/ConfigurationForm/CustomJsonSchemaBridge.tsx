@@ -5,6 +5,16 @@ import { TFunction } from "@rhoas/app-services-ui-components";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { Popover } from "@patternfly/react-core";
 import { HelpIcon } from "@patternfly/react-icons";
+import { filterDOMProps } from "uniforms";
+
+declare module "uniforms" {
+  interface FilterDOMProps {
+    $comment: never;
+    isSecret: never;
+  }
+}
+
+filterDOMProps.register("$comment", "isSecret");
 
 /**
  * Returns an example string formatted (not localized) for the form or undefined if the field has no example text

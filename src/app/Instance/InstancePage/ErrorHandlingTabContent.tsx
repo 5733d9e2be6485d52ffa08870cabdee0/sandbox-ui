@@ -11,7 +11,7 @@ import {
   TextVariants,
 } from "@patternfly/react-core";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import { ProcessorSchemaType } from "../../../types/Processor";
 import {

@@ -12,9 +12,9 @@ import {
   ERROR_HANDLING_METHODS,
   getErrorHandlingMethodByType,
 } from "../../../types/ErrorHandlingMethods";
-import ProcessorConfigParameters from "@app/Processor/ProcessorConfigParameters/ProcessorConfigParameters";
+import ConfigParameters from "@app/components/ConfigParameters/ConfigParameters";
 
-interface ErrorHandlingDetailProps {
+export interface ErrorHandlingDetailProps {
   errorHandlingType?: string;
   errorHandlingParameters?: object;
   isBridgeLoading: boolean;
@@ -74,7 +74,7 @@ export const ErrorHandlingDetail = ({
         </DescriptionListDescription>
       </DescriptionListGroup>
       {errorHandlingParameters && schema && !isSchemaLoading && !apiError && (
-        <ProcessorConfigParameters
+        <ConfigParameters
           schema={schema}
           parameters={errorHandlingParameters as { [key: string]: unknown }}
         />

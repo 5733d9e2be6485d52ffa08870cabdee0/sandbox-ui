@@ -13,7 +13,7 @@ import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 
-interface ErrorHandlingEditProps {
+export interface ErrorHandlingEditProps {
   apiError?: string;
   getSchemaByMethod: (method: string) => Promise<object>;
   isLoading: boolean;

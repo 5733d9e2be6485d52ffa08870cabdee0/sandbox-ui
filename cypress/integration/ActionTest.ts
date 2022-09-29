@@ -31,6 +31,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           "Webhook",
           "AWS Lambda",
           "Google PubSub",
+          "Azure EventHubs",
         ];
 
         cy.ouiaId("action-type", "PF4/FormSelect")

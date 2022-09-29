@@ -11,31 +11,32 @@ import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/ErrorHandli
 import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
 import { useTranslation } from "react-i18next";
-import { ProcessorSchemaType } from "../../../types/Processor";
-import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 
 interface ErrorHandlingEditProps {
-  parameters?: object;
-  method?: string;
-  schema?: object;
+  apiError?: string;
+  getSchemaByMethod: (method: string) => Promise<object>;
   isLoading: boolean;
+  method?: string;
   onCancelEditing: () => void;
   onSubmit: (method?: string, parameters?: object, schema?: object) => void;
+  parameters?: object;
   registerValidateParameters: (validationFunction: () => boolean) => void;
+  schema?: object;
 }
 
 export const ErrorHandlingEdit = ({
-  parameters,
-  method,
-  schema,
+  apiError,
+  getSchemaByMethod,
   isLoading,
+  method,
   onCancelEditing,
   onSubmit: onErrorHandlingSubmit,
+  parameters,
   registerValidateParameters,
+  schema,
 }: ErrorHandlingEditProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
-  const [genericError, setGenericError] = useState<string | undefined>();
   const [isSchemaLoading, setIsSchemaLoading] = useState(false);
   const [currentSchema, setCurrentSchema] = useState<object | undefined>(
     schema
@@ -46,11 +47,8 @@ export const ErrorHandlingEdit = ({
   const [errorHandlingParameters, setErrorHandlingParameters] =
     useState(parameters);
 
-  const { getSchema } = useGetSchemaApi();
-
   const onErrorHandlingMethodSelection = useCallback(
     (errorMethod: string): void => {
-      setGenericError(undefined);
       setErrorHandlingParameters({});
       setCurrentSchema({});
       if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
@@ -58,18 +56,16 @@ export const ErrorHandlingEdit = ({
       } else {
         setIsSchemaLoading(true);
         setErrorHandlingMethod(errorMethod);
-        getSchema(errorMethod, ProcessorSchemaType.ACTION)
-          .then((data) => setCurrentSchema(data))
-          .catch(() => setGenericError("Internal Server Error"))
+        getSchemaByMethod(errorMethod)
+          .then((schema) => setCurrentSchema(schema))
           .finally(() => setIsSchemaLoading(false));
       }
     },
-    [getSchema]
+    [getSchemaByMethod]
   );
 
   const onErrorHandlingParametersChange = useCallback((model): void => {
     setErrorHandlingParameters(model as Record<string, unknown>);
-    setGenericError(undefined);
   }, []);
 
   const onSubmit = useCallback(
@@ -91,6 +87,18 @@ export const ErrorHandlingEdit = ({
 
   return (
     <Form id="error-handling-edit-form" autoComplete="off" onSubmit={onSubmit}>
+      {apiError && (
+        <FormAlert>
+          <Alert
+            className="error-handling-edit__alert"
+            ouiaId="error-schema"
+            variant="danger"
+            title={apiError}
+            aria-live="polite"
+            isInline
+          />
+        </FormAlert>
+      )}
       <FormGroup
         label={t("common.errorHandlingMethod")}
         fieldId={"error-handling-method"}
@@ -113,25 +121,13 @@ export const ErrorHandlingEdit = ({
           editMode={false}
         />
       )}
-      {genericError && (
-        <FormAlert>
-          <Alert
-            className="error-handling-edit__alert"
-            ouiaId="error-schema"
-            variant="danger"
-            title={genericError}
-            aria-live="polite"
-            isInline
-          />
-        </FormAlert>
-      )}
       <ActionGroup className={"error-handling-edit__actions"}>
         <Button
           variant="primary"
           ouiaId="submit"
           type="submit"
           isLoading={isLoading}
-          isDisabled={isLoading}
+          isDisabled={isLoading || apiError !== undefined}
         >
           {t("common.save")}
         </Button>

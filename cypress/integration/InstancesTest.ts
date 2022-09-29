@@ -380,7 +380,7 @@ describe("Instances Test", () => {
         pageWasLoaded();
       });
 
-      it.only("nstance three", () => {
+      it("Instance three", () => {
         const instanceName: string = "Instance three";
         cy.ouiaId("Instances list table", "PF4/Table")
           .ouiaId(instanceName, "PF4/TableRow")
@@ -421,6 +421,7 @@ describe("Instances Test", () => {
               .should("be.visible");
           })
           .find("dd");
+        // Locator'.pf-u-screen-reader' is used for endpoint-skeleton as other locator (like ouid) not available
         cy.get(".pf-u-screen-reader")
           .should("have.value", "")
           .should("be.empty");

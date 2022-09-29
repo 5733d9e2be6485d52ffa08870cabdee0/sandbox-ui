@@ -8,7 +8,10 @@ import { useState } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 
 export function useUpdateBridgeApi(): {
-  updateBridge: (bridgeId: string, bridgeRequest: BridgeRequest) => void;
+  updateBridge: (
+    bridgeId: string,
+    bridgeRequest: BridgeRequest
+  ) => Promise<void>;
   bridge?: BridgeResponse;
   isLoading: boolean;
   error: unknown;
@@ -21,7 +24,7 @@ export function useUpdateBridgeApi(): {
   const updateBridge = (
     bridgeId: string,
     bridgeRequest: BridgeRequest
-  ): void => {
+  ): Promise<void> => {
     setIsLoading(true);
     setError(undefined);
     setBridge(undefined);
@@ -31,10 +34,13 @@ export function useUpdateBridgeApi(): {
         basePath: apiBaseUrl,
       })
     );
-    bridgesApi
+    return bridgesApi
       .updateBridge(bridgeId, bridgeRequest)
       .then((response) => setBridge(response.data))
-      .catch((err) => setError(err))
+      .catch((err) => {
+        setError(err);
+        throw err;
+      })
       .finally(() => setIsLoading(false));
   };
 

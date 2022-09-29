@@ -57,17 +57,6 @@ const InstancePage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const history = useHistory();
 
-  const [activeTabKey, setActiveTabKey] = useState<number | string>(
-    INSTANCE_PAGE_TAB_KEYS[tabName]
-  );
-  const [isDropdownActionOpen, setIsDropdownActionOpen] =
-    useState<boolean>(false);
-  const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
-
-  useEffect(() => {
-    setActiveTabKey(INSTANCE_PAGE_TAB_KEYS[tabName]);
-  }, [tabName]);
-
   const {
     getBridge,
     bridge,
@@ -75,9 +64,27 @@ const InstancePage = (): JSX.Element => {
     error: bridgeError,
   } = useGetBridgeApi();
 
+  const [activeTabKey, setActiveTabKey] = useState<number | string>(
+    INSTANCE_PAGE_TAB_KEYS[tabName]
+  );
+  const [isDropdownActionOpen, setIsDropdownActionOpen] =
+    useState<boolean>(false);
+  const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
+  const [currentBridge, setCurrentBridge] = useState<
+    BridgeResponse | undefined
+  >(bridge);
+
+  useEffect(() => {
+    setActiveTabKey(INSTANCE_PAGE_TAB_KEYS[tabName]);
+  }, [tabName]);
+
   useEffect(() => {
     getBridge(instanceId);
   }, [getBridge, instanceId]);
+
+  useEffect(() => {
+    setCurrentBridge(bridge);
+  }, [bridge]);
 
   const getPageTitle = useCallback(
     (bridge?: BridgeResponse) => {
@@ -142,16 +149,20 @@ const InstancePage = (): JSX.Element => {
     history.push(`/`);
   }, [history]);
 
+  const onErrorHandlingUpdate = useCallback((updatedBridge: BridgeResponse) => {
+    setCurrentBridge(updatedBridge);
+  }, []);
+
   return (
     <Drawer isExpanded={showInstanceDrawer}>
       <DrawerContent
         colorVariant={DrawerColorVariant.light200}
         data-ouia-component-id="instance-drawer"
         panelContent={
-          bridge && (
+          currentBridge && (
             <InstanceDetails
               onClosingDetails={(): void => setShowInstanceDrawer(false)}
-              instance={bridge}
+              instance={currentBridge}
             />
           )
         }
@@ -164,13 +175,13 @@ const InstancePage = (): JSX.Element => {
             noShadowBottom
           />
         )}
-        {bridge && (
+        {currentBridge && (
           <>
             <PageSection variant={PageSectionVariants.light} type="breadcrumb">
               <Breadcrumb
                 path={[
                   { label: t("instance.smartEventInstances"), linkTo: "/" },
-                  { label: bridge.name ?? "" },
+                  { label: currentBridge.name ?? "" },
                 ]}
               />
             </PageSection>
@@ -179,7 +190,7 @@ const InstancePage = (): JSX.Element => {
                 <SplitItem isFilled>
                   <TextContent>
                     <Text ouiaId="instance-name" component="h1">
-                      {bridge.name}
+                      {currentBridge.name}
                     </Text>
                   </TextContent>
                 </SplitItem>
@@ -221,7 +232,7 @@ const InstancePage = (): JSX.Element => {
                         key="delete"
                         ouiaId="delete"
                         onClick={deleteInstance}
-                        isDisabled={!canDeleteResource(bridge.status)}
+                        isDisabled={!canDeleteResource(currentBridge.status)}
                       >
                         {t("instance.delete")}
                       </DropdownItem>,
@@ -257,7 +268,7 @@ const InstancePage = (): JSX.Element => {
               <PageSection>
                 <ProcessorsTabContent
                   instanceId={instanceId}
-                  pageTitle={getPageTitle(bridge)}
+                  pageTitle={getPageTitle(currentBridge)}
                 />
               </PageSection>
             </Tab>
@@ -275,22 +286,17 @@ const InstancePage = (): JSX.Element => {
             >
               <PageSection>
                 <ErrorHandlingTabContent
+                  bridge={currentBridge}
                   isBridgeLoading={isBridgeLoading}
-                  bridgeStatus={bridge?.status}
-                  errorHandlingType={bridge?.error_handler?.type}
-                  errorHandlingParameters={
-                    bridge?.error_handler?.parameters as {
-                      [p: string]: unknown;
-                    }
-                  }
+                  onErrorHandlingUpdate={onErrorHandlingUpdate}
                 />
               </PageSection>
             </Tab>
           </Tabs>
         </PageSection>
         <DeleteInstance
-          instanceId={bridge?.id}
-          instanceName={bridge?.name}
+          instanceId={currentBridge?.id}
+          instanceName={currentBridge?.name}
           showDeleteModal={showInstanceDeleteModal}
           onCanceled={(): void => setShowInstanceDeleteModal(false)}
           onDeleted={handleOnDeleteInstanceSuccess}

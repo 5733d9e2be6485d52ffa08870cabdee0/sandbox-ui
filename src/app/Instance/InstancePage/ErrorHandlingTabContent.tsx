@@ -29,6 +29,7 @@ import {
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
+import { useHistory } from "react-router-dom";
 
 interface ErrorHandlingTabContentProps {
   bridge?: BridgeResponse;
@@ -42,6 +43,7 @@ export const ErrorHandlingTabContent = ({
   onErrorHandlingUpdate,
 }: ErrorHandlingTabContentProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const history = useHistory();
 
   const validateParameters = useRef<(() => boolean) | undefined>();
   const registerValidateParameters = (callback: () => boolean): void => {
@@ -114,6 +116,7 @@ export const ErrorHandlingTabContent = ({
             setCurrentSchema(errorHandlingSchema);
             onErrorHandlingUpdate(updatedBridge);
             onCancelEditing();
+            history.replace("/");
           }
         );
       }
@@ -121,6 +124,7 @@ export const ErrorHandlingTabContent = ({
     [
       bridge,
       bridgeNotChanged,
+      history,
       onCancelEditing,
       onErrorHandlingUpdate,
       updateBridge,

@@ -1,7 +1,5 @@
 import {
-  ActionGroup,
   Button,
-  Form,
   PageSection,
   PageSectionVariants,
   Split,
@@ -16,91 +14,163 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import { ProcessorSchemaType } from "../../../types/Processor";
-import axios from "axios";
+import {
+  BridgeRequest,
+  BridgeResponse,
+  ManagedResourceStatus,
+} from "@rhoas/smart-events-management-sdk";
+import { ErrorHandlingDetail } from "@app/Instance/ErrorHandling/ErrorHandlingDetail";
+import { ErrorHandlingEdit } from "@app/Instance/ErrorHandling/ErrorHandlingEdit";
+import { useUpdateBridgeApi } from "../../../hooks/useBridgesApi/useUpdateBridgeApi";
+import isEqualWith from "lodash.isequalwith";
+import isEqual from "lodash.isequal";
 import {
   getErrorCode,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
-import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
-import { ErrorHandlingDetail } from "@app/Instance/ErrorHandling/ErrorHandlingDetail";
-import { ErrorHandlingEdit } from "@app/Instance/ErrorHandling/ErrorHandlingEdit";
 
 interface ErrorHandlingTabContentProps {
-  bridgeStatus?: ManagedResourceStatus;
-  errorHandlingType?: string;
-  errorHandlingParameters?: { [p: string]: unknown };
+  bridge?: BridgeResponse;
   isBridgeLoading: boolean;
+  onErrorHandlingUpdate: (updatedBridge: BridgeResponse) => void;
 }
 
 export const ErrorHandlingTabContent = ({
-  bridgeStatus,
-  errorHandlingType,
-  errorHandlingParameters,
+  bridge,
   isBridgeLoading,
+  onErrorHandlingUpdate,
 }: ErrorHandlingTabContentProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const validateParameters = useRef<(() => boolean) | undefined>();
-
   const registerValidateParameters = (callback: () => boolean): void => {
     validateParameters.current = callback;
   };
 
   const [isEditing, setIsEditing] = useState(false);
-  const [schema, setSchema] = useState<object>();
-  const [schemaError, setSchemaError] = useState<string | undefined>();
+  const [currentSchema, setCurrentSchema] = useState<object>();
   const [isSchemaLoading, setIsSchemaLoading] = useState(false);
+  const [apiError, setApiError] = useState<string>();
 
-  const { getSchema } = useGetSchemaApi();
+  const {
+    error: updateBridgeError,
+    isLoading: isUpdateBridgeLoading,
+    updateBridge,
+  } = useUpdateBridgeApi();
 
-  useEffect(() => {
-    if (errorHandlingType) {
-      setIsSchemaLoading(true);
-      setSchema(undefined);
-      setSchemaError(undefined);
-      getSchema(errorHandlingType, ProcessorSchemaType.ACTION)
-        .then((data) => setSchema(data))
-        .catch((error) => {
-          if (error && axios.isAxiosError(error)) {
-            if (
-              isServiceApiError(error) &&
-              getErrorCode(error) === APIErrorCodes.ERROR_4
-            ) {
-              setSchemaError(t("errorHandling.errors.cantFindSchema"));
-            } else {
-              setSchemaError(t("errorHandling.errors.schemaGenericError"));
-            }
-          }
-        })
-        .finally(() => setIsSchemaLoading(false));
-    }
-  }, [errorHandlingType, getSchema, t]);
+  const { getSchema, error: schemaError } = useGetSchemaApi();
 
-  const onErrorHandlingMethodSelection = useCallback(
-    (errorMethod: string): void => {
-      console.log(errorMethod); //TODO
-      // setErrorHandlingParameters({});
-      // if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
-      //   setErrorHandlingSchemaId(null);
-      // } else {
-      //   setErrorHandlingSchemaId(errorMethod);
-      // }
-    },
+  const onCancelEditing = useCallback(() => {
+    setApiError(undefined);
+    setIsEditing(false);
+    setIsSchemaLoading(false);
+  }, []);
+
+  const bridgeNotChanged = useCallback(
+    (prevDef: BridgeResponse, updatedDef: BridgeResponse): boolean =>
+      isEqualWith(
+        prevDef,
+        updatedDef,
+        (prev: BridgeResponse, next: BridgeResponse) =>
+          isEqual(prev.error_handler?.type, next.error_handler?.type) &&
+          isEqual(
+            prev.error_handler?.parameters,
+            next.error_handler?.parameters
+          )
+      ),
     []
   );
 
-  const onErrorHandlingParametersChange = useCallback((model): void => {
-    console.log(model); //TODO
-    // setErrorHandlingParameters(model as Record<string, unknown>);
-    // setHasParametersError(false);
-  }, []);
+  const onErrorHandlingSubmit = useCallback(
+    (
+      errorHandlingMethod?: string,
+      errorHandlingParameters?: object,
+      errorHandlingSchema?: object
+    ) => {
+      setApiError(undefined);
+      if (bridge && validateParameters.current?.()) {
+        const updatedBridge = {
+          ...bridge,
+          ...(errorHandlingMethod
+            ? {
+                error_handler: {
+                  type: errorHandlingMethod,
+                  parameters: errorHandlingParameters,
+                },
+              }
+            : {
+                error_handler: undefined,
+              }),
+        } as BridgeResponse;
 
-  const formIsDisabled =
-    bridgeStatus !== ManagedResourceStatus.Ready ||
+        if (bridgeNotChanged(bridge, updatedBridge)) {
+          onCancelEditing();
+          return;
+        }
+
+        void updateBridge(bridge.id, updatedBridge as BridgeRequest).then(
+          () => {
+            setCurrentSchema(errorHandlingSchema);
+            onErrorHandlingUpdate(updatedBridge);
+            onCancelEditing();
+          }
+        );
+      }
+    },
+    [
+      bridge,
+      bridgeNotChanged,
+      onCancelEditing,
+      onErrorHandlingUpdate,
+      updateBridge,
+    ]
+  );
+
+  const getSchemaByMethod = useCallback(
+    (method: string) => {
+      setApiError(undefined);
+      return getSchema(method, ProcessorSchemaType.ACTION).then((data) => data);
+    },
+    [getSchema]
+  );
+
+  useEffect(() => {
+    if (updateBridgeError && isServiceApiError(updateBridgeError)) {
+      if (getErrorCode(updateBridgeError) === APIErrorCodes.ERROR_2) {
+        setApiError(t("instance.errors.cantUpdateInstanceNotActionableState"));
+      } else {
+        setApiError(t("instance.errors.cantUpdateInstanceGenericError"));
+      }
+    }
+  }, [updateBridgeError, t]);
+
+  useEffect(() => {
+    if (schemaError && isServiceApiError(schemaError)) {
+      if (getErrorCode(schemaError) === APIErrorCodes.ERROR_4) {
+        setApiError(t("errorHandling.errors.cantFindSchema"));
+      } else {
+        setApiError(t("errorHandling.errors.schemaGenericError"));
+      }
+    }
+  }, [schemaError, t]);
+
+  useEffect(() => {
+    if (bridge?.error_handler?.type) {
+      setIsSchemaLoading(true);
+      setCurrentSchema(undefined);
+      getSchemaByMethod(bridge.error_handler.type)
+        .then((data) => setCurrentSchema(data))
+        .finally(() => setIsSchemaLoading(false));
+    }
+  }, [bridge?.error_handler?.type, getSchemaByMethod, t]);
+
+  const editIsDisabled =
+    bridge?.status !== ManagedResourceStatus.Ready ||
     isBridgeLoading ||
     isSchemaLoading ||
-    schemaError !== undefined;
+    isUpdateBridgeLoading ||
+    apiError !== undefined;
 
   return (
     <PageSection
@@ -124,7 +194,7 @@ export const ErrorHandlingTabContent = ({
             {!isEditing && (
               <SplitItem>
                 <Button
-                  isAriaDisabled={formIsDisabled}
+                  isAriaDisabled={editIsDisabled}
                   ouiaId="edit"
                   onClick={(): void => setIsEditing(true)}
                 >
@@ -136,50 +206,25 @@ export const ErrorHandlingTabContent = ({
         </StackItem>
         <StackItem>
           {isEditing ? (
-            <Form
-              id="error-handling-edit-form"
-              onSubmit={(): void => console.log("form submit")}
-            >
-              <ErrorHandlingEdit
-                errorHandlingParameters={errorHandlingParameters}
-                errorHandlingSchema={schema}
-                errorHandlingSchemaLoading={isSchemaLoading}
-                errorHandlingType={errorHandlingType}
-                formIsDisabled={formIsDisabled}
-                onErrorHandlingMethodSelection={onErrorHandlingMethodSelection}
-                onErrorHandlingParametersChange={
-                  onErrorHandlingParametersChange
-                }
-                registerValidateParameters={registerValidateParameters}
-              />
-              <ActionGroup className={"error-handling-edit__actions"}>
-                <Button
-                  variant="primary"
-                  ouiaId="submit"
-                  onClick={(): void => console.log("form submit")}
-                  isLoading={false}
-                  isDisabled={false}
-                >
-                  {t("common.save")}
-                </Button>
-                <Button
-                  variant="link"
-                  ouiaId="cancel"
-                  onClick={(): void => setIsEditing(false)}
-                  isDisabled={false}
-                >
-                  {t("common.cancel")}
-                </Button>
-              </ActionGroup>
-            </Form>
+            <ErrorHandlingEdit
+              getSchemaByMethod={getSchemaByMethod}
+              isLoading={isUpdateBridgeLoading || isSchemaLoading}
+              method={bridge?.error_handler?.type}
+              onCancelEditing={onCancelEditing}
+              onSubmit={onErrorHandlingSubmit}
+              parameters={bridge?.error_handler?.parameters}
+              registerValidateParameters={registerValidateParameters}
+              schema={currentSchema}
+              apiError={apiError}
+            />
           ) : (
             <ErrorHandlingDetail
-              errorHandlingType={errorHandlingType}
-              errorHandlingParameters={errorHandlingParameters}
+              errorHandlingType={bridge?.error_handler?.type}
+              errorHandlingParameters={bridge?.error_handler?.parameters}
               isBridgeLoading={isBridgeLoading}
               isSchemaLoading={isSchemaLoading}
-              schema={schema}
-              schemaError={schemaError}
+              schema={currentSchema}
+              apiError={apiError}
             />
           )}
         </StackItem>

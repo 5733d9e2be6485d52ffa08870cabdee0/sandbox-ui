@@ -13,12 +13,6 @@ import {
   getErrorHandlingMethodByType,
 } from "../../../types/ErrorHandlingMethods";
 import ProcessorConfigParameters from "@app/Processor/ProcessorConfigParameters/ProcessorConfigParameters";
-import axios from "axios";
-import {
-  getErrorCode,
-  isServiceApiError,
-} from "@openapi/generated/errorHelpers";
-import { APIErrorCodes } from "@openapi/generated/errors";
 
 interface ErrorHandlingDetailProps {
   errorHandlingType?: string;
@@ -26,7 +20,7 @@ interface ErrorHandlingDetailProps {
   isBridgeLoading: boolean;
   schema?: object;
   isSchemaLoading: boolean;
-  schemaError?: unknown;
+  apiError?: string;
 }
 
 export const ErrorHandlingDetail = ({
@@ -35,7 +29,7 @@ export const ErrorHandlingDetail = ({
   errorHandlingParameters,
   schema,
   isSchemaLoading,
-  schemaError,
+  apiError,
 }: ErrorHandlingDetailProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
@@ -69,17 +63,6 @@ export const ErrorHandlingDetail = ({
     );
   }, [errorHandlingParameters]);
 
-  const renderSchemaError = useMemo(() => {
-    if (
-      axios.isAxiosError(schemaError) &&
-      isServiceApiError(schemaError) &&
-      getErrorCode(schemaError) === APIErrorCodes.ERROR_4
-    ) {
-      return t("errorHandling.errors.cantFindSchema");
-    }
-    return t("errorHandling.errors.schemaGenericError");
-  }, [schemaError, t]);
-
   return (
     <DescriptionList>
       <DescriptionListGroup key="error-handling-method">
@@ -90,22 +73,19 @@ export const ErrorHandlingDetail = ({
           {errorHandlingMethodLabel}
         </DescriptionListDescription>
       </DescriptionListGroup>
-      {errorHandlingParameters &&
-        schema &&
-        !isSchemaLoading &&
-        !schemaError && (
-          <ProcessorConfigParameters
-            schema={schema}
-            parameters={errorHandlingParameters as { [key: string]: unknown }}
-          />
-        )}
+      {errorHandlingParameters && schema && !isSchemaLoading && !apiError && (
+        <ProcessorConfigParameters
+          schema={schema}
+          parameters={errorHandlingParameters as { [key: string]: unknown }}
+        />
+      )}
       {isSchemaLoading && errorHandlingParametersSkeleton}
-      {schemaError && (
+      {apiError && (
         <Alert
           className="instance-page__tabs-error-handling__alert"
           ouiaId="error-schema"
           variant="danger"
-          title={renderSchemaError}
+          title={apiError}
           aria-live="polite"
           isInline
         />

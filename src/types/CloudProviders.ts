@@ -18,18 +18,18 @@ const cloudProviderOptions: CloudProviderDetails[] = [
   },
 ];
 
-export const getUpdatedCloudProviders = (
+export const getCloudProviderAndRegionForInstance = (
   instance: BridgeResponse
 ): {
-  updatedCloudProvider: CloudProviderDetails | undefined;
-  updatedCloudRegion: RegionDetails | undefined;
+  cloudProvider: CloudProviderDetails | undefined;
+  cloudRegion: RegionDetails | undefined;
 } => {
-  const updatedCloudProvider = cloudProviderOptions.find(
+  const cloudProvider = cloudProviderOptions.find(
     (option) => option.value === instance.cloud_provider
   );
-  const updatedCloudRegion = updatedCloudProvider?.region.find(
+  const cloudRegion = cloudProvider?.region.find(
     (cloudRegion) => cloudRegion.value === instance.region
   );
 
-  return { updatedCloudProvider, updatedCloudRegion };
+  return { cloudProvider, cloudRegion };
 };

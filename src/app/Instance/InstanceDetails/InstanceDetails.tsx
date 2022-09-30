@@ -121,7 +121,11 @@ export const InstanceDetails = ({
                       {instance.endpoint}
                     </ClipboardCopy>
                   ) : (
-                    <Skeleton fontSize="4xl" width="100%" />
+                    <Skeleton
+                      data-ouia-component-id="instance-details-endpoint-skeleton"
+                      fontSize="4xl"
+                      width="100%"
+                    />
                   )}
                 </StackItem>
               </Stack>

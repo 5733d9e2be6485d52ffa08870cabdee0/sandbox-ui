@@ -284,9 +284,8 @@ describe("Instances Test", () => {
           .should("be.visible");
 
         cy.get(".pf-c-description-list__term")
-          .should("have.length.gt", 1)
+          .should("have.length", 5)
           .should(($items) => {
-            expect($items).to.have.length(5);
             expect($items.eq(0)).to.contain.text("Error handling method");
             expect($items.eq(1)).to.contain.text("Endpoint");
             expect($items.eq(2)).to.contain.text("Basic Auth Username");
@@ -295,9 +294,8 @@ describe("Instances Test", () => {
           });
 
         cy.get(".pf-c-description-list__description")
-          .should("have.length.gt", 1)
+          .should("have.length", 5)
           .should(($items) => {
-            expect($items).to.have.length(5);
             expect($items.eq(0)).to.contain.text("Webhook");
             expect($items.eq(1)).to.contain.text("http://google.com");
             expect($items.eq(2)).to.contain.text("user");

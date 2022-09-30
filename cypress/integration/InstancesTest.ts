@@ -402,30 +402,28 @@ describe("Instances Test", () => {
                 });
               });
           });
-        cy.ouiaId("instance-details-panel")
-          .within(() => {
-            cy.ouiaId("instance-details-name", "PF4/Text")
-              .should("have.text", "Instance three")
-              .should("be.visible");
-            cy.ouiaId("instance-details-id")
-              .should("have.text", "ee22ce62-1f23-4dd7-b106-e4158baf8228")
-              .should("be.visible");
-            cy.ouiaId("instance-details-owner")
-              .should("have.text", "bebianco")
-              .should("be.visible");
-            cy.ouiaId("instance-details-submitted-date")
-              .should("have.text", formatDate("2022-02-15T12:03:00Z"))
-              .should("be.visible");
-            cy.ouiaId("instance-details-published-date")
-              .should("have.text", formatDate("2022-02-15T12:04:00Z"))
-              .should("be.visible");
-          })
-          .find("dd");
-        // Locator'.pf-u-screen-reader' is used for endpoint-skeleton as other locator (like ouid) not available
-        cy.get(".pf-u-screen-reader")
-          .should("have.value", "")
-          .should("be.empty");
-        cy.ouiaId("close-instance-details").click();
+        cy.ouiaId("instance-details-panel").within(() => {
+          cy.ouiaId("instance-details-name", "PF4/Text")
+            .should("have.text", "Instance three")
+            .should("be.visible");
+          cy.ouiaId("instance-details-id")
+            .should("have.text", "ee22ce62-1f23-4dd7-b106-e4158baf8228")
+            .should("be.visible");
+          cy.ouiaId("instance-details-owner")
+            .should("have.text", "bebianco")
+            .should("be.visible");
+          cy.ouiaId("instance-details-submitted-date")
+            .should("have.text", formatDate("2022-02-15T12:03:00Z"))
+            .should("be.visible");
+          cy.ouiaId("instance-details-published-date")
+            .should("have.text", formatDate("2022-02-15T12:04:00Z"))
+            .should("be.visible");
+          cy.ouiaId("instance-details-endpoint-skeleton").should(
+            "have.text",
+            ""
+          );
+          cy.ouiaId("close-instance-details").click();
+        });
       });
     });
   });

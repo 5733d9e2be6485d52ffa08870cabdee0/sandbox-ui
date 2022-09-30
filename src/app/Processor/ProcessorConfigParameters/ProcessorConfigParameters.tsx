@@ -47,7 +47,11 @@ const ProcessorConfigParameters = (
             .map(([key, value]) => {
               if (isJSONSchema(value)) {
                 return (
-                  <DescriptionListGroup key={key}>
+                  <DescriptionListGroup
+                    data-ouia-component-type="ProcessorConfig/FormGroup"
+                    data-ouia-component-id={key}
+                    key={key}
+                  >
                     {displayFieldName(key, value.title, value.description)}
                     {displayFieldValue(
                       key,

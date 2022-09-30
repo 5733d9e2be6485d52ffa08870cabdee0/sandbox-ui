@@ -283,25 +283,68 @@ describe("Instances Test", () => {
           .should("contain.text", "Error handling method")
           .should("be.visible");
 
-        cy.get(".pf-c-description-list__term")
-          .should("have.length", 5)
-          .should(($items) => {
-            expect($items.eq(0)).to.contain.text("Error handling method");
-            expect($items.eq(1)).to.contain.text("Endpoint");
-            expect($items.eq(2)).to.contain.text("Basic Auth Username");
-            expect($items.eq(3)).to.contain.text("Basic Auth Password");
-            expect($items.eq(4)).to.contain.text("SSL Verification Disabled");
-          });
+        cy.ouiaType("ProcessorConfig/FormGroup").should("have.length", 5);
 
-        cy.get(".pf-c-description-list__description")
-          .should("have.length", 5)
-          .should(($items) => {
-            expect($items.eq(0)).to.contain.text("Webhook");
-            expect($items.eq(1)).to.contain.text("http://google.com");
-            expect($items.eq(2)).to.contain.text("user");
-            expect($items.eq(3)).to.contain.text("***");
-            expect($items.eq(4)).to.contain.text("No");
-          });
+        cy.ouiaId("error_handling_method", "ProcessorConfig/FormGroup").within(
+          () => {
+            cy.get("[data-testid='error_handling_method']").should(
+              "contain.text",
+              "Error handling method"
+            );
+            cy.get("[data-testid='error_handling_method-value']").should(
+              "contain.text",
+              "Webhook"
+            );
+          }
+        );
+
+        cy.ouiaId("endpoint", "ProcessorConfig/FormGroup").within(() => {
+          cy.get("[data-testid='endpoint']").should("contain.text", "Endpoint");
+          cy.get("[data-testid='endpoint-value']").should(
+            "contain.text",
+            "http://google.com"
+          );
+        });
+
+        cy.ouiaId("basic_auth_username", "ProcessorConfig/FormGroup").within(
+          () => {
+            cy.get("[data-testid='basic_auth_username']").should(
+              "contain.text",
+              "Basic Auth Username"
+            );
+            cy.get("[data-testid='basic_auth_username-value']").should(
+              "contain.text",
+              "user"
+            );
+          }
+        );
+
+        cy.ouiaId("basic_auth_password", "ProcessorConfig/FormGroup").within(
+          () => {
+            cy.get("[data-testid='basic_auth_password']").should(
+              "contain.text",
+              "Basic Auth Password"
+            );
+            cy.get("[data-testid='basic_auth_password-value']").should(
+              "contain.text",
+              "****"
+            );
+          }
+        );
+
+        cy.ouiaId(
+          "ssl_verification_disabled",
+          "ProcessorConfig/FormGroup"
+        ).within(() => {
+          cy.get("[data-testid='ssl_verification_disabled']").should(
+            "contain.text",
+            "SSL Verification Disabled"
+          );
+          cy.get("[data-testid='ssl_verification_disabled-value']").should(
+            "contain.text",
+            "No"
+          );
+        });
       });
     });
 

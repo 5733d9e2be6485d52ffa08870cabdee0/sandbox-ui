@@ -280,7 +280,7 @@ describe("Instances Test", () => {
         cy.ouiaId("error-handling", "PF4/TabButton").click();
 
         cy.ouiaId("error-handling-section", "PF4/Text")
-          .should("contain.text", "Error handling method")
+          .should("have.text", "Error handling method")
           .should("be.visible");
 
         cy.ouiaType("ProcessorConfig/FormGroup").should("have.length", 5);
@@ -288,20 +288,20 @@ describe("Instances Test", () => {
         cy.ouiaId("error_handling_method", "ProcessorConfig/FormGroup").within(
           () => {
             cy.get("[data-testid='error_handling_method']").should(
-              "contain.text",
+              "have.text",
               "Error handling method"
             );
             cy.get("[data-testid='error_handling_method-value']").should(
-              "contain.text",
+              "have.text",
               "Webhook"
             );
           }
         );
 
         cy.ouiaId("endpoint", "ProcessorConfig/FormGroup").within(() => {
-          cy.get("[data-testid='endpoint']").should("contain.text", "Endpoint");
+          cy.get("[data-testid='endpoint']").should("have.text", "Endpoint");
           cy.get("[data-testid='endpoint-value']").should(
-            "contain.text",
+            "have.text",
             "http://google.com"
           );
         });
@@ -309,11 +309,11 @@ describe("Instances Test", () => {
         cy.ouiaId("basic_auth_username", "ProcessorConfig/FormGroup").within(
           () => {
             cy.get("[data-testid='basic_auth_username']").should(
-              "contain.text",
+              "have.text",
               "Basic Auth Username"
             );
             cy.get("[data-testid='basic_auth_username-value']").should(
-              "contain.text",
+              "have.text",
               "user"
             );
           }
@@ -322,12 +322,12 @@ describe("Instances Test", () => {
         cy.ouiaId("basic_auth_password", "ProcessorConfig/FormGroup").within(
           () => {
             cy.get("[data-testid='basic_auth_password']").should(
-              "contain.text",
+              "have.text",
               "Basic Auth Password"
             );
             cy.get("[data-testid='basic_auth_password-value']").should(
-              "contain.text",
-              "****"
+              "have.text",
+              "**************************"
             );
           }
         );
@@ -337,11 +337,11 @@ describe("Instances Test", () => {
           "ProcessorConfig/FormGroup"
         ).within(() => {
           cy.get("[data-testid='ssl_verification_disabled']").should(
-            "contain.text",
+            "have.text",
             "SSL Verification Disabled"
           );
           cy.get("[data-testid='ssl_verification_disabled-value']").should(
-            "contain.text",
+            "have.text",
             "No"
           );
         });

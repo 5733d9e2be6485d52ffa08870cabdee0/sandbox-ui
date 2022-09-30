@@ -8,18 +8,60 @@ export enum SEStepStatus {
   //Failed = "", //TODO: ask if it could exists
 }
 
+interface SEStepEnumInterface {
+  ouiaId: string;
+  innerText: string;
+}
+
+interface SEStepEnum {
+  [key: string]: SEStepEnumInterface;
+}
+
+export const SEStep: SEStepEnum = {
+  CREATION_PENDIMG: { ouiaId: "pending", innerText: "Creation pending" },
+  PREPARING: { ouiaId: "preparing", innerText: "Preparing" },
+  PROVISIONING: { ouiaId: "provisioning", innerText: "Provisioning" },
+};
+
+interface SEInstanceStatusEnumInterface {
+  creatingStep: SEStepStatus;
+  preparingStep: SEStepStatus;
+  provisioningStep: SEStepStatus;
+}
+
+interface SEInstanceStatusEnum {
+  [key: string]: SEInstanceStatusEnumInterface;
+}
+
+export const SEInstanceStatus: SEInstanceStatusEnum = {
+  ACCEPTED: {
+    creatingStep: SEStepStatus.Info,
+    preparingStep: SEStepStatus.Default,
+    provisioningStep: SEStepStatus.Default,
+  },
+  PREPARING: {
+    creatingStep: SEStepStatus.Success,
+    preparingStep: SEStepStatus.Info,
+    provisioningStep: SEStepStatus.Default,
+  },
+  PROVISIONING: {
+    creatingStep: SEStepStatus.Success,
+    preparingStep: SEStepStatus.Success,
+    provisioningStep: SEStepStatus.Info,
+  },
+  //READY status is not visible in the popover
+};
+
 /**
- * Assert progress step status in the SE status popover.
+ * Assert progress of the one step status in the SE status popover.
  * @param status
- * @param elementId - the element id which represent the step status
- * @param elementText - the content of the step status inside of the element
+ * @param step
  */
 export function progressStepStatus(
   status: SEStepStatus,
-  elementId: string,
-  elementText: string
+  step: SEStepEnumInterface
 ) {
-  cy.ouiaId(elementId, "QE/ProgressStep").then(($li) => {
+  cy.ouiaId(step.ouiaId, "QE/ProgressStep").then(($li) => {
     //this `li` element is not visible - size 0,0
     switch (status) {
       case SEStepStatus.Info:
@@ -38,8 +80,25 @@ export function progressStepStatus(
         break;
       }
     }
-    cy.get("div#" + elementId)
+    cy.get("div#" + step.ouiaId)
       .should("be.visible")
-      .should("have.text", elementText);
+      .should("have.text", step.innerText);
+  });
+}
+
+/**
+ * Assert progress of all steps in the SE status popover.
+ * @param creating the result of the step (Info, Default, Success)
+ * @param preparing the result of the step (Info, Default, Success)
+ * @param provisioning the result of the step (Info, Default, Success)
+ */
+export function progressStepsStatuses(
+  instanceStatus: SEInstanceStatusEnumInterface
+) {
+  cy.ouiaId("steps", "QE/StackItem").within(() => {
+    cy.ouiaType("QE/ProgressStep").should("have.length", 3);
+    progressStepStatus(instanceStatus.creatingStep, SEStep.CREATION_PENDIMG);
+    progressStepStatus(instanceStatus.preparingStep, SEStep.PREPARING);
+    progressStepStatus(instanceStatus.provisioningStep, SEStep.PROVISIONING);
   });
 }

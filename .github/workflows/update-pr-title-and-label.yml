@@ -15,4 +15,4 @@ jobs:
           title-template: "[Renovate] "
           title-update-action: "prefix"
           base-branch-regex: "main"
-          head-branch-regex: "renovate.*"
+          head-branch-regex: "^renovate.*"

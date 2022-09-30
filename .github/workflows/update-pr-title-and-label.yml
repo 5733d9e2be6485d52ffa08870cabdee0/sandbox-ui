@@ -1,4 +1,4 @@
-name: "Update Pull Request Title for Dependency Updates"
+name: "Smart Events UI :: Update Pull Request Title for Dependency Updates"
 
 on:
   pull_request:
@@ -14,3 +14,5 @@ jobs:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           title-template: "[Renovate] "
           title-update-action: "prefix"
+          base-branch-regex: "main"
+          head-branch-regex: "renovate.*"

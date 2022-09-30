@@ -2,3 +2,4 @@ node_modules
 openapi
 dist
 public/mockServiceWorker.js
+**/*.typegen.ts

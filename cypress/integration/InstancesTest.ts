@@ -272,6 +272,82 @@ describe("Instances Test", () => {
   });
 
   onlyOn(isEnvironmentType(EnvType.Mocked), () => {
+    describe("Instance Error Handler", () => {
+      it("View error handler details", () => {
+        // visit 'Instance one'
+        cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
+
+        cy.ouiaId("error-handling", "PF4/TabButton").click();
+
+        cy.ouiaId("error-handling-section", "PF4/Text")
+          .should("have.text", "Error handling method")
+          .should("be.visible");
+
+        cy.ouiaType("ProcessorConfig/FormGroup").should("have.length", 5);
+
+        cy.ouiaId("error_handling_method", "ProcessorConfig/FormGroup").within(
+          () => {
+            cy.get("[data-testid='error_handling_method']").should(
+              "have.text",
+              "Error handling method"
+            );
+            cy.get("[data-testid='error_handling_method-value']").should(
+              "have.text",
+              "Webhook"
+            );
+          }
+        );
+
+        cy.ouiaId("endpoint", "ProcessorConfig/FormGroup").within(() => {
+          cy.get("[data-testid='endpoint']").should("have.text", "Endpoint");
+          cy.get("[data-testid='endpoint-value']").should(
+            "have.text",
+            "http://google.com"
+          );
+        });
+
+        cy.ouiaId("basic_auth_username", "ProcessorConfig/FormGroup").within(
+          () => {
+            cy.get("[data-testid='basic_auth_username']").should(
+              "have.text",
+              "Basic Auth Username"
+            );
+            cy.get("[data-testid='basic_auth_username-value']").should(
+              "have.text",
+              "user"
+            );
+          }
+        );
+
+        cy.ouiaId("basic_auth_password", "ProcessorConfig/FormGroup").within(
+          () => {
+            cy.get("[data-testid='basic_auth_password']").should(
+              "have.text",
+              "Basic Auth Password"
+            );
+            cy.get("[data-testid='basic_auth_password-value']").should(
+              "have.text",
+              "**************************"
+            );
+          }
+        );
+
+        cy.ouiaId(
+          "ssl_verification_disabled",
+          "ProcessorConfig/FormGroup"
+        ).within(() => {
+          cy.get("[data-testid='ssl_verification_disabled']").should(
+            "have.text",
+            "SSL Verification Disabled"
+          );
+          cy.get("[data-testid='ssl_verification_disabled-value']").should(
+            "have.text",
+            "No"
+          );
+        });
+      });
+    });
+
     describe("Instance Page - Instance one", () => {
       beforeEach(() => {
         cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");

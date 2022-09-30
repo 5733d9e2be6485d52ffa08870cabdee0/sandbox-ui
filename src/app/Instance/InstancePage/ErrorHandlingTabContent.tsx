@@ -117,11 +117,15 @@ export const ErrorHandlingTabContent = ({
         </StackItem>
         <StackItem>
           <DescriptionList>
-            <DescriptionListGroup key="error-handling-method">
-              <DescriptionListTerm>
+            <DescriptionListGroup
+              data-ouia-component-type="ProcessorConfig/FormGroup"
+              data-ouia-component-id="error_handling_method"
+              key="error-handling-method"
+            >
+              <DescriptionListTerm data-testid="error_handling_method">
                 {t("common.errorHandlingMethod")}
               </DescriptionListTerm>
-              <DescriptionListDescription>
+              <DescriptionListDescription data-testid="error_handling_method-value">
                 {errorHandlingMethodLabel}
               </DescriptionListDescription>
             </DescriptionListGroup>

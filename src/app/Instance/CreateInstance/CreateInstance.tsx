@@ -432,6 +432,7 @@ const CreateInstance = (props: CreateInstanceProps): JSX.Element => {
               isDisabled={formIsDisabled}
               onMethodSelection={(errorMethod: string): void => {
                 setErrorHandlingParameters({});
+                setErrorHandlingSchema({});
                 if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
                   setErrorHandlingSchemaId(null);
                 } else {

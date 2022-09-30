@@ -2,7 +2,7 @@ import React from "react";
 import CreateInstance, {
   CreateInstanceProps,
 } from "@app/Instance/CreateInstance/CreateInstance";
-import { act, fireEvent, RenderResult, waitFor } from "@testing-library/react";
+import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import { CloudProviderWithRegions } from "@app/Instance/CreateInstance/types";
 import { JSONSchema7 } from "json-schema";
@@ -118,7 +118,7 @@ describe("CreateInstance component", () => {
     const getSchema = jest.fn(
       (): Promise<object> =>
         new Promise<object>((resolve) => {
-          resolve({});
+          resolve(demoSchema);
         })
     );
     const { comp } = setupCreateInstance({ getSchema });
@@ -133,8 +133,8 @@ describe("CreateInstance component", () => {
     await waitFor(() => comp.getByText("Webhook"));
     fireEvent.click(comp.getByText("Webhook"));
 
-    await act(async () => {
-      /* let component do its updates */
+    await waitFor(() => {
+      expect(comp.getByText("Endpoint")).toBeInTheDocument();
     });
 
     expect(getSchema).toHaveBeenCalledTimes(1);
@@ -179,8 +179,8 @@ describe("CreateInstance component", () => {
     await waitFor(() => comp.getByText("Webhook"));
     fireEvent.click(comp.getByText("Webhook"));
 
-    await act(async () => {
-      /* let component do its updates */
+    await waitFor(() => {
+      expect(comp.getByText("Endpoint")).toBeInTheDocument();
     });
 
     expectValidationErrorAlert(comp, false);

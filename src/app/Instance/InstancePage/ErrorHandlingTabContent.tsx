@@ -170,7 +170,10 @@ export const ErrorHandlingTabContent = ({
   }, [bridge?.error_handler?.type, getSchemaByMethod, t]);
 
   const editIsDisabled =
-    bridge?.status !== ManagedResourceStatus.Ready ||
+    !(
+      bridge?.status === ManagedResourceStatus.Ready ||
+      bridge?.status === ManagedResourceStatus.Failed
+    ) ||
     isBridgeLoading ||
     isSchemaLoading ||
     isUpdateBridgeLoading ||

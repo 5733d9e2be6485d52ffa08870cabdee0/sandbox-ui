@@ -21,6 +21,7 @@ import {
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { format } from "date-fns";
 import { BridgeResponse } from "@rhoas/smart-events-management-sdk";
+import { getCloudProviderAndRegionForInstance } from "../../../types/CloudProviders";
 
 interface InstanceDetailsProps {
   instance: BridgeResponse;
@@ -35,6 +36,9 @@ export const InstanceDetails = ({
 
   const formatDate = (dateStr: string): string =>
     format(new Date(dateStr), "PPPP p");
+
+  const { cloudProvider, cloudRegion } =
+    getCloudProviderAndRegionForInstance(instance);
 
   return (
     <DrawerPanelContent
@@ -91,6 +95,22 @@ export const InstanceDetails = ({
               {instance.published_at && formatDate(instance.published_at)}
             </DescriptionListDescription>
           </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>
+              {t("instance.cloudProvider")}
+            </DescriptionListTerm>
+            <DescriptionListDescription data-ouia-component-id="instance-details-cloud-provider">
+              {cloudProvider?.label ?? t("common.notAvailable")}
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+          <DescriptionListGroup>
+            <DescriptionListTerm>
+              {t("instance.cloudRegion")}
+            </DescriptionListTerm>
+            <DescriptionListDescription data-ouia-component-id="instance-details-cloud-region">
+              {cloudRegion?.label ?? t("common.notAvailable")}
+            </DescriptionListDescription>
+          </DescriptionListGroup>
         </DescriptionList>
       </DrawerPanelBody>
       <DrawerPanelBody>
@@ -121,7 +141,11 @@ export const InstanceDetails = ({
                       {instance.endpoint}
                     </ClipboardCopy>
                   ) : (
-                    <Skeleton fontSize="4xl" width="100%" />
+                    <Skeleton
+                      data-ouia-component-id="instance-details-endpoint-skeleton"
+                      fontSize="4xl"
+                      width="100%"
+                    />
                   )}
                 </StackItem>
               </Stack>

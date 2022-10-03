@@ -272,6 +272,82 @@ describe("Instances Test", () => {
   });
 
   onlyOn(isEnvironmentType(EnvType.Mocked), () => {
+    describe("Instance Error Handler", () => {
+      it("View error handler details", () => {
+        // visit 'Instance one'
+        cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
+
+        cy.ouiaId("error-handling", "PF4/TabButton").click();
+
+        cy.ouiaId("error-handling-section", "PF4/Text")
+          .should("have.text", "Error handling method")
+          .should("be.visible");
+
+        cy.ouiaType("ProcessorConfig/FormGroup").should("have.length", 5);
+
+        cy.ouiaId("error_handling_method", "ProcessorConfig/FormGroup").within(
+          () => {
+            cy.get("[data-testid='error_handling_method']").should(
+              "have.text",
+              "Error handling method"
+            );
+            cy.get("[data-testid='error_handling_method-value']").should(
+              "have.text",
+              "Webhook"
+            );
+          }
+        );
+
+        cy.ouiaId("endpoint", "ProcessorConfig/FormGroup").within(() => {
+          cy.get("[data-testid='endpoint']").should("have.text", "Endpoint");
+          cy.get("[data-testid='endpoint-value']").should(
+            "have.text",
+            "http://google.com"
+          );
+        });
+
+        cy.ouiaId("basic_auth_username", "ProcessorConfig/FormGroup").within(
+          () => {
+            cy.get("[data-testid='basic_auth_username']").should(
+              "have.text",
+              "Basic Auth Username"
+            );
+            cy.get("[data-testid='basic_auth_username-value']").should(
+              "have.text",
+              "user"
+            );
+          }
+        );
+
+        cy.ouiaId("basic_auth_password", "ProcessorConfig/FormGroup").within(
+          () => {
+            cy.get("[data-testid='basic_auth_password']").should(
+              "have.text",
+              "Basic Auth Password"
+            );
+            cy.get("[data-testid='basic_auth_password-value']").should(
+              "have.text",
+              "**************************"
+            );
+          }
+        );
+
+        cy.ouiaId(
+          "ssl_verification_disabled",
+          "ProcessorConfig/FormGroup"
+        ).within(() => {
+          cy.get("[data-testid='ssl_verification_disabled']").should(
+            "have.text",
+            "SSL Verification Disabled"
+          );
+          cy.get("[data-testid='ssl_verification_disabled-value']").should(
+            "have.text",
+            "No"
+          );
+        });
+      });
+    });
+
     describe("Instance Page - Instance one", () => {
       beforeEach(() => {
         cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
@@ -369,6 +445,61 @@ describe("Instances Test", () => {
           .each((item, index) => {
             cy.wrap(item).should("have.text", processorHeaderDetails[index]);
           });
+      });
+    });
+  });
+
+  onlyOn(isEnvironmentType(EnvType.Mocked), () => {
+    describe("Instance Creation is in progress", () => {
+      beforeEach(() => {
+        cy.visit("/");
+        pageWasLoaded();
+      });
+
+      it("Instance three", () => {
+        const instanceName: string = "Instance three";
+        cy.ouiaId("Instances list table", "PF4/Table")
+          .ouiaId(instanceName, "PF4/TableRow")
+          .should("be.visible")
+          .within(() => {
+            cy.get("td:first").should("have.html", instanceName);
+            cy.get("td:nth-child(3)")
+              .ouiaId("creating", "PF4/Button")
+              .should("have.text", "Creating");
+            cy.get("td:nth-child(4)")
+              .click()
+              .within(() => {
+                cy.ouiaType("PF4/DropdownItem").then(($items) => {
+                  expect($items.eq(0)).have.text("Details");
+                  expect($items.eq(0)).be.enabled;
+                  expect($items.eq(1)).have.text("Delete instance");
+                  expect($items.eq(1)).have.attr("aria-disabled", "true");
+                  cy.get("li:first").click();
+                });
+              });
+          });
+        cy.ouiaId("instance-details-panel").within(() => {
+          cy.ouiaId("instance-details-name", "PF4/Text")
+            .should("have.text", "Instance three")
+            .should("be.visible");
+          cy.ouiaId("instance-details-id")
+            .should("have.text", "ee22ce62-1f23-4dd7-b106-e4158baf8228")
+            .should("be.visible");
+          cy.ouiaId("instance-details-owner")
+            .should("have.text", "bebianco")
+            .should("be.visible");
+          cy.ouiaId("instance-details-submitted-date")
+            .should("have.text", formatDate("2022-02-15T12:03:00Z"))
+            .should("be.visible");
+          cy.ouiaId("instance-details-published-date")
+            .should("have.text", formatDate("2022-02-15T12:04:00Z"))
+            .should("be.visible");
+          cy.ouiaId("instance-details-endpoint-skeleton").should(
+            "have.text",
+            ""
+          );
+          cy.ouiaId("close-instance-details").click();
+        });
       });
     });
   });

@@ -70,7 +70,7 @@ export const ErrorHandlingDetail = ({
         data-ouia-component-id="error_handling_method"
         key="error-handling-method"
       >
-        <DescriptionListTerm>
+        <DescriptionListTerm data-testid="error_handling_method">
           {t("common.errorHandlingMethod")}
         </DescriptionListTerm>
         <DescriptionListDescription data-testid="error_handling_method-value">

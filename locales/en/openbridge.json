@@ -26,6 +26,7 @@
     "loading": "Loading",
     "name": "Name",
     "no": "No",
+    "notAvailable": "Not available",
     "owner": "Owner",
     "pageDoesNotExistError": "The page you are looking for does not exist. It might have been moved or deleted.",
     "pageNotFound": "Page not found",

@@ -65,11 +65,15 @@ export const ErrorHandlingDetail = ({
 
   return (
     <DescriptionList>
-      <DescriptionListGroup key="error-handling-method">
+      <DescriptionListGroup
+        data-ouia-component-type="ProcessorConfig/FormGroup"
+        data-ouia-component-id="error_handling_method"
+        key="error-handling-method"
+      >
         <DescriptionListTerm>
           {t("common.errorHandlingMethod")}
         </DescriptionListTerm>
-        <DescriptionListDescription>
+        <DescriptionListDescription data-testid="error_handling_method-value">
           {errorHandlingMethodLabel}
         </DescriptionListDescription>
       </DescriptionListGroup>

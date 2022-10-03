@@ -30,6 +30,8 @@ const SEStatusStepper: VoidFunctionComponent<SEStatusStepperProps> = (
         isCurrent={status === ManagedResourceStatus.Accepted}
         aria-label={t("common.resourceSteps.pending.title")}
         variant={getVariant(0)}
+        data-ouia-component-id="pending"
+        data-ouia-component-type="QE/ProgressStep"
       >
         {t("common.resourceSteps.pending.title")}
       </ProgressStep>
@@ -39,6 +41,8 @@ const SEStatusStepper: VoidFunctionComponent<SEStatusStepperProps> = (
         isCurrent={status === ManagedResourceStatus.Preparing}
         aria-label={t("common.resourceSteps.preparing.title")}
         variant={getVariant(1)}
+        data-ouia-component-id="preparing"
+        data-ouia-component-type="QE/ProgressStep"
       >
         {t("common.resourceSteps.preparing.title")}
       </ProgressStep>
@@ -48,6 +52,8 @@ const SEStatusStepper: VoidFunctionComponent<SEStatusStepperProps> = (
         isCurrent={status === ManagedResourceStatus.Provisioning}
         aria-label={t("common.resourceSteps.provisioning.title")}
         variant={getVariant(2)}
+        data-ouia-component-id="provisioning"
+        data-ouia-component-type="QE/ProgressStep"
       >
         {t("common.resourceSteps.provisioning.title")}
       </ProgressStep>

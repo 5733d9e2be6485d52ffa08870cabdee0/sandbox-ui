@@ -107,7 +107,7 @@ export const instancesData = [
     name: "Instance eight",
     owner: "bebianco",
     href: "/api/smartevents_mgmt/v1/bridges/fa648473-3662-4bbc-99ba-158d9ab95ccc",
-    status: "ready",
+    status: "preparing",
     submitted_at: "2021-12-20T12:21:00Z",
     published_at: "2021-12-20T12:22:00Z",
     endpoint:

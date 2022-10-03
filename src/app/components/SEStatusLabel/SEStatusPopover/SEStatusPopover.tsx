@@ -39,6 +39,8 @@ const SEStatusPopover: VoidFunctionComponent<SEStatusPopoverProps> = (
       position={"right"}
       enableFlip={true}
       reference={reference}
+      data-ouia-component-id="se-status"
+      data-ouia-component-type="QE/Popover"
     />
   );
 };

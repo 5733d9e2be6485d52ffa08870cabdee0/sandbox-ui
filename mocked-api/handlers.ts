@@ -18,6 +18,7 @@ import { EventFilter, ProcessorSchemaType } from "../src/types/Processor";
 import { cloudProvidersData, cloudRegions } from "./cloudProvidersData";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { isJSONSchema } from "@utils/processorUtils";
+import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
@@ -939,7 +940,7 @@ const resourceStatusFlow = (
   wait: boolean,
   fail: boolean
 ): void => {
-  const waitTime = wait ? 45000 : 8000;
+  const waitTime = wait ? 30000 : 9000;
 
   const updateProcessor = (id: string, status: string): void => {
     db.processor.update({
@@ -1004,26 +1005,46 @@ const resourceStatusFlow = (
 
   const updateResource = type === "processor" ? updateProcessor : updateBridge;
 
-  const stepOne = mode === "create" ? "provisioning" : "deleting";
-  const stepTwo = mode === "create" ? "ready" : "deleted";
+  const creationStatusSteps = [
+    ManagedResourceStatus.Preparing,
+    ManagedResourceStatus.Provisioning,
+    ManagedResourceStatus.Ready,
+  ];
 
-  setTimeout(() => {
-    updateResource(id, stepOne);
-  }, waitTime);
+  const deletionStatusSteps = [
+    ManagedResourceStatus.Deleting,
+    ManagedResourceStatus.Deleted,
+  ];
 
-  setTimeout(() => {
-    updateResource(id, fail ? "failed" : stepTwo);
-  }, waitTime * 2);
+  const steps = mode === "create" ? creationStatusSteps : deletionStatusSteps;
+  let currentStep = 0;
 
-  if (mode === "delete" && !fail) {
-    setTimeout(() => {
-      if (type === "processor") {
-        deleteProcessor(id);
+  const timer = setInterval(() => {
+    if (currentStep < steps.length) {
+      if (fail) {
+        // if the process was set to fail, update status accordingly and clear setInterval
+        updateResource(id, ManagedResourceStatus.Failed);
+        clearInterval(timer);
       } else {
-        deleteBridge(id);
+        updateResource(id, steps[currentStep]);
       }
-    }, waitTime * 2.2);
-  }
+      if (currentStep === steps.length - 1) {
+        // this is the last step. if needed, delete resources after 3 seconds
+        if (mode === "delete" && !fail) {
+          setTimeout(() => {
+            if (type === "processor") {
+              deleteProcessor(id);
+            } else {
+              deleteBridge(id);
+            }
+          }, 3000);
+        }
+        // finally clear the setInterval
+        clearInterval(timer);
+      }
+    }
+    currentStep++;
+  }, waitTime);
 };
 
 interface ActionSourceType {

@@ -55,8 +55,11 @@ describe("the 'Create a SE instance' Modal", () => {
           "have.text",
           "0 of 3 steps completed"
         );
-        //TODO: There should be a check that all steps are met but I did not know how to do it for Mocked Env
+        //TODO (MGDOBR-1118): There should be a check that all steps are met but I did not know how to do it for Mocked Env
         //It seems that '1 of 3' is skipped and `2 of 3` is here only for few secs.
+        //progressStepsStatuses(SEInstanceStatus.ACCEPTED);
+        //progressStepsStatuses(SEInstanceStatus.PREPARING);
+        //progressStepsStatuses(SEInstanceStatus.PROVISIONING);
         //Each step is asserted with the mocked version
       });
     cy.ouiaId("se-status", "QE/Popover", { timeout: 180000 }).should(

@@ -239,10 +239,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.ouiaId("instance-details-published-date")
           .should("have.text", formatDate("2022-02-15T12:04:00Z"))
           .should("be.visible");
-        cy.ouiaId("instance-details-endpoint-skeleton").should(
-          "have.text",
-          ""
-        );
+        cy.ouiaId("instance-details-endpoint-skeleton").should("have.text", "");
         cy.ouiaId("close-instance-details").click();
       });
     });

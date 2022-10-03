@@ -1,4 +1,7 @@
-import { progressStepsStatuses, SEInstanceStatus } from "../../utils/SEPopoverStatus";
+import {
+  progressStepsStatuses,
+  SEInstanceStatus,
+} from "../../utils/SEPopoverStatus";
 import { format } from "date-fns";
 import { onlyOn } from "@cypress/skip-test";
 import {

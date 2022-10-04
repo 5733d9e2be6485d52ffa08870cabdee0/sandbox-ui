@@ -14,7 +14,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           .should("have.text", "Deleting");
 
         // once deprovision is completed, entry should disappear
-        cy.ouiaId("Instance ten", "PF4/TableRow", { timeout: 30000 }).should(
+        cy.ouiaId("Instance ten", "PF4/TableRow", { timeout: 90000 }).should(
           "not.exist"
         );
       });

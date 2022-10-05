@@ -8,10 +8,10 @@ import {
   FormGroup,
   PageSection,
 } from "@patternfly/react-core";
-import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/ErrorHandlingSelection";
 import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
 import { useTranslation } from "@rhoas/app-services-ui-components";
+import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/components/ErrorHandlingSelection";
 
 export interface ErrorHandlingEditProps {
   apiError?: string;

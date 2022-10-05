@@ -1,16 +1,16 @@
 import { customRender, waitForI18n } from "@utils/testUtils";
 import React from "react";
-import { ErrorHandlingCreate } from "@app/Instance/ErrorHandling/ErrorHandlingCreate";
+import ErrorHandlingCreate from "@app/Instance/ErrorHandling/ErrorHandlingCreate";
+import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
 
 describe("ErrorHandlingCreate component", () => {
   it("should display a dropbox for selecting the error method", async () => {
     const comp = customRender(
       <ErrorHandlingCreate
-        errorHandlingSchemaLoading={false}
-        formIsDisabled={false}
-        onErrorHandlingMethodSelection={jest.fn}
-        onErrorHandlingParametersChange={jest.fn}
-        registerValidateParameters={jest.fn}
+        isDisabled={false}
+        getSchema={(): Promise<object> => Promise.resolve(jest.fn)}
+        onChange={jest.fn}
+        registerValidation={jest.fn}
       />
     );
 
@@ -26,16 +26,17 @@ describe("ErrorHandlingCreate component", () => {
   it("should display a configuration form for populating EH strategy, when a schema is passed", async () => {
     const comp = customRender(
       <ErrorHandlingCreate
-        errorHandlingSchemaLoading={false}
-        formIsDisabled={false}
-        onErrorHandlingMethodSelection={jest.fn}
-        onErrorHandlingParametersChange={jest.fn}
-        registerValidateParameters={jest.fn}
-        errorHandlingSchema={{
-          type: "object",
-          additionalProperties: false,
-          properties: {},
-        }}
+        isDisabled={false}
+        getSchema={(): Promise<object> =>
+          Promise.resolve({
+            type: "object",
+            additionalProperties: false,
+            properties: {},
+          })
+        }
+        onChange={jest.fn}
+        registerValidation={jest.fn}
+        schemaId={ERROR_HANDLING_METHODS.deadLetterQueue[0].value}
       />
     );
 

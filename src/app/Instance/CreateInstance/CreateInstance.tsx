@@ -18,8 +18,8 @@ import {
   CreateInstanceError,
 } from "@app/Instance/CreateInstance/types";
 import InstanceAlert from "@app/Instance/CreateInstance/components/InstanceAlert";
-import ErrorHandling from "@app/Instance/CreateInstance/components/ErrorHandling";
 import InstanceAvailableSoonInfo from "@app/Instance/CreateInstance/components/InstanceAvailableSoonInfo";
+import ErrorHandlingCreate from "@app/Instance/ErrorHandling/ErrorHandlingCreate";
 
 export interface CreateInstanceProps {
   /** Flag to indicate if the dialog is open */
@@ -183,7 +183,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
             onProviderError={onProviderError}
           />
         </FormSection>
-        <ErrorHandling
+        <ErrorHandlingCreate
           getSchema={getSchema}
           registerValidation={registerValidateErrorHandlerParameters}
           onChange={setErrorHandler}

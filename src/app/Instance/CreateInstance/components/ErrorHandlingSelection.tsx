@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Select,
   SelectGroup,
@@ -6,10 +6,10 @@ import {
   SelectVariant,
 } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
-import { ErrorHandlingMethods } from "../../../types/ErrorHandlingMethods";
+import { ErrorHandlingMethods } from "../../../../types/ErrorHandlingMethods";
 
 interface ErrorHandlingSelectionProps {
-  selectedMethod: string;
+  selectedMethod: string | null;
   errorHandlingMethods: ErrorHandlingMethods;
   isDisabled: boolean;
   onMethodSelection: (errorMethod: string) => void;
@@ -24,7 +24,9 @@ export const ErrorHandlingSelection = ({
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const [isSelectorOpen, setIsSelectorOpen] = useState<boolean>(false);
-  const [handlingMethod, setHandlingMethod] = useState<string>(selectedMethod);
+  const [handlingMethod, setHandlingMethod] = useState<string>(
+    selectedMethod ?? errorHandlingMethods.default.value
+  );
 
   const defaultMethodOption = useMemo(() => {
     return (
@@ -44,6 +46,10 @@ export const ErrorHandlingSelection = ({
       </SelectOption>
     ));
   }, [errorHandlingMethods.deadLetterQueue]);
+
+  useEffect(() => {
+    setHandlingMethod(selectedMethod ?? errorHandlingMethods.default.value);
+  }, [selectedMethod, errorHandlingMethods]);
 
   return (
     <Select

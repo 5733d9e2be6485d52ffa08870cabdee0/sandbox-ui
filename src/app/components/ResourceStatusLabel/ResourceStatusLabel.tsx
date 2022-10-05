@@ -57,7 +57,11 @@ export const ResourceStatusLabel = forwardRef<
               <Flex>
                 <FlexItem>
                   <HelperText>
-                    <HelperTextItem variant="indeterminate">
+                    <HelperTextItem
+                      variant="indeterminate"
+                      data-ouia-component-id="ready-shortly"
+                      data-ouia-component-type="QE/HelperTextItem"
+                    >
                       {t("common.thisWillBeReadyShortly")}
                     </HelperTextItem>
                   </HelperText>
@@ -70,6 +74,7 @@ export const ResourceStatusLabel = forwardRef<
                 isInline
                 isPlain
                 title={t("common.thisIsTakingLongerThanExpected")}
+                ouiaId="longer-than-expected"
               />
             )}
           </SplitItem>

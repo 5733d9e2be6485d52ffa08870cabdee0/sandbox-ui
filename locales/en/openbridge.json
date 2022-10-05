@@ -72,7 +72,8 @@
   "errorHandling": {
     "errors": {
       "cantFindSchema": "The information related to the error handling strategy for this Smart Events instance is currently missing.",
-      "schemaGenericError": "Error while retrieving the information related to the error handling strategy for this Smart Events instance."
+      "schemaGenericError": "Error while retrieving the information related to the error handling strategy for this Smart Events instance.",
+      "schemaGenericErrorDuringCreation": "Error while retrieving information for the selected error handling method. Try again later."
     }
   },
   "instance": {

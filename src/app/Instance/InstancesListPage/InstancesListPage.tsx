@@ -21,15 +21,15 @@ import {
   FIRST_PAGE,
   TableWithPagination,
 } from "@app/components/TableWithPagination/TableWithPagination";
-import CreateInstance from "@app/Instance/CreateInstance/CreateInstance";
+import CreateInstance, {
+  CreateInstanceProps,
+} from "@app/Instance/CreateInstance/CreateInstance";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
 import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
-import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import {
-  Action,
   BridgeResponse,
   ManagedResourceStatus,
 } from "@rhoas/smart-events-management-sdk";
@@ -37,10 +37,10 @@ import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
 import { ErrorWithDetail } from "../../../types/Error";
-import { useGetCloudProvidersApi } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersApi";
-import { useGetCloudProvidersRegions } from "../../../hooks/useCloudProvidersApi/useGetCloudProvidersRegionsApi";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
+import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
+import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegionsApi";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
@@ -147,43 +147,25 @@ const InstancesListPage = (): JSX.Element => {
   }, [error, pageTitleElement, t]);
 
   const [showCreateInstance, setShowCreateInstance] = useState(false);
-
-  const {
-    error: createBridgeError,
-    isLoading: createBridgeLoading,
-    createBridge,
-    bridge,
-  } = useCreateBridgeApi();
-
+  const { createBridge } = useCreateBridgeApi();
+  const { getCloudProvidersWithRegions } = useGetCloudProvidersWithRegionsApi();
   const { getSchema } = useGetSchemaApi();
 
-  const handleCreateBridge = useCallback(
-    (
-      name: string,
-      cloudProviderId: string,
-      cloudRegionId: string,
-      errorHandlingConfiguration?: Action
-    ) => {
-      createBridge({
-        name,
-        cloud_provider: cloudProviderId,
-        region: cloudRegionId,
-        error_handler: errorHandlingConfiguration,
-      });
-    },
-    [createBridge]
-  );
-
-  useEffect(() => {
-    if (bridge) {
-      closeCreateInstanceDialog();
-      getBridges(currentPage, currentPageSize);
-    }
-  }, [bridge, getBridges, currentPage, currentPageSize]);
-
-  const closeCreateInstanceDialog = (): void => {
+  const onCreateBridge = useCallback(() => {
     setShowCreateInstance(false);
-  };
+    getBridges(currentPage, currentPageSize);
+  }, [getBridges, currentPage, currentPageSize]);
+
+  const handleCreate = useCallback<CreateInstanceProps["createBridge"]>(
+    function (data, onSuccess, onError) {
+      const handleOnSuccess = (): void => {
+        onSuccess();
+        onCreateBridge();
+      };
+      createBridge(data, handleOnSuccess, onError);
+    },
+    [onCreateBridge, createBridge]
+  );
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteInstanceId, setDeleteInstanceId] = useState<string>();
@@ -210,10 +192,6 @@ const InstancesListPage = (): JSX.Element => {
     setShowDeleteModal(false);
     resetDeleteInstance();
   }, [resetDeleteInstance]);
-
-  const { getCloudProviders } = useGetCloudProvidersApi();
-
-  const { getCloudProviderRegions } = useGetCloudProvidersRegions();
 
   const tableActions = (rowData: TableRow): IAction[] => [
     {
@@ -247,14 +225,11 @@ const InstancesListPage = (): JSX.Element => {
         {t("instance.createSEInstance")}
       </Button>
       <CreateInstance
-        isLoading={createBridgeLoading}
-        isModalOpen={showCreateInstance}
-        onClose={closeCreateInstanceDialog}
-        onCreate={handleCreateBridge}
-        createBridgeError={createBridgeError}
-        getCloudProviders={getCloudProviders}
-        getCloudRegions={getCloudProviderRegions}
+        isOpen={showCreateInstance}
+        onClose={(): void => setShowCreateInstance((prev) => !prev)}
+        getCloudProviders={getCloudProvidersWithRegions}
         getSchema={getSchema}
+        createBridge={handleCreate}
       />
     </>
   );

@@ -87,6 +87,7 @@ module.exports = {
       extends: ["plugin:testing-library/react"],
     },
   ],
+  ignorePatterns: ["*.typegen.ts"],
   globals: {
     console: "readonly",
     document: "readonly",

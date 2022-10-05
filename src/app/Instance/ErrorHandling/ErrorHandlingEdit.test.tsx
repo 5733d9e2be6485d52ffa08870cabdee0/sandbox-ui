@@ -6,6 +6,7 @@ import {
 } from "@app/Instance/ErrorHandling/ErrorHandlingEdit";
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
+import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
 
 describe("ErrorHandlingEdit component", () => {
   const createComponent = (
@@ -13,7 +14,7 @@ describe("ErrorHandlingEdit component", () => {
   ): RenderResult => {
     return customRender(
       <ErrorHandlingEdit
-        getSchemaByMethod={(): Promise<object> => new Promise(jest.fn())}
+        getSchema={(): Promise<object> => new Promise(jest.fn())}
         isLoading={false}
         onCancelEditing={jest.fn}
         onSubmit={jest.fn}
@@ -38,12 +39,12 @@ describe("ErrorHandlingEdit component", () => {
   });
 
   it("should call getSchemaByMethod callback, when a method is selected", async () => {
-    const getSchemaByMethod = jest.fn((method: string): Promise<object> => {
+    const getSchema = jest.fn((method: string): Promise<object> => {
       return new Promise((resolve) => resolve({ method }));
     });
 
     const comp = createComponent({
-      getSchemaByMethod,
+      getSchema,
     });
     await waitForI18n(comp);
 
@@ -58,8 +59,8 @@ describe("ErrorHandlingEdit component", () => {
       fireEvent.click(comp.getByText("Kafka topic"));
     });
 
-    expect(getSchemaByMethod).toHaveBeenCalledTimes(1);
-    expect(getSchemaByMethod).toHaveBeenCalledWith("kafka_topic_sink_0.1");
+    expect(getSchema).toHaveBeenCalledTimes(1);
+    expect(getSchema).toHaveBeenCalledWith("kafka_topic_sink_0.1", "action");
   });
 
   it("should call onCancelEdit callback, when cancel button is pressed", async () => {
@@ -98,11 +99,13 @@ describe("ErrorHandlingEdit component", () => {
 
   it("should display a configuration form for populating EH strategy, when a schema is passed", async () => {
     const comp = createComponent({
-      schema: {
-        type: "object",
-        additionalProperties: false,
-        properties: {},
-      },
+      getSchema: () =>
+        Promise.resolve({
+          type: "object",
+          additionalProperties: false,
+          properties: {},
+        }),
+      method: ERROR_HANDLING_METHODS.deadLetterQueue[0].value,
     });
 
     await waitForI18n(comp);

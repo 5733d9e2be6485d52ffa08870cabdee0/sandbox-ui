@@ -85,11 +85,7 @@ export const ErrorHandlingTabContent = ({
   );
 
   const onErrorHandlingSubmit = useCallback(
-    (
-      errorHandlingMethod?: string,
-      errorHandlingParameters?: object,
-      errorHandlingSchema?: object
-    ) => {
+    (errorHandlingMethod?: string, errorHandlingParameters?: object) => {
       setApiError(undefined);
       if (bridge && validateParameters.current?.()) {
         const updatedBridge = {
@@ -113,7 +109,6 @@ export const ErrorHandlingTabContent = ({
 
         void updateBridge(bridge.id, updatedBridge as BridgeRequest).then(
           () => {
-            setCurrentSchema(errorHandlingSchema);
             onErrorHandlingUpdate(updatedBridge);
             onCancelEditing();
             history.replace("/");
@@ -213,12 +208,14 @@ export const ErrorHandlingTabContent = ({
         <StackItem>
           {isEditing ? (
             <ErrorHandlingEdit
-              getSchemaByMethod={getSchemaByMethod}
+              getSchema={getSchemaByMethod}
               isLoading={isUpdateBridgeLoading || isSchemaLoading}
               method={bridge?.error_handler?.type}
               onCancelEditing={onCancelEditing}
               onSubmit={onErrorHandlingSubmit}
-              parameters={bridge?.error_handler?.parameters}
+              parameters={
+                bridge?.error_handler?.parameters as Record<string, unknown>
+              }
               registerValidateParameters={registerValidateParameters}
               schema={currentSchema}
               apiError={apiError}

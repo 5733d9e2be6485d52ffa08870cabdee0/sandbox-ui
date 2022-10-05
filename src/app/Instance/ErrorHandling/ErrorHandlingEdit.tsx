@@ -5,87 +5,57 @@ import {
   Button,
   Form,
   FormAlert,
-  FormGroup,
   PageSection,
 } from "@patternfly/react-core";
-import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
-import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
 import { useTranslation } from "@rhoas/app-services-ui-components";
-import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/components/ErrorHandlingSelection";
+import ErrorHandlingCreate from "@app/Instance/ErrorHandling/ErrorHandlingCreate";
 
 export interface ErrorHandlingEditProps {
   apiError?: string;
-  getSchemaByMethod: (method: string) => Promise<object>;
+  getSchema: (method: string) => Promise<object>;
   isLoading: boolean;
   method?: string;
   onCancelEditing: () => void;
   onSubmit: (method?: string, parameters?: object, schema?: object) => void;
-  parameters?: object;
+  parameters?: Record<string, unknown>;
   registerValidateParameters: (validationFunction: () => boolean) => void;
   schema?: object;
 }
 
 export const ErrorHandlingEdit = ({
   apiError,
-  getSchemaByMethod,
+  getSchema,
   isLoading,
   method,
   onCancelEditing,
   onSubmit: onErrorHandlingSubmit,
   parameters,
   registerValidateParameters,
-  schema,
 }: ErrorHandlingEditProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [isSchemaLoading, setIsSchemaLoading] = useState(false);
-  const [currentSchema, setCurrentSchema] = useState<object | undefined>(
-    schema
-  );
   const [errorHandlingMethod, setErrorHandlingMethod] = useState<
     string | undefined
   >(method);
   const [errorHandlingParameters, setErrorHandlingParameters] =
     useState(parameters);
 
-  const onErrorHandlingMethodSelection = useCallback(
-    (errorMethod: string): void => {
-      setErrorHandlingParameters({});
-      setCurrentSchema({});
-      if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
-        setErrorHandlingMethod(undefined);
-      } else {
-        setIsSchemaLoading(true);
-        setErrorHandlingMethod(errorMethod);
-        getSchemaByMethod(errorMethod)
-          .then((schema) => setCurrentSchema(schema))
-          .finally(() => setIsSchemaLoading(false));
-      }
+  const onErrorHandlingParametersChange = useCallback(
+    (method?: string, parameters?: Record<string, unknown>): void => {
+      setErrorHandlingMethod(method);
+      setErrorHandlingParameters(parameters);
     },
-    [getSchemaByMethod]
+    []
   );
-
-  const onErrorHandlingParametersChange = useCallback((model): void => {
-    setErrorHandlingParameters(model as Record<string, unknown>);
-  }, []);
 
   const onSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      onErrorHandlingSubmit(
-        errorHandlingMethod,
-        errorHandlingParameters,
-        currentSchema
-      );
+      onErrorHandlingSubmit(errorHandlingMethod, errorHandlingParameters);
       setIsSubmitted(true);
     },
-    [
-      currentSchema,
-      errorHandlingMethod,
-      errorHandlingParameters,
-      onErrorHandlingSubmit,
-    ]
+    [errorHandlingMethod, errorHandlingParameters, onErrorHandlingSubmit]
   );
 
   useEffect(() => {
@@ -119,28 +89,13 @@ export const ErrorHandlingEdit = ({
           />
         </FormAlert>
       )}
-      <FormGroup
-        label={t("common.errorHandlingMethod")}
-        fieldId={"error-handling-method"}
-        isRequired
-      >
-        <ErrorHandlingSelection
-          selectedMethod={method ?? ERROR_HANDLING_METHODS.default.value}
-          errorHandlingMethods={ERROR_HANDLING_METHODS}
-          isDisabled={isSchemaLoading}
-          onMethodSelection={onErrorHandlingMethodSelection}
-        />
-      </FormGroup>
-      {currentSchema && !isSchemaLoading && (
-        <ConfigurationForm
-          configuration={errorHandlingParameters}
-          schema={currentSchema}
-          onChange={onErrorHandlingParametersChange}
-          registerValidation={registerValidateParameters}
-          readOnly={isSchemaLoading}
-          editMode={false}
-        />
-      )}
+      <ErrorHandlingCreate
+        schemaId={errorHandlingMethod}
+        getSchema={getSchema}
+        registerValidation={registerValidateParameters}
+        onChange={onErrorHandlingParametersChange}
+        parameters={errorHandlingParameters}
+      />
       <PageSection
         stickyOnBreakpoint={{ default: "bottom" }}
         padding={{ default: "noPadding" }}

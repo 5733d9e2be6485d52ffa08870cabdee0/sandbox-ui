@@ -1,9 +1,13 @@
-import React, { useEffect, useState, VoidFunctionComponent } from "react";
+import React, {
+  useEffect,
+  useMemo,
+  useState,
+  VoidFunctionComponent,
+} from "react";
 import {
   Alert,
   AlertActionCloseButton,
   FormGroup,
-  FormSection,
 } from "@patternfly/react-core";
 import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/components/ErrorHandlingSelection";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
@@ -17,14 +21,23 @@ interface ErrorHandlingProps {
   getSchema: GetSchema;
   registerValidation: (validationFunction: () => boolean) => void;
   onChange: (method?: string, parameters?: Record<string, unknown>) => void;
-  isDisabled: boolean;
+  parameters?: Record<string, unknown>;
+  isDisabled?: boolean;
+  alertErrorManagedInternally?: boolean;
 }
 
 const ErrorHandlingCreate: VoidFunctionComponent<ErrorHandlingProps> = (
   props
 ) => {
-  const { schemaId, getSchema, registerValidation, onChange, isDisabled } =
-    props;
+  const {
+    schemaId,
+    getSchema,
+    registerValidation,
+    onChange,
+    parameters = {},
+    isDisabled = false,
+    alertErrorManagedInternally = true,
+  } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
   const [errorHandlingSchemaId, setErrorHandlingSchemaId] = useState<
@@ -35,7 +48,8 @@ const ErrorHandlingCreate: VoidFunctionComponent<ErrorHandlingProps> = (
   >();
   const [errorHandlingSchemaLoading, setErrorHandlingSchemaLoading] =
     useState<boolean>(false);
-  const [errorHandlingParameters, setErrorHandlingParameters] = useState({});
+  const [errorHandlingParameters, setErrorHandlingParameters] =
+    useState(parameters);
   const [loadingError, setLoadingError] = useState(false);
 
   useEffect(() => {
@@ -67,28 +81,9 @@ const ErrorHandlingCreate: VoidFunctionComponent<ErrorHandlingProps> = (
     registerValidation,
   ]);
 
-  return (
-    <>
-      <FormGroup
-        label={t("common.errorHandlingMethod")}
-        fieldId={"error-handling-method"}
-        isRequired
-      >
-        <ErrorHandlingSelection
-          selectedMethod={errorHandlingSchemaId}
-          errorHandlingMethods={ERROR_HANDLING_METHODS}
-          isDisabled={isDisabled}
-          onMethodSelection={(errorMethod: string): void => {
-            setErrorHandlingParameters({});
-            if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
-              setErrorHandlingSchemaId(undefined);
-            } else {
-              setErrorHandlingSchemaId(errorMethod);
-            }
-          }}
-        />
-      </FormGroup>
-      {loadingError && (
+  const alertError = useMemo(
+    () =>
+      loadingError && (
         <Alert
           variant="warning"
           isInline
@@ -99,16 +94,39 @@ const ErrorHandlingCreate: VoidFunctionComponent<ErrorHandlingProps> = (
             />
           }
         />
-      )}
+      ),
+    [loadingError, t]
+  );
+
+  return (
+    <>
+      <FormGroup
+        label={t("common.errorHandlingMethod")}
+        fieldId={"error-handling-method"}
+        isRequired
+      >
+        <ErrorHandlingSelection
+          selectedMethod={errorHandlingSchemaId}
+          errorHandlingMethods={ERROR_HANDLING_METHODS}
+          isDisabled={isDisabled || errorHandlingSchemaLoading}
+          onMethodSelection={(errorMethod: string): void => {
+            setErrorHandlingParameters({});
+            if (errorMethod === ERROR_HANDLING_METHODS.default.value) {
+              setErrorHandlingSchemaId(undefined);
+            } else {
+              setErrorHandlingSchemaId(errorMethod);
+            }
+          }}
+        />
+      </FormGroup>
+      {alertErrorManagedInternally && alertError}
       {errorHandlingSchema && !errorHandlingSchemaLoading && (
         <ConfigurationForm
           configuration={errorHandlingParameters}
           schema={errorHandlingSchema}
-          onChange={(model): void => {
-            setErrorHandlingParameters(model as Record<string, unknown>);
-          }}
+          onChange={setErrorHandlingParameters}
           registerValidation={registerValidation}
-          readOnly={isDisabled}
+          readOnly={isDisabled || errorHandlingSchemaLoading}
           editMode={false}
         />
       )}

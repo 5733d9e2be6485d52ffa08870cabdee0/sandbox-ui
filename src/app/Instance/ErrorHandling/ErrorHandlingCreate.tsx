@@ -68,7 +68,7 @@ const ErrorHandlingCreate: VoidFunctionComponent<ErrorHandlingProps> = (
   ]);
 
   return (
-    <FormSection title={t("common.errorHandling")} titleElement="h3">
+    <>
       <FormGroup
         label={t("common.errorHandlingMethod")}
         fieldId={"error-handling-method"}
@@ -112,7 +112,7 @@ const ErrorHandlingCreate: VoidFunctionComponent<ErrorHandlingProps> = (
           editMode={false}
         />
       )}
-    </FormSection>
+    </>
   );
 };
 

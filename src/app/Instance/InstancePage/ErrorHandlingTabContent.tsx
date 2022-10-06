@@ -135,8 +135,11 @@ export const ErrorHandlingTabContent = ({
   );
 
   useEffect(() => {
-    if (updateBridgeError && isServiceApiError(updateBridgeError)) {
-      if (getErrorCode(updateBridgeError) === APIErrorCodes.ERROR_2) {
+    if (updateBridgeError) {
+      if (
+        isServiceApiError(updateBridgeError) &&
+        getErrorCode(updateBridgeError) === APIErrorCodes.ERROR_2
+      ) {
         setApiError(t("instance.errors.cantUpdateInstanceNotActionableState"));
       } else {
         setApiError(t("instance.errors.cantUpdateInstanceGenericError"));

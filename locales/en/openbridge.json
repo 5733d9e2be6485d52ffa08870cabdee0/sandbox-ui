@@ -93,7 +93,7 @@
       "cantDeleteBecauseNotExisting": "The Smart Events instance you are trying to delete, it does not exist anymore.",
       "cantDeleteTryLater": "It is not possible to delete this Smart Events instance. Try again later.",
       "cantFindInstance": "The Smart Event Instance you are looking for does not exist. It might have been deleted.",
-      "cantUpdateInstanceNotActionableState": "You can only update a Smart Event instance that is in an actionable state.",
+      "cantUpdateInstanceNotActionableState": "You can only update a Smart Event instance that is in either READY or FAILED state.",
       "cantUpdateInstanceGenericError": "Error while updating the Smart event instance. Please, try again later.",
       "instanceDetailsGenericError": "Error while retrieving the Smart Event instance details.",
       "instancesListGenericError": "Error while retrieving the list of Smart Event instances.",

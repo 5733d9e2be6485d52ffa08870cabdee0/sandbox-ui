@@ -39,6 +39,7 @@ const db = factory({
     owner: String,
     submitted_at: String,
     published_at: String,
+    modified_at: String,
     status: String,
     endpoint: String,
     error_handler: {
@@ -294,6 +295,8 @@ export const handlers = [
       },
       data: {
         ...bridgeRequest,
+        status: "accepted",
+        modified_at: new Date().toISOString(),
         error_handler: {
           type: updatedErrorHandler?.type,
           parameters: JSON.stringify(updatedErrorHandler?.parameters),
@@ -1138,6 +1141,10 @@ const prepareBridge = (data: Record<string, unknown>): BridgeResponse => {
       parsedParameters;
   } else {
     bridge = omit(bridge, "error_handler");
+  }
+
+  if (bridge.modified_at === "") {
+    bridge = omit(bridge, "modified_at");
   }
 
   return bridge as unknown as BridgeResponse;

@@ -42,7 +42,7 @@ export interface Typegen0 {
     isNameEmpty: "";
     isNameValid: "";
     isProviderUnavailable: "";
-    isSubmitted: "errorHandlerChange";
+    isSubmitted: "";
   };
   eventsCausingDelays: {};
   matchesStates:

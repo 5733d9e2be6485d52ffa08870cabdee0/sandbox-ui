@@ -204,6 +204,7 @@ const createInstanceMachine = createMachine(
                         target: "valid",
                       },
                       {
+                        cond: "isSubmitted",
                         target: "invalid",
                       },
                     ],
@@ -216,7 +217,6 @@ const createInstanceMachine = createMachine(
                   errorHandlerChange: {
                     actions: "setErrorHandler",
                     target: ".validate",
-                    cond: "isSubmitted",
                   },
                 },
               },

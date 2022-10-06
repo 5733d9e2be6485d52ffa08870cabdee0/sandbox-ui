@@ -124,14 +124,7 @@ describe("CreateInstance component", () => {
     const { comp } = setupCreateInstance({ getSchema });
     await waitForI18n(comp);
 
-    const selector = comp.baseElement.querySelector(
-      "[data-ouia-component-id='error-handling-method-selector']"
-    );
-    fireEvent.click(
-      selector?.querySelector(".pf-c-select__toggle-arrow") as Node
-    );
-    await waitFor(() => comp.getByText("Webhook"));
-    fireEvent.click(comp.getByText("Webhook"));
+    await waitFor(() => setErrorHandlginMethod(comp, "Webhook"));
 
     await waitFor(() => {
       expect(comp.getByText("Endpoint")).toBeInTheDocument();
@@ -156,6 +149,52 @@ describe("CreateInstance component", () => {
     ).toHaveTextContent(cloudProvider.regions[0].display_name);
   });
 
+  it("should create an instance with an error handling configuration", async () => {
+    const createBridge = jest.fn();
+    const { comp } = setupCreateInstance({
+      createBridge,
+      getSchema: (): Promise<object> =>
+        new Promise<object>((resolve) => {
+          resolve(demoSchema);
+        }),
+    });
+    await waitForI18n(comp);
+
+    const instanceName = "my instance";
+    setName(comp, instanceName);
+
+    await waitFor(() => setErrorHandlginMethod(comp, "Webhook"));
+
+    await waitFor(() => {
+      expect(comp.getByText("Endpoint")).toBeInTheDocument();
+    });
+
+    const endpointValue = "http://a.com";
+    fireEvent.change(comp.getByLabelText("Endpoint *"), {
+      target: { value: endpointValue },
+    });
+
+    submitForm(comp);
+
+    expectValidationErrorAlert(comp, false);
+    expect(createBridge).toHaveBeenCalledTimes(1);
+    expect(createBridge).toHaveBeenCalledWith(
+      {
+        name: instanceName,
+        cloud_provider: cloudProvider.id,
+        region: cloudProvider.regions[0].name,
+        error_handler: {
+          type: "webhook_sink_0.1",
+          parameters: {
+            endpoint: endpointValue,
+          },
+        },
+      },
+      expect.anything(),
+      expect.anything()
+    );
+  });
+
   it("should display an error if required error handling parameters are missing on submit", async () => {
     const createBridge = jest.fn();
     const { comp } = setupCreateInstance({
@@ -170,14 +209,7 @@ describe("CreateInstance component", () => {
     const instanceName = "my instance";
     setName(comp, instanceName);
 
-    const selector = comp.baseElement.querySelector(
-      "[data-ouia-component-id='error-handling-method-selector']"
-    );
-    fireEvent.click(
-      selector?.querySelector(".pf-c-select__toggle-arrow") as Node
-    );
-    await waitFor(() => comp.getByText("Webhook"));
-    fireEvent.click(comp.getByText("Webhook"));
+    await waitFor(() => setErrorHandlginMethod(comp, "Webhook"));
 
     await waitFor(() => {
       expect(comp.getByText("Endpoint")).toBeInTheDocument();
@@ -345,6 +377,20 @@ const setName = (comp: RenderResult, name: string): void => {
   fireEvent.change(comp.getByLabelText("Name *"), {
     target: { value: name },
   });
+};
+
+const setErrorHandlginMethod = async (
+  comp: RenderResult,
+  method: string
+): Promise<void> => {
+  const selector = comp.baseElement.querySelector(
+    "[data-ouia-component-id='error-handling-method-selector']"
+  );
+  fireEvent.click(
+    selector?.querySelector(".pf-c-select__toggle-arrow") as Node
+  );
+  await waitFor(() => comp.getByText(method));
+  fireEvent.click(comp.getByText(method));
 };
 
 const expectInputsAreDisabled = (comp: RenderResult): void => {

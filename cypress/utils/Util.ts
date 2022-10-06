@@ -49,7 +49,7 @@ export function waitTillInstanceIsReady(instanceName: string) {
   cy.ouiaId("Instances list table", "PF4/Table")
     .ouiaId(instanceName, "PF4/TableRow")
     .within(() => {
-      cy.get("td:nth-child(3)", { timeout: 30000 }).should(
+      cy.get("td:nth-child(3)", { timeout: 50000 }).should(
         "have.text",
         "Ready"
       );

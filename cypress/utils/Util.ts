@@ -49,7 +49,7 @@ export function waitTillInstanceIsReady(instanceName: string) {
   cy.ouiaId("Instances list table", "PF4/Table")
     .ouiaId(instanceName, "PF4/TableRow")
     .within(() => {
-      cy.get("td:nth-child(3)", { timeout: 60000 }).should(
+      cy.get("td:nth-child(3)", { timeout: 50000 }).should(
         "have.text",
         "Ready"
       );
@@ -77,14 +77,12 @@ export function deleteInstance(deleteInstanceName: string) {
     );
     cy.ouiaId("confirm", "PF4/Button").click();
   });
-  cy.ouiaId("delete-instance", "PF4/ModalContent", { timeout: 90000 }).should(
-    "not.exist"
-  );
+  cy.ouiaId("delete-instance", "PF4/ModalContent").should("not.exist");
 }
 
 export function deletedInstanceNotExist(instanceName: string) {
   cy.ouiaId("Instances list table", "PF4/Table").within(() => {
-    cy.ouiaId(instanceName, "PF4/TableRow", { timeout: 90000 }).should(
+    cy.ouiaId(instanceName, "PF4/TableRow", { timeout: 30000 }).should(
       "not.exist"
     );
   });

@@ -60,18 +60,18 @@ describe("the 'Create a SE instance' Modal", () => {
           "0 of 3 steps completed"
         );
         progressStepsStatuses(SEInstanceStatus.ACCEPTED);
-        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 120000 }).should(
+        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 20000 }).should(
           "have.text",
           "1 of 3 steps completed"
         );
         progressStepsStatuses(SEInstanceStatus.PREPARING);
-        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 120000 }).should(
+        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 20000 }).should(
           "have.text",
           "2 of 3 steps completed"
         );
         progressStepsStatuses(SEInstanceStatus.PROVISIONING);
       });
-    cy.ouiaId("se-status", "QE/Popover", { timeout: 60000 }).should(
+    cy.ouiaId("se-status", "QE/Popover", { timeout: 20000 }).should(
       "not.exist"
     );
 

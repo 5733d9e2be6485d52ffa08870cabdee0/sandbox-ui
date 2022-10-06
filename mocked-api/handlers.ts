@@ -940,7 +940,7 @@ const resourceStatusFlow = (
   wait: boolean,
   fail: boolean
 ): void => {
-  const waitTime = wait ? 30000 : 12000;
+  const waitTime = wait ? 30000 : 9000;
 
   const updateProcessor = (id: string, status: string): void => {
     db.processor.update({

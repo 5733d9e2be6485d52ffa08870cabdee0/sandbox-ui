@@ -107,7 +107,7 @@ export const ErrorHandlingEdit = ({
             ouiaId="submit"
             type="submit"
             isLoading={isLoading}
-            isDisabled={isLoading || apiError !== undefined}
+            isDisabled={isLoading}
           >
             {t("common.save")}
           </Button>

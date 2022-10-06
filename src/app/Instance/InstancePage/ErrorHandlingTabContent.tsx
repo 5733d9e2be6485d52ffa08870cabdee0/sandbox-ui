@@ -34,13 +34,11 @@ import { useHistory } from "react-router-dom";
 interface ErrorHandlingTabContentProps {
   bridge?: BridgeResponse;
   isBridgeLoading: boolean;
-  onErrorHandlingUpdate: (updatedBridge: BridgeResponse) => void;
 }
 
 export const ErrorHandlingTabContent = ({
   bridge,
   isBridgeLoading,
-  onErrorHandlingUpdate,
 }: ErrorHandlingTabContentProps): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const history = useHistory();
@@ -109,21 +107,12 @@ export const ErrorHandlingTabContent = ({
 
         void updateBridge(bridge.id, updatedBridge as BridgeRequest).then(
           () => {
-            onErrorHandlingUpdate(updatedBridge);
-            onCancelEditing();
             history.replace("/");
           }
         );
       }
     },
-    [
-      bridge,
-      bridgeNotChanged,
-      history,
-      onCancelEditing,
-      onErrorHandlingUpdate,
-      updateBridge,
-    ]
+    [bridge, bridgeNotChanged, history, onCancelEditing, updateBridge]
   );
 
   const getSchemaByMethod = useCallback(

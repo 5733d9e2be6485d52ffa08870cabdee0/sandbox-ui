@@ -70,9 +70,6 @@ const InstancePage = (): JSX.Element => {
   const [isDropdownActionOpen, setIsDropdownActionOpen] =
     useState<boolean>(false);
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
-  const [currentBridge, setCurrentBridge] = useState<
-    BridgeResponse | undefined
-  >(bridge);
 
   useEffect(() => {
     setActiveTabKey(INSTANCE_PAGE_TAB_KEYS[tabName]);
@@ -81,10 +78,6 @@ const InstancePage = (): JSX.Element => {
   useEffect(() => {
     getBridge(instanceId);
   }, [getBridge, instanceId]);
-
-  useEffect(() => {
-    setCurrentBridge(bridge);
-  }, [bridge]);
 
   const getPageTitle = useCallback(
     (bridge?: BridgeResponse) => {
@@ -149,20 +142,16 @@ const InstancePage = (): JSX.Element => {
     history.push(`/`);
   }, [history]);
 
-  const onErrorHandlingUpdate = useCallback((updatedBridge: BridgeResponse) => {
-    setCurrentBridge(updatedBridge);
-  }, []);
-
   return (
     <Drawer isExpanded={showInstanceDrawer}>
       <DrawerContent
         colorVariant={DrawerColorVariant.light200}
         data-ouia-component-id="instance-drawer"
         panelContent={
-          currentBridge && (
+          bridge && (
             <InstanceDetails
               onClosingDetails={(): void => setShowInstanceDrawer(false)}
-              instance={currentBridge}
+              instance={bridge}
             />
           )
         }
@@ -175,13 +164,13 @@ const InstancePage = (): JSX.Element => {
             noShadowBottom
           />
         )}
-        {currentBridge && (
+        {bridge && (
           <>
             <PageSection variant={PageSectionVariants.light} type="breadcrumb">
               <Breadcrumb
                 path={[
                   { label: t("instance.smartEventInstances"), linkTo: "/" },
-                  { label: currentBridge.name ?? "" },
+                  { label: bridge.name ?? "" },
                 ]}
               />
             </PageSection>
@@ -190,7 +179,7 @@ const InstancePage = (): JSX.Element => {
                 <SplitItem isFilled>
                   <TextContent>
                     <Text ouiaId="instance-name" component="h1">
-                      {currentBridge.name}
+                      {bridge.name}
                     </Text>
                   </TextContent>
                 </SplitItem>
@@ -232,7 +221,7 @@ const InstancePage = (): JSX.Element => {
                         key="delete"
                         ouiaId="delete"
                         onClick={deleteInstance}
-                        isDisabled={!canDeleteResource(currentBridge.status)}
+                        isDisabled={!canDeleteResource(bridge.status)}
                       >
                         {t("instance.delete")}
                       </DropdownItem>,
@@ -268,7 +257,7 @@ const InstancePage = (): JSX.Element => {
               <PageSection>
                 <ProcessorsTabContent
                   instanceId={instanceId}
-                  pageTitle={getPageTitle(currentBridge)}
+                  pageTitle={getPageTitle(bridge)}
                 />
               </PageSection>
             </Tab>
@@ -286,17 +275,16 @@ const InstancePage = (): JSX.Element => {
             >
               <PageSection>
                 <ErrorHandlingTabContent
-                  bridge={currentBridge}
+                  bridge={bridge}
                   isBridgeLoading={isBridgeLoading}
-                  onErrorHandlingUpdate={onErrorHandlingUpdate}
                 />
               </PageSection>
             </Tab>
           </Tabs>
         </PageSection>
         <DeleteInstance
-          instanceId={currentBridge?.id}
-          instanceName={currentBridge?.name}
+          instanceId={bridge?.id}
+          instanceName={bridge?.name}
           showDeleteModal={showInstanceDeleteModal}
           onCanceled={(): void => setShowInstanceDeleteModal(false)}
           onDeleted={handleOnDeleteInstanceSuccess}

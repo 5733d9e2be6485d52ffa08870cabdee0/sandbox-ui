@@ -9,7 +9,7 @@ import {
   AlertActionCloseButton,
   FormGroup,
 } from "@patternfly/react-core";
-import { ErrorHandlingSelection } from "@app/Instance/CreateInstance/components/ErrorHandlingSelection";
+import { ErrorHandlingSelection } from "@app/Instance/ErrorHandling/ErrorHandlingSelection";
 import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/ConfigurationForm";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";

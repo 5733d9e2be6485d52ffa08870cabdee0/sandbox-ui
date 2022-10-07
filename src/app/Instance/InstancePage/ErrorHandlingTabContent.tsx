@@ -209,7 +209,6 @@ export const ErrorHandlingTabContent = ({
                 bridge?.error_handler?.parameters as Record<string, unknown>
               }
               registerValidateParameters={registerValidateParameters}
-              schema={currentSchema}
               apiError={apiError}
             />
           ) : (

@@ -19,7 +19,6 @@ export interface ErrorHandlingEditProps {
   onSubmit: (method?: string, parameters?: object, schema?: object) => void;
   parameters?: Record<string, unknown>;
   registerValidateParameters: (validationFunction: () => boolean) => void;
-  schema?: object;
 }
 
 export const ErrorHandlingEdit = ({

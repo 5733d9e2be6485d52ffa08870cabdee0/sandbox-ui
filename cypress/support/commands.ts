@@ -62,6 +62,15 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("login", () => {
+  cy.wait(4000); //prevent random failure
+  cy.get("#rh-password-verification-submit-button").then(($item) => {
+    if ($item.is(":visible")) {
+      cy.log("Cookie's choise is not present");
+    } else {
+      cy.log("Cookie's choise is present");
+      cy.get("button:contains('Accept default')").click().should("not.exist");
+    }
+  });
   cy.get("#username-verification").type(Cypress.env("USER"));
   cy.get("#login-show-step2").click();
   cy.get("#password")

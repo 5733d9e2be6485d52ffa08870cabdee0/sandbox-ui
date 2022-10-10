@@ -379,7 +379,7 @@ const setName = (comp: RenderResult, name: string): void => {
   });
 };
 
-const setErrorHandlingMethod = async (
+const setErrorHandlginMethod = async (
   comp: RenderResult,
   method: string
 ): Promise<void> => {

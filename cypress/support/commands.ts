@@ -64,7 +64,6 @@ Cypress.Commands.add(
 Cypress.Commands.add("login", () => {
   cy.wait(4000); //prevent random failure
   cy.get("#rh-password-verification-submit-button").then(($item) => {
-    //toggle menu side bar - both directions
     if ($item.is(":visible")) {
       cy.log("Cookie's choise is not present");
     } else {

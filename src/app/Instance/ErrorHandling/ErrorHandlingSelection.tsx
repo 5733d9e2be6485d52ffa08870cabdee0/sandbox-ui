@@ -6,10 +6,10 @@ import {
   SelectVariant,
 } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
-import { ErrorHandlingMethods } from "../../../../types/ErrorHandlingMethods";
+import { ErrorHandlingMethods } from "../../../types/ErrorHandlingMethods";
 
 interface ErrorHandlingSelectionProps {
-  selectedMethod: string | null;
+  selectedMethod: string | undefined;
   errorHandlingMethods: ErrorHandlingMethods;
   isDisabled: boolean;
   onMethodSelection: (errorMethod: string) => void;

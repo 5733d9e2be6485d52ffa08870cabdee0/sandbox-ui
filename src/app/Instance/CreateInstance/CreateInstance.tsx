@@ -18,8 +18,9 @@ import {
   CreateInstanceError,
 } from "@app/Instance/CreateInstance/types";
 import InstanceAlert from "@app/Instance/CreateInstance/components/InstanceAlert";
-import ErrorHandling from "@app/Instance/CreateInstance/components/ErrorHandling";
 import InstanceAvailableSoonInfo from "@app/Instance/CreateInstance/components/InstanceAvailableSoonInfo";
+import ErrorHandlingCreate from "@app/Instance/ErrorHandling/ErrorHandlingCreate";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 
 export interface CreateInstanceProps {
   /** Flag to indicate if the dialog is open */
@@ -54,6 +55,8 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
   props
 ) => {
   const { getSchema, getCloudProviders, onClose, createBridge } = props;
+
+  const { t } = useTranslation("openbridgeTempDictionary");
 
   const validateErrorHandlerParameters = useRef<(() => boolean) | undefined>();
 
@@ -183,12 +186,14 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
             onProviderError={onProviderError}
           />
         </FormSection>
-        <ErrorHandling
-          getSchema={getSchema}
-          registerValidation={registerValidateErrorHandlerParameters}
-          onChange={setErrorHandler}
-          isDisabled={isDisabled}
-        />
+        <FormSection title={t("common.errorHandling")} titleElement="h3">
+          <ErrorHandlingCreate
+            getSchema={getSchema}
+            registerValidation={registerValidateErrorHandlerParameters}
+            onChange={setErrorHandler}
+            isDisabled={isDisabled}
+          />
+        </FormSection>
         <InstanceAvailableSoonInfo />
       </Form>
     </CreateInstanceModal>

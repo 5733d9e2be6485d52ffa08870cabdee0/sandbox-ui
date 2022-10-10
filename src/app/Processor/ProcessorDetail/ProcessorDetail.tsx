@@ -33,7 +33,7 @@ import {
   ProcessorType,
 } from "@rhoas/smart-events-management-sdk";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
-import ProcessorConfigParameters from "@app/Processor/ProcessorConfigParameters/ProcessorConfigParameters";
+import ConfigParameters from "@app/components/ConfigParameters/ConfigParameters";
 import axios from "axios";
 import {
   getErrorCode,
@@ -140,7 +140,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                 </DescriptionListGroup>
                 {schema && !schemaError && !schemaLoading && (
                   <>
-                    <ProcessorConfigParameters
+                    <ConfigParameters
                       schema={schema}
                       parameters={processorConfig as { [key: string]: unknown }}
                     />
@@ -274,7 +274,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
                   </DescriptionListGroup>
                   {schema && !schemaLoading && (
                     <>
-                      <ProcessorConfigParameters
+                      <ConfigParameters
                         schema={schema}
                         parameters={
                           processorConfig as { [key: string]: unknown }

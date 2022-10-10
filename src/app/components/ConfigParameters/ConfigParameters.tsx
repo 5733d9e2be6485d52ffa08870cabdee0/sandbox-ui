@@ -13,14 +13,12 @@ import { useTranslation } from "@rhoas/app-services-ui-components";
 import { DataShapeValue } from "../../../types/Processor";
 import { isJSONSchema } from "@utils/processorUtils";
 
-interface ProcessorDetailConfigParametersProps {
+interface ConfigParametersProps {
   schema: JSONSchema7;
   parameters: { [key: string]: unknown };
 }
 
-const ProcessorConfigParameters = (
-  props: ProcessorDetailConfigParametersProps
-): JSX.Element => {
+const ConfigParameters = (props: ConfigParametersProps): JSX.Element => {
   const { schema, parameters } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
 
@@ -69,7 +67,7 @@ const ProcessorConfigParameters = (
   );
 };
 
-export default ProcessorConfigParameters;
+export default ConfigParameters;
 
 const displayFieldName = (
   key: string,

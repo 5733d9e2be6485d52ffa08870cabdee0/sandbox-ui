@@ -57,6 +57,13 @@ const InstancePage = (): JSX.Element => {
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const history = useHistory();
 
+  const {
+    getBridge,
+    bridge,
+    isLoading: isBridgeLoading,
+    error: bridgeError,
+  } = useGetBridgeApi();
+
   const [activeTabKey, setActiveTabKey] = useState<number | string>(
     INSTANCE_PAGE_TAB_KEYS[tabName]
   );
@@ -67,13 +74,6 @@ const InstancePage = (): JSX.Element => {
   useEffect(() => {
     setActiveTabKey(INSTANCE_PAGE_TAB_KEYS[tabName]);
   }, [tabName]);
-
-  const {
-    getBridge,
-    bridge,
-    isLoading: isBridgeLoading,
-    error: bridgeError,
-  } = useGetBridgeApi();
 
   useEffect(() => {
     getBridge(instanceId);
@@ -275,13 +275,8 @@ const InstancePage = (): JSX.Element => {
             >
               <PageSection>
                 <ErrorHandlingTabContent
+                  bridge={bridge}
                   isBridgeLoading={isBridgeLoading}
-                  errorHandlingType={bridge?.error_handler?.type}
-                  errorHandlingParameters={
-                    bridge?.error_handler?.parameters as {
-                      [p: string]: unknown;
-                    }
-                  }
                 />
               </PageSection>
             </Tab>

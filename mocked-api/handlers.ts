@@ -39,6 +39,7 @@ const db = factory({
     owner: String,
     submitted_at: String,
     published_at: String,
+    modified_at: String,
     status: String,
     endpoint: String,
     error_handler: {
@@ -253,6 +254,75 @@ export const handlers = [
     );
 
     return res(ctx.status(200), ctx.delay(apiDelay), ctx.json(newBridge));
+  }),
+  // update a bridge
+  rest.put(`${apiUrl}/bridges/:bridgeId`, async (req, res, ctx) => {
+    const { bridgeId } = req.params;
+    const bridgeRequest: BridgeRequest = await req.json();
+    const { name, error_handler: updatedErrorHandler } = bridgeRequest;
+
+    const existingBridge = db.bridge.findFirst({
+      where: {
+        id: {
+          equals: bridgeId as string,
+        },
+      },
+    });
+
+    if (!existingBridge) {
+      return res(
+        ctx.status(404),
+        ctx.delay(apiDelay),
+        ctx.json({
+          kind: "ErrorsResponse",
+          items: [
+            {
+              ...error_not_found,
+              reason: `Bridge with id '${
+                bridgeId as string
+              }' for customer 'XXXXXXXX' does not exist`,
+            },
+          ],
+        })
+      );
+    }
+
+    const updatedBridge = db.bridge.update({
+      where: {
+        id: {
+          equals: bridgeId as string,
+        },
+      },
+      data: {
+        ...bridgeRequest,
+        status: "accepted",
+        modified_at: new Date().toISOString(),
+        error_handler: {
+          type: updatedErrorHandler?.type,
+          parameters: JSON.stringify(updatedErrorHandler?.parameters),
+        },
+      },
+    });
+
+    // make the bridge slower if the resource name contains "wait" and make it fail
+    // if the name contains "fail"
+    resourceStatusFlow(
+      "bridge",
+      "create",
+      bridgeId as string,
+      name.includes("wait"),
+      name.includes("fail-create")
+    );
+
+    return res(
+      ctx.status(200),
+      ctx.delay(apiDelay),
+      ctx.json(
+        prepareBridge(
+          updatedBridge as unknown as Record<string | number | symbol, unknown>
+        )
+      )
+    );
   }),
   // delete a bridge
   rest.delete(`${apiUrl}/bridges/:bridgeId`, (req, res, ctx) => {
@@ -1066,11 +1136,15 @@ const prepareBridge = (data: Record<string, unknown>): BridgeResponse => {
     const parsedParameters = JSON.parse(errorHandler.parameters) as {
       [key: string]: unknown;
     };
-
+    (bridge.error_handler as typeof parsedParameters).type = errorHandler.type;
     (bridge.error_handler as typeof parsedParameters).parameters =
       parsedParameters;
   } else {
     bridge = omit(bridge, "error_handler");
+  }
+
+  if (bridge.modified_at === "") {
+    bridge = omit(bridge, "modified_at");
   }
 
   return bridge as unknown as BridgeResponse;

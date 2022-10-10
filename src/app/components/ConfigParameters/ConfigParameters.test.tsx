@@ -1,15 +1,15 @@
 import { customRender, waitForI18n } from "@utils/testUtils";
 import React from "react";
-import ProcessorConfigParameters, {
+import ConfigParameters, {
   maskedValue,
-} from "@app/Processor/ProcessorConfigParameters/ProcessorConfigParameters";
+} from "@app/components/ConfigParameters/ConfigParameters";
 import { JSONSchema7 } from "json-schema";
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 
-describe("ProcessorConfigParameters", () => {
+describe("ConfigParameters", () => {
   it("should display properties and their values", async () => {
     const comp = customRender(
-      <ProcessorConfigParameters
+      <ConfigParameters
         schema={testSchema as JSONSchema7}
         parameters={{
           user: "testUser",
@@ -55,7 +55,7 @@ describe("ProcessorConfigParameters", () => {
 
   it("should display a message for properties not configured", async () => {
     const comp = customRender(
-      <ProcessorConfigParameters
+      <ConfigParameters
         schema={testSchema as JSONSchema7}
         parameters={{
           user: "testUser",

@@ -124,7 +124,7 @@ describe("CreateInstance component", () => {
     const { comp } = setupCreateInstance({ getSchema });
     await waitForI18n(comp);
 
-    await waitFor(() => setErrorHandlginMethod(comp, "Webhook"));
+    await waitFor(() => setErrorHandlingMethod(comp, "Webhook"));
 
     await waitFor(() => {
       expect(comp.getByText("Endpoint")).toBeInTheDocument();
@@ -163,7 +163,7 @@ describe("CreateInstance component", () => {
     const instanceName = "my instance";
     setName(comp, instanceName);
 
-    await waitFor(() => setErrorHandlginMethod(comp, "Webhook"));
+    await waitFor(() => setErrorHandlingMethod(comp, "Webhook"));
 
     await waitFor(() => {
       expect(comp.getByText("Endpoint")).toBeInTheDocument();
@@ -209,7 +209,7 @@ describe("CreateInstance component", () => {
     const instanceName = "my instance";
     setName(comp, instanceName);
 
-    await waitFor(() => setErrorHandlginMethod(comp, "Webhook"));
+    await waitFor(() => setErrorHandlingMethod(comp, "Webhook"));
 
     await waitFor(() => {
       expect(comp.getByText("Endpoint")).toBeInTheDocument();
@@ -379,7 +379,7 @@ const setName = (comp: RenderResult, name: string): void => {
   });
 };
 
-const setErrorHandlginMethod = async (
+const setErrorHandlingMethod = async (
   comp: RenderResult,
   method: string
 ): Promise<void> => {

@@ -62,8 +62,12 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("login", () => {
-  cy.wait(4000); //prevent random failure
-  cy.get("#rh-password-verification-submit-button").then(($item) => {
+  //TODO: MGDOBR-1133 -> remove this 'hard' waiting rutine.
+  //Find a way how to deal with popover. See Cypress Best Practice:
+  //https://docs.cypress.io/guides/core-concepts/conditional-testing#Error-Recovery
+  cy.wait(6000);
+  //Check if the "google" button is covered by the popover"
+  cy.get("#social-google").then(($item) => {
     if ($item.is(":visible")) {
       cy.log("Cookie's choise is not present");
     } else {

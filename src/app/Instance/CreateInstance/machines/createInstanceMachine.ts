@@ -14,6 +14,7 @@ interface CreateInstanceMachineContext {
   errorHandler: {
     method: string | undefined;
     parameters: Record<string, unknown> | undefined;
+    validate: (() => boolean) | undefined;
   };
   creationError: CreateInstanceError | undefined;
 }
@@ -32,6 +33,7 @@ const createInstanceMachine = createMachine(
             method: string | undefined;
             parameters: Record<string, unknown> | undefined;
           }
+        | { type: "registerErrorHandlerValidator"; validator: () => boolean }
         | { type: "create" }
         | { type: "createSuccess" }
         | { type: "createError"; error: CreateInstanceError }
@@ -52,6 +54,7 @@ const createInstanceMachine = createMachine(
       errorHandler: {
         method: undefined,
         parameters: undefined,
+        validate: undefined,
       },
       creationError: undefined,
     },
@@ -102,7 +105,7 @@ const createInstanceMachine = createMachine(
                   },
                   submit: [
                     {
-                      cond: "errorHandlerIsValid",
+                      cond: "isErrorHandlerValid",
                       target: "saving",
                     },
                     {
@@ -149,9 +152,6 @@ const createInstanceMachine = createMachine(
               name: {
                 initial: "validate",
                 states: {
-                  empty: {
-                    tags: "nameEmpty",
-                  },
                   invalid: {
                     entry: "fieldInvalid",
                     tags: "nameInvalid",
@@ -162,10 +162,6 @@ const createInstanceMachine = createMachine(
                   },
                   validate: {
                     always: [
-                      {
-                        cond: "isNameEmpty",
-                        target: "empty",
-                      },
                       {
                         cond: "isNameValid",
                         target: "valid",
@@ -191,20 +187,17 @@ const createInstanceMachine = createMachine(
                 states: {
                   invalid: {
                     entry: "fieldInvalid",
-                    tags: "EHInvalid",
                   },
                   valid: {
-                    tags: "EHvalid",
                     type: "final",
                   },
                   validate: {
                     always: [
                       {
-                        cond: "errorHandlerIsValid",
+                        cond: "isErrorHandlerValid",
                         target: "valid",
                       },
                       {
-                        cond: "isSubmitted",
                         target: "invalid",
                       },
                     ],
@@ -214,10 +207,28 @@ const createInstanceMachine = createMachine(
                   create: {
                     target: ".validate",
                   },
-                  errorHandlerChange: {
-                    actions: "setErrorHandler",
-                    target: ".validate",
-                  },
+                  registerErrorHandlerValidator: [
+                    {
+                      description:
+                        "Running EH validation again when changes to the validation function occur ",
+                      cond: "isSubmitted",
+                      actions: "setErrorHandlerValidator",
+                      target: ".validate",
+                    },
+                    {
+                      actions: "setErrorHandlerValidator",
+                    },
+                  ],
+                  errorHandlerChange: [
+                    {
+                      cond: "isSubmitted",
+                      actions: "setErrorHandler",
+                      target: ".validate",
+                    },
+                    {
+                      actions: "setErrorHandler",
+                    },
+                  ],
                 },
               },
             },
@@ -271,8 +282,18 @@ const createInstanceMachine = createMachine(
         return {
           ...context,
           errorHandler: {
+            ...context.errorHandler,
             method,
             parameters,
+          },
+        };
+      }),
+      setErrorHandlerValidator: assign((context, { validator }) => {
+        return {
+          ...context,
+          errorHandler: {
+            ...context.errorHandler,
+            validate: validator,
           },
         };
       }),
@@ -290,11 +311,13 @@ const createInstanceMachine = createMachine(
       triggerSubmit: send("submit"),
     },
     guards: {
-      isNameEmpty: ({ name }) => name === undefined || name.trim().length === 0,
       isNameValid: ({ name, creationError }) =>
         name !== undefined &&
         name.trim().length > 0 &&
         creationError !== "name-taken",
+      isErrorHandlerValid: (context) => {
+        return context.errorHandler.validate?.() ?? true;
+      },
       isSubmitted: (_context, _event, meta) => meta.state.hasTag("submitted"),
       isGenericError: ({ creationError }) => creationError === "generic-error",
       isProviderUnavailable: ({ creationError }) =>

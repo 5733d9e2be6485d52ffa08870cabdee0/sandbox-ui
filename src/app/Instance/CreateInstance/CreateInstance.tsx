@@ -2,7 +2,6 @@ import React, {
   FormEvent,
   useCallback,
   useLayoutEffect,
-  useRef,
   VoidFunctionComponent,
 } from "react";
 import CreateInstanceMachine from "@app/Instance/CreateInstance/machines/createInstanceMachine";
@@ -58,14 +57,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
 
   const { t } = useTranslation("openbridgeTempDictionary");
 
-  const validateErrorHandlerParameters = useRef<(() => boolean) | undefined>();
-
   const [current, send] = useMachine(CreateInstanceMachine, {
-    guards: {
-      errorHandlerIsValid: () => {
-        return validateErrorHandlerParameters.current?.() ?? true;
-      },
-    },
     services: {
       createBridge: (context) => {
         const {
@@ -101,7 +93,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
   const { name, creationError } = current.context;
   const isSubmitted = current.hasTag("submitted");
   const isFormInvalid = current.hasTag("formInvalid") && isSubmitted;
-  const isNameEmpty = current.hasTag("nameEmpty") && isSubmitted;
+  const isNameInvalid = current.hasTag("nameInvalid") && isSubmitted;
   const isNameTaken = creationError === "name-taken";
   const isSaving = current.matches("configuring.form.saving");
   const isDisabled = current.hasTag("creationUnavailable") || isSaving;
@@ -146,9 +138,9 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
 
   const registerValidateErrorHandlerParameters = useCallback(
     (callback: () => boolean): void => {
-      validateErrorHandlerParameters.current = callback;
+      send({ type: "registerErrorHandlerValidator", validator: callback });
     },
-    []
+    [send]
   );
 
   const onProviderError = useCallback(
@@ -173,7 +165,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
             creationError={creationError}
           />
           <InstanceNameField
-            isNameEmpty={isNameEmpty}
+            isNameInvalid={isNameInvalid}
             isNameTaken={isNameTaken}
             onChange={setName}
             value={name ?? ""}

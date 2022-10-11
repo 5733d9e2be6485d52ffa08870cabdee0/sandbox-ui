@@ -77,25 +77,22 @@ const cloudProvidersMachine = createMachine(
   },
   {
     actions: {
-      setProviders: assign((context, event) => {
+      setProviders: assign((_context, event) => {
         const providers = event.data;
         const { providerId, regionId } = getFirstAvailableRegion(providers);
         return {
-          ...context,
           cloudProviders: event.data,
           selectedCloudRegion: regionId,
           selectedCloudProvider: providerId,
         };
       }),
-      setProvider: assign((context, event) => {
+      setProvider: assign((_context, event) => {
         return {
-          ...context,
           selectedCloudProvider: event.providerId,
         };
       }),
-      setRegion: assign((context, event) => {
+      setRegion: assign((_context, event) => {
         return {
-          ...context,
           selectedCloudRegion: event.regionId,
         };
       }),

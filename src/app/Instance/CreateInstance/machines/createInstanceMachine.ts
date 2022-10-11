@@ -262,16 +262,14 @@ const createInstanceMachine = createMachine(
     actions: {
       setName: assign((context, { name }) => {
         return {
-          ...context,
           name,
           ...(context.creationError === "name-taken"
             ? { creationError: undefined }
             : {}),
         };
       }),
-      setProvider: assign((context, { providerId, regionId }) => {
+      setProvider: assign((_context, { providerId, regionId }) => {
         return {
-          ...context,
           selectedProvider: {
             providerId,
             regionId,
@@ -280,7 +278,6 @@ const createInstanceMachine = createMachine(
       }),
       setErrorHandler: assign((context, { method, parameters }) => {
         return {
-          ...context,
           errorHandler: {
             ...context.errorHandler,
             method,
@@ -290,21 +287,19 @@ const createInstanceMachine = createMachine(
       }),
       setErrorHandlerValidator: assign((context, { validator }) => {
         return {
-          ...context,
           errorHandler: {
             ...context.errorHandler,
             validate: validator,
           },
         };
       }),
-      setCreationError: assign((context, { error }) => {
+      setCreationError: assign((_context, { error }) => {
         return {
-          ...context,
           creationError: error,
         };
       }),
-      resetCreationErrorMessage: assign((context) => ({
-        ...context,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      resetCreationErrorMessage: assign((_context) => ({
         creationError: undefined,
       })),
       fieldInvalid: send("fieldInvalid"),

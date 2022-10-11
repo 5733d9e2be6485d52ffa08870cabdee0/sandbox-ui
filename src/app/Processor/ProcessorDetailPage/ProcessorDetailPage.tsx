@@ -28,14 +28,13 @@ import ProcessorDetailSkeleton from "@app/Processor/ProcessorDetail/ProcessorDet
 import ProcessorEdit from "@app/Processor/ProcessorEdit/ProcessorEdit";
 import { useUpdateProcessorApi } from "../../../hooks/useProcessorsApi/useUpdateProcessorApi";
 import {
-  ManagedResourceStatus,
   ProcessorRequest,
   ProcessorResponse,
 } from "@rhoas/smart-events-management-sdk";
 import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
-import { canDeleteResource } from "@utils/resourceUtils";
+import { canDeleteResource, canEditResource } from "@utils/resourceUtils";
 import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import {
@@ -362,8 +361,7 @@ const ProcessorDetailPage = (): JSX.Element => {
                     <SplitItem>
                       <Button
                         isAriaDisabled={
-                          currentProcessor.status !==
-                            ManagedResourceStatus.Ready ||
+                          !canEditResource(currentProcessor.status) ||
                           schemaError !== undefined
                         }
                         ouiaId="edit"

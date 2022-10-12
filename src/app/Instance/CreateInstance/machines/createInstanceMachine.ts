@@ -39,7 +39,8 @@ const createInstanceMachine = createMachine(
         | { type: "createError"; error: CreateInstanceError }
         | { type: "providersAvailabilityError"; error: CreateInstanceError }
         | { type: "cloudProvidersError" }
-        | { type: "submit" },
+        | { type: "submit" }
+        | { type: "resetSubmittedState" },
     },
     context: {
       name: undefined,
@@ -78,6 +79,9 @@ const createInstanceMachine = createMachine(
               create: {
                 actions: "triggerSubmit",
                 target: ".submitted",
+              },
+              resetSubmittedState: {
+                target: ".unsubmitted",
               },
             },
           },
@@ -125,7 +129,7 @@ const createInstanceMachine = createMachine(
                     target: "saved",
                   },
                   createError: {
-                    actions: "setCreationError",
+                    actions: ["setCreationError", "resetSubmittedState"],
                     target: "invalid",
                   },
                 },
@@ -302,6 +306,7 @@ const createInstanceMachine = createMachine(
       resetCreationErrorMessage: assign((_context) => ({
         creationError: undefined,
       })),
+      resetSubmittedState: send("resetSubmittedState"),
       fieldInvalid: send("fieldInvalid"),
       triggerSubmit: send("submit"),
     },

@@ -27,6 +27,7 @@ export interface Typegen0 {
   eventsCausingActions: {
     fieldInvalid: "";
     resetCreationErrorMessage: "submit";
+    resetSubmittedState: "createError";
     setCreationError: "createError" | "providersAvailabilityError";
     setErrorHandler: "errorHandlerChange";
     setErrorHandlerValidator: "registerErrorHandlerValidator";

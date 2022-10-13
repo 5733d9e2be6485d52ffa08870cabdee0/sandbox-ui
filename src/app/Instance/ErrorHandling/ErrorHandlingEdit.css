@@ -1,3 +1,5 @@
 .error-handling-edit-form {
+  --eh-edit--spacing: var(--pf-global--spacer--lg);
   max-width: 800px;
+  padding: var(--eh-edit--spacing);
 }

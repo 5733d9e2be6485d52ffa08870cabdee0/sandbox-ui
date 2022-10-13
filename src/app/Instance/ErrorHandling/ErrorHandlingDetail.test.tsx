@@ -14,6 +14,8 @@ describe("ErrorHandlingDetail component", () => {
       <ErrorHandlingDetail
         isBridgeLoading={false}
         isSchemaLoading={false}
+        onEdit={jest.fn}
+        isEditDisabled={false}
         {...props}
       />
     );

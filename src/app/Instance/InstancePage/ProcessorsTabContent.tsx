@@ -7,7 +7,7 @@ import {
   Button,
   EmptyState,
   EmptyStateIcon,
-  TabContent,
+  PageSection,
   Title,
 } from "@patternfly/react-core";
 import { PlusCircleIcon } from "@patternfly/react-icons";
@@ -189,40 +189,40 @@ export const ProcessorsTabContent = ({
 
   return (
     <>
-      {processorListResponse?.items ? (
-        <TableWithPagination
-          columns={processorsOverviewColumns}
-          customToolbarElement={customToolbarElement}
-          rows={processorListResponse.items}
-          tableLabel={t(
-            "openbridgeTempDictionary:processor.processorsListTable"
-          )}
-          isLoading={areProcessorsLoading}
-          onPaginationChange={onPaginationChange}
-          pageNumber={currentPage}
-          pageSize={currentPageSize}
-          totalRows={totalRows ?? 0}
-          renderActions={({ row, ActionsColumn }): JSX.Element => (
-            <ActionsColumn items={tableActions(row)} />
-          )}
-        >
-          <EmptyState variant="large">
-            <EmptyStateIcon icon={PlusCircleIcon} />
-            <Title headingLevel="h4" size="lg">
-              {t("processor.noProcessors")}
-            </Title>
-          </EmptyState>
-        </TableWithPagination>
-      ) : (
-        <TabContent id="instance-skeleton__page__tabs-processors">
+      <PageSection isFilled padding={{ default: "padding" }}>
+        {processorListResponse?.items ? (
+          <TableWithPagination
+            columns={processorsOverviewColumns}
+            customToolbarElement={customToolbarElement}
+            rows={processorListResponse.items}
+            tableLabel={t(
+              "openbridgeTempDictionary:processor.processorsListTable"
+            )}
+            isLoading={areProcessorsLoading}
+            onPaginationChange={onPaginationChange}
+            pageNumber={currentPage}
+            pageSize={currentPageSize}
+            totalRows={totalRows ?? 0}
+            renderActions={({ row, ActionsColumn }): JSX.Element => (
+              <ActionsColumn items={tableActions(row)} />
+            )}
+          >
+            <EmptyState variant="large">
+              <EmptyStateIcon icon={PlusCircleIcon} />
+              <Title headingLevel="h4" size="lg">
+                {t("processor.noProcessors")}
+              </Title>
+            </EmptyState>
+          </TableWithPagination>
+        ) : (
           <TableWithPaginationSkeleton
             hasActionColumn={true}
             columns={processorsOverviewColumns}
             totalRows={currentPageSize}
             customToolbarElement={customToolbarElement}
           />
-        </TabContent>
-      )}
+        )}
+      </PageSection>
       <DeleteProcessor
         bridgeId={instanceId}
         processorId={deleteProcessorId}

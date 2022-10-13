@@ -5,10 +5,15 @@ import {
   Button,
   Form,
   FormAlert,
-  PageSection,
+  FormSection,
+  Text,
+  TextContent,
+  TextVariants,
 } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import ErrorHandlingCreate from "@app/Instance/ErrorHandling/ErrorHandlingCreate";
+import StickyActionsLayout from "@app/components/StickyActionsLayout/StickyActionsLayout";
+import "./ErrorHandlingEdit.css";
 
 export interface ErrorHandlingEditProps {
   apiError?: string;
@@ -71,35 +76,8 @@ export const ErrorHandlingEdit = ({
   }, [isSubmitted]);
 
   return (
-    <Form
-      className="error-handling-edit-form"
-      autoComplete="off"
-      onSubmit={onSubmit}
-    >
-      {apiError && (
-        <FormAlert>
-          <Alert
-            className="error-handling-edit__alert"
-            ouiaId="error-schema"
-            variant="danger"
-            title={apiError}
-            aria-live="polite"
-            isInline
-          />
-        </FormAlert>
-      )}
-      <ErrorHandlingCreate
-        schemaId={errorHandlingMethod}
-        getSchema={getSchema}
-        registerValidation={registerValidateParameters}
-        onChange={onErrorHandlingParametersChange}
-        parameters={errorHandlingParameters}
-      />
-      <PageSection
-        stickyOnBreakpoint={{ default: "bottom" }}
-        padding={{ default: "noPadding" }}
-        style={{ boxShadow: "none" }}
-      >
+    <StickyActionsLayout
+      actions={
         <ActionGroup className="error-handling-edit__actions">
           <Button
             variant="primary"
@@ -119,7 +97,43 @@ export const ErrorHandlingEdit = ({
             {t("common.cancel")}
           </Button>
         </ActionGroup>
-      </PageSection>
-    </Form>
+      }
+    >
+      <Form
+        className="error-handling-edit-form"
+        autoComplete="off"
+        onSubmit={onSubmit}
+      >
+        {apiError && (
+          <FormAlert>
+            <Alert
+              className="error-handling-edit__alert"
+              ouiaId="error-schema"
+              variant="danger"
+              title={apiError}
+              aria-live="polite"
+              isInline
+            />
+          </FormAlert>
+        )}
+        <FormSection
+          title={
+            <TextContent>
+              <Text component={TextVariants.h3} ouiaId="error-handling-section">
+                {t("common.errorHandlingMethod")}
+              </Text>
+            </TextContent>
+          }
+        >
+          <ErrorHandlingCreate
+            schemaId={errorHandlingMethod}
+            getSchema={getSchema}
+            registerValidation={registerValidateParameters}
+            onChange={onErrorHandlingParametersChange}
+            parameters={errorHandlingParameters}
+          />
+        </FormSection>
+      </Form>
+    </StickyActionsLayout>
   );
 };

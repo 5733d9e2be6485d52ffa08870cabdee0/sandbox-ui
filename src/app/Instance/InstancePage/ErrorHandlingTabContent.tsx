@@ -1,15 +1,4 @@
-import {
-  Button,
-  PageSection,
-  PageSectionVariants,
-  Split,
-  SplitItem,
-  Stack,
-  StackItem,
-  Text,
-  TextContent,
-  TextVariants,
-} from "@patternfly/react-core";
+import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
@@ -168,61 +157,37 @@ export const ErrorHandlingTabContent = ({
 
   return (
     <PageSection
-      className="instance-page__tabs-error-handling__section"
+      // className="instance-page__tabs-error-handling__section"
       variant={PageSectionVariants.light}
+      isFilled
+      className={"pf-u-h-100"}
+      style={{ position: "relative" }}
     >
-      <Stack hasGutter>
-        <StackItem>
-          <Split hasGutter>
-            <SplitItem isFilled>
-              <TextContent>
-                <Text
-                  component={TextVariants.h2}
-                  ouiaId="error-handling-section"
-                >
-                  {t("common.errorHandlingMethod")}
-                </Text>
-              </TextContent>
-            </SplitItem>
-            {!isEditing && (
-              <SplitItem>
-                <Button
-                  isAriaDisabled={editIsDisabled}
-                  ouiaId="edit"
-                  onClick={(): void => setIsEditing(true)}
-                >
-                  {t("common.edit")}
-                </Button>
-              </SplitItem>
-            )}
-          </Split>
-        </StackItem>
-        <StackItem>
-          {isEditing ? (
-            <ErrorHandlingEdit
-              getSchema={getSchemaByMethod}
-              isLoading={isUpdateBridgeLoading || isSchemaLoading}
-              method={bridge?.error_handler?.type}
-              onCancelEditing={onCancelEditing}
-              onSubmit={onErrorHandlingSubmit}
-              parameters={
-                bridge?.error_handler?.parameters as Record<string, unknown>
-              }
-              registerValidateParameters={registerValidateParameters}
-              apiError={apiError}
-            />
-          ) : (
-            <ErrorHandlingDetail
-              errorHandlingType={bridge?.error_handler?.type}
-              errorHandlingParameters={bridge?.error_handler?.parameters}
-              isBridgeLoading={isBridgeLoading}
-              isSchemaLoading={isSchemaLoading}
-              schema={currentSchema}
-              apiError={apiError}
-            />
-          )}
-        </StackItem>
-      </Stack>
+      {isEditing ? (
+        <ErrorHandlingEdit
+          getSchema={getSchemaByMethod}
+          isLoading={isUpdateBridgeLoading || isSchemaLoading}
+          method={bridge?.error_handler?.type}
+          onCancelEditing={onCancelEditing}
+          onSubmit={onErrorHandlingSubmit}
+          parameters={
+            bridge?.error_handler?.parameters as Record<string, unknown>
+          }
+          registerValidateParameters={registerValidateParameters}
+          apiError={apiError}
+        />
+      ) : (
+        <ErrorHandlingDetail
+          errorHandlingType={bridge?.error_handler?.type}
+          errorHandlingParameters={bridge?.error_handler?.parameters}
+          isBridgeLoading={isBridgeLoading}
+          isSchemaLoading={isSchemaLoading}
+          schema={currentSchema}
+          apiError={apiError}
+          onEdit={(): void => setIsEditing(true)}
+          isEditDisabled={editIsDisabled}
+        />
+      )}
     </PageSection>
   );
 };

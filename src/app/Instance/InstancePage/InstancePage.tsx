@@ -273,7 +273,7 @@ const InstancePage = (): JSX.Element => {
           id={`tabContent${INSTANCE_PAGE_TAB_KEYS.processors}`}
           activeKey={activeTabKey}
         >
-          {INSTANCE_PAGE_TAB_KEYS.processors === activeTabKey && (
+          {activeTabKey === INSTANCE_PAGE_TAB_KEYS.processors && (
             <ProcessorsTabContent
               instanceId={instanceId}
               pageTitle={getPageTitle(bridge)}
@@ -287,7 +287,7 @@ const InstancePage = (): JSX.Element => {
           activeKey={activeTabKey}
           className={"pf-m-fill pf-c-page__main-section"}
         >
-          {INSTANCE_PAGE_TAB_KEYS["error-handling"] === activeTabKey && (
+          {activeTabKey === INSTANCE_PAGE_TAB_KEYS["error-handling"] && (
             <ErrorHandlingTabContent
               bridge={bridge}
               isBridgeLoading={isBridgeLoading}

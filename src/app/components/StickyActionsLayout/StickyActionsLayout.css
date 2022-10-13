@@ -6,6 +6,10 @@
   left: 0;
 }
 
+.sticky-actions__root-flex {
+  height: 100%;
+}
+
 .sticky-actions__outer-wrap,
 .sticky-actions__inner-wrap {
   min-height: 0;

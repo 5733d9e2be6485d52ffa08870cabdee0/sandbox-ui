@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { VoidFunctionComponent } from "react";
 import { Flex, FlexItem } from "@patternfly/react-core";
 import "./StickyActionsLayout.css";
 
@@ -7,14 +7,17 @@ interface StickyActionsLayoutProps {
   actions: React.ReactNode;
 }
 
-const StickyActionsLayout: FunctionComponent<StickyActionsLayoutProps> = (
+const StickyActionsLayout: VoidFunctionComponent<StickyActionsLayoutProps> = (
   props
 ) => {
   const { children, actions } = props;
   return (
     <div>
       <section className={"sticky-actions__container"}>
-        <Flex direction={{ default: "column" }} style={{ height: "100%" }}>
+        <Flex
+          direction={{ default: "column" }}
+          className={"sticky-actions__root-flex"}
+        >
           <Flex
             direction={{ default: "column" }}
             grow={{ default: "grow" }}
@@ -31,16 +34,9 @@ const StickyActionsLayout: FunctionComponent<StickyActionsLayoutProps> = (
                 className={"sticky-actions__content-wrap"}
               >
                 {children}
-                {/*<Form*/}
-                {/*  className={"sticky-actions__form"}*/}
-                {/*  autoComplete="off"*/}
-                {/*></Form>*/}
               </FlexItem>
             </Flex>
             <Flex flexWrap={{ default: "wrap" }} shrink={{ default: "shrink" }}>
-              {/*<ActionGroup className={"processor-edit__actions"}>*/}
-              {/*  */}
-              {/*</ActionGroup>*/}
               <section className={"sticky-actions__actions"}>{actions}</section>
             </Flex>
           </Flex>

@@ -19,6 +19,7 @@ import {
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
 import { useHistory } from "react-router-dom";
+import "./ErrorHandlingTabContent.css";
 
 interface ErrorHandlingTabContentProps {
   bridge?: BridgeResponse;
@@ -157,11 +158,9 @@ export const ErrorHandlingTabContent = ({
 
   return (
     <PageSection
-      // className="instance-page__tabs-error-handling__section"
       variant={PageSectionVariants.light}
       isFilled
-      className={"pf-u-h-100"}
-      style={{ position: "relative" }}
+      className={"error-handling-tab__page-section"}
     >
       {isEditing ? (
         <ErrorHandlingEdit

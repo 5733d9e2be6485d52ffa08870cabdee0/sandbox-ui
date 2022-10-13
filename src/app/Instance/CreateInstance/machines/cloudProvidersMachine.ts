@@ -77,27 +77,22 @@ const cloudProvidersMachine = createMachine(
   },
   {
     actions: {
-      setProviders: assign((context, event) => {
+      setProviders: assign((_context, event) => {
         const providers = event.data;
         const { providerId, regionId } = getFirstAvailableRegion(providers);
         return {
-          ...context,
           cloudProviders: event.data,
           selectedCloudRegion: regionId,
           selectedCloudProvider: providerId,
         };
       }),
-      setProvider: assign((context, event) => {
-        console.log("inside setProvider action");
+      setProvider: assign((_context, event) => {
         return {
-          ...context,
           selectedCloudProvider: event.providerId,
         };
       }),
-      setRegion: assign((context, event) => {
-        console.log("inside set region action");
+      setRegion: assign((_context, event) => {
         return {
-          ...context,
           selectedCloudRegion: event.regionId,
         };
       }),

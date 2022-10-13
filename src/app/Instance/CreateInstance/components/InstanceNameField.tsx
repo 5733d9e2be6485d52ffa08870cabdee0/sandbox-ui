@@ -4,7 +4,7 @@ import { useTranslation } from "@rhoas/app-services-ui-components";
 
 interface InstanceNameFieldProps {
   value: string;
-  isNameEmpty: boolean;
+  isNameInvalid: boolean;
   isNameTaken: boolean;
   onChange: (name: string) => void;
   isDisabled: boolean;
@@ -13,13 +13,13 @@ interface InstanceNameFieldProps {
 const InstanceNameField: VoidFunctionComponent<InstanceNameFieldProps> = (
   props
 ) => {
-  const { isNameEmpty, isNameTaken, onChange, value, isDisabled } = props;
+  const { isNameInvalid, isNameTaken, onChange, value, isDisabled } = props;
   const { t } = useTranslation("openbridgeTempDictionary");
 
-  const isInvalid = isNameEmpty || isNameTaken;
+  const isInvalid = isNameInvalid || isNameTaken;
   const errorMessage = isNameTaken
     ? t("instance.errors.invalidName")
-    : isNameEmpty
+    : isNameInvalid
     ? t("common.required")
     : "";
 

@@ -14,6 +14,7 @@ interface CreateInstanceMachineContext {
   errorHandler: {
     method: string | undefined;
     parameters: Record<string, unknown> | undefined;
+    validate: (() => boolean) | undefined;
   };
   creationError: CreateInstanceError | undefined;
 }
@@ -32,12 +33,14 @@ const createInstanceMachine = createMachine(
             method: string | undefined;
             parameters: Record<string, unknown> | undefined;
           }
+        | { type: "registerErrorHandlerValidator"; validator: () => boolean }
         | { type: "create" }
         | { type: "createSuccess" }
         | { type: "createError"; error: CreateInstanceError }
         | { type: "providersAvailabilityError"; error: CreateInstanceError }
         | { type: "cloudProvidersError" }
-        | { type: "submit" },
+        | { type: "submit" }
+        | { type: "resetSubmittedState" },
     },
     context: {
       name: undefined,
@@ -52,6 +55,7 @@ const createInstanceMachine = createMachine(
       errorHandler: {
         method: undefined,
         parameters: undefined,
+        validate: undefined,
       },
       creationError: undefined,
     },
@@ -75,6 +79,9 @@ const createInstanceMachine = createMachine(
               create: {
                 actions: "triggerSubmit",
                 target: ".submitted",
+              },
+              resetSubmittedState: {
+                target: ".unsubmitted",
               },
             },
           },
@@ -102,7 +109,7 @@ const createInstanceMachine = createMachine(
                   },
                   submit: [
                     {
-                      cond: "errorHandlerIsValid",
+                      cond: "isErrorHandlerValid",
                       target: "saving",
                     },
                     {
@@ -122,7 +129,7 @@ const createInstanceMachine = createMachine(
                     target: "saved",
                   },
                   createError: {
-                    actions: "setCreationError",
+                    actions: ["setCreationError", "resetSubmittedState"],
                     target: "invalid",
                   },
                 },
@@ -149,9 +156,6 @@ const createInstanceMachine = createMachine(
               name: {
                 initial: "validate",
                 states: {
-                  empty: {
-                    tags: "nameEmpty",
-                  },
                   invalid: {
                     entry: "fieldInvalid",
                     tags: "nameInvalid",
@@ -162,10 +166,6 @@ const createInstanceMachine = createMachine(
                   },
                   validate: {
                     always: [
-                      {
-                        cond: "isNameEmpty",
-                        target: "empty",
-                      },
                       {
                         cond: "isNameValid",
                         target: "valid",
@@ -191,16 +191,14 @@ const createInstanceMachine = createMachine(
                 states: {
                   invalid: {
                     entry: "fieldInvalid",
-                    tags: "EHInvalid",
                   },
                   valid: {
-                    tags: "EHvalid",
                     type: "final",
                   },
                   validate: {
                     always: [
                       {
-                        cond: "errorHandlerIsValid",
+                        cond: "isErrorHandlerValid",
                         target: "valid",
                       },
                       {
@@ -213,11 +211,28 @@ const createInstanceMachine = createMachine(
                   create: {
                     target: ".validate",
                   },
-                  errorHandlerChange: {
-                    actions: "setErrorHandler",
-                    target: ".validate",
-                    cond: "isSubmitted",
-                  },
+                  registerErrorHandlerValidator: [
+                    {
+                      description:
+                        "Running EH validation again when changes to the validation function occur ",
+                      cond: "isSubmitted",
+                      actions: "setErrorHandlerValidator",
+                      target: ".validate",
+                    },
+                    {
+                      actions: "setErrorHandlerValidator",
+                    },
+                  ],
+                  errorHandlerChange: [
+                    {
+                      cond: "isSubmitted",
+                      actions: "setErrorHandler",
+                      target: ".validate",
+                    },
+                    {
+                      actions: "setErrorHandler",
+                    },
+                  ],
                 },
               },
             },
@@ -251,16 +266,14 @@ const createInstanceMachine = createMachine(
     actions: {
       setName: assign((context, { name }) => {
         return {
-          ...context,
           name,
           ...(context.creationError === "name-taken"
             ? { creationError: undefined }
             : {}),
         };
       }),
-      setProvider: assign((context, { providerId, regionId }) => {
+      setProvider: assign((_context, { providerId, regionId }) => {
         return {
-          ...context,
           selectedProvider: {
             providerId,
             regionId,
@@ -269,32 +282,42 @@ const createInstanceMachine = createMachine(
       }),
       setErrorHandler: assign((context, { method, parameters }) => {
         return {
-          ...context,
           errorHandler: {
+            ...context.errorHandler,
             method,
             parameters,
           },
         };
       }),
-      setCreationError: assign((context, { error }) => {
+      setErrorHandlerValidator: assign((context, { validator }) => {
         return {
-          ...context,
+          errorHandler: {
+            ...context.errorHandler,
+            validate: validator,
+          },
+        };
+      }),
+      setCreationError: assign((_context, { error }) => {
+        return {
           creationError: error,
         };
       }),
-      resetCreationErrorMessage: assign((context) => ({
-        ...context,
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      resetCreationErrorMessage: assign((_context) => ({
         creationError: undefined,
       })),
+      resetSubmittedState: send("resetSubmittedState"),
       fieldInvalid: send("fieldInvalid"),
       triggerSubmit: send("submit"),
     },
     guards: {
-      isNameEmpty: ({ name }) => name === undefined || name.trim().length === 0,
       isNameValid: ({ name, creationError }) =>
         name !== undefined &&
         name.trim().length > 0 &&
         creationError !== "name-taken",
+      isErrorHandlerValid: (context) => {
+        return context.errorHandler.validate?.() ?? true;
+      },
       isSubmitted: (_context, _event, meta) => meta.state.hasTag("submitted"),
       isGenericError: ({ creationError }) => creationError === "generic-error",
       isProviderUnavailable: ({ creationError }) =>

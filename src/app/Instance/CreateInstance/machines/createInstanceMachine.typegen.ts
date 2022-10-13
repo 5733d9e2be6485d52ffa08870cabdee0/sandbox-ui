@@ -21,14 +21,16 @@ export interface Typegen0 {
   missingImplementations: {
     actions: never;
     services: "createBridge";
-    guards: "errorHandlerIsValid";
+    guards: never;
     delays: never;
   };
   eventsCausingActions: {
     fieldInvalid: "";
     resetCreationErrorMessage: "submit";
+    resetSubmittedState: "createError";
     setCreationError: "createError" | "providersAvailabilityError";
     setErrorHandler: "errorHandlerChange";
+    setErrorHandlerValidator: "registerErrorHandlerValidator";
     setName: "nameChange";
     setProvider: "providerChange";
     triggerSubmit: "create";
@@ -37,12 +39,11 @@ export interface Typegen0 {
     createBridge: "submit";
   };
   eventsCausingGuards: {
-    errorHandlerIsValid: "" | "submit";
+    isErrorHandlerValid: "" | "submit";
     isGenericError: "";
-    isNameEmpty: "";
     isNameValid: "";
     isProviderUnavailable: "";
-    isSubmitted: "errorHandlerChange";
+    isSubmitted: "errorHandlerChange" | "registerErrorHandlerValidator";
   };
   eventsCausingDelays: {};
   matchesStates:
@@ -53,7 +54,6 @@ export interface Typegen0 {
     | "configuring.fields.errorHandler.valid"
     | "configuring.fields.errorHandler.validate"
     | "configuring.fields.name"
-    | "configuring.fields.name.empty"
     | "configuring.fields.name.invalid"
     | "configuring.fields.name.valid"
     | "configuring.fields.name.validate"
@@ -78,20 +78,17 @@ export interface Typegen0 {
                 | "name"
                 | {
                     errorHandler?: "invalid" | "valid" | "validate";
-                    name?: "empty" | "invalid" | "valid" | "validate";
+                    name?: "invalid" | "valid" | "validate";
                   };
               form?: "invalid" | "saved" | "saving" | "valid";
               status?: "submitted" | "unsubmitted";
             };
       };
   tags:
-    | "EHInvalid"
-    | "EHvalid"
     | "configurable"
     | "creatable"
     | "creationUnavailable"
     | "formInvalid"
-    | "nameEmpty"
     | "nameInvalid"
     | "nameValid"
     | "submitted"

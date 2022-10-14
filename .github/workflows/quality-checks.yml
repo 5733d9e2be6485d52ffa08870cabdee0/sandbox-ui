@@ -25,3 +25,4 @@ jobs:
             **/cypress/screenshots/**
             **/cypress/videos/**
             **/cypress/target/surefire-reports/**
+            **/cypress/failed/**

@@ -13,6 +13,8 @@ import {
   pageWasLoaded,
 } from "../../utils/Util";
 
+import { savePageIfTestFailed } from "cyclope";
+
 const newInstanceName: string = uniqueName("new-instance");
 
 describe("the 'Create a SE instance' Modal", () => {
@@ -20,6 +22,10 @@ describe("the 'Create a SE instance' Modal", () => {
     cy.visit("/");
     safeLogin();
     pageWasLoaded();
+  });
+
+  afterEach(() => {
+    savePageIfTestFailed();
   });
 
   it("Submit", () => {

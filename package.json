@@ -85,6 +85,7 @@
     "css-loader": "6.7.1",
     "css-minimizer-webpack-plugin": "4.2.1",
     "cssnano": "5.1.13",
+    "cyclope": "2.4.0",
     "cypress": "10.9.0",
     "dotenv-webpack": "8.0.1",
     "eslint": "8.25.0",

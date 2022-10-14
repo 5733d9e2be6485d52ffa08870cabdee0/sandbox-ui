@@ -16,7 +16,6 @@ const ProcessorEditSkeleton = (): JSX.Element => {
     <PageSection
       variant={PageSectionVariants.light}
       padding={{ default: "noPadding" }}
-      className="processor-edit__page-section"
     >
       <section className="processor-edit__form">
         <Flex

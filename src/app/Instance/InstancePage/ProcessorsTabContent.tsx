@@ -189,7 +189,7 @@ export const ProcessorsTabContent = ({
 
   return (
     <>
-      <PageSection isFilled padding={{ default: "padding" }}>
+      <PageSection isFilled>
         {processorListResponse?.items ? (
           <TableWithPagination
             columns={processorsOverviewColumns}

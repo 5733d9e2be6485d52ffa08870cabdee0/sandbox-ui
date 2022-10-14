@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActionGroup,
   Alert,
@@ -6,6 +6,8 @@ import {
   Form,
   FormAlert,
   FormSection,
+  PageSection,
+  PageSectionVariants,
   Text,
   TextContent,
   TextVariants,
@@ -53,14 +55,10 @@ export const ErrorHandlingEdit = ({
     []
   );
 
-  const onSubmit = useCallback(
-    (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      onErrorHandlingSubmit(errorHandlingMethod, errorHandlingParameters);
-      setIsSubmitted(true);
-    },
-    [errorHandlingMethod, errorHandlingParameters, onErrorHandlingSubmit]
-  );
+  const onSubmit = useCallback(() => {
+    onErrorHandlingSubmit(errorHandlingMethod, errorHandlingParameters);
+    setIsSubmitted(true);
+  }, [errorHandlingMethod, errorHandlingParameters, onErrorHandlingSubmit]);
 
   useEffect(() => {
     if (isSubmitted) {
@@ -76,64 +74,71 @@ export const ErrorHandlingEdit = ({
   }, [isSubmitted]);
 
   return (
-    <StickyActionsLayout
-      actions={
-        <ActionGroup className="error-handling-edit__actions">
-          <Button
-            variant="primary"
-            ouiaId="submit"
-            type="submit"
-            isLoading={isLoading}
-            isDisabled={isLoading}
-          >
-            {t("common.save")}
-          </Button>
-          <Button
-            variant="link"
-            ouiaId="cancel"
-            onClick={onCancelEditing}
-            isDisabled={isLoading}
-          >
-            {t("common.cancel")}
-          </Button>
-        </ActionGroup>
-      }
+    <PageSection
+      variant={PageSectionVariants.light}
+      isFilled
+      padding={{ default: "noPadding" }}
+      className={"pf-u-h-100"}
     >
-      <Form
-        className="error-handling-edit-form"
-        autoComplete="off"
-        onSubmit={onSubmit}
+      <StickyActionsLayout
+        actions={
+          <ActionGroup className="error-handling-edit__actions">
+            <Button
+              variant="primary"
+              ouiaId="submit"
+              type="submit"
+              onClick={onSubmit}
+              isLoading={isLoading}
+              isDisabled={isLoading}
+            >
+              {t("common.save")}
+            </Button>
+            <Button
+              variant="link"
+              ouiaId="cancel"
+              onClick={onCancelEditing}
+              isDisabled={isLoading}
+            >
+              {t("common.cancel")}
+            </Button>
+          </ActionGroup>
+        }
       >
-        {apiError && (
-          <FormAlert>
-            <Alert
-              className="error-handling-edit__alert"
-              ouiaId="error-schema"
-              variant="danger"
-              title={apiError}
-              aria-live="polite"
-              isInline
+        <Form className="error-handling-edit-form" autoComplete="off">
+          {apiError && (
+            <FormAlert>
+              <Alert
+                className="error-handling-edit__alert"
+                ouiaId="error-schema"
+                variant="danger"
+                title={apiError}
+                aria-live="polite"
+                isInline
+              />
+            </FormAlert>
+          )}
+          <FormSection
+            title={
+              <TextContent>
+                <Text
+                  component={TextVariants.h3}
+                  ouiaId="error-handling-section"
+                >
+                  {t("common.errorHandlingMethod")}
+                </Text>
+              </TextContent>
+            }
+          >
+            <ErrorHandlingCreate
+              schemaId={errorHandlingMethod}
+              getSchema={getSchema}
+              registerValidation={registerValidateParameters}
+              onChange={onErrorHandlingParametersChange}
+              parameters={errorHandlingParameters}
             />
-          </FormAlert>
-        )}
-        <FormSection
-          title={
-            <TextContent>
-              <Text component={TextVariants.h3} ouiaId="error-handling-section">
-                {t("common.errorHandlingMethod")}
-              </Text>
-            </TextContent>
-          }
-        >
-          <ErrorHandlingCreate
-            schemaId={errorHandlingMethod}
-            getSchema={getSchema}
-            registerValidation={registerValidateParameters}
-            onChange={onErrorHandlingParametersChange}
-            parameters={errorHandlingParameters}
-          />
-        </FormSection>
-      </Form>
-    </StickyActionsLayout>
+          </FormSection>
+        </Form>
+      </StickyActionsLayout>
+    </PageSection>
   );
 };

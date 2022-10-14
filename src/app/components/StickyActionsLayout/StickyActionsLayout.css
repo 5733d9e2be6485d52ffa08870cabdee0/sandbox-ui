@@ -1,4 +1,9 @@
-.sticky-actions__container {
+.sticky-actions-layout {
+  height: 100%;
+  position: relative;
+}
+
+.sticky-actions-layout__container {
   position: absolute;
   top: 0;
   right: 0;
@@ -6,22 +11,22 @@
   left: 0;
 }
 
-.sticky-actions__root-flex {
+.sticky-actions-layout__root-flex {
   height: 100%;
 }
 
-.sticky-actions__outer-wrap,
-.sticky-actions__inner-wrap {
+.sticky-actions-layout__outer-wrap,
+.sticky-actions-layout__inner-wrap {
   min-height: 0;
 }
 
-.sticky-actions__content-wrap {
+.sticky-actions-layout__content-wrap {
   overflow-x: hidden;
   overflow-y: auto;
   word-break: break-word;
 }
 
-.sticky-actions__actions {
+.sticky-actions-layout__actions {
   margin: 0 var(--pf-global--spacer--lg);
   padding: var(--pf-global--spacer--lg) 0;
   width: 100%;

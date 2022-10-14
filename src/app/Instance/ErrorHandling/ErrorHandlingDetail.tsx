@@ -5,6 +5,8 @@ import {
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
+  PageSection,
+  PageSectionVariants,
   Skeleton,
   Split,
   SplitItem,
@@ -76,65 +78,74 @@ export const ErrorHandlingDetail = ({
   }, [errorHandlingParameters]);
 
   return (
-    <Stack hasGutter>
-      <StackItem>
-        <Split hasGutter>
-          <SplitItem isFilled>
-            <TextContent>
-              <Text component={TextVariants.h3} ouiaId="error-handling-section">
-                {t("common.errorHandlingMethod")}
-              </Text>
-            </TextContent>
-          </SplitItem>
-          <SplitItem>
-            <Button
-              isAriaDisabled={isEditDisabled}
-              ouiaId="edit"
-              onClick={onEdit}
+    <PageSection
+      variant={PageSectionVariants.light}
+      isFilled
+      className={"pf-u-h-100"}
+    >
+      <Stack hasGutter>
+        <StackItem>
+          <Split hasGutter>
+            <SplitItem isFilled>
+              <TextContent>
+                <Text
+                  component={TextVariants.h3}
+                  ouiaId="error-handling-section"
+                >
+                  {t("common.errorHandlingMethod")}
+                </Text>
+              </TextContent>
+            </SplitItem>
+            <SplitItem>
+              <Button
+                isAriaDisabled={isEditDisabled}
+                ouiaId="edit"
+                onClick={onEdit}
+              >
+                {t("common.edit")}
+              </Button>
+            </SplitItem>
+          </Split>
+        </StackItem>
+        <StackItem>
+          <DescriptionList>
+            <DescriptionListGroup
+              data-ouia-component-type="ProcessorConfig/FormGroup"
+              data-ouia-component-id="error_handling_method"
+              key="error-handling-method"
             >
-              {t("common.edit")}
-            </Button>
-          </SplitItem>
-        </Split>
-      </StackItem>
-      <StackItem>
-        <DescriptionList>
-          <DescriptionListGroup
-            data-ouia-component-type="ProcessorConfig/FormGroup"
-            data-ouia-component-id="error_handling_method"
-            key="error-handling-method"
-          >
-            <DescriptionListTerm data-testid="error_handling_method">
-              {t("common.errorHandlingMethod")}
-            </DescriptionListTerm>
-            <DescriptionListDescription data-testid="error_handling_method-value">
-              {errorHandlingMethodLabel}
-            </DescriptionListDescription>
-          </DescriptionListGroup>
-          {errorHandlingParameters &&
-            schema &&
-            !isSchemaLoading &&
-            !apiError && (
-              <ConfigParameters
-                schema={schema}
-                parameters={
-                  errorHandlingParameters as { [key: string]: unknown }
-                }
+              <DescriptionListTerm data-testid="error_handling_method">
+                {t("common.errorHandlingMethod")}
+              </DescriptionListTerm>
+              <DescriptionListDescription data-testid="error_handling_method-value">
+                {errorHandlingMethodLabel}
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+            {errorHandlingParameters &&
+              schema &&
+              !isSchemaLoading &&
+              !apiError && (
+                <ConfigParameters
+                  schema={schema}
+                  parameters={
+                    errorHandlingParameters as { [key: string]: unknown }
+                  }
+                />
+              )}
+            {isSchemaLoading && errorHandlingParametersSkeleton}
+            {apiError && (
+              <Alert
+                className="instance-page__tabs-error-handling__alert"
+                ouiaId="error-schema"
+                variant="danger"
+                title={apiError}
+                aria-live="polite"
+                isInline
               />
             )}
-          {isSchemaLoading && errorHandlingParametersSkeleton}
-          {apiError && (
-            <Alert
-              className="instance-page__tabs-error-handling__alert"
-              ouiaId="error-schema"
-              variant="danger"
-              title={apiError}
-              aria-live="polite"
-              isInline
-            />
-          )}
-        </DescriptionList>
-      </StackItem>
-    </Stack>
+          </DescriptionList>
+        </StackItem>
+      </Stack>
+    </PageSection>
   );
 };

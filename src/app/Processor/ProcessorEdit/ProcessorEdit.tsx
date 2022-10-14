@@ -248,272 +248,267 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
   }, [isSubmitted, malformedTransformationTemplate]);
 
   return (
-    <>
-      <PageSection
-        variant={PageSectionVariants.light}
-        padding={{ default: "noPadding" }}
-        className="processor-edit__page-section"
-      >
-        <StickyActionsLayout
-          actions={
-            <ActionGroup>
-              <Button
-                variant="primary"
-                ouiaId="submit"
-                onClick={handleSubmit}
-                isLoading={isLoading}
-                isDisabled={isLoading}
-              >
-                {saveButtonLabel}
-              </Button>
-              <Button
-                variant="link"
-                ouiaId="cancel"
-                onClick={onCancel}
-                isDisabled={isLoading}
-              >
-                {t("common.cancel")}
-              </Button>
-            </ActionGroup>
-          }
-        >
-          <Form className={"processor-edit__form"} autoComplete="off">
-            <FormSection
-              title={t("processor.generalInformation")}
-              titleElement="h2"
+    <PageSection
+      variant={PageSectionVariants.light}
+      padding={{ default: "noPadding" }}
+    >
+      <StickyActionsLayout
+        actions={
+          <ActionGroup>
+            <Button
+              variant="primary"
+              ouiaId="submit"
+              onClick={handleSubmit}
+              isLoading={isLoading}
+              isDisabled={isLoading}
             >
-              {isExistingProcessor ? (
-                <Stack>
-                  <StackItem>
-                    <FormGroup
-                      label={t("processor.processorType")}
-                      fieldId={"processor-type"}
-                    />
-                  </StackItem>
-                  <StackItem>
-                    <Label color={"blue"} data-testid="processor-type-label">
-                      {processor?.type && t(`processor.${processor.type}`)}
-                    </Label>
-                  </StackItem>
-                </Stack>
-              ) : (
-                <FormGroup
-                  label={t("processor.selectProcessorType")}
-                  fieldId={"processor-type"}
-                  isRequired
-                  helperTextInvalid={validation.errors.processorType}
-                  validated={
-                    validation.errors.processorType ? "error" : "default"
-                  }
-                  className={
-                    validation.errors.processorType && "processor-field-error"
-                  }
-                >
-                  <Grid
-                    hasGutter={true}
-                    className={"processor-form__type-selection"}
-                  >
-                    <GridItem span={6}>
-                      <Tile
-                        title={t("processor.sourceProcessor")}
-                        data-ouia-component-id="source"
-                        data-ouia-component-type="Tile"
-                        isSelected={processorType === ProcessorType.Source}
-                        style={{ height: "100%" }}
-                        onClick={(): void => {
-                          setProcessorType(ProcessorType.Source);
-                          resetValidation("processorType");
-                        }}
-                      >
-                        {t("processor.sourceProcessorDescription")}
-                      </Tile>
-                    </GridItem>
-                    <GridItem span={6}>
-                      <Tile
-                        title={t("processor.sinkProcessor")}
-                        data-ouia-component-id="sink"
-                        data-ouia-component-type="Tile"
-                        style={{ width: "100%", height: "100%" }}
-                        isSelected={processorType === ProcessorType.Sink}
-                        onClick={(): void => {
-                          setProcessorType(ProcessorType.Sink);
-                          resetValidation("processorType");
-                        }}
-                      >
-                        {t("processor.sinkProcessorDescription")}
-                      </Tile>
-                    </GridItem>
-                  </Grid>
-                </FormGroup>
-              )}
+              {saveButtonLabel}
+            </Button>
+            <Button
+              variant="link"
+              ouiaId="cancel"
+              onClick={onCancel}
+              isDisabled={isLoading}
+            >
+              {t("common.cancel")}
+            </Button>
+          </ActionGroup>
+        }
+      >
+        <Form className={"processor-edit__form"} autoComplete="off">
+          <FormSection
+            title={t("processor.generalInformation")}
+            titleElement="h2"
+          >
+            {isExistingProcessor ? (
+              <Stack>
+                <StackItem>
+                  <FormGroup
+                    label={t("processor.processorType")}
+                    fieldId={"processor-type"}
+                  />
+                </StackItem>
+                <StackItem>
+                  <Label color={"blue"} data-testid="processor-type-label">
+                    {processor?.type && t(`processor.${processor.type}`)}
+                  </Label>
+                </StackItem>
+              </Stack>
+            ) : (
               <FormGroup
-                fieldId={"processor-name"}
-                label={t("processor.processorName")}
-                isRequired={true}
-                helperTextInvalid={validation.errors.name}
-                validated={validation.errors.name ? "error" : "default"}
-                className={validation.errors.name && "processor-field-error"}
+                label={t("processor.selectProcessorType")}
+                fieldId={"processor-type"}
+                isRequired
+                helperTextInvalid={validation.errors.processorType}
+                validated={
+                  validation.errors.processorType ? "error" : "default"
+                }
+                className={
+                  validation.errors.processorType && "processor-field-error"
+                }
               >
-                <TextInput
-                  type="text"
-                  id="processor-name"
-                  ouiaId="processor-name"
-                  name="processor-name"
-                  aria-describedby="processor-name"
-                  isRequired={true}
-                  isDisabled={isExistingProcessor}
-                  maxLength={255}
-                  value={name}
-                  onChange={setName}
-                  validated={validation.errors.name ? "error" : "default"}
-                  onBlur={(): void => {
-                    validateName();
-                  }}
-                />
+                <Grid
+                  hasGutter={true}
+                  className={"processor-form__type-selection"}
+                >
+                  <GridItem span={6}>
+                    <Tile
+                      title={t("processor.sourceProcessor")}
+                      data-ouia-component-id="source"
+                      data-ouia-component-type="Tile"
+                      isSelected={processorType === ProcessorType.Source}
+                      style={{ height: "100%" }}
+                      onClick={(): void => {
+                        setProcessorType(ProcessorType.Source);
+                        resetValidation("processorType");
+                      }}
+                    >
+                      {t("processor.sourceProcessorDescription")}
+                    </Tile>
+                  </GridItem>
+                  <GridItem span={6}>
+                    <Tile
+                      title={t("processor.sinkProcessor")}
+                      data-ouia-component-id="sink"
+                      data-ouia-component-type="Tile"
+                      style={{ width: "100%", height: "100%" }}
+                      isSelected={processorType === ProcessorType.Sink}
+                      onClick={(): void => {
+                        setProcessorType(ProcessorType.Sink);
+                        resetValidation("processorType");
+                      }}
+                    >
+                      {t("processor.sinkProcessorDescription")}
+                    </Tile>
+                  </GridItem>
+                </Grid>
               </FormGroup>
-            </FormSection>
-            {processorType && (
-              <>
-                {processorType === ProcessorType.Source && (
+            )}
+            <FormGroup
+              fieldId={"processor-name"}
+              label={t("processor.processorName")}
+              isRequired={true}
+              helperTextInvalid={validation.errors.name}
+              validated={validation.errors.name ? "error" : "default"}
+              className={validation.errors.name && "processor-field-error"}
+            >
+              <TextInput
+                type="text"
+                id="processor-name"
+                ouiaId="processor-name"
+                name="processor-name"
+                aria-describedby="processor-name"
+                isRequired={true}
+                isDisabled={isExistingProcessor}
+                maxLength={255}
+                value={name}
+                onChange={setName}
+                validated={validation.errors.name ? "error" : "default"}
+                onBlur={(): void => {
+                  validateName();
+                }}
+              />
+            </FormGroup>
+          </FormSection>
+          {processorType && (
+            <>
+              {processorType === ProcessorType.Source && (
+                <FormSection
+                  title={t("processor.source")}
+                  data-ouia-component-id="sources"
+                  data-ouia-component-type="form-section"
+                >
+                  <TextContent>
+                    <Text component="p" ouiaId="source-type-description">
+                      {t("processor.selectSourceProcessorTypeDescription")}
+                    </Text>
+                  </TextContent>
+                  <ConfigurationEdit
+                    configType={ProcessorSchemaType.SOURCE}
+                    source={source}
+                    registerValidation={registerValidateConfig}
+                    onChange={setSource}
+                    editMode={isExistingProcessor}
+                    schemaCatalog={schemaCatalog}
+                    schema={schema}
+                  />
+                </FormSection>
+              )}
+
+              <FormSection title={t("processor.filters")} titleElement="h2">
+                <FiltersEdit filters={filters} onChange={setFilters} />
+              </FormSection>
+
+              {processorType === ProcessorType.Sink && (
+                <>
+                  <FormSection title={t("processor.transformation")}>
+                    <TextContent>
+                      <Text
+                        component="p"
+                        id="transformation-description"
+                        ouiaId="transformation-description"
+                      >
+                        {t("processor.addTransformationDescription")}
+                        <Popover
+                          headerContent={t("processor.transformationTemplate")}
+                          bodyContent={
+                            <Trans
+                              i18nKey={
+                                "openbridgeTempDictionary:processor.transformationTemplateTooltip"
+                              }
+                              components={[
+                                <ExternalLink
+                                  key="qute-reference-link"
+                                  testId="qute-reference-link"
+                                  href="https://quarkus.io/guides/qute-reference"
+                                />,
+                              ]}
+                            />
+                          }
+                        >
+                          <button
+                            type="button"
+                            aria-label={t(
+                              "processor.moreInfoForTransformationTemplate"
+                            )}
+                            onClick={(e): void => e.preventDefault()}
+                            aria-describedby="transformation-description"
+                            className="pf-c-form__group-label-help"
+                          >
+                            <HelpIcon noVerticalAlign={true} />
+                          </button>
+                        </Popover>
+                      </Text>
+                    </TextContent>
+                    <CodeEditor
+                      id={"transformation-template"}
+                      className={css(
+                        "processor-edit__transformation-template",
+                        malformedTransformationTemplate
+                          ? "processor-field-error"
+                          : ""
+                      )}
+                      height={"300px"}
+                      isLineNumbersVisible={true}
+                      code={transformation}
+                      onChange={setTransformation}
+                      options={{
+                        scrollbar: { alwaysConsumeMouseWheel: false },
+                      }}
+                    />
+                    {malformedTransformationTemplate && (
+                      <p
+                        className="processor-edit__transformation-template__helper-text pf-c-form__helper-text pf-m-error"
+                        aria-live="polite"
+                      >
+                        {malformedTransformationTemplate}
+                      </p>
+                    )}
+                  </FormSection>
                   <FormSection
-                    title={t("processor.source")}
-                    data-ouia-component-id="sources"
+                    title={t("processor.action")}
+                    data-ouia-component-id="actions"
                     data-ouia-component-type="form-section"
                   >
                     <TextContent>
-                      <Text component="p" ouiaId="source-type-description">
-                        {t("processor.selectSourceProcessorTypeDescription")}
+                      <Text component="p" ouiaId="action-description">
+                        {t("processor.selectActionDescription")}
                       </Text>
                     </TextContent>
                     <ConfigurationEdit
-                      configType={ProcessorSchemaType.SOURCE}
-                      source={source}
+                      configType={ProcessorSchemaType.ACTION}
+                      action={action}
                       registerValidation={registerValidateConfig}
-                      onChange={setSource}
+                      onChange={setAction}
                       editMode={isExistingProcessor}
                       schemaCatalog={schemaCatalog}
                       schema={schema}
                     />
                   </FormSection>
-                )}
-
-                <FormSection title={t("processor.filters")} titleElement="h2">
-                  <FiltersEdit filters={filters} onChange={setFilters} />
-                </FormSection>
-
-                {processorType === ProcessorType.Sink && (
-                  <>
-                    <FormSection title={t("processor.transformation")}>
-                      <TextContent>
-                        <Text
-                          component="p"
-                          id="transformation-description"
-                          ouiaId="transformation-description"
-                        >
-                          {t("processor.addTransformationDescription")}
-                          <Popover
-                            headerContent={t(
-                              "processor.transformationTemplate"
-                            )}
-                            bodyContent={
-                              <Trans
-                                i18nKey={
-                                  "openbridgeTempDictionary:processor.transformationTemplateTooltip"
-                                }
-                                components={[
-                                  <ExternalLink
-                                    key="qute-reference-link"
-                                    testId="qute-reference-link"
-                                    href="https://quarkus.io/guides/qute-reference"
-                                  />,
-                                ]}
-                              />
-                            }
-                          >
-                            <button
-                              type="button"
-                              aria-label={t(
-                                "processor.moreInfoForTransformationTemplate"
-                              )}
-                              onClick={(e): void => e.preventDefault()}
-                              aria-describedby="transformation-description"
-                              className="pf-c-form__group-label-help"
-                            >
-                              <HelpIcon noVerticalAlign={true} />
-                            </button>
-                          </Popover>
-                        </Text>
-                      </TextContent>
-                      <CodeEditor
-                        id={"transformation-template"}
-                        className={css(
-                          "processor-edit__transformation-template",
-                          malformedTransformationTemplate
-                            ? "processor-field-error"
-                            : ""
-                        )}
-                        height={"300px"}
-                        isLineNumbersVisible={true}
-                        code={transformation}
-                        onChange={setTransformation}
-                        options={{
-                          scrollbar: { alwaysConsumeMouseWheel: false },
-                        }}
-                      />
-                      {malformedTransformationTemplate && (
-                        <p
-                          className="processor-edit__transformation-template__helper-text pf-c-form__helper-text pf-m-error"
-                          aria-live="polite"
-                        >
-                          {malformedTransformationTemplate}
-                        </p>
-                      )}
-                    </FormSection>
-                    <FormSection
-                      title={t("processor.action")}
-                      data-ouia-component-id="actions"
-                      data-ouia-component-type="form-section"
-                    >
-                      <TextContent>
-                        <Text component="p" ouiaId="action-description">
-                          {t("processor.selectActionDescription")}
-                        </Text>
-                      </TextContent>
-                      <ConfigurationEdit
-                        configType={ProcessorSchemaType.ACTION}
-                        action={action}
-                        registerValidation={registerValidateConfig}
-                        onChange={setAction}
-                        editMode={isExistingProcessor}
-                        schemaCatalog={schemaCatalog}
-                        schema={schema}
-                      />
-                    </FormSection>
-                  </>
-                )}
-                {processorType && (
-                  <AlertGroup className={"processor-edit__form__notice"}>
-                    <Alert
-                      variant="info"
-                      ouiaId="info-processor-available-soon"
-                      isInline={true}
-                      isPlain={true}
-                      title={t("processor.processorWillBeAvailableShortly")}
-                    />
-                  </AlertGroup>
-                )}
-              </>
-            )}
-          </Form>
-        </StickyActionsLayout>
-        <ActionModal
-          action={actionModalFn.current}
-          message={actionModalMessage.current}
-          showDialog={showActionModal}
-          title={t("processor.errors.cantCreateProcessor")}
-        />
-      </PageSection>
-    </>
+                </>
+              )}
+              {processorType && (
+                <AlertGroup className={"processor-edit__form__notice"}>
+                  <Alert
+                    variant="info"
+                    ouiaId="info-processor-available-soon"
+                    isInline={true}
+                    isPlain={true}
+                    title={t("processor.processorWillBeAvailableShortly")}
+                  />
+                </AlertGroup>
+              )}
+            </>
+          )}
+        </Form>
+      </StickyActionsLayout>
+      <ActionModal
+        action={actionModalFn.current}
+        message={actionModalMessage.current}
+        showDialog={showActionModal}
+        title={t("processor.errors.cantCreateProcessor")}
+      />
+    </PageSection>
   );
 };
 

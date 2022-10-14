@@ -1,4 +1,3 @@
-import { PageSection, PageSectionVariants } from "@patternfly/react-core";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
@@ -19,7 +18,6 @@ import {
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
 import { useHistory } from "react-router-dom";
-import "./ErrorHandlingTabContent.css";
 
 interface ErrorHandlingTabContentProps {
   bridge?: BridgeResponse;
@@ -157,11 +155,13 @@ export const ErrorHandlingTabContent = ({
     apiError !== undefined;
 
   return (
-    <PageSection
-      variant={PageSectionVariants.light}
-      isFilled
-      className={"error-handling-tab__page-section"}
-    >
+    // <PageSection
+    //   variant={PageSectionVariants.light}
+    //   isFilled
+    //   padding={{ default: "noPadding" }}
+    //   className={"pf-u-h-100"}
+    // >
+    <>
       {isEditing ? (
         <ErrorHandlingEdit
           getSchema={getSchemaByMethod}
@@ -187,6 +187,7 @@ export const ErrorHandlingTabContent = ({
           isEditDisabled={editIsDisabled}
         />
       )}
-    </PageSection>
+    </>
+    // </PageSection>
   );
 };

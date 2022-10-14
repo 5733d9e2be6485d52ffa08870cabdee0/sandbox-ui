@@ -1,11 +1,6 @@
-.processor-edit__page-section {
-  --processor-edit--spacing: var(--pf-global--spacer--lg);
-  position: relative;
-}
-
 .processor-edit__form {
   max-width: 800px;
-  padding: var(--processor-edit--spacing);
+  padding: var(--pf-global--spacer--lg);
 }
 
 .processor-edit__form__notice {

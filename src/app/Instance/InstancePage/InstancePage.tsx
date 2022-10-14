@@ -267,33 +267,35 @@ const InstancePage = (): JSX.Element => {
             />
           </Tabs>
         </PageSection>
-        <TabContent
-          key={INSTANCE_PAGE_TAB_KEYS.processors}
-          eventKey={INSTANCE_PAGE_TAB_KEYS.processors}
-          id={`tabContent${INSTANCE_PAGE_TAB_KEYS.processors}`}
-          activeKey={activeTabKey}
-        >
-          {activeTabKey === INSTANCE_PAGE_TAB_KEYS.processors && (
-            <ProcessorsTabContent
-              instanceId={instanceId}
-              pageTitle={getPageTitle(bridge)}
-            />
-          )}
-        </TabContent>
-        <TabContent
-          key={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
-          eventKey={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
-          id={`tabContent${INSTANCE_PAGE_TAB_KEYS["error-handling"]}`}
-          activeKey={activeTabKey}
-          className={"pf-m-fill pf-c-page__main-section"}
-        >
-          {activeTabKey === INSTANCE_PAGE_TAB_KEYS["error-handling"] && (
-            <ErrorHandlingTabContent
-              bridge={bridge}
-              isBridgeLoading={isBridgeLoading}
-            />
-          )}
-        </TabContent>
+        <PageSection isFilled padding={{ default: "noPadding" }}>
+          <TabContent
+            key={INSTANCE_PAGE_TAB_KEYS.processors}
+            eventKey={INSTANCE_PAGE_TAB_KEYS.processors}
+            id={`tab-content-${INSTANCE_PAGE_TAB_KEYS.processors}`}
+            activeKey={activeTabKey}
+          >
+            {activeTabKey === INSTANCE_PAGE_TAB_KEYS.processors && (
+              <ProcessorsTabContent
+                instanceId={instanceId}
+                pageTitle={getPageTitle(bridge)}
+              />
+            )}
+          </TabContent>
+          <TabContent
+            key={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
+            eventKey={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
+            id={`tab-content-${INSTANCE_PAGE_TAB_KEYS["error-handling"]}`}
+            activeKey={activeTabKey}
+            className={"pf-c-page__main-section pf-u-h-100"}
+          >
+            {activeTabKey === INSTANCE_PAGE_TAB_KEYS["error-handling"] && (
+              <ErrorHandlingTabContent
+                bridge={bridge}
+                isBridgeLoading={isBridgeLoading}
+              />
+            )}
+          </TabContent>
+        </PageSection>
         <DeleteInstance
           instanceId={bridge?.id}
           instanceName={bridge?.name}

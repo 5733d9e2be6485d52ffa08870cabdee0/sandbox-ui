@@ -274,6 +274,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
             </Button>
           </ActionGroup>
         }
+        contentId={"processor-form-container"}
       >
         <Form className={"processor-edit__form"} autoComplete="off">
           <FormSection

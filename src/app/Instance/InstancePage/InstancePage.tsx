@@ -271,7 +271,8 @@ const InstancePage = (): JSX.Element => {
           <TabContent
             key={INSTANCE_PAGE_TAB_KEYS.processors}
             eventKey={INSTANCE_PAGE_TAB_KEYS.processors}
-            id={`tab-content-${INSTANCE_PAGE_TAB_KEYS.processors}`}
+            id={"instance-page__tabs-processors"}
+            ouiaId="processors"
             activeKey={activeTabKey}
           >
             {activeTabKey === INSTANCE_PAGE_TAB_KEYS.processors && (
@@ -284,7 +285,8 @@ const InstancePage = (): JSX.Element => {
           <TabContent
             key={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
             eventKey={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
-            id={`tab-content-${INSTANCE_PAGE_TAB_KEYS["error-handling"]}`}
+            id={"instance-page__tabs-error-handling"}
+            ouiaId="error-handling"
             activeKey={activeTabKey}
             className={"pf-c-page__main-section pf-u-h-100"}
           >

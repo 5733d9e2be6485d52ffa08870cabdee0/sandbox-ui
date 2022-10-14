@@ -3,16 +3,18 @@ import { Flex, FlexItem } from "@patternfly/react-core";
 import "./StickyActionsLayout.css";
 
 interface StickyActionsLayoutProps {
-  /** The element(s) rendered in the body of the layout (like a form) */
+  /** The element(s) rendered in the main content area of the layout (like a form) */
   children: React.ReactNode;
   /** The element(s) rendered in the fixed bottom area (like a form actions buttons) */
   actions: React.ReactNode;
+  /** Id to assign to the scrollable main content container (mainly for test purposes) */
+  contentId?: string;
 }
 
 const StickyActionsLayout: VoidFunctionComponent<StickyActionsLayoutProps> = (
   props
 ) => {
-  const { children, actions } = props;
+  const { children, actions, contentId = "scrollable-area" } = props;
   return (
     <section className={"sticky-actions-layout"}>
       <section className={"sticky-actions-layout__container"}>
@@ -34,6 +36,7 @@ const StickyActionsLayout: VoidFunctionComponent<StickyActionsLayoutProps> = (
               <FlexItem
                 grow={{ default: "grow" }}
                 className={"sticky-actions-layout__content-wrap"}
+                id={contentId}
               >
                 {children}
               </FlexItem>

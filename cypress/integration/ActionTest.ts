@@ -44,7 +44,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
       it("The default state of the configuration", () => {
         //mention only for purpose to make actions visible
-        cy.get(".processor-edit__content-wrap").scrollTo("bottom");
+        cy.get("#processor-form-container").scrollTo("bottom");
 
         cy.ouiaId("missing-actions", "PF4/TextInput")
           .should("be.visible")
@@ -105,7 +105,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
         it("Check parameters", () => {
           //mention only for purpose to make parameters visible
-          cy.get(".processor-edit__content-wrap").scrollTo("bottom");
+          cy.get("#processor-form-container").scrollTo("bottom");
 
           cy.ouiaId("configuration").within(() => {
             cy.ouiaType("config-parameter").should("have.length", 5);
@@ -130,7 +130,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         it("Save the required parameter without any value", () => {
           cy.ouiaId("submit").click();
           //mention only for purpose to make parameters visible
-          cy.get(".processor-edit__content-wrap").scrollTo("bottom");
+          cy.get("#processor-form-container").scrollTo("bottom");
 
           cy.ouiaId("configuration")
             .should("be.visible")

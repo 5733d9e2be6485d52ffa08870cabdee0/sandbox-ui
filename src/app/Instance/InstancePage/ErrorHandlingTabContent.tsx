@@ -155,12 +155,6 @@ export const ErrorHandlingTabContent = ({
     apiError !== undefined;
 
   return (
-    // <PageSection
-    //   variant={PageSectionVariants.light}
-    //   isFilled
-    //   padding={{ default: "noPadding" }}
-    //   className={"pf-u-h-100"}
-    // >
     <>
       {isEditing ? (
         <ErrorHandlingEdit
@@ -188,6 +182,5 @@ export const ErrorHandlingTabContent = ({
         />
       )}
     </>
-    // </PageSection>
   );
 };

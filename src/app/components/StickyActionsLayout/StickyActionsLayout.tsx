@@ -11,6 +11,9 @@ interface StickyActionsLayoutProps {
   contentId?: string;
 }
 
+// Note that for the StickyActionsLayout to properly work, its parent element must
+// have its height explicitly set (with absolute or relative values)
+
 const StickyActionsLayout: VoidFunctionComponent<StickyActionsLayoutProps> = (
   props
 ) => {

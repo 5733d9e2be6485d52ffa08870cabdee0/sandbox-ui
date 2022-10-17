@@ -5,7 +5,6 @@ import {
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
-  PageSection,
   PageSectionVariants,
   Skeleton,
   Split,
@@ -23,6 +22,7 @@ import {
   getErrorHandlingMethodByType,
 } from "../../../types/ErrorHandlingMethods";
 import ConfigParameters from "@app/components/ConfigParameters/ConfigParameters";
+import ErrorHandlingPageSection from "@app/Instance/ErrorHandling/ErrorHandlingPageSection";
 
 export interface ErrorHandlingDetailProps {
   errorHandlingType?: string;
@@ -78,11 +78,7 @@ export const ErrorHandlingDetail = ({
   }, [errorHandlingParameters]);
 
   return (
-    <PageSection
-      variant={PageSectionVariants.light}
-      isFilled
-      className={"pf-u-h-100"}
-    >
+    <ErrorHandlingPageSection variant={PageSectionVariants.light}>
       <Stack hasGutter>
         <StackItem>
           <Split hasGutter>
@@ -146,6 +142,6 @@ export const ErrorHandlingDetail = ({
           </DescriptionList>
         </StackItem>
       </Stack>
-    </PageSection>
+    </ErrorHandlingPageSection>
   );
 };

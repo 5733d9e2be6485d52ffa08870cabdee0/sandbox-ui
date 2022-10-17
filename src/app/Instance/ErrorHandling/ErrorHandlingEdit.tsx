@@ -6,7 +6,6 @@ import {
   Form,
   FormAlert,
   FormSection,
-  PageSection,
   PageSectionVariants,
   Text,
   TextContent,
@@ -16,6 +15,7 @@ import { useTranslation } from "@rhoas/app-services-ui-components";
 import ErrorHandlingCreate from "@app/Instance/ErrorHandling/ErrorHandlingCreate";
 import StickyActionsLayout from "@app/components/StickyActionsLayout/StickyActionsLayout";
 import "./ErrorHandlingEdit.css";
+import ErrorHandlingPageSection from "@app/Instance/ErrorHandling/ErrorHandlingPageSection";
 
 export interface ErrorHandlingEditProps {
   apiError?: string;
@@ -74,11 +74,9 @@ export const ErrorHandlingEdit = ({
   }, [isSubmitted]);
 
   return (
-    <PageSection
+    <ErrorHandlingPageSection
       variant={PageSectionVariants.light}
-      isFilled
       padding={{ default: "noPadding" }}
-      className={"pf-u-h-100"}
     >
       <StickyActionsLayout
         actions={
@@ -139,6 +137,6 @@ export const ErrorHandlingEdit = ({
           </FormSection>
         </Form>
       </StickyActionsLayout>
-    </PageSection>
+    </ErrorHandlingPageSection>
   );
 };

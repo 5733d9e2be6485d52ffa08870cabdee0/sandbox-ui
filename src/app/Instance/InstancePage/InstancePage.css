@@ -5,3 +5,9 @@
 .instance-page__actions .pf-c-dropdown__menu {
   min-width: 13rem;
 }
+
+/* making the error handling PF tab fill the available vertical space*/
+#instance-page__tabs-error-handling {
+  flex-grow: 1;
+  height: 100%;
+}

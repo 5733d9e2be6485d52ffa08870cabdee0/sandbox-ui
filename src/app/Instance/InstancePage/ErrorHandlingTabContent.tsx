@@ -18,6 +18,7 @@ import {
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
 import { useHistory } from "react-router-dom";
+import { PageSection } from "@patternfly/react-core";
 
 interface ErrorHandlingTabContentProps {
   bridge?: BridgeResponse;
@@ -155,7 +156,7 @@ export const ErrorHandlingTabContent = ({
     apiError !== undefined;
 
   return (
-    <>
+    <PageSection isFilled className={"pf-u-h-100"}>
       {isEditing ? (
         <ErrorHandlingEdit
           getSchema={getSchemaByMethod}
@@ -181,6 +182,6 @@ export const ErrorHandlingTabContent = ({
           isEditDisabled={editIsDisabled}
         />
       )}
-    </>
+    </PageSection>
   );
 };

@@ -288,7 +288,6 @@ const InstancePage = (): JSX.Element => {
             id={"instance-page__tabs-error-handling"}
             ouiaId="error-handling"
             activeKey={activeTabKey}
-            className={"pf-c-page__main-section pf-u-h-100"}
           >
             {activeTabKey === INSTANCE_PAGE_TAB_KEYS["error-handling"] && (
               <ErrorHandlingTabContent

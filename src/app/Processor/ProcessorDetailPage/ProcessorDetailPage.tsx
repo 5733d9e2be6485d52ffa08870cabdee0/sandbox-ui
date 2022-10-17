@@ -45,6 +45,7 @@ import {
 import { APIErrorCodes } from "@openapi/generated/errors";
 import { ActionModal } from "@app/components/ActionModal/ActionModal";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
+import { usePolling } from "../../../hooks/usePolling/usePolling";
 
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
@@ -57,6 +58,7 @@ const ProcessorDetailPage = (): JSX.Element => {
   );
 
   const [isEditing, setIsEditing] = useState(false);
+  const [processorRefreshInterval, setProcessorRefreshInterval] = useState(0);
   const [currentProcessor, setCurrentProcessor] = useState<ProcessorResponse>();
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [existingProcessorName, setExistingProcessorName] = useState<
@@ -102,6 +104,11 @@ const ProcessorDetailPage = (): JSX.Element => {
     getProcessor(instanceId, processorId);
   }, [getProcessor, instanceId, processorId]);
 
+  usePolling(
+    () => getProcessor(instanceId, processorId),
+    processorRefreshInterval
+  );
+
   const {
     updateProcessor,
     processor: updatedProcessor,
@@ -119,11 +126,17 @@ const ProcessorDetailPage = (): JSX.Element => {
 
   useEffect(() => {
     setCurrentProcessor(processor);
+    if (processor && !canEditResource(processor?.status)) {
+      setProcessorRefreshInterval(refreshInterval);
+    } else {
+      setProcessorRefreshInterval(0);
+    }
   }, [processor]);
 
   useEffect(() => {
     setCurrentProcessor(updatedProcessor);
     setIsEditing(false);
+    setProcessorRefreshInterval(refreshInterval);
   }, [updatedProcessor]);
 
   useEffect(() => {
@@ -444,3 +457,5 @@ type ProcessorRouteParams = {
   instanceId: string;
   processorId: string;
 };
+
+const refreshInterval = 10000;

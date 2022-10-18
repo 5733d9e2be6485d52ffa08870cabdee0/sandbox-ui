@@ -70,6 +70,8 @@
     "yes": "Yes"
   },
   "errorHandling": {
+    "endpoint": "Endpoint URL",
+    "endpointDescription": "Invoke the endpoint below to retrieve the last errors, associated to this Smart Events instance.",
     "errors": {
       "cantFindSchema": "The information related to the error handling strategy for this Smart Events instance is currently missing.",
       "schemaGenericError": "Error while retrieving the information related to the error handling strategy for this Smart Events instance.",

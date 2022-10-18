@@ -47,31 +47,37 @@ describe("the 'Create a SE instance' Modal", () => {
         cy.ouiaId("creating", "PF4/Button").click();
       });
 
-    //Assert that the process of the instnace's creation is monitored
-    cy.ouiaId("se-status", "QE/Popover")
-      .should("be.visible")
-      .within(() => {
-        cy.ouiaType("QE/StackItem").should("have.length", "3");
-        cy.ouiaId("info-banner", "QE/StackItem")
-          .ouiaId("ready-shortly", "PF4/Text")
-          .should("be.visible");
-        cy.ouiaId("steps-count", "QE/StackItem").should(
-          "have.text",
-          "0 of 3 steps completed"
-        );
-        progressStepsStatuses(SEInstanceStatus.ACCEPTED);
-        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 120000 }).should(
-          "have.text",
-          "1 of 3 steps completed"
-        );
-        progressStepsStatuses(SEInstanceStatus.PREPARING);
-        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 120000 }).should(
-          "have.text",
-          "2 of 3 steps completed"
-        );
-        progressStepsStatuses(SEInstanceStatus.PROVISIONING);
-      });
-    cy.ouiaId("se-status", "QE/Popover", { timeout: 60000 }).should(
+    //Assert that the process of the instnace's creation is monitored)
+    onlyOn(isEnvironmentType(EnvType.Mocked), () => {
+      // Skip checks of 'non deterministic' updates in 'Status' popover in Dev environment
+      // The 'deterministic' updates would be: (0 of 3, 1 of 3, 2 of 3 and Done)
+      // However in reality, on Dev environmnet, it may happen: (0 of 3, 1 of 3 and Done) or (0 of 3, 2 of 3 and Done) or ...
+
+      cy.ouiaId("se-status", "QE/Popover")
+        .should("be.visible")
+        .within(() => {
+          cy.ouiaType("QE/StackItem").should("have.length", "3");
+          cy.ouiaId("info-banner", "QE/StackItem")
+            .ouiaId("ready-shortly", "PF4/Text")
+            .should("be.visible");
+          cy.ouiaId("steps-count", "QE/StackItem").should(
+            "have.text",
+            "0 of 3 steps completed"
+          );
+          progressStepsStatuses(SEInstanceStatus.ACCEPTED);
+          cy.ouiaId("steps-count", "QE/StackItem", { timeout: 120000 }).should(
+            "have.text",
+            "1 of 3 steps completed"
+          );
+          progressStepsStatuses(SEInstanceStatus.PREPARING);
+          cy.ouiaId("steps-count", "QE/StackItem", { timeout: 120000 }).should(
+            "have.text",
+            "2 of 3 steps completed"
+          );
+          progressStepsStatuses(SEInstanceStatus.PROVISIONING);
+        });
+    });
+    cy.ouiaId("se-status", "QE/Popover", { timeout: 120000 }).should(
       "not.exist"
     );
 

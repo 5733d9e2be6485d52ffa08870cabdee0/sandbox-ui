@@ -3,8 +3,10 @@
 import { rest } from "msw";
 import { factory, oneOf, primaryKey } from "@mswjs/data";
 import {
+  Action,
   BridgeRequest,
   BridgeResponse,
+  ManagedResourceStatus,
   ProcessorRequest,
   ProcessorResponse,
   ProcessorType,
@@ -18,7 +20,11 @@ import { EventFilter, ProcessorSchemaType } from "../src/types/Processor";
 import { cloudProvidersData, cloudRegions } from "./cloudProvidersData";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { isJSONSchema } from "@utils/processorUtils";
-import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
+import {
+  ENDPOINT_TYPE,
+  EndpointParametersType,
+  isEndpointType,
+} from "../src/types/ErrorHandlingMethods";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
@@ -235,7 +241,7 @@ export const handlers = [
       owner: "rsanchez",
       href: `/api/smartevents_mgmt/v1/bridges/${id}`,
       submitted_at: new Date().toISOString(),
-      error_handler: convertParametersToString(errorHandler),
+      error_handler: prepareErrorHandler(id, errorHandler),
       status: "accepted",
       cloud_provider,
       region,
@@ -297,10 +303,10 @@ export const handlers = [
         ...bridgeRequest,
         status: "accepted",
         modified_at: new Date().toISOString(),
-        error_handler: {
-          type: updatedErrorHandler?.type,
-          parameters: JSON.stringify(updatedErrorHandler?.parameters),
-        },
+        error_handler: prepareErrorHandler(
+          bridgeId as string,
+          updatedErrorHandler
+        ),
       },
     });
 
@@ -1121,6 +1127,31 @@ interface ActionSourceType {
   type: string;
   parameters: string;
 }
+
+/**
+ * Fills error handler parameters with missing values, then converts it.
+ * It adds an endpoint parameter when the error handling method is endpoint
+ *
+ * @param id Bridge id
+ * @param errorHandler Error handling type + parameters
+ * */
+const prepareErrorHandler = (
+  id: string,
+  errorHandler?: Action
+): { type: string; parameters: string } => {
+  if (isEndpointType(errorHandler?.type)) {
+    const updatedParameters: EndpointParametersType = {
+      endpoint: `https://event-bridge-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com/api/smartevents_mgmt/v1/bridges/${id}/errors`,
+    };
+
+    return {
+      type: ENDPOINT_TYPE,
+      parameters: JSON.stringify(updatedParameters),
+    };
+  }
+
+  return convertParametersToString(errorHandler);
+};
 
 /**
  * Prepare bridge data to be returned by APIs

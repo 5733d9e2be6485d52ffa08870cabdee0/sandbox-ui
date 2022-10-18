@@ -1,9 +1,6 @@
 import { onlyOn } from "@cypress/skip-test";
 import { isEnvironmentType, EnvType, pageWasLoaded } from "../utils/Util";
 
-const bugPresent: string =
-  "The detail/edit page might be broken please check state of MGDOBR-797";
-
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Processor Test", () => {
     /**
@@ -18,7 +15,14 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
       it("Sink processor", () => {
         const processorName: string = "Sink processor";
-        const action = ["Slack", "dev-action", "https://test.app.com/item"];
+        const action = {
+          "Action type": "Slack",
+          Channel: "dev-action",
+          "Webhook URL": "https://test.app.com/item",
+          "Icon Emoji": "Property not configured",
+          "Icon URL": "Property not configured",
+          Username: "Property not configured",
+        };
         const filters = [
           ["data.name", "String equals", "John"],
           ["data.surname", "String equals", "White"],
@@ -65,7 +69,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.ouiaId("configuration").should("not.exist");
         cy.ouiaId("action-type", "PF4/FormSelect")
           .should("be.visible")
-          .select(action[0]);
+          .select(action["Action type"]);
         cy.ouiaId("missing-actions", "PF4/TextInput").should("not.exist");
 
         //Configuration
@@ -77,14 +81,14 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
                 .first()
                 .should("contain.text", "Channel")
                 .should("be.visible");
-              cy.get("input").type(action[1]);
+              cy.get("input").type(action["Channel"]);
             });
             cy.wrap(item[1]).within(() => {
               cy.get("div")
                 .first()
                 .should("contain.text", "Webhook URL")
                 .should("be.visible");
-              cy.get("input").type(action[2]);
+              cy.get("input").type(action["Webhook URL"]);
             });
           });
 
@@ -102,7 +106,13 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
       it("Source processor", () => {
         const processorName: string = "Source processor";
-        const source = ["Slack Source", "dev channel", "asd14u-e"];
+        const source = {
+          "Source type": "Slack Source",
+          Channel: "dev channel",
+          Token: "asd14u-e",
+          Delay: "Property not configured",
+          "Topic Names": "Property not configured",
+        };
         const filters = [
           ["data.name", "String equals", "John"],
           ["data.surname", "String equals", "White"],
@@ -121,7 +131,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.ouiaId("configuration").should("not.exist");
         cy.ouiaId("source-type", "PF4/FormSelect")
           .should("be.visible")
-          .select(source[0]);
+          .select(source["Source type"]);
         cy.ouiaId("missing-source-parameters", "PF4/TextInput").should(
           "not.exist"
         );
@@ -135,14 +145,14 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
                 .first()
                 .should("contain.text", "Channel")
                 .should("be.visible");
-              cy.get("input").type(source[1]);
+              cy.get("input").type(source["Channel"]);
             });
             cy.wrap(item[1]).within(() => {
               cy.get("div")
                 .first()
                 .should("contain.text", "Token")
                 .should("be.visible");
-              cy.get("input").type(source[2]);
+              cy.get("input").type(source["Token"]);
             });
           });
 
@@ -176,7 +186,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     describe("Edit Sink Processors", () => {
       let processorName: string;
       let transformation: string;
-      let action: string[];
+      let action: { [key: string]: string };
       let filters: string[][];
 
       beforeEach(() => {
@@ -187,11 +197,16 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.ouiaId("edit", "PF4/Button").should("be.visible").click();
 
         processorName = "Processor two";
-        action = [
-          "Send to Slack",
-          "test",
-          "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
-        ];
+        action = {
+          "Action type": "Slack",
+          Channel: "test",
+          "Webhook URL":
+            "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
+          "Icon Emoji": "Property not configured",
+          "Icon URL": "Property not configured",
+          Username: "Property not configured",
+        };
+
         transformation = "";
         filters = [["data.name", "String equals", "John"]];
       });
@@ -225,49 +240,47 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         );
       });
 
-      onlyOn(bugPresent, () => {
-        it("Add filter row", () => {
-          filters[1] = ["data.surname", "String equals", "White"];
+      it("Add filter row", () => {
+        filters[1] = ["data.surname", "String equals", "White"];
 
-          cy.ouiaId("add-filter", "PF4/Button").click();
+        cy.ouiaId("add-filter", "PF4/Button").click();
 
-          cy.ouiaId("item-1").within(() => {
-            cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1][0]);
-            cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1][1]);
-          });
-          //The filter-value was detached from DOM and we need to find the context again.
-          cy.ouiaId("item-1")
-            .ouiaId("filter-value", "PF4/TextInput")
-            .type(filters[1][2]);
-
-          cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
-
-          //Processor Detail
-          cy.ouiaId("accepted", "QE/ResourceStatus").should("be.visible");
-          cy.ouiaId("edit", "PF4/Button")
-            .should("be.visible")
-            .should("have.attr", "aria-disabled", "true");
-          cy.ouiaId("processor-actions", "PF4/Dropdown")
-            .should("be.visible")
-            .within(() => {
-              cy.ouiaId("actions-toggle", "PF4/DropdownToggle").click();
-              cy.ouiaId("delete", "PF4/DropdownItem")
-                .should("be.visible")
-                .should("have.attr", "aria-disabled", "true");
-            });
-          assertSinkProcessorDetails(
-            processorName,
-            transformation,
-            action,
-            filters
-          );
+        cy.ouiaId("item-1").within(() => {
+          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1][0]);
+          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1][1]);
         });
+        //The filter-value was detached from DOM and we need to find the context again.
+        cy.ouiaId("item-1")
+          .ouiaId("filter-value", "PF4/TextInput")
+          .type(filters[1][2]);
+
+        cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
+
+        //Processor Detail
+        cy.ouiaId("accepted", "QE/ResourceStatus").should("be.visible");
+        cy.ouiaId("edit", "PF4/Button")
+          .should("be.visible")
+          .should("have.attr", "aria-disabled", "true");
+        cy.ouiaId("processor-actions", "PF4/Dropdown")
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaId("actions-toggle", "PF4/DropdownToggle").click();
+            cy.ouiaId("delete", "PF4/DropdownItem")
+              .should("be.visible")
+              .should("have.attr", "aria-disabled", "true");
+          });
+        assertSinkProcessorDetails(
+          processorName,
+          transformation,
+          action,
+          filters
+        );
       });
     });
 
     describe("Edit Source Processors", () => {
       let processorName: string;
-      let source: string[];
+      let source: { [key: string]: string };
       let filters: string[][];
 
       beforeEach(() => {
@@ -278,11 +291,13 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.ouiaId("edit", "PF4/Button").should("be.visible").click();
 
         processorName = "Processor four";
-        source = [
-          "Slack",
-          "test-ui",
-          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        ];
+        source = {
+          "Source type": "Slack Source",
+          Channel: "#test",
+          Token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          Delay: "Property not configured",
+          "Topic Names": "Property not configured",
+        };
         filters = [[]];
       });
 
@@ -310,43 +325,36 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         assertSourceProcessorDetails(processorName, source, filters);
       });
 
-      onlyOn(bugPresent, () => {
-        it("Add filter row", () => {
-          if (bugPresent) {
-            cy.log(bugPresent);
-            return;
-          }
+      it("Add filter row", () => {
+        filters[0] = ["data.surname", "String equals", "White"];
 
-          filters[0] = ["data.surname", "String equals", "White"];
+        cy.ouiaId("add-filter", "PF4/Button").click();
 
-          cy.ouiaId("add-filter", "PF4/Button").click();
-
-          cy.ouiaId("item-0").within(() => {
-            cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0][0]);
-            cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0][1]);
-          });
-          //The filter-value was detached from DOM and we need to find the context again.
-          cy.ouiaId("item-0")
-            .ouiaId("filter-value", "PF4/TextInput")
-            .type(filters[0][2]);
-
-          cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
-
-          //Processor Detail
-          cy.ouiaId("accepted", "QE/ResourceStatus").should("be.visible");
-          cy.ouiaId("edit", "PF4/Button")
-            .should("be.visible")
-            .should("have.attr", "aria-disabled", "true");
-          cy.ouiaId("processor-actions", "PF4/Dropdown")
-            .should("be.visible")
-            .within(() => {
-              cy.ouiaId("actions-toggle", "PF4/DropdownToggle").click();
-              cy.ouiaId("delete", "PF4/DropdownItem")
-                .should("be.visible")
-                .should("have.attr", "aria-disabled", "true");
-            });
-          assertSourceProcessorDetails(processorName, source, filters);
+        cy.ouiaId("item-0").within(() => {
+          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0][0]);
+          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0][1]);
         });
+        //The filter-value was detached from DOM and we need to find the context again.
+        cy.ouiaId("item-0")
+          .ouiaId("filter-value", "PF4/TextInput")
+          .type(filters[0][2]);
+
+        cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
+
+        //Processor Detail
+        cy.ouiaId("accepted", "QE/ResourceStatus").should("be.visible");
+        cy.ouiaId("edit", "PF4/Button")
+          .should("be.visible")
+          .should("have.attr", "aria-disabled", "true");
+        cy.ouiaId("processor-actions", "PF4/Dropdown")
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaId("actions-toggle", "PF4/DropdownToggle").click();
+            cy.ouiaId("delete", "PF4/DropdownItem")
+              .should("be.visible")
+              .should("have.attr", "aria-disabled", "true");
+          });
+        assertSourceProcessorDetails(processorName, source, filters);
       });
     });
 
@@ -367,6 +375,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           cy.get("td")
             .eq(0)
             .should("have.text", processorName, { timeout: 7000 })
+            .find("a")
             .click();
         });
     }
@@ -374,15 +383,9 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     function assertSinkProcessorDetails(
       processorName: string,
       transformation: string,
-      action: string[],
+      action: { [key: string]: string },
       filters: string[][]
     ) {
-      if (bugPresent) {
-        cy.log(bugPresent);
-        return;
-      }
-      const actionKeys: string[] = ["Action type", "Channel", "Webhook URL"];
-
       cy.ouiaId("processor-name", "PF4/Text").should(
         "have.text",
         processorName
@@ -406,14 +409,19 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
       cy.ouiaId("action-section", "PF4/Text").should("have.text", "Action");
       cy.get("[class='pf-c-description-list__term']")
-        .should("have.length", action.length)
+        .should("have.length", Object.keys(action).length)
         .each((element, index) => {
-          cy.wrap(element).should("have.text", actionKeys[index]);
+          cy.wrap(element).should("have.text", Object.keys(action)[index]);
         });
-      cy.get("[class='pf-c-description-list__description']")
-        .should("have.length", action.length)
+      cy.get(".pf-c-description-list__description")
+        .should("have.length", Object.keys(action).length)
         .each((element, index) => {
-          cy.wrap(element).should("have.text", action[index]);
+          const currentKey: string = Object.keys(action)[index];
+          if (currentKey !== "Webhook URL") {
+            cy.wrap(element).should("have.text", action[currentKey]);
+          } else {
+            cy.wrap(element).should("have.text", "**************************");
+          }
         });
 
       assertFilters(filters);
@@ -423,15 +431,9 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
     function assertSourceProcessorDetails(
       processorName: string,
-      source: string[],
+      source: { [key: string]: string },
       filters: string[][]
     ) {
-      if (bugPresent) {
-        cy.log(bugPresent);
-        return;
-      }
-      const sourceKeys: string[] = ["Source type", "Channel", "Token"];
-
       cy.ouiaId("processor-name", "PF4/Text").should(
         "have.text",
         processorName
@@ -445,15 +447,20 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
       cy.ouiaId("source-section", "PF4/Text").should("have.text", "Source");
       cy.get("[class='pf-c-description-list__term']")
-        .should("have.length", sourceKeys.length)
+        .should("have.length", Object.keys(source).length)
         .each((element, index) => {
-          cy.wrap(element).should("have.text", sourceKeys[index]);
+          cy.wrap(element).should("have.text", Object.keys(source)[index]);
         });
 
-      cy.get("[class='pf-c-description-list__description']")
-        .should("have.length", source.length)
+      cy.get(".pf-c-description-list__description")
+        .should("have.length", Object.keys(source).length)
         .each((element, index) => {
-          cy.wrap(element).should("have.text", source[index]);
+          const currentKey: string = Object.keys(source)[index];
+          if (currentKey !== "Token") {
+            cy.wrap(element).should("have.text", source[currentKey]);
+          } else {
+            cy.wrap(element).should("have.text", "**************************");
+          }
         });
 
       assertFilters(filters);

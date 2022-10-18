@@ -6,6 +6,8 @@
   min-width: 13rem;
 }
 
-.instance-page__tabs-error-handling__section {
-  min-height: 37rem;
+/* making the error handling PF tab fill the available vertical space*/
+#instance-page__tabs-error-handling {
+  flex-grow: 1;
+  height: 100%;
 }

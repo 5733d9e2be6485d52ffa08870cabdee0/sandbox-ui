@@ -1,35 +1,6 @@
-.processor-edit__page-section {
-  --processor-edit--spacing: var(--pf-global--spacer--lg);
-  position: relative;
-}
-
-.processor-edit__container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-.processor-edit__outer-wrap {
-  min-height: 0;
-  /*position: relative;*/
-}
-
-.processor-edit__inner-wrap {
-  /*position: static;*/
-  min-height: 0;
-}
-
-.processor-edit__content-wrap {
-  overflow-x: hidden;
-  overflow-y: auto;
-  word-break: break-word;
-}
-
 .processor-edit__form {
   max-width: 800px;
-  padding: var(--processor-edit--spacing);
+  padding: var(--pf-global--spacer--lg);
 }
 
 .processor-edit__form__notice {
@@ -39,13 +10,6 @@
 .processor-edit__form .pf-c-tile:active,
 .pf-c-tile.pf-m-selected {
   --pf-c-tile--TranslateY: 0;
-}
-
-.processor-edit__actions {
-  margin: 0 var(--processor-edit--spacing);
-  padding: var(--processor-edit--spacing) 0;
-  width: 100%;
-  border-top: 1px solid var(--pf-global--BorderColor--100);
 }
 
 .processor-edit__transformation-template.processor-field-error {

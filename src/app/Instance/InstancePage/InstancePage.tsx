@@ -15,6 +15,7 @@ import {
   Split,
   SplitItem,
   Tab,
+  TabContent,
   Tabs,
   TabTitleText,
   Text,
@@ -234,8 +235,6 @@ const InstancePage = (): JSX.Element => {
         )}
         <PageSection variant={PageSectionVariants.light} type="tabs">
           <Tabs
-            mountOnEnter
-            unmountOnExit
             className="instance-page__tabs"
             ouiaId="instance-details"
             usePageInsets
@@ -253,14 +252,7 @@ const InstancePage = (): JSX.Element => {
                   <TabTitleText>{t("common.processors")}</TabTitleText>
                 )
               }
-            >
-              <PageSection>
-                <ProcessorsTabContent
-                  instanceId={instanceId}
-                  pageTitle={getPageTitle(bridge)}
-                />
-              </PageSection>
-            </Tab>
+            />
             <Tab
               eventKey={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
               ouiaId="error-handling"
@@ -272,15 +264,38 @@ const InstancePage = (): JSX.Element => {
                   <TabTitleText>{t("common.errorHandling")}</TabTitleText>
                 )
               }
-            >
-              <PageSection>
-                <ErrorHandlingTabContent
-                  bridge={bridge}
-                  isBridgeLoading={isBridgeLoading}
-                />
-              </PageSection>
-            </Tab>
+            />
           </Tabs>
+        </PageSection>
+        <PageSection isFilled padding={{ default: "noPadding" }}>
+          <TabContent
+            key={INSTANCE_PAGE_TAB_KEYS.processors}
+            eventKey={INSTANCE_PAGE_TAB_KEYS.processors}
+            id={"instance-page__tabs-processors"}
+            ouiaId="processors"
+            activeKey={activeTabKey}
+          >
+            {activeTabKey === INSTANCE_PAGE_TAB_KEYS.processors && (
+              <ProcessorsTabContent
+                instanceId={instanceId}
+                pageTitle={getPageTitle(bridge)}
+              />
+            )}
+          </TabContent>
+          <TabContent
+            key={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
+            eventKey={INSTANCE_PAGE_TAB_KEYS["error-handling"]}
+            id={"instance-page__tabs-error-handling"}
+            ouiaId="error-handling"
+            activeKey={activeTabKey}
+          >
+            {activeTabKey === INSTANCE_PAGE_TAB_KEYS["error-handling"] && (
+              <ErrorHandlingTabContent
+                bridge={bridge}
+                isBridgeLoading={isBridgeLoading}
+              />
+            )}
+          </TabContent>
         </PageSection>
         <DeleteInstance
           instanceId={bridge?.id}

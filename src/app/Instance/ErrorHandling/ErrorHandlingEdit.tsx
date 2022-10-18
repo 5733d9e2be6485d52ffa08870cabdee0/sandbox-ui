@@ -1,14 +1,21 @@
-import React, { FormEvent, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActionGroup,
   Alert,
   Button,
   Form,
   FormAlert,
-  PageSection,
+  FormSection,
+  PageSectionVariants,
+  Text,
+  TextContent,
+  TextVariants,
 } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import ErrorHandlingCreate from "@app/Instance/ErrorHandling/ErrorHandlingCreate";
+import StickyActionsLayout from "@app/components/StickyActionsLayout/StickyActionsLayout";
+import "./ErrorHandlingEdit.css";
+import ErrorHandlingPageSection from "@app/Instance/ErrorHandling/ErrorHandlingPageSection";
 
 export interface ErrorHandlingEditProps {
   apiError?: string;
@@ -48,14 +55,10 @@ export const ErrorHandlingEdit = ({
     []
   );
 
-  const onSubmit = useCallback(
-    (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      onErrorHandlingSubmit(errorHandlingMethod, errorHandlingParameters);
-      setIsSubmitted(true);
-    },
-    [errorHandlingMethod, errorHandlingParameters, onErrorHandlingSubmit]
-  );
+  const onSubmit = useCallback(() => {
+    onErrorHandlingSubmit(errorHandlingMethod, errorHandlingParameters);
+    setIsSubmitted(true);
+  }, [errorHandlingMethod, errorHandlingParameters, onErrorHandlingSubmit]);
 
   useEffect(() => {
     if (isSubmitted) {
@@ -71,55 +74,69 @@ export const ErrorHandlingEdit = ({
   }, [isSubmitted]);
 
   return (
-    <Form
-      className="error-handling-edit-form"
-      autoComplete="off"
-      onSubmit={onSubmit}
+    <ErrorHandlingPageSection
+      variant={PageSectionVariants.light}
+      padding={{ default: "noPadding" }}
     >
-      {apiError && (
-        <FormAlert>
-          <Alert
-            className="error-handling-edit__alert"
-            ouiaId="error-schema"
-            variant="danger"
-            title={apiError}
-            aria-live="polite"
-            isInline
-          />
-        </FormAlert>
-      )}
-      <ErrorHandlingCreate
-        schemaId={errorHandlingMethod}
-        getSchema={getSchema}
-        registerValidation={registerValidateParameters}
-        onChange={onErrorHandlingParametersChange}
-        parameters={errorHandlingParameters}
-      />
-      <PageSection
-        stickyOnBreakpoint={{ default: "bottom" }}
-        padding={{ default: "noPadding" }}
-        style={{ boxShadow: "none" }}
+      <StickyActionsLayout
+        actions={
+          <ActionGroup className="error-handling-edit__actions">
+            <Button
+              variant="primary"
+              ouiaId="submit"
+              type="submit"
+              onClick={onSubmit}
+              isLoading={isLoading}
+              isDisabled={isLoading}
+            >
+              {t("common.save")}
+            </Button>
+            <Button
+              variant="link"
+              ouiaId="cancel"
+              onClick={onCancelEditing}
+              isDisabled={isLoading}
+            >
+              {t("common.cancel")}
+            </Button>
+          </ActionGroup>
+        }
       >
-        <ActionGroup className="error-handling-edit__actions">
-          <Button
-            variant="primary"
-            ouiaId="submit"
-            type="submit"
-            isLoading={isLoading}
-            isDisabled={isLoading}
+        <Form className="error-handling-edit-form" autoComplete="off">
+          {apiError && (
+            <FormAlert>
+              <Alert
+                className="error-handling-edit__alert"
+                ouiaId="error-schema"
+                variant="danger"
+                title={apiError}
+                aria-live="polite"
+                isInline
+              />
+            </FormAlert>
+          )}
+          <FormSection
+            title={
+              <TextContent>
+                <Text
+                  component={TextVariants.h3}
+                  ouiaId="error-handling-section"
+                >
+                  {t("common.errorHandlingMethod")}
+                </Text>
+              </TextContent>
+            }
           >
-            {t("common.save")}
-          </Button>
-          <Button
-            variant="link"
-            ouiaId="cancel"
-            onClick={onCancelEditing}
-            isDisabled={isLoading}
-          >
-            {t("common.cancel")}
-          </Button>
-        </ActionGroup>
-      </PageSection>
-    </Form>
+            <ErrorHandlingCreate
+              schemaId={errorHandlingMethod}
+              getSchema={getSchema}
+              registerValidation={registerValidateParameters}
+              onChange={onErrorHandlingParametersChange}
+              parameters={errorHandlingParameters}
+            />
+          </FormSection>
+        </Form>
+      </StickyActionsLayout>
+    </ErrorHandlingPageSection>
   );
 };

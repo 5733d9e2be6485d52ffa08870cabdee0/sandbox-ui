@@ -14,7 +14,10 @@ import ConfigurationForm from "@app/Processor/ProcessorEdit/ConfigurationForm/Co
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import { ProcessorSchemaType } from "../../../types/Processor";
-import { ERROR_HANDLING_METHODS } from "../../../types/ErrorHandlingMethods";
+import {
+  ERROR_HANDLING_METHODS,
+  getErrorHandlingMethodByType,
+} from "../../../types/ErrorHandlingMethods";
 
 interface ErrorHandlingProps {
   schemaId?: string;
@@ -54,7 +57,10 @@ const ErrorHandlingCreate: VoidFunctionComponent<ErrorHandlingProps> = (
 
   useEffect(() => {
     setErrorHandlingSchema(undefined);
-    if (errorHandlingSchemaId) {
+    if (
+      errorHandlingSchemaId &&
+      getErrorHandlingMethodByType(errorHandlingSchemaId).hasSchema
+    ) {
       setErrorHandlingSchemaLoading(true);
       setLoadingError(false);
       getSchema(errorHandlingSchemaId, ProcessorSchemaType.ACTION)
@@ -71,8 +77,11 @@ const ErrorHandlingCreate: VoidFunctionComponent<ErrorHandlingProps> = (
     if (errorHandlingSchemaId) {
       onChange(errorHandlingSchemaId, errorHandlingParameters);
     } else {
-      registerValidation(() => true);
       onChange(undefined, undefined);
+    }
+
+    if (!getErrorHandlingMethodByType(errorHandlingSchemaId).hasSchema) {
+      registerValidation(() => true);
     }
   }, [
     errorHandlingSchemaId,

@@ -36,24 +36,39 @@ describe("ErrorHandlingDetail component", () => {
   });
 
   it("should display a configuration section for EH strategy details, when a schema and parameters are passed", async () => {
-    const endpoint = "endpoint URL";
-    const title = "Endpoint";
+    const param = "a param";
+    const title = "Param";
     const comp = createComponent({
       schema: {
         type: "object",
         additionalProperties: false,
         properties: {
-          endpoint: {
+          param: {
             type: "string",
             title,
           },
         },
       },
-      errorHandlingParameters: { endpoint },
+      errorHandlingParameters: { param },
     });
     await waitForI18n(comp);
 
     expect(comp.baseElement).toHaveTextContent(title);
-    expect(comp.baseElement).toHaveTextContent(endpoint);
+    expect(comp.baseElement).toHaveTextContent(param);
+  });
+
+  it("should display a clipboard, with an endpoint, when EH strategy is ENDPOINT", async () => {
+    const endpoint = "http://endpoint.com";
+    const comp = createComponent({
+      errorHandlingType: "endpoint",
+      errorHandlingParameters: { endpoint },
+    });
+    await waitForI18n(comp);
+
+    const errorHandlingEndpoint = comp.baseElement.querySelector(
+      "[data-ouia-component-id='error-handling-endpoint']"
+    );
+    expect(errorHandlingEndpoint).toBeInTheDocument();
+    expect(errorHandlingEndpoint).toHaveTextContent(endpoint);
   });
 });

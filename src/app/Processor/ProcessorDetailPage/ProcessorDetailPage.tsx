@@ -363,7 +363,6 @@ const ProcessorDetailPage = (): JSX.Element => {
                             currentProcessor.submitted_at
                         )
                       }
-                      singleDelayedCheck={true}
                     />
                   </StackItem>
                 </Stack>

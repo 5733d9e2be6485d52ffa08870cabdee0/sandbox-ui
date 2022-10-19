@@ -8,12 +8,12 @@ import { usePolling } from "../../../hooks/usePolling/usePolling";
 
 export function useResourceDelayedStatus(
   status: ResourceStatus,
-  requestedAt: Date,
-  singleDelayedCheck: boolean
+  requestedAt: Date
 ): ResourceStatusDelayed | undefined {
   const warningAfterMinutes = 5;
   const errorAfterMinutes = 10;
   const [alert, setAlert] = useState<ResourceStatusDelayed>();
+  const [pollingInterval, setPollingInterval] = useState(1000);
 
   const checkCreatedAt = useCallback(() => {
     if (status === ResourceStatus.CREATING) {
@@ -30,16 +30,13 @@ export function useResourceDelayedStatus(
     checkCreatedAt();
   }, [checkCreatedAt]);
 
-  const clearPolling = usePolling(
-    checkCreatedAt,
-    singleDelayedCheck ? 0 : 1000
-  );
+  usePolling(checkCreatedAt, pollingInterval);
 
   useEffect(() => {
-    if (status !== ResourceStatus.CREATING && clearPolling) {
-      clearPolling();
+    if (status === ResourceStatus.READY || status === ResourceStatus.FAILED) {
+      setPollingInterval(0);
     }
-  }, [clearPolling, status]);
+  }, [status]);
 
   return alert;
 }

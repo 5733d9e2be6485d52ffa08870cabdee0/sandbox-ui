@@ -120,7 +120,15 @@ export const ErrorHandlingDetail = ({
               <DescriptionListDescription data-testid="error_handling_method-value">
                 {errorHandlingMethodLabel}
               </DescriptionListDescription>
-              {isEndpointType(errorHandlingType) && errorHandlingParameters && (
+            </DescriptionListGroup>
+            {isEndpointType(errorHandlingType) && errorHandlingParameters && (
+              <DescriptionListGroup
+                data-ouia-component-id="error_handling_method_endpoint_type"
+                key="error-handling-method-endpoint-type"
+              >
+                <DescriptionListTerm data-testid="error_handling_endpoint_url">
+                  {t("errorHandling.endpoint")}
+                </DescriptionListTerm>
                 <DescriptionListDescription>
                   <Stack hasGutter>
                     <StackItem>
@@ -145,8 +153,8 @@ export const ErrorHandlingDetail = ({
                     </StackItem>
                   </Stack>
                 </DescriptionListDescription>
-              )}
-            </DescriptionListGroup>
+              </DescriptionListGroup>
+            )}
             {errorHandlingParameters &&
               schema &&
               !isSchemaLoading &&

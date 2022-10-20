@@ -23,9 +23,9 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           "Icon URL": "Property not configured",
           "Username": "Property not configured",
         };
-        const filters = [
-          ["data.name", "String equals", "John"],
-          ["data.surname", "String equals", "White"],
+        const filters: { [key in "Key" | "Type" | "Value"]: string }[] = [
+          { Key: "data.name", Type: "String equals", Value: "John" },
+          { Key: "data.surname", Type: "String equals", Value: "White" },
         ];
 
         cy.ouiaId("create-processor", "PF4/Button").click();
@@ -39,19 +39,19 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.ouiaId("add-filter", "PF4/Button").should("be.visible").click();
 
         cy.ouiaId("item-0").within(() => {
-          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0][0]);
-          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0][1]);
+          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0].Key);
+          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0].Type);
         });
         cy.ouiaId("item-0") //The filter-value was detached from DOM and we need to find the context again.
           .ouiaId("filter-value", "PF4/TextInput")
-          .type(filters[0][2]);
+          .type(filters[0].Value);
         cy.ouiaId("item-1").within(() => {
-          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1][0]);
-          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1][1]);
+          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1].Key);
+          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1].Type);
         });
         cy.ouiaId("item-1") //The filter-value was detached from DOM and we need to find the context again.
           .ouiaId("filter-value", "PF4/TextInput")
-          .type(filters[1][2]);
+          .type(filters[1].Value);
 
         //Transformation
         cy.ouiaId("transformation-description", "PF4/Text")
@@ -113,9 +113,9 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           "Delay": "Property not configured",
           "Topic Names": "Property not configured",
         };
-        const filters = [
-          ["data.name", "String equals", "John"],
-          ["data.surname", "String equals", "White"],
+        const filters: { [key in "Key" | "Type" | "Value"]: string }[] = [
+          { Key: "data.name", Type: "String equals", Value: "John" },
+          { Key: "data.surname", Type: "String equals", Value: "White" },
         ];
         cy.ouiaId("create-processor", "PF4/Button").click();
         cy.ouiaId("Create processor", "breadcrumb-item").should("be.visible");
@@ -159,21 +159,21 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         //Filters
         cy.ouiaId("add-filter", "PF4/Button").should("be.visible").click();
         cy.ouiaId("item-0").within(() => {
-          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0][0]);
-          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0][1]);
+          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0].Key);
+          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0].Type);
         });
         //The filter-value was detached from DOM and we need to find the context again.
         cy.ouiaId("item-0")
           .ouiaId("filter-value", "PF4/TextInput")
-          .type(filters[0][2]);
+          .type(filters[0].Value);
         cy.ouiaId("item-1").within(() => {
-          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1][0]);
-          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1][1]);
+          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1].Key);
+          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1].Type);
         });
         //The filter-value was detached from DOM and we need to find the context again.
         cy.ouiaId("item-1")
           .ouiaId("filter-value", "PF4/TextInput")
-          .type(filters[1][2]);
+          .type(filters[1].Value);
 
         cy.ouiaId("submit").click();
 
@@ -187,7 +187,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       let processorName: string;
       let transformation: string;
       let action: { [key: string]: string };
-      let filters: string[][];
+      let filters: { [key in "Key" | "Type" | "Value"]: string }[];
 
       beforeEach(() => {
         cy.visit(
@@ -208,7 +208,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         };
 
         transformation = "";
-        filters = [["data.name", "String equals", "John"]];
+        filters = [{ Key: "data.name", Type: "String equals", Value: "John" }];
       });
 
       it("Assert and cancel edit form", () => {
@@ -241,18 +241,20 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       });
 
       it("Add filter row", () => {
-        filters[1] = ["data.surname", "String equals", "White"];
+        filters[1].Key = "data.surname";
+        filters[1].Type = "String equals";
+        filters[1].Value = "White";
 
         cy.ouiaId("add-filter", "PF4/Button").click();
 
         cy.ouiaId("item-1").within(() => {
-          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1][0]);
-          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1][1]);
+          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[1].Key);
+          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[1].Type);
         });
         //The filter-value was detached from DOM and we need to find the context again.
         cy.ouiaId("item-1")
           .ouiaId("filter-value", "PF4/TextInput")
-          .type(filters[1][2]);
+          .type(filters[1].Value);
 
         cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
 
@@ -281,7 +283,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     describe("Edit Source Processors", () => {
       let processorName: string;
       let source: { [key: string]: string };
-      let filters: string[][];
+      let filters: { [key in "Key" | "Type" | "Value"]: string }[];
 
       beforeEach(() => {
         cy.visit(
@@ -298,7 +300,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           "Delay": "Property not configured",
           "Topic Names": "Property not configured",
         };
-        filters = [[]];
+        filters = [];
       });
 
       it("Assert and cancel edit form", () => {
@@ -326,18 +328,20 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       });
 
       it("Add filter row", () => {
-        filters[0] = ["data.surname", "String equals", "White"];
+        filters[0].Key = "data.surname";
+        filters[0].Type = "String equals";
+        filters[0].Value = "White";
 
         cy.ouiaId("add-filter", "PF4/Button").click();
 
         cy.ouiaId("item-0").within(() => {
-          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0][0]);
-          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0][1]);
+          cy.ouiaId("filter-key", "PF4/TextInput").type(filters[0].Key);
+          cy.ouiaId("filter-type", "PF4/FormSelect").select(filters[0].Type);
         });
         //The filter-value was detached from DOM and we need to find the context again.
         cy.ouiaId("item-0")
           .ouiaId("filter-value", "PF4/TextInput")
-          .type(filters[0][2]);
+          .type(filters[0].Value);
 
         cy.ouiaId("submit", "PF4/Button").should("be.visible").click();
 
@@ -384,7 +388,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       processorName: string,
       transformation: string,
       action: { [key: string]: string },
-      filters: string[][]
+      filters: { [key in "Key" | "Type" | "Value"]: string }[]
     ) {
       cy.ouiaId("processor-name", "PF4/Text").should(
         "have.text",
@@ -432,7 +436,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     function assertSourceProcessorDetails(
       processorName: string,
       source: { [key: string]: string },
-      filters: string[][]
+      filters: { [key in "Key" | "Type" | "Value"]: string }[]
     ) {
       cy.ouiaId("processor-name", "PF4/Text").should(
         "have.text",
@@ -469,22 +473,28 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       cy.ouiaId("transformation-section", "PF4/Text").should("not.exist");
     }
 
-    function assertFilters(filters: string[][]) {
-      const filtersHeader: string[] = ["Key", "Type", "Value"];
-
+    function assertFilters(
+      filters: { [key in "Key" | "Type" | "Value"]: string }[]
+    ) {
       cy.ouiaId("filters-section", "PF4/Text").should("have.text", "Filters");
-      if (filters?.length > 0 && filters[0].length > 0) {
+      if (filters?.length > 0) {
         cy.ouiaId("filters", "PF4/Table").within(() => {
           cy.ouiaId("table-head", "PF4/TableRow")
             .find("th")
             .each((headCell, headIndex) => {
-              cy.wrap(headCell).should("have.text", filtersHeader[headIndex]);
+              cy.wrap(headCell).should(
+                "have.text",
+                Object.keys(filters[0])[headIndex]
+              );
             });
-          filters.forEach((item, rowIndex) => {
-            cy.ouiaId(item[0], "PF4/TableRow")
+          filters.forEach((item) => {
+            cy.ouiaId(item.Key, "PF4/TableRow")
               .find("td")
               .each((cell, cellIndex) => {
-                cy.wrap(cell).should("have.text", filters[rowIndex][cellIndex]);
+                cy.wrap(cell).should(
+                  "have.text",
+                  item[Object.keys(item)[cellIndex] as "Key" | "Type" | "Value"]
+                );
               });
           });
           cy.ouiaType("PF4/TableRow").should("have.length", filters.length + 1);

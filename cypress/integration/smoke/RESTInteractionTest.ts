@@ -46,8 +46,8 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
         url: restUrl,
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: authorization,
+          "Accept": "application/json",
+          "Authorization": authorization,
         },
         body: {
           name: bridgeName,
@@ -70,8 +70,8 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
           url: `${restUrl}/${bridgeId}`,
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: authorization,
+            "Accept": "application/json",
+            "Authorization": authorization,
           },
         };
         cy.request(options).then((response) => {

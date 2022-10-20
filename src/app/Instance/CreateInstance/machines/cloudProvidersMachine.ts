@@ -54,7 +54,7 @@ const cloudProvidersMachine = createMachine(
           },
         ],
       },
-      ready: {
+      "ready": {
         type: "final",
         on: {
           providerChange: {
@@ -65,7 +65,7 @@ const cloudProvidersMachine = createMachine(
           },
         },
       },
-      failure: {
+      "failure": {
         type: "final",
         entry: "notifyProviderUnavailable",
       },

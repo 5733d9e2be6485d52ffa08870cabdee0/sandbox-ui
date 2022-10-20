@@ -139,9 +139,9 @@ export const schemasData: { [key: string]: object } = {
         example: "kermit",
       },
       basic_auth_password: {
-        title: "Basic Auth Password",
+        "title": "Basic Auth Password",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Basic Auth Password",
             description: "The password for basic auth.",
@@ -198,9 +198,9 @@ export const schemasData: { [key: string]: object } = {
           "The Client Id part of the credentials to authenticate to Kafka. It is recommended the client has no 'admin' rights.",
       },
       kafka_client_secret: {
-        title: "Client Secret",
+        "title": "Client Secret",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Client Secret",
             description:
@@ -249,9 +249,9 @@ export const schemasData: { [key: string]: object } = {
         example: "#myroom",
       },
       slack_webhook_url: {
-        title: "Webhook URL",
+        "title": "Webhook URL",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Webhook URL",
             description:
@@ -308,9 +308,9 @@ export const schemasData: { [key: string]: object } = {
         example: "kermit",
       },
       basic_auth_password: {
-        title: "Basic Auth Password",
+        "title": "Basic Auth Password",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Basic Auth Password",
             description: "The password for basic auth.",
@@ -360,9 +360,9 @@ export const schemasData: { [key: string]: object } = {
         type: "string",
       },
       aws_access_key: {
-        title: "Access Key",
+        "title": "Access Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Access Key",
             description: "The access key obtained from AWS.",
@@ -377,9 +377,9 @@ export const schemasData: { [key: string]: object } = {
         ],
       },
       aws_secret_key: {
-        title: "Secret Key",
+        "title": "Secret Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Secret Key",
             description: "The secret key obtained from AWS.",
@@ -457,9 +457,9 @@ export const schemasData: { [key: string]: object } = {
         type: "string",
       },
       gcp_service_account_key: {
-        title: "Service Account Key",
+        "title": "Service Account Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Service Account Key",
             description:
@@ -497,15 +497,15 @@ export const schemasData: { [key: string]: object } = {
         type: "string",
       },
       azure_shared_access_name: {
-        title: "Share Access Name",
-        description: "EventHubs SAS key name",
-        type: "string",
+        "title": "Share Access Name",
+        "description": "EventHubs SAS key name",
+        "type": "string",
         "x-group": "credentials",
       },
       azure_shared_access_key: {
-        title: "Share Access Key",
+        "title": "Share Access Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Share Access Key",
             description: "The key for EventHubs SAS key name",
@@ -557,9 +557,9 @@ export const schemasData: { [key: string]: object } = {
         default: true,
       },
       aws_access_key: {
-        title: "Access Key",
+        "title": "Access Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Access Key",
             description: "The access key obtained from AWS.",
@@ -574,9 +574,9 @@ export const schemasData: { [key: string]: object } = {
         ],
       },
       aws_secret_key: {
-        title: "Secret Key",
+        "title": "Secret Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Secret Key",
             description: "The secret key obtained from AWS.",
@@ -701,9 +701,9 @@ export const schemasData: { [key: string]: object } = {
         default: true,
       },
       aws_access_key: {
-        title: "Access Key",
+        "title": "Access Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Access Key",
             description: "The access key obtained from AWS.",
@@ -718,9 +718,9 @@ export const schemasData: { [key: string]: object } = {
         ],
       },
       aws_secret_key: {
-        title: "Secret Key",
+        "title": "Secret Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Secret Key",
             description: "The secret key obtained from AWS.",
@@ -833,9 +833,9 @@ export const schemasData: { [key: string]: object } = {
         example: "#myroom",
       },
       slack_token: {
-        title: "Token",
+        "title": "Token",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Token",
             description:
@@ -883,9 +883,9 @@ export const schemasData: { [key: string]: object } = {
         type: "string",
       },
       gcp_service_account_key: {
-        title: "Service Account Key",
+        "title": "Service Account Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Service Account Key",
             description:
@@ -946,15 +946,15 @@ export const schemasData: { [key: string]: object } = {
         type: "string",
       },
       azure_shared_access_name: {
-        title: "Share Access Name",
-        description: "The Event Hubs SAS key name.",
-        type: "string",
+        "title": "Share Access Name",
+        "description": "The Event Hubs SAS key name.",
+        "type": "string",
         "x-group": "credentials",
       },
       azure_shared_access_key: {
-        title: "Share Access Key",
+        "title": "Share Access Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Share Access Key",
             description: "The key for the EventHubs SAS key name.",
@@ -979,9 +979,9 @@ export const schemasData: { [key: string]: object } = {
         type: "string",
       },
       azure_blob_access_key: {
-        title: "Azure Storage Blob Access Key",
+        "title": "Azure Storage Blob Access Key",
         "x-group": "credentials",
-        oneOf: [
+        "oneOf": [
           {
             title: "Azure Storage Blob Access Key",
             description:

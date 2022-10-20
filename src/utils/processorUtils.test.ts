@@ -371,9 +371,9 @@ const schemaWithDef = {
       example: "#myroom",
     },
     slack_webhook_url: {
-      title: "Webhook URL",
+      "title": "Webhook URL",
       "x-group": "credentials",
-      oneOf: [
+      "oneOf": [
         {
           title: "Webhook URL",
           description:

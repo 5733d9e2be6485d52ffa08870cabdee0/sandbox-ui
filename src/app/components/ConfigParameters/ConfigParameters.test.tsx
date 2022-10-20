@@ -98,9 +98,9 @@ const testSchema = {
       description: "The username you want to use.",
     },
     password: {
-      title: "Password",
+      "title": "Password",
       "x-group": "credentials",
-      oneOf: [
+      "oneOf": [
         {
           title: "Password",
           type: "string",

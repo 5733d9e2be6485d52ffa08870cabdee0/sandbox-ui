@@ -17,11 +17,11 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         const processorName: string = "Sink processor";
         const action = {
           "Action type": "Slack",
-          Channel: "dev-action",
+          "Channel": "dev-action",
           "Webhook URL": "https://test.app.com/item",
           "Icon Emoji": "Property not configured",
           "Icon URL": "Property not configured",
-          Username: "Property not configured",
+          "Username": "Property not configured",
         };
         const filters = [
           ["data.name", "String equals", "John"],
@@ -108,9 +108,9 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         const processorName: string = "Source processor";
         const source = {
           "Source type": "Slack Source",
-          Channel: "dev channel",
-          Token: "asd14u-e",
-          Delay: "Property not configured",
+          "Channel": "dev channel",
+          "Token": "asd14u-e",
+          "Delay": "Property not configured",
           "Topic Names": "Property not configured",
         };
         const filters = [
@@ -199,12 +199,12 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         processorName = "Processor two";
         action = {
           "Action type": "Slack",
-          Channel: "test",
+          "Channel": "test",
           "Webhook URL":
             "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXX",
           "Icon Emoji": "Property not configured",
           "Icon URL": "Property not configured",
-          Username: "Property not configured",
+          "Username": "Property not configured",
         };
 
         transformation = "";
@@ -293,9 +293,9 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         processorName = "Processor four";
         source = {
           "Source type": "Slack Source",
-          Channel: "#test",
-          Token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-          Delay: "Property not configured",
+          "Channel": "#test",
+          "Token": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "Delay": "Property not configured",
           "Topic Names": "Property not configured",
         };
         filters = [[]];

@@ -678,9 +678,9 @@ const SlackSourceSchema = {
       example: "#myroom",
     },
     slack_token: {
-      title: "Token",
+      "title": "Token",
       "x-group": "credentials",
-      oneOf: [
+      "oneOf": [
         {
           title: "Token",
           description:

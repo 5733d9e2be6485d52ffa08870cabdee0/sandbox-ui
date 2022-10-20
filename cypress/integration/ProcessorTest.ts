@@ -408,7 +408,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       }
 
       cy.ouiaId("action-section", "PF4/Text").should("have.text", "Action");
-      cy.get("[class='pf-c-description-list__term']")
+      cy.get(".pf-c-description-list__term")
         .should("have.length", Object.keys(action).length)
         .each((element, index) => {
           cy.wrap(element).should("have.text", Object.keys(action)[index]);
@@ -446,7 +446,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       );
 
       cy.ouiaId("source-section", "PF4/Text").should("have.text", "Source");
-      cy.get("[class='pf-c-description-list__term']")
+      cy.get(".pf-c-description-list__term")
         .should("have.length", Object.keys(source).length)
         .each((element, index) => {
           cy.wrap(element).should("have.text", Object.keys(source)[index]);

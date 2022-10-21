@@ -1,0 +1,5 @@
+#error-handling-method-selector
+  .default-method-group
+  .pf-c-select__menu-group-title {
+  padding: 0;
+}

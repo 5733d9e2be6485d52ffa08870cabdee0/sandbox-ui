@@ -1,6 +1,8 @@
 import {
   Alert,
   Button,
+  ClipboardCopy,
+  ClipboardCopyVariant,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
@@ -18,8 +20,10 @@ import {
 import React, { useMemo } from "react";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import {
+  EndpointParametersType,
   ERROR_HANDLING_METHODS,
   getErrorHandlingMethodByType,
+  isEndpointType,
 } from "../../../types/ErrorHandlingMethods";
 import ConfigParameters from "@app/components/ConfigParameters/ConfigParameters";
 import ErrorHandlingPageSection from "@app/Instance/ErrorHandling/ErrorHandlingPageSection";
@@ -117,6 +121,40 @@ export const ErrorHandlingDetail = ({
                 {errorHandlingMethodLabel}
               </DescriptionListDescription>
             </DescriptionListGroup>
+            {isEndpointType(errorHandlingType) && errorHandlingParameters && (
+              <DescriptionListGroup
+                data-ouia-component-id="error_handling_method_endpoint_type"
+                key="error-handling-method-endpoint-type"
+              >
+                <DescriptionListTerm data-testid="error_handling_endpoint_url">
+                  {t("errorHandling.endpoint")}
+                </DescriptionListTerm>
+                <DescriptionListDescription>
+                  <Stack hasGutter>
+                    <StackItem>
+                      <Text component={TextVariants.small}>
+                        {t("errorHandling.endpointDescription")}
+                      </Text>
+                    </StackItem>
+                    <StackItem>
+                      <ClipboardCopy
+                        data-ouia-component-id="error-handling-endpoint"
+                        isBlock
+                        isReadOnly
+                        hoverTip={t("common.copy")}
+                        clickTip={t("common.copied")}
+                        variant={ClipboardCopyVariant.inlineCompact}
+                      >
+                        {
+                          (errorHandlingParameters as EndpointParametersType)
+                            .endpoint
+                        }
+                      </ClipboardCopy>
+                    </StackItem>
+                  </Stack>
+                </DescriptionListDescription>
+              </DescriptionListGroup>
+            )}
             {errorHandlingParameters &&
               schema &&
               !isSchemaLoading &&

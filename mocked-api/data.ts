@@ -86,6 +86,10 @@ export const instancesData = [
       "https://d7e13602-b046-4120-b377-15d61e21c31a.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
     cloud_provider: "aws",
     region: "us-east-1",
+    error_handler: {
+      type: "endpoint",
+      parameters: `{"endpoint":"https://event-bridge-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com/api/smartevents_mgmt/v1/bridges/d7e13602-b046-4120-b377-15d61e21c31a/errors"}`,
+    },
   },
   {
     kind: "Bridge",

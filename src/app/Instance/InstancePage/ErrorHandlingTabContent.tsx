@@ -19,6 +19,7 @@ import {
 import { APIErrorCodes } from "@openapi/generated/errors";
 import { useHistory } from "react-router-dom";
 import ErrorHandlingPageSection from "@app/Instance/ErrorHandling/ErrorHandlingPageSection";
+import { getErrorHandlingMethodByType } from "../../../types/ErrorHandlingMethods";
 
 interface ErrorHandlingTabContentProps {
   bridge?: BridgeResponse;
@@ -136,7 +137,10 @@ export const ErrorHandlingTabContent = ({
   }, [schemaError, t]);
 
   useEffect(() => {
-    if (bridge?.error_handler?.type) {
+    if (
+      bridge?.error_handler?.type &&
+      getErrorHandlingMethodByType(bridge?.error_handler?.type).hasSchema
+    ) {
       setIsSchemaLoading(true);
       setCurrentSchema(undefined);
       getSchemaByMethod(bridge.error_handler.type)

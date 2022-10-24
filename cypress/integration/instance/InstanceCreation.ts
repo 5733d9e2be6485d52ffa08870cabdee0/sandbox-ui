@@ -50,15 +50,16 @@ describe("the 'Create a SE instance' Modal", () => {
     //Assert that the process of the instnace's creation is monitored
     cy.ouiaId("se-status", "QE/Popover")
       .should("be.visible")
-      .within(() => {
-        cy.ouiaType("QE/StackItem").should("have.length", "3");
-        cy.ouiaId("info-banner", "QE/StackItem")
+      .then(($popover) => {
+        cy.wrap($popover).ouiaType("QE/StackItem").should("have.length", "3");
+        cy.wrap($popover)
+          .ouiaId("info-banner", "QE/StackItem")
           .ouiaId("ready-shortly", "PF4/Text")
           .should("be.visible");
-        cy.ouiaId("steps-count", "QE/StackItem").should(
-          "have.text",
-          "0 of 3 steps completed"
-        );
+
+        cy.wrap($popover)
+          .ouiaId("steps-count", "QE/StackItem")
+          .should("have.text", "0 of 3 steps completed");
 
         // Prepare cypress for 'non deterministic' updates in 'Status' popover
         // The 'deterministic' updates would be: (0 of 3, 1 of 3, 2 of 3 and Done)
@@ -79,16 +80,20 @@ describe("the 'Create a SE instance' Modal", () => {
         });
 
         progressStepsStatuses(SEInstanceStatus.ACCEPTED);
-        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 120000 }).should(
-          "have.text",
-          "1 of 3 steps completed"
-        );
-        progressStepsStatuses(SEInstanceStatus.PREPARING);
-        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 120000 }).should(
-          "have.text",
-          "2 of 3 steps completed"
-        );
-        progressStepsStatuses(SEInstanceStatus.PROVISIONING);
+
+        if ($popover.find('div[class="pf-c-popover__content"]').length) {
+          // the form was found, do something else here
+          cy.wrap($popover)
+            .ouiaId("steps-count", "QE/StackItem", { timeout: 120000 })
+            .should("have.text", "1 of 3 steps completed");
+          progressStepsStatuses(SEInstanceStatus.PREPARING);
+          cy.wrap($popover)
+            .ouiaId("steps-count", "QE/StackItem", { timeout: 120000 })
+            .should("have.text", "2 of 3 steps completed");
+          progressStepsStatuses(SEInstanceStatus.PROVISIONING);
+        } else {
+          cy.log("Popover is not present");
+        }
       });
     cy.ouiaId("se-status", "QE/Popover", { timeout: 60000 }).should(
       "not.exist"

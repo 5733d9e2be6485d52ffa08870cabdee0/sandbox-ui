@@ -55,7 +55,7 @@ export const ErrorHandlingSelection = ({
       {[
         <SelectGroup
           key="default-method-group"
-          className="default-method-group"
+          id="error-handling-method-selector__default-group"
         >
           <SelectOption
             key={errorHandlingMethods.default.value}

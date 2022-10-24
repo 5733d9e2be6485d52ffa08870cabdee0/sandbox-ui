@@ -34,8 +34,8 @@ const App = (): JSX.Element => {
         en: {
           common: () =>
             import("@rhoas/app-services-ui-components/locales/en/common.json"),
-          openbridgeTempDictionary: () =>
-            import("../locales/en/openbridge.json"),
+          smartEventsTempDictionary: () =>
+            import("../locales/en/smart-events.json"),
         },
       }}
       debug={true}

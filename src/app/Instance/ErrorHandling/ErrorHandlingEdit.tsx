@@ -38,7 +38,7 @@ export const ErrorHandlingEdit = ({
   parameters,
   registerValidateParameters,
 }: ErrorHandlingEditProps): JSX.Element => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [errorHandlingMethod, setErrorHandlingMethod] = useState<

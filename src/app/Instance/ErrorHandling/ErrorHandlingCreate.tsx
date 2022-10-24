@@ -41,7 +41,7 @@ const ErrorHandlingCreate: VoidFunctionComponent<ErrorHandlingProps> = (
     isDisabled = false,
     alertErrorManagedInternally = true,
   } = props;
-  const { t } = useTranslation("openbridgeTempDictionary");
+  const { t } = useTranslation("smartEventsTempDictionary");
 
   const [errorHandlingSchemaId, setErrorHandlingSchemaId] = useState<
     string | undefined

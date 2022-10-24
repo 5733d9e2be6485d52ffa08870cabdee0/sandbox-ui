@@ -14,7 +14,7 @@ interface CreateInstanceModalProps {
 const CreateInstanceModal: VoidFunctionComponent<CreateInstanceModalProps> = (
   props
 ) => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const { children, formId, onClose, isSaving, isDisabled, isLoading } = props;
 
   return (

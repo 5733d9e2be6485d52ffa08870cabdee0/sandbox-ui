@@ -25,7 +25,7 @@ const ConfigurationForm = (props: ConfigurationFormProps): JSX.Element => {
     readOnly = false,
     editMode,
   } = props;
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const schemaValidator = useMemo(() => createValidator(schema), [schema]);
 

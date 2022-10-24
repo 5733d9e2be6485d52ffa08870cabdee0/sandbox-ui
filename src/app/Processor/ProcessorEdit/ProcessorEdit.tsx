@@ -95,7 +95,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
     getSchema,
     goBackToInstance,
   } = props;
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const isExistingProcessor = useMemo(
     () => processor !== undefined,
     [processor]
@@ -415,7 +415,7 @@ const ProcessorEdit = (props: ProcessorEditProps): JSX.Element => {
                           bodyContent={
                             <Trans
                               i18nKey={
-                                "openbridgeTempDictionary:processor.transformationTemplateTooltip"
+                                "smartEventsTempDictionary:processor.transformationTemplateTooltip"
                               }
                               components={[
                                 <ExternalLink

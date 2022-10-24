@@ -16,7 +16,7 @@ export interface PageNotFoundStateParams {
 
 export const PageNotFound = (): JSX.Element => {
   const location = useLocation<PageNotFoundStateParams>();
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   return (
     <EmptyState>

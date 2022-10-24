@@ -55,7 +55,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
 ) => {
   const { getSchema, getCloudProviders, onClose, createBridge } = props;
 
-  const { t } = useTranslation("openbridgeTempDictionary");
+  const { t } = useTranslation("smartEventsTempDictionary");
 
   const [current, send] = useMachine(CreateInstanceMachine, {
     services: {

@@ -46,7 +46,7 @@ const CreateProcessorPage = (): JSX.Element => {
     (): void => history.push(`/instance/${instanceId}`),
     [instanceId, history]
   );
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const {
     getBridge,

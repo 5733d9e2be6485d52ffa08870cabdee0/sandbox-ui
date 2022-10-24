@@ -32,7 +32,7 @@ export const InstanceDetails = ({
   instance,
   onClosingDetails,
 }: InstanceDetailsProps): JSX.Element => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const formatDate = (dateStr: string): string =>
     format(new Date(dateStr), "PPPP p");

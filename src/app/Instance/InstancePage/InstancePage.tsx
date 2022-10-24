@@ -55,7 +55,7 @@ export interface InstanceRouteParams {
 const InstancePage = (): JSX.Element => {
   const { instanceId, tabName = "processors" } =
     useParams<InstanceRouteParams>();
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const history = useHistory();
 
   const {

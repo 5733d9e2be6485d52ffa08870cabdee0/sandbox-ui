@@ -13,7 +13,7 @@ import {
 import { useTranslation } from "@rhoas/app-services-ui-components";
 
 const ProcessorDetailSkeleton = (): JSX.Element => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   return (
     <>

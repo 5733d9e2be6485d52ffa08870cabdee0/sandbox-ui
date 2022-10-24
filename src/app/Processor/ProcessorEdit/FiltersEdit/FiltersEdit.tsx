@@ -49,7 +49,7 @@ const FiltersEdit = (props: FiltersEditProps): JSX.Element => {
     );
   };
 
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const filterTypesOptions = [
     {

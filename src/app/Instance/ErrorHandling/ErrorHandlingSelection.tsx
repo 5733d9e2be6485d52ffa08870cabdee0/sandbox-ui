@@ -21,7 +21,7 @@ export const ErrorHandlingSelection = ({
   isDisabled,
   onMethodSelection,
 }: ErrorHandlingSelectionProps): JSX.Element => {
-  const { t } = useTranslation("openbridgeTempDictionary");
+  const { t } = useTranslation("smartEventsTempDictionary");
 
   const [isSelectorOpen, setIsSelectorOpen] = useState<boolean>(false);
   const [handlingMethod, setHandlingMethod] = useState<string>(

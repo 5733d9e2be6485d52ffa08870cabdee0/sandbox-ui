@@ -52,7 +52,7 @@ interface ProcessorDetailProps {
 
 const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
   const { processor, schemaCatalog, getSchema } = props;
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const [schema, setSchema] = useState<object>();
   const [schemaError, setSchemaError] = useState<string | undefined>();
   const [schemaLoading, setSchemaLoading] = useState(false);

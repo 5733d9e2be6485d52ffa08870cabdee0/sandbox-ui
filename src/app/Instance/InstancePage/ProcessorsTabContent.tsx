@@ -39,7 +39,7 @@ export const ProcessorsTabContent = ({
   instanceId,
   pageTitle,
 }: ProcessorTabContentProps): JSX.Element => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
   const [currentPageSize, setCurrentPageSize] =
@@ -196,7 +196,7 @@ export const ProcessorsTabContent = ({
             customToolbarElement={customToolbarElement}
             rows={processorListResponse.items}
             tableLabel={t(
-              "openbridgeTempDictionary:processor.processorsListTable"
+              "smartEventsTempDictionary:processor.processorsListTable"
             )}
             isLoading={areProcessorsLoading}
             onPaginationChange={onPaginationChange}

@@ -40,7 +40,7 @@ interface CloudProvidersProps {
 
 const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
   const { getCloudProviders, onChange, onProviderError, isDisabled } = props;
-  const { t } = useTranslation("openbridgeTempDictionary");
+  const { t } = useTranslation("smartEventsTempDictionary");
 
   const [current, send] = useMachine(CloudProvidersMachine, {
     services: {
@@ -193,7 +193,7 @@ const CloudProviders: VoidFunctionComponent<CloudProvidersProps> = (props) => {
 export default CloudProviders;
 
 export const CloudProviderSkeleton = (): JSX.Element => {
-  const { t } = useTranslation("openbridgeTempDictionary");
+  const { t } = useTranslation("smartEventsTempDictionary");
 
   return (
     <FlexItem grow={{ default: "grow" }} key={"skeleton"}>

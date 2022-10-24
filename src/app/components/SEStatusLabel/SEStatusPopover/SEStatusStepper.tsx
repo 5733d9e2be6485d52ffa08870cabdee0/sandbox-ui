@@ -13,7 +13,7 @@ const SEStatusStepper: VoidFunctionComponent<SEStatusStepperProps> = (
   props
 ) => {
   const { status } = props;
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const currentStep = CreationStatusOrder.findIndex((s) => s === status);
 

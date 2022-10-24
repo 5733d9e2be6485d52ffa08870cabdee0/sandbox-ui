@@ -30,7 +30,7 @@ export const ResourceStatusLabel = forwardRef<
   HTMLButtonElement,
   ResourceStatusLabelProps
 >((props, ref) => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const { status, creationDelayed } = props;
   switch (status) {

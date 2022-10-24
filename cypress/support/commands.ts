@@ -63,7 +63,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add("login", () => {
   //https://docs.cypress.io/guides/core-concepts/conditional-testing#Element-existence
-  cy.get("body")
+  cy.get("body", { timeout: 10000 })
     .should("be.visible")
     .then(($body) => {
       if ($body.find('div[class="truste_overlay"]').length) {

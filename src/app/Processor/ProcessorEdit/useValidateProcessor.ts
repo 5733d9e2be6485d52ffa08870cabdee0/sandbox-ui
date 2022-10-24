@@ -3,7 +3,7 @@ import {
   ProcessorFormData,
   ProcessorValidation,
 } from "../../../types/Processor";
-import { omit } from "lodash";
+import omit from "lodash.omit";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 
 export function useValidateProcessor(

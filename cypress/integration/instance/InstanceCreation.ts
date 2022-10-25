@@ -69,12 +69,13 @@ describe("the 'Create a SE instance' Modal", () => {
           console.error("runnable", runnable);
 
           if (
+            isEnvironmentType(EnvType.Dev) &&
             e.name === "AssertionError" &&
             e.message.includes("of 3 steps completed")
           ) {
-            return false;
+            return true; //does not matter if true or false
           }
-          return true;
+          throw e;
         });
 
         progressStepsStatuses(SEInstanceStatus.ACCEPTED);

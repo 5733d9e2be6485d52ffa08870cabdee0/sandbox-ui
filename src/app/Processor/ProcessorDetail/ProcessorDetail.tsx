@@ -56,11 +56,13 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
   const [schema, setSchema] = useState<object>();
   const [schemaError, setSchemaError] = useState<string | undefined>();
   const [schemaLoading, setSchemaLoading] = useState(false);
+  const [schemaId, setSchemaId] = useState<string>();
 
-  const sourceOrActionId =
-    processor.type === ProcessorType.Source
-      ? processor.source.type
-      : processor.action.type;
+  const getSourceOrActionId = (processor: Processor): string => {
+    return processor.type === ProcessorType.Source
+      ? processor?.source?.type
+      : processor?.action?.type;
+  };
 
   const processorConfig =
     processor.type === ProcessorType.Source
@@ -73,14 +75,22 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
       : ProcessorSchemaType.ACTION;
 
   const sourceOrActionName =
-    schemaCatalog.find((schema) => schema.id === sourceOrActionId)?.name ?? "";
+    schemaCatalog.find((schema) => schema.id === schemaId)?.name ?? "";
 
   useEffect(() => {
     if (processor) {
+      const processorSchemaId = getSourceOrActionId(processor);
+      // The processor data will be refreshed during the provisioning flow.
+      // If the schemaId (action or source type) has not changed, we don't
+      // need to fetch the schema again from APIs
+      if (processorSchemaId === schemaId) {
+        return;
+      }
+      setSchemaId(processorSchemaId);
       setSchemaLoading(true);
       setSchema(undefined);
       setSchemaError(undefined);
-      getSchema(sourceOrActionId, configType)
+      getSchema(processorSchemaId, configType)
         .then((data) => setSchema(data))
         .catch((error) => {
           if (error && axios.isAxiosError(error)) {
@@ -98,7 +108,7 @@ const ProcessorDetail = (props: ProcessorDetailProps): JSX.Element => {
         })
         .finally(() => setSchemaLoading(false));
     }
-  }, [processor, getSchema, sourceOrActionId, configType, t]);
+  }, [processor, getSchema, schemaId, configType, t]);
 
   return (
     <>

@@ -18,7 +18,7 @@ describe("useResourceDelayedStatus", () => {
   it("should display the warning message after N minutes", () => {
     const createdAt = new Date();
     const { result } = renderHook(() =>
-      useResourceDelayedStatus(ResourceStatus.CREATING, createdAt, false)
+      useResourceDelayedStatus(ResourceStatus.CREATING, createdAt)
     );
 
     expect(result.current).toEqual(undefined);
@@ -34,26 +34,5 @@ describe("useResourceDelayedStatus", () => {
     });
 
     expect(result.current).toEqual(ResourceStatusDelayed.ERROR);
-  });
-
-  it("should check for the delayed status only on first render", () => {
-    const createdAt = new Date();
-    const { result } = renderHook(() =>
-      useResourceDelayedStatus(ResourceStatus.CREATING, createdAt, true)
-    );
-
-    expect(result.current).toEqual(undefined);
-
-    act(() => {
-      jest.advanceTimersByTime(60 * 1000 * 5);
-    });
-
-    expect(result.current).toEqual(undefined);
-
-    act(() => {
-      jest.advanceTimersByTime(60 * 1000 * 5);
-    });
-
-    expect(result.current).toEqual(undefined);
   });
 });

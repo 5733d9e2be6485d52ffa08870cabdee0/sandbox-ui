@@ -101,6 +101,7 @@
     "html-webpack-plugin": "5.5.0",
     "husky": "8.0.1",
     "jest": "29.2.2",
+    "jest-environment-jsdom": "29.2.2",
     "mini-css-extract-plugin": "2.6.1",
     "msw": "0.47.4",
     "null-loader": "4.0.1",

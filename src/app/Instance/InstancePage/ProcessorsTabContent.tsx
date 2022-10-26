@@ -209,7 +209,7 @@ export const ProcessorsTabContent = ({
           >
             <EmptyState variant="large">
               <EmptyStateIcon icon={PlusCircleIcon} />
-              <Title headingLevel="h4" size="lg">
+              <Title headingLevel="h2" size="lg">
                 {t("processor.noProcessors")}
               </Title>
             </EmptyState>

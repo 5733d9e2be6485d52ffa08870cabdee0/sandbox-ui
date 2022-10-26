@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import "./ErrorHandlingSelection.css";
+import React, { useEffect, useState } from "react";
 import {
   Select,
   SelectGroup,
@@ -28,25 +29,6 @@ export const ErrorHandlingSelection = ({
     selectedMethod ?? errorHandlingMethods.default.value
   );
 
-  const defaultMethodOption = useMemo(() => {
-    return (
-      <SelectOption
-        key={errorHandlingMethods.default.value}
-        value={errorHandlingMethods.default.value}
-      >
-        {errorHandlingMethods.default.label}
-      </SelectOption>
-    );
-  }, [errorHandlingMethods.default]);
-
-  const deadLetterQueueOptions = useMemo(() => {
-    return errorHandlingMethods.deadLetterQueue.map((errorHandling) => (
-      <SelectOption key={errorHandling.value} value={errorHandling.value}>
-        {errorHandling.label}
-      </SelectOption>
-    ));
-  }, [errorHandlingMethods.deadLetterQueue]);
-
   useEffect(() => {
     setHandlingMethod(selectedMethod ?? errorHandlingMethods.default.value);
   }, [selectedMethod, errorHandlingMethods]);
@@ -68,14 +50,30 @@ export const ErrorHandlingSelection = ({
       isOpen={isSelectorOpen}
       selections={handlingMethod}
       menuAppendTo={"parent"}
+      isGrouped
     >
       {[
-        defaultMethodOption,
+        <SelectGroup
+          key="default-method-group"
+          id="error-handling-method-selector__default-group"
+        >
+          <SelectOption
+            key={errorHandlingMethods.default.value}
+            value={errorHandlingMethods.default.value}
+          >
+            {errorHandlingMethods.default.label}
+          </SelectOption>
+        </SelectGroup>,
         <SelectGroup
           key="dead-letter-queue-group"
           label={t("common.deadLetterQueue")}
-        />,
-        ...deadLetterQueueOptions,
+        >
+          {errorHandlingMethods.deadLetterQueue.map((errorHandling) => (
+            <SelectOption key={errorHandling.value} value={errorHandling.value}>
+              {errorHandling.label}
+            </SelectOption>
+          ))}
+        </SelectGroup>,
       ]}
     </Select>
   );

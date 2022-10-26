@@ -37,7 +37,7 @@ const ConfigurationEdit = (props: ConfigurationEditProps): JSX.Element => {
       ? props.action?.parameters
       : props.source?.parameters) ?? {}
   );
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const [typeValidation, setTypeValidation] = useState<boolean>();
 
   const updateType = useCallback(

@@ -14,7 +14,7 @@ const InstanceNameField: VoidFunctionComponent<InstanceNameFieldProps> = (
   props
 ) => {
   const { isNameInvalid, isNameTaken, onChange, value, isDisabled } = props;
-  const { t } = useTranslation("openbridgeTempDictionary");
+  const { t } = useTranslation("smartEventsTempDictionary");
 
   const isInvalid = isNameInvalid || isNameTaken;
   const errorMessage = isNameTaken

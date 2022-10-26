@@ -22,7 +22,7 @@ const SEStatusPopoverContent: VoidFunctionComponent<
   SEStatusPopoverContentProps
 > = (props) => {
   const { status, creationDelayed } = props;
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const currentStep = CreationStatusOrder.findIndex((s) => s === status);
 

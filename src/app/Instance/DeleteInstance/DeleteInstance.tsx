@@ -26,7 +26,7 @@ interface DeleteInstanceProps {
 }
 
 const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const history = useHistory();
   const { showDeleteModal, instanceId, instanceName, onDeleted, onCanceled } =
     props;

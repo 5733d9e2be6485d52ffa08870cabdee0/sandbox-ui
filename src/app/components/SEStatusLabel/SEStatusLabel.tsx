@@ -19,7 +19,7 @@ export interface SEStatusLabelProps {
 
 const SEStatusLabel: VoidFunctionComponent<SEStatusLabelProps> = (props) => {
   const { status, resourceType, requestedAt } = props;
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const labelRef = useRef<HTMLButtonElement>(null);
   const showPopover = CreationStatusOrder.indexOf(status) > -1;
 

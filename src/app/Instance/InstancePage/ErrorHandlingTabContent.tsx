@@ -30,7 +30,7 @@ export const ErrorHandlingTabContent = ({
   bridge,
   isBridgeLoading,
 }: ErrorHandlingTabContentProps): JSX.Element => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const history = useHistory();
 
   const validateParameters = useRef<(() => boolean) | undefined>();

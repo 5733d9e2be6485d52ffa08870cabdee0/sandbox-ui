@@ -10,7 +10,7 @@ interface InstanceAlertProps {
 
 const InstanceAlert: VoidFunctionComponent<InstanceAlertProps> = (props) => {
   const { isFormInvalid, creationError } = props;
-  const { t } = useTranslation("openbridgeTempDictionary");
+  const { t } = useTranslation("smartEventsTempDictionary");
 
   const alert = useMemo(() => {
     switch (creationError) {

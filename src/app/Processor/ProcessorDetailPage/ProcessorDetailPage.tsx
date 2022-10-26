@@ -50,7 +50,7 @@ import { usePolling } from "../../../hooks/usePolling/usePolling";
 const ProcessorDetailPage = (): JSX.Element => {
   const { instanceId, processorId } = useParams<ProcessorRouteParams>();
   const history = useHistory();
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const goToInstance = useCallback(
     (): void => history.push(`/instance/${instanceId}`),

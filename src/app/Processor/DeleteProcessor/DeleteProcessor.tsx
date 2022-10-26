@@ -26,7 +26,7 @@ interface DeleteProcessorProps {
 }
 
 const DeleteProcessor = (props: DeleteProcessorProps): JSX.Element => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const {
     showDeleteModal,
     bridgeId,

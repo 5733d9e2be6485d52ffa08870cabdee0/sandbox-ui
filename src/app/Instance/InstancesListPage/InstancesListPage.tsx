@@ -43,7 +43,7 @@ import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridge
 import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegionsApi";
 
 const InstancesListPage = (): JSX.Element => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
   const [currentPageSize, setCurrentPageSize] =
@@ -56,7 +56,7 @@ const InstancesListPage = (): JSX.Element => {
     () => (
       <TextContent>
         <Text ouiaId="instances-page-title" component="h1">
-          {t("openbridgeTempDictionary:instance.instancesListPageTitle")}
+          {t("smartEventsTempDictionary:instance.instancesListPageTitle")}
         </Text>
       </TextContent>
     ),
@@ -273,7 +273,7 @@ const InstancesListPage = (): JSX.Element => {
             pageSize={currentPageSize}
             onPaginationChange={onPaginationChange}
             tableLabel={t(
-              "openbridgeTempDictionary:instance.instancesListTable"
+              "smartEventsTempDictionary:instance.instancesListTable"
             )}
             renderActions={({ row, ActionsColumn }): JSX.Element => (
               <ActionsColumn items={tableActions(row)} />

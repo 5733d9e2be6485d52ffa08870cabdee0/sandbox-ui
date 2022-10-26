@@ -20,7 +20,7 @@ interface ConfigParametersProps {
 
 const ConfigParameters = (props: ConfigParametersProps): JSX.Element => {
   const { schema, parameters } = props;
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   return (
     <>

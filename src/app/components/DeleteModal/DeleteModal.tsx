@@ -55,7 +55,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
     isLoading,
     blockedDeletionReason,
   } = props;
-  const { t } = useTranslation("openbridgeTempDictionary");
+  const { t } = useTranslation("smartEventsTempDictionary");
   const [nameValue, setNameValue] = useState("");
   const canDelete = nameValue === resourceName;
 
@@ -130,7 +130,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
                 <Text component={TextVariants.p}>
                   <Trans
                     i18nKey={
-                      "openbridgeTempDictionary:common.resourceWillBeDeletedHTML"
+                      "smartEventsTempDictionary:common.resourceWillBeDeletedHTML"
                     }
                     values={{
                       type: resourceType?.toLowerCase(),
@@ -146,7 +146,7 @@ export const DeleteModal = (props: DeleteModalProps): JSX.Element => {
                   <Text component={TextVariants.p}>
                     <Trans
                       i18nKey={
-                        "openbridgeTempDictionary:common.typeNameToConfirmHTML"
+                        "smartEventsTempDictionary:common.typeNameToConfirmHTML"
                       }
                       values={{
                         name: resourceName,

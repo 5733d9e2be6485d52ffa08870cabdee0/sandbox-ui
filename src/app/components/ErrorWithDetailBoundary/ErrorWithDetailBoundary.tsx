@@ -19,7 +19,7 @@ export const ErrorWithDetailBoundary: FunctionComponent = ({
 }: {
   children?: ReactNode;
 }) => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const history = useHistory();
 
   return (

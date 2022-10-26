@@ -49,7 +49,7 @@ export const ErrorHandlingDetail = ({
   onEdit,
   isEditDisabled,
 }: ErrorHandlingDetailProps): JSX.Element => {
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const errorHandlingMethodLabel = useMemo(() => {
     if (errorHandlingType) {

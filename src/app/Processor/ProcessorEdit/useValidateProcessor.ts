@@ -23,7 +23,7 @@ export function useValidateProcessor(
     errors: {},
   });
   const { name, type } = processor;
-  const { t } = useTranslation(["openbridgeTempDictionary"]);
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
   const validateConfig = useRef<(() => boolean) | undefined>();
 
   const registerValidateConfig = (callback: () => boolean): void => {

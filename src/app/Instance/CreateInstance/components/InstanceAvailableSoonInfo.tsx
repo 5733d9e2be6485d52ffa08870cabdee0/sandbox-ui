@@ -3,7 +3,7 @@ import { Alert, AlertGroup } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 
 const InstanceAvailableSoonInfo: VoidFunctionComponent = () => {
-  const { t } = useTranslation("openbridgeTempDictionary");
+  const { t } = useTranslation("smartEventsTempDictionary");
 
   return (
     <AlertGroup style={{ marginTop: "var(--pf-global--spacer--lg)" }}>

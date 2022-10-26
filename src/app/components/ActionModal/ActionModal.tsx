@@ -31,7 +31,7 @@ export const ActionModal = ({
   showDialog,
   title,
 }: ActionModalProps): JSX.Element => {
-  const { t } = useTranslation("openbridgeTempDictionary");
+  const { t } = useTranslation("smartEventsTempDictionary");
 
   return (
     <Modal

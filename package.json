@@ -34,7 +34,7 @@
     "@patternfly/react-table": "4.111.4",
     "@rhoas/app-services-ui-components": "2.13.2",
     "@rhoas/app-services-ui-shared": "0.16.4",
-    "@rhoas/smart-events-management-sdk": "0.47.0",
+    "@rhoas/smart-events-management-sdk": "0.45.0",
     "@types/json-schema": "7.0.11",
     "@xstate/react": "3.0.1",
     "ajv": "8.11.0",

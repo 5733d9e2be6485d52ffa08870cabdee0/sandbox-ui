@@ -15,20 +15,10 @@ export interface SEStatusLabelProps {
   resourceType: "bridge" | "processor";
   /** When the resource was requested (created or updated) */
   requestedAt: Date;
-  /** Flag to decide if the delayed warning check should run only one time.
-   *  If set to "false", or not set, the component will check every 1s if the
-   *  delayed message should be displayed.
-   */
-  singleDelayedCheck?: boolean;
 }
 
 const SEStatusLabel: VoidFunctionComponent<SEStatusLabelProps> = (props) => {
-  const {
-    status,
-    resourceType,
-    requestedAt,
-    singleDelayedCheck = false,
-  } = props;
+  const { status, resourceType, requestedAt } = props;
   const { t } = useTranslation(["openbridgeTempDictionary"]);
   const labelRef = useRef<HTMLButtonElement>(null);
   const showPopover = CreationStatusOrder.indexOf(status) > -1;
@@ -55,11 +45,7 @@ const SEStatusLabel: VoidFunctionComponent<SEStatusLabelProps> = (props) => {
     }
   }, [status]);
 
-  const alert = useResourceDelayedStatus(
-    resourceStatus,
-    requestedAt,
-    singleDelayedCheck
-  );
+  const alert = useResourceDelayedStatus(resourceStatus, requestedAt);
 
   return (
     <div

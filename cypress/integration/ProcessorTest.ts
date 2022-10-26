@@ -241,9 +241,11 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       });
 
       it("Add filter row", () => {
-        filters[1]["Key"] = "data.surname";
-        filters[1]["Type"] = "String equals";
-        filters[1]["Value"] = "White";
+        filters.push({
+          Key: "data.surname",
+          Type: "String equals",
+          Value: "White",
+        });
 
         cy.ouiaId("add-filter", "PF4/Button").click();
 
@@ -328,9 +330,11 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       });
 
       it("Add filter row", () => {
-        filters[0]["Key"] = "data.surname";
-        filters[0]["Type"] = "String equals";
-        filters[0]["Value"] = "White";
+        filters.push({
+          Key: "data.surname",
+          Type: "String equals",
+          Value: "White",
+        });
 
         cy.ouiaId("add-filter", "PF4/Button").click();
 

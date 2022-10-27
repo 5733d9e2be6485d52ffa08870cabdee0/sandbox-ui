@@ -109,7 +109,7 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
         .within(() => {
           cy.get("td:first").should("have.text", bridgeName);
           cy.get("td:nth-child(3)").then(($state) => {
-            cy.wrap($state, { timeout: 60000 }).should("have.text", "Ready");
+            cy.wrap($state, { timeout: 240000 }).should("have.text", "Ready");
           });
         });
     });

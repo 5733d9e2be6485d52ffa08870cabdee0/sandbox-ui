@@ -55,11 +55,11 @@ describe("the 'Create a SE instance' Modal", () => {
         cy.ouiaId("info-banner", "QE/StackItem")
           .ouiaId("ready-shortly", "PF4/Text")
           .should("be.visible");
-
         cy.ouiaId("steps-count", "QE/StackItem").should(
           "have.text",
           "0 of 3 steps completed"
         );
+
         // Prepare cypress for 'non deterministic' updates in 'Status' popover
         // The 'deterministic' updates would be: (0 of 3, 1 of 3, 2 of 3 and Done)
         // However in reality it may happen: (0 of 3, 1 of 3 and Done) or (0 of 3, 2 of 3 and Done) or ...

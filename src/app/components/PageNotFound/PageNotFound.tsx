@@ -21,7 +21,7 @@ export const PageNotFound = (): JSX.Element => {
   return (
     <EmptyState>
       <EmptyStateIcon icon={NotFoundIcon} />
-      <Title headingLevel="h4" size="lg">
+      <Title headingLevel="h1" size="lg">
         {location.state?.title ?? t("common.pageNotFound")}
       </Title>
       <EmptyStateBody>

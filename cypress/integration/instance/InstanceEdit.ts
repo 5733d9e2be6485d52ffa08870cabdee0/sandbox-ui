@@ -51,7 +51,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         });
     });
 
-    it.only("Switch from 'Webhook' to 'Ignore' Error handler", () => {
+    it("Switch from 'Webhook' to 'Ignore' Error handler", () => {
       //Open 'Instance one' page
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId("Instance one", "PF4/TableRow")
@@ -88,9 +88,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         .ouiaId("Instance one", "PF4/TableRow")
         .should("be.visible")
         .within(() => {
-          //The user cannot go to the instance's details if it is not ready
-          //Assert that the inner text contains only the name of the instance and no <a>
-          cy.get("td:first").should("have.html", "Instance one");
+          cy.get("td:first").should("contain.text", "Instance one");
           //The status column is loading and contains ready
           cy.get("td:nth-child(3)")
             .ouiaId("accepted", "QE/ResourceStatus")

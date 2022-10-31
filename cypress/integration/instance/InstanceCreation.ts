@@ -62,6 +62,7 @@ describe("the 'Create a SE instance' Modal", () => {
         );
         progressStepsStatuses(SEInstanceStatus.ACCEPTED);
 
+        //The first steps takes about 65 secs.
         cy.ouiaId("steps-count", "QE/StackItem", { timeout: 90000 }).should(
           "have.text",
           "1 of 3 steps completed"
@@ -69,7 +70,9 @@ describe("the 'Create a SE instance' Modal", () => {
         progressStepsStatuses(SEInstanceStatus.PREPARING);
 
         if (isEnvironmentType(EnvType.Mocked)) {
-          cy.ouiaId("steps-count", "QE/StackItem", { timeout: 60000 }).should(
+          //Preparing -> Ready state takes 9 secs.
+          //The Popover disappears on Dev when we assert this element.
+          cy.ouiaId("steps-count", "QE/StackItem", { timeout: 10000 }).should(
             "have.text",
             "2 of 3 steps completed"
           );
@@ -93,7 +96,7 @@ describe("the 'Create a SE instance' Modal", () => {
       });
   });
 
-  it.skip("Submit and expect error", () => {
+  it("Submit and expect error", () => {
     const errorInstanceName: string = "error-test";
     cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
     cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
@@ -110,7 +113,7 @@ describe("the 'Create a SE instance' Modal", () => {
     });
   });
 
-  it.skip("Cancel", () => {
+  it("Cancel", () => {
     const canceledInstanceName: string = uniqueName("canceled-instance");
     createInstance(canceledInstanceName, "cancel");
 

@@ -55,40 +55,26 @@ describe("the 'Create a SE instance' Modal", () => {
         cy.ouiaId("info-banner", "QE/StackItem")
           .ouiaId("ready-shortly", "PF4/Text")
           .should("be.visible");
+
         cy.ouiaId("steps-count", "QE/StackItem").should(
           "have.text",
           "0 of 3 steps completed"
         );
-
-        // Prepare cypress for 'non deterministic' updates in 'Status' popover
-        // The 'deterministic' updates would be: (0 of 3, 1 of 3, 2 of 3 and Done)
-        // However in reality it may happen: (0 of 3, 1 of 3 and Done) or (0 of 3, 2 of 3 and Done) or ...
-        // see https://github.com/cypress-io/cypress-example-recipes/blob/master/examples/fundamentals__errors/cypress/e2e/test-fails.cy.js
-        cy.on("fail", (e, runnable) => {
-          console.error("error", e);
-          console.error("runnable", runnable);
-
-          if (
-            isEnvironmentType(EnvType.Dev) &&
-            e.name === "AssertionError" &&
-            e.message.includes("of 3 steps completed")
-          ) {
-            return true; //does not matter if true or false
-          }
-          throw e;
-        });
-
         progressStepsStatuses(SEInstanceStatus.ACCEPTED);
-        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 120000 }).should(
+
+        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 90000 }).should(
           "have.text",
           "1 of 3 steps completed"
         );
         progressStepsStatuses(SEInstanceStatus.PREPARING);
-        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 120000 }).should(
-          "have.text",
-          "2 of 3 steps completed"
-        );
-        progressStepsStatuses(SEInstanceStatus.PROVISIONING);
+
+        if (isEnvironmentType(EnvType.Mocked)) {
+          cy.ouiaId("steps-count", "QE/StackItem", { timeout: 60000 }).should(
+            "have.text",
+            "2 of 3 steps completed"
+          );
+          progressStepsStatuses(SEInstanceStatus.PROVISIONING);
+        }
       });
     cy.ouiaId("se-status", "QE/Popover", { timeout: 60000 }).should(
       "not.exist"
@@ -107,7 +93,7 @@ describe("the 'Create a SE instance' Modal", () => {
       });
   });
 
-  it("Submit and expect error", () => {
+  it.skip("Submit and expect error", () => {
     const errorInstanceName: string = "error-test";
     cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
     cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
@@ -124,7 +110,7 @@ describe("the 'Create a SE instance' Modal", () => {
     });
   });
 
-  it("Cancel", () => {
+  it.skip("Cancel", () => {
     const canceledInstanceName: string = uniqueName("canceled-instance");
     createInstance(canceledInstanceName, "cancel");
 

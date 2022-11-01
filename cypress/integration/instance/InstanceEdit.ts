@@ -88,25 +88,10 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         .within(() => {
           cy.get("td:first").should("contain.text", "Instance one");
           //The status column is loading and contains ready
-          cy.get("td:nth-child(3)")
-            .ouiaId("accepted", "QE/ResourceStatus")
-            .within(() => {
-              cy.get("span[role='progressbar']").should("exist");
-              cy.ouiaId("creating", "PF4/Button").should(
-                "have.text",
-                "Creating"
-              );
-              cy.ouiaId("ready-shortly", "QE/HelperTextItem").should(
-                "have.text",
-                "This will be ready shortly."
-              );
-            });
-          cy.ouiaId("creating", "PF4/Button").click();
+          cy.get("td:nth-child(3)").ouiaId("ready", "QE/ResourceStatus", {
+            timeout: 90000,
+          });
         });
-
-      cy.ouiaId("se-status", "QE/Popover", { timeout: 30000 }).should(
-        "not.exist"
-      );
     });
   });
 });

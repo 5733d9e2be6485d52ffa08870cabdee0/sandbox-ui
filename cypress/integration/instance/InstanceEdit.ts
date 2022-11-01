@@ -4,20 +4,12 @@ import { isEnvironmentType, EnvType, pageWasLoaded } from "../../utils/Util";
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Edit Smart Event Instance Tests", () => {
     beforeEach(() => {
-      cy.visit("/");
+      //Open 'Instance one' page
+      cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
       pageWasLoaded();
     });
 
     it("Edit Error handler configuration", () => {
-      //Open 'Instance one' page
-      cy.ouiaId("Instances list table", "PF4/Table")
-        .ouiaId("Instance one", "PF4/TableRow")
-        .within(() => {
-          cy.get(
-            "td:first a[data-testid='tableInstances-linkInstance']"
-          ).click();
-        });
-
       // Switch to 'Error handling' tab
       cy.ouiaId("error-handling", "PF4/TabButton").click();
       cy.ouiaId("error-handling-section", "PF4/Text").should("be.visible");
@@ -52,15 +44,6 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     });
 
     it("Switch from 'Webhook' to 'Ignore' Error handler", () => {
-      //Open 'Instance one' page
-      cy.ouiaId("Instances list table", "PF4/Table")
-        .ouiaId("Instance one", "PF4/TableRow")
-        .within(() => {
-          cy.get(
-            "td:first a[data-testid='tableInstances-linkInstance']"
-          ).click();
-        });
-
       // Switch to error handling tab
       cy.ouiaId("error-handling", "PF4/TabButton").click();
 

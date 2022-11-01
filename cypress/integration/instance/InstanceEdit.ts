@@ -79,9 +79,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         cy.get("button").should("not.have.attr", "disabled");
       });
       cy.ouiaId("error-handling-method-selector", "PF4/Select").click();
-      cy.get("button.pf-c-select__menu-item", { timeout: 10000 })
-        .contains("Ignore")
-        .click();
+      cy.ouiaId("IGNORE", "select-menu-item", { timeout: 10000 }).click();
       cy.ouiaId("submit", "PF4/Button").click();
 
       cy.ouiaId("Instances list table", "PF4/Table")

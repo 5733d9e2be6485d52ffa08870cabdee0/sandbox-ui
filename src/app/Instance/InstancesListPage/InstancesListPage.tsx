@@ -35,7 +35,7 @@ import {
 } from "@rhoas/smart-events-management-sdk";
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { TableRow } from "@app/components/Table";
-import { canDeleteResource } from "@utils/resourceUtils";
+import { canDeleteResource, canEditResource } from "@utils/resourceUtils";
 import { ErrorWithDetail } from "../../../types/Error";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
@@ -71,7 +71,7 @@ const InstancesListPage = (): JSX.Element => {
         const bridgeId = (row as BridgeResponse)?.id ?? "";
         const status = (row as BridgeResponse)?.status;
 
-        return status === ManagedResourceStatus.Ready ? (
+        return canEditResource(status) ? (
           <Link
             data-testid="tableInstances-linkInstance"
             to={`/instance/${bridgeId}`}

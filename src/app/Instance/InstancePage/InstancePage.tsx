@@ -14,6 +14,8 @@ import {
   Skeleton,
   Split,
   SplitItem,
+  Stack,
+  StackItem,
   Tab,
   TabContent,
   Tabs,
@@ -41,6 +43,7 @@ import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
 import { ProcessorsTabContent } from "@app/Instance/InstancePage/ProcessorsTabContent";
 import { ErrorHandlingTabContent } from "@app/Instance/InstancePage/ErrorHandlingTabContent";
+import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 
 const INSTANCE_PAGE_TAB_KEYS = {
   "processors": 0,
@@ -178,11 +181,24 @@ const InstancePage = (): JSX.Element => {
             <PageSection variant={PageSectionVariants.light}>
               <Split>
                 <SplitItem isFilled>
-                  <TextContent>
-                    <Text ouiaId="instance-name" component="h1">
-                      {bridge.name}
-                    </Text>
-                  </TextContent>
+                  <Stack hasGutter={true}>
+                    <StackItem>
+                      <TextContent>
+                        <Text ouiaId="instance-name" component="h1">
+                          {bridge.name}
+                        </Text>
+                      </TextContent>
+                    </StackItem>
+                    <StackItem>
+                      <SEStatusLabel
+                        status={bridge.status}
+                        resourceType={"bridge"}
+                        requestedAt={
+                          new Date(bridge.modified_at ?? bridge.submitted_at)
+                        }
+                      />
+                    </StackItem>
+                  </Stack>
                 </SplitItem>
                 <SplitItem>
                   <Dropdown

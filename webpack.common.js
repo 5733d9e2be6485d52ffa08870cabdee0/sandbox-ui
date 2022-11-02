@@ -116,7 +116,7 @@ module.exports = (env, argv) => {
         },
         shared: {
           ...dependencies,
-          react: {
+          "react": {
             singleton: true,
             requiredVersion: dependencies["react"],
           },

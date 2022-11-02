@@ -43,7 +43,7 @@ import { ProcessorsTabContent } from "@app/Instance/InstancePage/ProcessorsTabCo
 import { ErrorHandlingTabContent } from "@app/Instance/InstancePage/ErrorHandlingTabContent";
 
 const INSTANCE_PAGE_TAB_KEYS = {
-  processors: 0,
+  "processors": 0,
   "error-handling": 1,
 };
 

@@ -40,7 +40,7 @@ module.exports = {
     "import/no-unresolved": "off",
 
     "object-curly-spacing": ["error", "always"],
-    semi: ["error", "always"],
+    "semi": ["error", "always"],
 
     "react/jsx-uses-react": "off",
     "react/prop-types": "error",

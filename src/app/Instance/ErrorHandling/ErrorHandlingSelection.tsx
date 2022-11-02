@@ -58,6 +58,8 @@ export const ErrorHandlingSelection = ({
           id="error-handling-method-selector__default-group"
         >
           <SelectOption
+            data-ouia-component-type="select-menu-item"
+            data-ouia-component-id={errorHandlingMethods.default.value}
             key={errorHandlingMethods.default.value}
             value={errorHandlingMethods.default.value}
           >
@@ -69,7 +71,12 @@ export const ErrorHandlingSelection = ({
           label={t("common.deadLetterQueue")}
         >
           {errorHandlingMethods.deadLetterQueue.map((errorHandling) => (
-            <SelectOption key={errorHandling.value} value={errorHandling.value}>
+            <SelectOption
+              data-ouia-component-type="select-menu-item"
+              data-ouia-component-id={errorHandling.value}
+              key={errorHandling.value}
+              value={errorHandling.value}
+            >
               {errorHandling.label}
             </SelectOption>
           ))}

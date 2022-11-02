@@ -7,11 +7,12 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       //Open 'Instance one' page
       cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
       pageWasLoaded();
+
+      // Switch to error handling tab
+      cy.ouiaId("error-handling", "PF4/TabButton").click();
     });
 
     it("Edit Error handler configuration", () => {
-      // Switch to 'Error handling' tab
-      cy.ouiaId("error-handling", "PF4/TabButton").click();
       cy.ouiaId("error-handling-section", "PF4/Text").should("be.visible");
 
       // Do simple change in 'Error handling' conf
@@ -44,9 +45,6 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     });
 
     it("Switch from 'Webhook' to 'Ignore' Error handler", () => {
-      // Switch to error handling tab
-      cy.ouiaId("error-handling", "PF4/TabButton").click();
-
       // Wait tab is loaded
       cy.get(".pf-c-description-list__term").should("have.length", 5);
       // Once tab is loaded start edit mode

@@ -220,6 +220,7 @@ const CreateProcessorPage = (): JSX.Element => {
         </>
       )}
       <ActionModal
+        ouiaId="processor-error-modal"
         action={actionModalFn.current}
         message={actionModalMessage.current}
         showDialog={showActionModal}

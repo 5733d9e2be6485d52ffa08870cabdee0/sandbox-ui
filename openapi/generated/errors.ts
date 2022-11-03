@@ -82,4 +82,10 @@ export const APIErrorCodes = {
   /** The selected Region is not valid.*/
   ERROR_34 : "OPENBRIDGE-34", 
 
+  /** The requested resource could not be deployed because you are out of available quota.*/
+  ERROR_40 : "OPENBRIDGE-40", 
+
+  /** Terms not accepted yet.*/
+  ERROR_41 : "OPENBRIDGE-41", 
+
 }

@@ -139,6 +139,17 @@ const CreateProcessorPage = (): JSX.Element => {
           getErrorReason(createProcessorError) ??
             t("processor.errors.malformedTransformation")
         );
+      } else if (
+        isServiceApiError(createProcessorError) &&
+        getErrorCode(createProcessorError) === APIErrorCodes.ERROR_40
+      ) {
+        setShowActionModal(true);
+        actionModalFn.current = (): void => {
+          setShowActionModal(false);
+        };
+        actionModalMessage.current = t(
+          "processor.errors.processorQuotaExceeded"
+        );
       } else {
         setShowActionModal(true);
         actionModalFn.current = (): void => {

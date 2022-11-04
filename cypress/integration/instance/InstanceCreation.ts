@@ -137,16 +137,16 @@ describe("the 'Create a SE instance' Modal", () => {
       const errorInstanceName: string = "quota-error";
       cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
       cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
-          cy.wrap($modal)
-              .should("be.visible")
-              .within(() => {
-                  cy.ouiaId("new-name", "PF4/TextInput").type(errorInstanceName);
-                  cy.ouiaId("submit", "PF4/Button").click();
-                  cy.ouiaId("error-instance-create-fail", "PF4/Alert").should(
-                      "contain.text",
-                      "Warning alert:Your organization is out of quota."
-                  );
-              });
+        cy.wrap($modal)
+          .should("be.visible")
+          .within(() => {
+            cy.ouiaId("new-name", "PF4/TextInput").type(errorInstanceName);
+            cy.ouiaId("submit", "PF4/Button").click();
+            cy.ouiaId("error-instance-create-fail", "PF4/Alert").should(
+              "contain.text",
+              "Warning alert:Your organization is out of quota."
+            );
+          });
       });
     });
   });

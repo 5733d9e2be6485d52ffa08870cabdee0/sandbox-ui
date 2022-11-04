@@ -43,7 +43,7 @@ export function useCreateBridgeApi(): {
               onError("quota-error");
               break;
             default:
-                onError("generic-error");
+              onError("generic-error");
           }
         } else {
           onError("generic-error");

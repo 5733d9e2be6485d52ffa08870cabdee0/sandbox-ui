@@ -13,12 +13,13 @@ import {
   TextContent,
   Title,
 } from "@patternfly/react-core";
-import { IAction, IRow, IRowData } from "@patternfly/react-table";
+import { IAction, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import {
   DEFAULT_PAGE_SIZE,
   FIRST_PAGE,
+  TableColumn,
   TableWithPagination,
 } from "@app/components/TableWithPagination/TableWithPagination";
 import CreateInstance, {
@@ -34,7 +35,6 @@ import {
   ManagedResourceStatus,
 } from "@rhoas/smart-events-management-sdk";
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
-import { TableRow } from "@app/components/Table";
 import { canDeleteResource, canEditResource } from "@utils/resourceUtils";
 import { ErrorWithDetail } from "../../../types/Error";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
@@ -63,11 +63,11 @@ const InstancesListPage = (): JSX.Element => {
     [t]
   );
 
-  const columnNames = [
+  const columnNames: TableColumn[] = [
     {
       accessor: "name",
       label: t("common.name"),
-      formatter: (value: IRowData, row?: IRow): JSX.Element => {
+      formatter: (value: unknown, row?: IRowData): JSX.Element => {
         const bridgeId = (row as BridgeResponse)?.id ?? "";
         const status = (row as BridgeResponse)?.status;
 
@@ -86,23 +86,23 @@ const InstancesListPage = (): JSX.Element => {
     {
       accessor: "submitted_at",
       label: t("common.submittedAt"),
-      formatter: (value: IRowData): string => {
-        const date = new Date(value as unknown as string);
+      formatter: (value: unknown): string => {
+        const date = new Date(value as string);
         return formatDistance(date, new Date()) + " " + t("common.ago");
       },
     },
     {
       accessor: "status",
       label: t("common.status"),
-      formatter: (value: IRowData, row?: IRow): JSX.Element => {
-        const statusString = value as unknown as ManagedResourceStatus;
+      formatter: (value: unknown, row?: IRowData): JSX.Element => {
+        const statusString = value;
         const requestedAt = new Date(
           (row as BridgeResponse)?.modified_at ??
             (row as BridgeResponse)?.submitted_at
         );
         return (
           <SEStatusLabel
-            status={statusString}
+            status={statusString as ManagedResourceStatus}
             resourceType={"bridge"}
             requestedAt={requestedAt}
           />
@@ -196,26 +196,24 @@ const InstancesListPage = (): JSX.Element => {
     resetDeleteInstance();
   }, [resetDeleteInstance]);
 
-  const tableActions = (rowData: TableRow): IAction[] => [
+  const tableActions = (rowData: IRowData): IAction[] => [
     {
       title: t("common.details"),
       onClick: (): void => {
-        setSelectedInstance(rowData.originalData as BridgeResponse);
+        setSelectedInstance(rowData as BridgeResponse);
         setShowInstanceDrawer(true);
       },
     },
     {
       title: t("instance.delete"),
       onClick: (): void => {
-        const id = (rowData.originalData as BridgeResponse).id;
-        const name = (rowData.originalData as BridgeResponse).name;
+        const id = (rowData as BridgeResponse).id;
+        const name = (rowData as BridgeResponse).name;
         if (id && name) {
           deleteInstance(id, name);
         }
       },
-      isDisabled: !canDeleteResource(
-        (rowData.originalData as BridgeResponse).status
-      ),
+      isDisabled: !canDeleteResource((rowData as BridgeResponse).status),
     },
   ];
 

@@ -6,20 +6,29 @@ import {
   ToolbarContent,
   ToolbarItem,
 } from "@patternfly/react-core";
-import {
-  RenderActions,
-  Table,
-  TableColumn,
-  TableRow,
-} from "@app/components/Table";
 import { Pagination } from "@app/components/Pagination/Pagination";
 import { TableSkeleton } from "@app/components/TableSkeleton/TableSkeleton";
+import {
+  RenderActionsCb,
+  ResponsiveTable,
+  useTranslation,
+} from "@rhoas/app-services-ui-components";
+import { IRowData } from "@patternfly/react-table";
+
+export interface TableColumn {
+  /** Column identifier */
+  accessor: string;
+  /** Displayed label */
+  label: string;
+  /** Custom function to be used to render differently all values on this column */
+  formatter?: (value: unknown, row?: IRowData) => string | IRowData;
+}
 
 interface TableWithPaginationProps {
   /** List of columns for the table */
   columns: TableColumn[];
   /** List of rows for the table */
-  rows: TableRow[];
+  rows: IRowData[];
   /** The total number of rows for the table */
   totalRows: number;
   /** The current page number (0-based) */
@@ -37,7 +46,7 @@ interface TableWithPaginationProps {
   /** Element to be rendered when there are no rows to display */
   children?: JSX.Element;
   /** Render function to add actions to the table */
-  renderActions?: RenderActions;
+  renderActions?: RenderActionsCb<IRowData>;
 }
 
 export const FIRST_PAGE = 0;
@@ -64,6 +73,8 @@ export const TableWithPagination: FunctionComponent<
   children,
   renderActions,
 }) => {
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
+
   const getPagination = (isBottom: boolean): JSX.Element => (
     <Pagination
       itemCount={totalRows}
@@ -101,15 +112,30 @@ export const TableWithPagination: FunctionComponent<
           hasActionColumn={true}
         />
       ) : (
-        <Table
-          ariaLabel={tableLabel}
+        <ResponsiveTable
+          ariaLabel={t(
+            "smartEventsTempDictionary:instance.instancesListPageTitle"
+          )}
           columns={columns}
-          cssClasses="overview__table"
-          rows={rows}
+          data={rows}
           renderActions={renderActions}
+          renderHeader={({ column, Th }): JSX.Element => (
+            <Th key={column.accessor}>{column.label}</Th>
+          )}
+          renderCell={({ column, row, colIndex, Td }): JSX.Element => {
+            const accessor = column.accessor;
+            const formatter =
+              column.formatter ?? ((value): IRowData => value as IRowData);
+            const objectRowElement = row[accessor] as unknown;
+            return (
+              <Td key={colIndex} dataLabel={column.label}>
+                {formatter(objectRowElement, row)}
+              </Td>
+            );
+          }}
         >
           {children}
-        </Table>
+        </ResponsiveTable>
       )}
       {getPagination(true)}
     </Card>

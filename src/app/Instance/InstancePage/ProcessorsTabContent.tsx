@@ -1,6 +1,7 @@
 import {
   DEFAULT_PAGE_SIZE,
   FIRST_PAGE,
+  TableColumn,
   TableWithPagination,
 } from "@app/components/TableWithPagination/TableWithPagination";
 import {
@@ -12,7 +13,7 @@ import {
 } from "@patternfly/react-core";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import React, { useCallback, useEffect, useState } from "react";
-import { IAction, IRow, IRowData } from "@patternfly/react-table";
+import { IAction, IRowData } from "@patternfly/react-table";
 import {
   BridgeResponse,
   ManagedResourceStatus,
@@ -25,7 +26,6 @@ import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProce
 import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { ErrorWithDetail } from "../../../types/Error";
 import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
-import { TableRow } from "@app/components/Table";
 import { canDeleteResource } from "@utils/resourceUtils";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
@@ -50,11 +50,11 @@ export const ProcessorsTabContent = ({
   const [showProcessorDeleteModal, setShowProcessorDeleteModal] =
     useState(false);
 
-  const processorsOverviewColumns = [
+  const processorsOverviewColumns: TableColumn[] = [
     {
       accessor: "name",
       label: t("common.name"),
-      formatter: (value: IRowData, row?: IRow): JSX.Element => {
+      formatter: (value: unknown, row?: IRowData): JSX.Element => {
         const processorId = (row as BridgeResponse)?.id ?? "";
         return (
           <Link
@@ -69,8 +69,8 @@ export const ProcessorsTabContent = ({
     {
       accessor: "type",
       label: t("common.type"),
-      formatter: (value: IRowData): string => {
-        const typeString = value as unknown as string;
+      formatter: (value: unknown): string => {
+        const typeString = value as string;
         return !typeString || !typeString.length
           ? ""
           : typeString.charAt(0).toUpperCase() +
@@ -80,16 +80,16 @@ export const ProcessorsTabContent = ({
     {
       accessor: "submitted_at",
       label: t("common.submittedAt"),
-      formatter: (value: IRowData): string => {
-        const date = new Date(value as unknown as string);
+      formatter: (value: unknown): string => {
+        const date = new Date(value as string);
         return formatDistance(date, new Date()) + " " + t("common.ago");
       },
     },
     {
       accessor: "status",
       label: t("common.status"),
-      formatter: (value: IRowData, row?: IRow): JSX.Element => {
-        const statusString = value as unknown as ManagedResourceStatus;
+      formatter: (value: unknown, row?: IRowData): JSX.Element => {
+        const statusString = value as ManagedResourceStatus;
         const requestedAt = new Date(
           (row as ProcessorResponse).modified_at ??
             (row as ProcessorResponse).submitted_at
@@ -119,19 +119,17 @@ export const ProcessorsTabContent = ({
     setShowProcessorDeleteModal(true);
   };
 
-  const tableActions = (rowData: TableRow): IAction[] => [
+  const tableActions = (rowData: IRowData): IAction[] => [
     {
       title: t("common.delete"),
       onClick: (): void => {
-        const id = (rowData.originalData as BridgeResponse).id;
-        const name = (rowData.originalData as BridgeResponse).name;
+        const id = (rowData as BridgeResponse).id;
+        const name = (rowData as BridgeResponse).name;
         if (id && name) {
           deleteProcessor(id, name);
         }
       },
-      isDisabled: !canDeleteResource(
-        (rowData.originalData as BridgeResponse).status
-      ),
+      isDisabled: !canDeleteResource((rowData as BridgeResponse).status),
     },
   ];
 

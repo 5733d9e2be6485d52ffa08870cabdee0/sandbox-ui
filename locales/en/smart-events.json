@@ -115,7 +115,7 @@
     "smartEventInstance": "Smart Events Instance",
     "smartEventInstances": "Smart Event Instances",
     "viewInformation": "View instance information",
-    "quotaExceededErrorDescription": "To deploy a new instance, delete an existing one first"
+    "quotaExceededErrorDescription": "To deploy a new instance, delete an existing one first."
   },
   "processor": {
     "action": "Action",
@@ -149,7 +149,7 @@
       "missingProcessorType": "Please select a processor type.",
       "parametersSectionGenericError": "Error while retrieving the information related to the parameters section for this Processor.",
       "processorDetailsGenericError": "Error while retrieving the Processor details.",
-      "processorQuotaExceeded": "Your organization is out of quota. To create a new processor, delete the existing one"
+      "processorQuotaExceeded": "Your organization is out of quota. To create a new processor, delete an existing one first."
     },
     "filters": "Filters",
     "generalInformation": "General information",

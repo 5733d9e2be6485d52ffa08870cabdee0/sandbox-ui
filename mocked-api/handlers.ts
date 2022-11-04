@@ -241,7 +241,6 @@ export const handlers = [
           items: [
             {
               ...error_quota_exceeded,
-              reason: `Creation of bridge was no successful due to exceeded quota'`,
             },
           ],
         })
@@ -644,7 +643,6 @@ export const handlers = [
           items: [
             {
               ...error_quota_exceeded,
-              reason: `Processor creation was no successful due to exceeded quota'`,
             },
           ],
         })
@@ -1335,6 +1333,8 @@ const error_quota_exceeded = {
   id: "40",
   href: "/api/smartevents_mgmt/v1/errors/40",
   code: "OPENBRIDGE-40",
+  reason:
+    "The requested resource could not be deployed because you are out of available quota.",
 };
 
 interface MockProcessorRequest extends Omit<ProcessorRequest, "filters"> {

@@ -26,6 +26,14 @@ const InstanceAlert: VoidFunctionComponent<InstanceAlertProps> = (props) => {
             variant="warning"
           />
         );
+      case "quota-error":
+        return (
+          <ShowAlert
+            title={t("instance.errors.instanceQuotaExceeded")}
+            body={t("instance.quotaExceededErrorDescription")}
+            variant="warning"
+          />
+        );
       case "generic-error":
         return (
           <ShowAlert

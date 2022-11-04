@@ -104,6 +104,55 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         );
       });
 
+      it("Out of quota processor", () => {
+        const processorName: string = "quota-error";
+        const action = {
+          "Action type": "Slack",
+          "Channel": "dev-action",
+          "Webhook URL": "https://test.app.com/item",
+          "Icon Emoji": "Property not configured",
+          "Icon URL": "Property not configured",
+          "Username": "Property not configured",
+        };
+
+        cy.ouiaId("create-processor", "PF4/Button").click();
+        cy.ouiaId("Create processor", "breadcrumb-item").should("be.visible");
+        cy.ouiaId("sink", "Tile").should("be.visible").click();
+        cy.ouiaId("processor-name", "PF4/TextInput")
+          .should("be.visible")
+          .type(processorName);
+
+        //Actions
+        cy.ouiaId("action-type", "PF4/FormSelect")
+          .should("be.visible")
+          .select(action["Action type"]);
+
+        //Configuration
+        cy.ouiaId("configuration")
+          .find("div.pf-c-form__group")
+          .then((item) => {
+            cy.wrap(item[0]).within(() => {
+              cy.get("div")
+                .first()
+                .should("contain.text", "Channel")
+                .should("be.visible");
+              cy.get("input").type(action["Channel"]);
+            });
+            cy.wrap(item[1]).within(() => {
+              cy.get("div")
+                .first()
+                .should("contain.text", "Webhook URL")
+                .should("be.visible");
+              cy.get("input").type(action["Webhook URL"]);
+            });
+          });
+
+        cy.ouiaId("submit").click();
+        cy.ouiaId("processor-error-modal", "PF4/ModalContent").should(
+          "be.visible"
+        );
+      });
+
       it("Source processor", () => {
         const processorName: string = "Source processor";
         const source = {

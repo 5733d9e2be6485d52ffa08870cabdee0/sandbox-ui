@@ -45,7 +45,10 @@ describe("Basic Elements", () => {
       //TODO: MGDOBR-710
       cy.wait(10000);
       cy.ouiaType("PF4/TableRow").should("have.length", 11);
-      cy.contains("Instance two").should("be.visible").click();
+      cy.ouiaId("Instance two", "PF4/TableRow")
+        .find("a[data-testid='tableInstances-linkInstance']")
+        .should("be.visible")
+        .click();
       cy.ouiaId("instance-name", "PF4/Text").should(
         "have.text",
         "Instance two"
@@ -55,7 +58,8 @@ describe("Basic Elements", () => {
 
   it("Instance header details are available", () => {
     const instanceHeaderDetails = ["Name", "Time created", "Status"];
-    cy.ouiaType("PF4/Table")
+    cy.ouiaId("Instances list table", "PF4/Table")
+      .ouiaType("PF4/TableRow")
       .find("th")
       .should("have.length", instanceHeaderDetails.length)
       .each((item, index) => {

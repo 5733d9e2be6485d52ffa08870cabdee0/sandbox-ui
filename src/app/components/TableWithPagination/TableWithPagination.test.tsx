@@ -7,6 +7,7 @@ describe("TableWithPagination component", () => {
     const comp = customRender(
       <TableWithPagination
         columns={[]}
+        getRowOuiaId={(): undefined => undefined}
         rows={[]}
         tableLabel="table"
         pageNumber={0}
@@ -38,6 +39,7 @@ describe("TableWithPagination component", () => {
     const comp = customRender(
       <TableWithPagination
         columns={[]}
+        getRowOuiaId={(): undefined => undefined}
         rows={[]}
         tableLabel="table"
         customToolbarElement={<div>{content}</div>}
@@ -60,6 +62,7 @@ describe("TableWithPagination component", () => {
     const comp = customRender(
       <TableWithPagination
         columns={[]}
+        getRowOuiaId={(): undefined => undefined}
         rows={[]}
         tableLabel="table"
         pageNumber={0}
@@ -77,6 +80,7 @@ describe("TableWithPagination component", () => {
     const comp = customRender(
       <TableWithPagination
         columns={[]}
+        getRowOuiaId={(): undefined => undefined}
         rows={[]}
         tableLabel="table"
         pageNumber={0}

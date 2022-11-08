@@ -11,7 +11,6 @@ import { TableSkeleton } from "@app/components/TableSkeleton/TableSkeleton";
 import {
   RenderActionsCb,
   ResponsiveTable,
-  useTranslation,
 } from "@rhoas/app-services-ui-components";
 import { IRowData } from "@patternfly/react-table";
 
@@ -47,6 +46,7 @@ interface TableWithPaginationProps {
   children?: JSX.Element;
   /** Render function to add actions to the table */
   renderActions?: RenderActionsCb<IRowData>;
+  getRowOuiaId: (row: IRowData) => string | undefined;
 }
 
 export const FIRST_PAGE = 0;
@@ -72,9 +72,8 @@ export const TableWithPagination: FunctionComponent<
   tableLabel,
   children,
   renderActions,
+  getRowOuiaId,
 }) => {
-  const { t } = useTranslation(["smartEventsTempDictionary"]);
-
   const getPagination = (isBottom: boolean): JSX.Element => (
     <Pagination
       itemCount={totalRows}
@@ -113,9 +112,7 @@ export const TableWithPagination: FunctionComponent<
         />
       ) : (
         <ResponsiveTable
-          ariaLabel={t(
-            "smartEventsTempDictionary:instance.instancesListPageTitle"
-          )}
+          ariaLabel={tableLabel}
           columns={columns}
           data={rows}
           renderActions={renderActions}
@@ -133,6 +130,10 @@ export const TableWithPagination: FunctionComponent<
               </Td>
             );
           }}
+          setRowOuiaId={({ row, rowIndex }): string =>
+            getRowOuiaId(row) ?? `table-row-${String(rowIndex)}`
+          }
+          tableOuiaId={tableLabel}
         >
           {children}
         </ResponsiveTable>

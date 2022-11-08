@@ -196,6 +196,9 @@ export const ProcessorsTabContent = ({
             tableLabel={t(
               "smartEventsTempDictionary:processor.processorsListTable"
             )}
+            getRowOuiaId={(row): string | undefined =>
+              (row as ProcessorResponse).name
+            }
             isLoading={areProcessorsLoading}
             onPaginationChange={onPaginationChange}
             pageNumber={currentPage}

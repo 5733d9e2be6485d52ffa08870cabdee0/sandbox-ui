@@ -264,6 +264,9 @@ const InstancesListPage = (): JSX.Element => {
           <TableWithPagination
             columns={columnNames}
             customToolbarElement={customToolbarElement}
+            getRowOuiaId={(row): string | undefined =>
+              (row as BridgeResponse).name
+            }
             isLoading={isLoading}
             rows={bridgeListResponse.items}
             totalRows={totalRows ?? 0}

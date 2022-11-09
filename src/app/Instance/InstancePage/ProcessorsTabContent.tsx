@@ -122,19 +122,22 @@ export const ProcessorsTabContent = ({
     setShowProcessorDeleteModal(true);
   };
 
-  const tableActions = (rowData: IRowData): IAction[] => [
-    {
-      title: t("common.delete"),
-      onClick: (): void => {
-        const id = (rowData as BridgeResponse).id;
-        const name = (rowData as BridgeResponse).name;
-        if (id && name) {
-          deleteProcessor(id, name);
-        }
+  const tableActions = useCallback(
+    (rowData: IRowData): IAction[] => [
+      {
+        title: t("common.delete"),
+        onClick: (): void => {
+          const id = (rowData as BridgeResponse).id;
+          const name = (rowData as BridgeResponse).name;
+          if (id && name) {
+            deleteProcessor(id, name);
+          }
+        },
+        isDisabled: !canDeleteResource((rowData as BridgeResponse).status),
       },
-      isDisabled: !canDeleteResource((rowData as BridgeResponse).status),
-    },
-  ];
+    ],
+    [t]
+  );
 
   const {
     getProcessors,
@@ -164,6 +167,18 @@ export const ProcessorsTabContent = ({
     setShowProcessorDeleteModal(false);
     getProcessors(instanceId, currentPage, currentPageSize);
   }, [getProcessors, instanceId, currentPage, currentPageSize]);
+
+  const rowOuiaId = useCallback(
+    (row): string | undefined => (row as ProcessorResponse).name,
+    []
+  );
+
+  const renderActions = useCallback(
+    ({ row, ActionsColumn }): JSX.Element => (
+      <ActionsColumn items={tableActions(row as IRowData)} />
+    ),
+    [tableActions]
+  );
 
   usePolling(() => triggerGetProcessors(), 10000);
 
@@ -199,17 +214,13 @@ export const ProcessorsTabContent = ({
             tableLabel={t(
               "smartEventsTempDictionary:processor.processorsListTable"
             )}
-            getRowOuiaId={(row): string | undefined =>
-              (row as ProcessorResponse).name
-            }
+            getRowOuiaId={rowOuiaId}
             isLoading={areProcessorsLoading}
             onPaginationChange={onPaginationChange}
             pageNumber={currentPage}
             pageSize={currentPageSize}
             totalRows={totalRows ?? 0}
-            renderActions={({ row, ActionsColumn }): JSX.Element => (
-              <ActionsColumn items={tableActions(row)} />
-            )}
+            renderActions={renderActions}
           >
             <EmptyState variant="large">
               <EmptyStateIcon icon={PlusCircleIcon} />

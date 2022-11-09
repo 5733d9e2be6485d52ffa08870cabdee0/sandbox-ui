@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, useCallback } from "react";
 import {
   Card,
   PaginationVariant,
@@ -86,6 +86,38 @@ export const TableWithPagination: FunctionComponent<
     />
   );
 
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access */
+  const rowOuiaId = useCallback(
+    ({ row, rowIndex }): string =>
+      getRowOuiaId(row as IRowData) ?? `table-row-${String(rowIndex)}`,
+    [getRowOuiaId]
+  );
+
+  const renderHeader = useCallback(
+    ({ column, Th }): JSX.Element => (
+      <Th key={column.accessor}>{column.label}</Th>
+    ),
+    []
+  );
+
+  const renderCell = useCallback(
+    ({ column, row, colIndex, Td }): JSX.Element => {
+      const accessor = column.accessor;
+      const formatter: (value: unknown, row?: IRowData) => string | IRowData =
+        column.formatter ?? ((value: IRowData): IRowData => value);
+      const objectRowElement = row[accessor] as unknown;
+      return (
+        <Td key={colIndex} dataLabel={column.label}>
+          {formatter(objectRowElement, row as IRowData)}
+        </Td>
+      );
+    },
+    []
+  );
+
+  const setRowKey = useCallback(({ row }) => row.id as string, []);
+  /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access */
+
   return (
     <Card ouiaId={tableLabel}>
       <Toolbar ouiaId="rows-toolbar">
@@ -116,23 +148,10 @@ export const TableWithPagination: FunctionComponent<
           columns={columns}
           data={rows}
           renderActions={renderActions}
-          renderHeader={({ column, Th }): JSX.Element => (
-            <Th key={column.accessor}>{column.label}</Th>
-          )}
-          renderCell={({ column, row, colIndex, Td }): JSX.Element => {
-            const accessor = column.accessor;
-            const formatter =
-              column.formatter ?? ((value): IRowData => value as IRowData);
-            const objectRowElement = row[accessor] as unknown;
-            return (
-              <Td key={colIndex} dataLabel={column.label}>
-                {formatter(objectRowElement, row)}
-              </Td>
-            );
-          }}
-          setRowOuiaId={({ row, rowIndex }): string =>
-            getRowOuiaId(row) ?? `table-row-${String(rowIndex)}`
-          }
+          renderHeader={renderHeader}
+          renderCell={renderCell}
+          setRowOuiaId={rowOuiaId}
+          setRowKey={setRowKey}
           tableOuiaId={tableLabel}
         >
           {children}

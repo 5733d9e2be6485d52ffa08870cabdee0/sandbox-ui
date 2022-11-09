@@ -196,26 +196,29 @@ const InstancesListPage = (): JSX.Element => {
     resetDeleteInstance();
   }, [resetDeleteInstance]);
 
-  const tableActions = (rowData: IRowData): IAction[] => [
-    {
-      title: t("common.details"),
-      onClick: (): void => {
-        setSelectedInstance(rowData as BridgeResponse);
-        setShowInstanceDrawer(true);
+  const tableActions = useCallback(
+    (rowData: IRowData): IAction[] => [
+      {
+        title: t("common.details"),
+        onClick: (): void => {
+          setSelectedInstance(rowData as BridgeResponse);
+          setShowInstanceDrawer(true);
+        },
       },
-    },
-    {
-      title: t("instance.delete"),
-      onClick: (): void => {
-        const id = (rowData as BridgeResponse).id;
-        const name = (rowData as BridgeResponse).name;
-        if (id && name) {
-          deleteInstance(id, name);
-        }
+      {
+        title: t("instance.delete"),
+        onClick: (): void => {
+          const id = (rowData as BridgeResponse).id;
+          const name = (rowData as BridgeResponse).name;
+          if (id && name) {
+            deleteInstance(id, name);
+          }
+        },
+        isDisabled: !canDeleteResource((rowData as BridgeResponse).status),
       },
-      isDisabled: !canDeleteResource((rowData as BridgeResponse).status),
-    },
-  ];
+    ],
+    [t]
+  );
 
   const customToolbarElement = (
     <>
@@ -246,6 +249,16 @@ const InstancesListPage = (): JSX.Element => {
     [currentPageSize, getBridges]
   );
 
+  const rowOuiaId = useCallback(
+    (row): string | undefined => (row as BridgeResponse).name,
+    []
+  );
+  const renderActions = useCallback(
+    ({ row, ActionsColumn }): JSX.Element => (
+      <ActionsColumn items={tableActions(row as IRowData)} />
+    ),
+    [tableActions]
+  );
   const pageContent = (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -264,9 +277,7 @@ const InstancesListPage = (): JSX.Element => {
           <TableWithPagination
             columns={columnNames}
             customToolbarElement={customToolbarElement}
-            getRowOuiaId={(row): string | undefined =>
-              (row as BridgeResponse).name
-            }
+            getRowOuiaId={rowOuiaId}
             isLoading={isLoading}
             rows={bridgeListResponse.items}
             totalRows={totalRows ?? 0}
@@ -276,9 +287,7 @@ const InstancesListPage = (): JSX.Element => {
             tableLabel={t(
               "smartEventsTempDictionary:instance.instancesListTable"
             )}
-            renderActions={({ row, ActionsColumn }): JSX.Element => (
-              <ActionsColumn items={tableActions(row)} />
-            )}
+            renderActions={renderActions}
           >
             <EmptyState variant="large">
               <EmptyStateIcon icon={PlusCircleIcon} />

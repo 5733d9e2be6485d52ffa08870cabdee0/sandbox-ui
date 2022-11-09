@@ -8,6 +8,7 @@ import {
   EmptyState,
   EmptyStateIcon,
   PageSection,
+  Skeleton,
   Title,
 } from "@patternfly/react-core";
 import { PlusCircleIcon } from "@patternfly/react-icons";
@@ -33,11 +34,13 @@ import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 interface ProcessorTabContentProps {
   instanceId: string;
   pageTitle: JSX.Element;
+  bridgeStatus: string | undefined;
 }
 
 export const ProcessorsTabContent = ({
   instanceId,
   pageTitle,
+  bridgeStatus,
 }: ProcessorTabContentProps): JSX.Element => {
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
@@ -105,14 +108,6 @@ export const ProcessorsTabContent = ({
     },
   ];
 
-  const customToolbarElement = (
-    <Link to={`/instance/${instanceId}/create-processor`}>
-      <Button ouiaId="create-processor" variant="primary">
-        {t("processor.createProcessor")}
-      </Button>
-    </Link>
-  );
-
   const deleteProcessor = (id: string, name: string): void => {
     setDeleteProcessorId(id);
     setDeleteProcessorName(name);
@@ -141,6 +136,20 @@ export const ProcessorsTabContent = ({
     isLoading: areProcessorsLoading,
     error: processorsError,
   } = useGetProcessorsApi();
+
+  const customToolbarElement = areProcessorsLoading ? (
+    <Skeleton width={"170px"} height={"35px"} />
+  ) : bridgeStatus == ManagedResourceStatus.Failed ? (
+    <Button ouiaId="create-processor" variant="primary" isDisabled={true}>
+      {t("processor.createProcessor")}
+    </Button>
+  ) : (
+    <Link to={`/instance/${instanceId}/create-processor`}>
+      <Button ouiaId="create-processor" variant="primary">
+        {t("processor.createProcessor")}
+      </Button>
+    </Link>
+  );
 
   const triggerGetProcessors = useCallback(
     (): void =>

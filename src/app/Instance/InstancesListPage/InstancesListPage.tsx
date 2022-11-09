@@ -63,53 +63,56 @@ const InstancesListPage = (): JSX.Element => {
     [t]
   );
 
-  const columnNames: TableColumn[] = [
-    {
-      accessor: "name",
-      label: t("common.name"),
-      formatter: (value: unknown, row?: IRowData): JSX.Element => {
-        const bridgeId = (row as BridgeResponse)?.id ?? "";
-        const status = (row as BridgeResponse)?.status;
+  const columnNames: TableColumn[] = useMemo(
+    () => [
+      {
+        accessor: "name",
+        label: t("common.name"),
+        formatter: (value: unknown, row?: IRowData): JSX.Element => {
+          const bridgeId = (row as BridgeResponse)?.id ?? "";
+          const status = (row as BridgeResponse)?.status;
 
-        return canEditResource(status) ? (
-          <Link
-            data-testid="tableInstances-linkInstance"
-            to={`/instance/${bridgeId}`}
-          >
-            {value}
-          </Link>
-        ) : (
-          <>{value}</>
-        );
+          return canEditResource(status) ? (
+            <Link
+              data-testid="tableInstances-linkInstance"
+              to={`/instance/${bridgeId}`}
+            >
+              {value}
+            </Link>
+          ) : (
+            <>{value}</>
+          );
+        },
       },
-    },
-    {
-      accessor: "submitted_at",
-      label: t("common.submittedAt"),
-      formatter: (value: unknown): string => {
-        const date = new Date(value as string);
-        return formatDistance(date, new Date()) + " " + t("common.ago");
+      {
+        accessor: "submitted_at",
+        label: t("common.submittedAt"),
+        formatter: (value: unknown): string => {
+          const date = new Date(value as string);
+          return formatDistance(date, new Date()) + " " + t("common.ago");
+        },
       },
-    },
-    {
-      accessor: "status",
-      label: t("common.status"),
-      formatter: (value: unknown, row?: IRowData): JSX.Element => {
-        const statusString = value;
-        const requestedAt = new Date(
-          (row as BridgeResponse)?.modified_at ??
-            (row as BridgeResponse)?.submitted_at
-        );
-        return (
-          <SEStatusLabel
-            status={statusString as ManagedResourceStatus}
-            resourceType={"bridge"}
-            requestedAt={requestedAt}
-          />
-        );
+      {
+        accessor: "status",
+        label: t("common.status"),
+        formatter: (value: unknown, row?: IRowData): JSX.Element => {
+          const statusString = value;
+          const requestedAt = new Date(
+            (row as BridgeResponse)?.modified_at ??
+              (row as BridgeResponse)?.submitted_at
+          );
+          return (
+            <SEStatusLabel
+              status={statusString as ManagedResourceStatus}
+              resourceType={"bridge"}
+              requestedAt={requestedAt}
+            />
+          );
+        },
       },
-    },
-  ];
+    ],
+    [t]
+  );
 
   const { bridgeListResponse, isLoading, getBridges, error } =
     useGetBridgesApi();

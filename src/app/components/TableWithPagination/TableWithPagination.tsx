@@ -12,7 +12,11 @@ import {
   RenderActionsCb,
   ResponsiveTable,
 } from "@rhoas/app-services-ui-components";
-import { IRowData } from "@patternfly/react-table";
+import {
+  IRowData,
+  Td as TableTd,
+  Th as TableTh,
+} from "@patternfly/react-table";
 
 export interface TableColumn {
   /** Column identifier */
@@ -86,7 +90,6 @@ export const TableWithPagination: FunctionComponent<
     />
   );
 
-  /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access */
   const rowOuiaId = useCallback(
     ({ row, rowIndex }): string =>
       getRowOuiaId(row as IRowData) ?? `table-row-${String(rowIndex)}`,
@@ -94,29 +97,40 @@ export const TableWithPagination: FunctionComponent<
   );
 
   const renderHeader = useCallback(
-    ({ column, Th }): JSX.Element => (
-      <Th key={column.accessor}>{column.label}</Th>
-    ),
+    ({
+      column,
+      Th,
+    }: {
+      column: TableColumn;
+      Th: typeof TableTh;
+    }): JSX.Element => <Th key={column.accessor}>{column.label}</Th>,
     []
   );
 
   const renderCell = useCallback(
-    ({ column, row, colIndex, Td }): JSX.Element => {
+    ({
+      column,
+      row,
+      colIndex,
+      Td,
+    }: {
+      column: TableColumn;
+      row: IRowData;
+      colIndex: number;
+      Td: typeof TableTd;
+    }): JSX.Element => {
       const accessor = column.accessor;
       const formatter: (value: unknown, row?: IRowData) => string | IRowData =
-        column.formatter ?? ((value: IRowData): IRowData => value);
+        column.formatter ?? ((value: unknown): IRowData => value as IRowData);
       const objectRowElement = row[accessor] as unknown;
       return (
         <Td key={colIndex} dataLabel={column.label}>
-          {formatter(objectRowElement, row as IRowData)}
+          {formatter(objectRowElement, row)}
         </Td>
       );
     },
     []
   );
-
-  const setRowKey = useCallback(({ row }) => row.id as string, []);
-  /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access */
 
   return (
     <Card ouiaId={tableLabel}>
@@ -151,7 +165,6 @@ export const TableWithPagination: FunctionComponent<
           renderHeader={renderHeader}
           renderCell={renderCell}
           setRowOuiaId={rowOuiaId}
-          setRowKey={setRowKey}
           tableOuiaId={tableLabel}
         >
           {children}

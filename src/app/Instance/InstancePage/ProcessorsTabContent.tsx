@@ -12,7 +12,7 @@ import {
   Title,
 } from "@patternfly/react-core";
 import { PlusCircleIcon } from "@patternfly/react-icons";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { IAction, IRowData } from "@patternfly/react-table";
 import {
   BridgeResponse,
@@ -50,60 +50,63 @@ export const ProcessorsTabContent = ({
   const [showProcessorDeleteModal, setShowProcessorDeleteModal] =
     useState(false);
 
-  const processorsOverviewColumns: TableColumn[] = [
-    {
-      accessor: "name",
-      label: t("common.name"),
-      formatter: (value: unknown, row?: IRowData): JSX.Element => {
-        const processorId = (row as BridgeResponse)?.id ?? "";
-        return (
-          <Link
-            data-testid="tableProcessors-linkProcessor"
-            to={`/instance/${instanceId}/processor/${processorId}`}
-          >
-            {value}
-          </Link>
-        );
+  const processorsOverviewColumns: TableColumn[] = useMemo(
+    () => [
+      {
+        accessor: "name",
+        label: t("common.name"),
+        formatter: (value: unknown, row?: IRowData): JSX.Element => {
+          const processorId = (row as BridgeResponse)?.id ?? "";
+          return (
+            <Link
+              data-testid="tableProcessors-linkProcessor"
+              to={`/instance/${instanceId}/processor/${processorId}`}
+            >
+              {value}
+            </Link>
+          );
+        },
       },
-    },
-    {
-      accessor: "type",
-      label: t("common.type"),
-      formatter: (value: unknown): string => {
-        const typeString = value as string;
-        return !typeString || !typeString.length
-          ? ""
-          : typeString.charAt(0).toUpperCase() +
-              typeString.slice(1).toLowerCase();
+      {
+        accessor: "type",
+        label: t("common.type"),
+        formatter: (value: unknown): string => {
+          const typeString = value as string;
+          return !typeString || !typeString.length
+            ? ""
+            : typeString.charAt(0).toUpperCase() +
+                typeString.slice(1).toLowerCase();
+        },
       },
-    },
-    {
-      accessor: "submitted_at",
-      label: t("common.submittedAt"),
-      formatter: (value: unknown): string => {
-        const date = new Date(value as string);
-        return formatDistance(date, new Date()) + " " + t("common.ago");
+      {
+        accessor: "submitted_at",
+        label: t("common.submittedAt"),
+        formatter: (value: unknown): string => {
+          const date = new Date(value as string);
+          return formatDistance(date, new Date()) + " " + t("common.ago");
+        },
       },
-    },
-    {
-      accessor: "status",
-      label: t("common.status"),
-      formatter: (value: unknown, row?: IRowData): JSX.Element => {
-        const statusString = value as ManagedResourceStatus;
-        const requestedAt = new Date(
-          (row as ProcessorResponse).modified_at ??
-            (row as ProcessorResponse).submitted_at
-        );
-        return (
-          <SEStatusLabel
-            status={statusString}
-            resourceType={"processor"}
-            requestedAt={requestedAt}
-          />
-        );
+      {
+        accessor: "status",
+        label: t("common.status"),
+        formatter: (value: unknown, row?: IRowData): JSX.Element => {
+          const statusString = value as ManagedResourceStatus;
+          const requestedAt = new Date(
+            (row as ProcessorResponse).modified_at ??
+              (row as ProcessorResponse).submitted_at
+          );
+          return (
+            <SEStatusLabel
+              status={statusString}
+              resourceType={"processor"}
+              requestedAt={requestedAt}
+            />
+          );
+        },
       },
-    },
-  ];
+    ],
+    [instanceId, t]
+  );
 
   const customToolbarElement = (
     <Link to={`/instance/${instanceId}/create-processor`}>

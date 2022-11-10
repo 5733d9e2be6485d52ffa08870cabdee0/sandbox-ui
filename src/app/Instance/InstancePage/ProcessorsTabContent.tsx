@@ -19,7 +19,7 @@ import {
   ManagedResourceStatus,
   ProcessorResponse,
 } from "@rhoas/smart-events-management-sdk";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
@@ -42,6 +42,7 @@ export const ProcessorsTabContent = ({
   pageTitle,
   bridgeStatus,
 }: ProcessorTabContentProps): JSX.Element => {
+  const history = useHistory();
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
@@ -139,16 +140,17 @@ export const ProcessorsTabContent = ({
 
   const customToolbarElement = areProcessorsLoading ? (
     <Skeleton width={"170px"} height={"35px"} />
-  ) : bridgeStatus == ManagedResourceStatus.Failed ? (
-    <Button ouiaId="create-processor" variant="primary" isDisabled={true}>
+  ) : (
+    <Button
+      ouiaId="create-processor"
+      variant="primary"
+      isDisabled={bridgeStatus !== ManagedResourceStatus.Ready}
+      onClick={(): void =>
+        history.push(`/instance/${instanceId}/create-processor`)
+      }
+    >
       {t("processor.createProcessor")}
     </Button>
-  ) : (
-    <Link to={`/instance/${instanceId}/create-processor`}>
-      <Button ouiaId="create-processor" variant="primary">
-        {t("processor.createProcessor")}
-      </Button>
-    </Link>
   );
 
   const triggerGetProcessors = useCallback(

@@ -138,7 +138,7 @@ export const ProcessorsTabContent = ({
     error: processorsError,
   } = useGetProcessorsApi();
 
-  const customToolbarElement = areProcessorsLoading ? (
+  const customToolbarElement = !bridgeStatus ? (
     <Skeleton width={"170px"} height={"35px"} />
   ) : (
     <Button

@@ -218,9 +218,10 @@ export const handlers = [
       );
     }
 
-    if (name == "error-test") {
+    if (name.includes("error-test")) {
       return res(
         ctx.status(500),
+        ctx.delay(apiDelay),
         ctx.json({
           kind: "ErrorsResponse",
           items: [

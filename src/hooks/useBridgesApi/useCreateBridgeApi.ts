@@ -42,6 +42,8 @@ export function useCreateBridgeApi(): {
             case APIErrorCodes.ERROR_40:
               onError("quota-error");
               break;
+            default:
+              onError("generic-error");
           }
         } else {
           onError("generic-error");

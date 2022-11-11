@@ -295,6 +295,7 @@ const InstancePage = (): JSX.Element => {
               <ProcessorsTabContent
                 instanceId={instanceId}
                 pageTitle={getPageTitle(bridge)}
+                bridgeStatus={bridge?.status}
               />
             )}
           </TabContent>

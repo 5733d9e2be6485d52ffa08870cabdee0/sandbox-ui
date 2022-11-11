@@ -8,6 +8,7 @@ import {
   EmptyState,
   EmptyStateIcon,
   PageSection,
+  Skeleton,
   Title,
 } from "@patternfly/react-core";
 import { PlusCircleIcon } from "@patternfly/react-icons";
@@ -18,7 +19,7 @@ import {
   ManagedResourceStatus,
   ProcessorResponse,
 } from "@rhoas/smart-events-management-sdk";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
@@ -33,12 +34,15 @@ import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 interface ProcessorTabContentProps {
   instanceId: string;
   pageTitle: JSX.Element;
+  bridgeStatus: string | undefined;
 }
 
 export const ProcessorsTabContent = ({
   instanceId,
   pageTitle,
+  bridgeStatus,
 }: ProcessorTabContentProps): JSX.Element => {
+  const history = useHistory();
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
@@ -105,14 +109,6 @@ export const ProcessorsTabContent = ({
     },
   ];
 
-  const customToolbarElement = (
-    <Link to={`/instance/${instanceId}/create-processor`}>
-      <Button ouiaId="create-processor" variant="primary">
-        {t("processor.createProcessor")}
-      </Button>
-    </Link>
-  );
-
   const deleteProcessor = (id: string, name: string): void => {
     setDeleteProcessorId(id);
     setDeleteProcessorName(name);
@@ -141,6 +137,21 @@ export const ProcessorsTabContent = ({
     isLoading: areProcessorsLoading,
     error: processorsError,
   } = useGetProcessorsApi();
+
+  const customToolbarElement = !bridgeStatus ? (
+    <Skeleton width={"170px"} height={"35px"} />
+  ) : (
+    <Button
+      ouiaId="create-processor"
+      variant="primary"
+      isDisabled={bridgeStatus !== ManagedResourceStatus.Ready}
+      onClick={(): void =>
+        history.push(`/instance/${instanceId}/create-processor`)
+      }
+    >
+      {t("processor.createProcessor")}
+    </Button>
+  );
 
   const triggerGetProcessors = useCallback(
     (): void =>

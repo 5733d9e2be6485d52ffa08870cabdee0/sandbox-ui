@@ -4,11 +4,12 @@ import {
   isEnvironmentType,
   safeLogin,
   pageWasLoaded,
+  visitWithCookies,
 } from "../../utils/Util";
 
 describe("Basic Elements", () => {
   beforeEach(() => {
-    cy.visit("/");
+    visitWithCookies("/");
     safeLogin();
     pageWasLoaded();
   });

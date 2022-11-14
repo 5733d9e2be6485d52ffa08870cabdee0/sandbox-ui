@@ -9,6 +9,7 @@ import {
   isEnvironmentType,
   pageWasLoaded,
   safeLogin,
+  visitWithCookies,
 } from "cypress/utils/Util";
 const formatDate = (dateStr: string): string =>
   format(new Date(dateStr), "PPPP p");
@@ -16,7 +17,7 @@ const formatDate = (dateStr: string): string =>
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Instance Page - Instance one", () => {
     beforeEach(() => {
-      cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
+      visitWithCookies("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
       safeLogin();
       pageWasLoaded();
     });

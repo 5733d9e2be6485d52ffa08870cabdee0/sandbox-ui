@@ -10,6 +10,26 @@ export function uniqueName(prefix: string) {
   }
 }
 
+export function visitWithCookies(path: string) {
+  callForEnv(
+    () => {
+      cy.visit(path);
+    },
+    () => {
+      //The official cypress example (logging__jwt):
+      // https://github.com/cypress-io/cypress-example-recipes/blob/194a85456fc04900b182e225c3bfd9979693550f/examples/logging-in__jwt/cypress/integration/spec.js#L24
+      cy.visit(path, {
+        onBeforeLoad: (win) => {
+          // I cannot use: cy.setCookie("notice_gdpr_prefs", "0,1,2:");
+          // It causes this CypressError: 'Cypress detected that you returned a promise from a command while also invoking one or more cy commands in that promise.'
+          win.document.cookie = "notice_gdpr_prefs=0,1,2:";
+          win.document.cookie = "notice_preferences=2:";
+        },
+      });
+    }
+  );
+}
+
 /**
  * Wait that page is loaded correctly and there is no skeleton.
  * It means no ouiaId("loading-table", "PF4/Card")
@@ -101,10 +121,24 @@ export function isEnvironmentType(type: EnvType) {
  * Handle a login procedure for different environments.
  */
 export function safeLogin() {
+  callForEnv(
+    () => {
+      cy.log("Skip login - mocked env");
+    },
+    () => {
+      cy.login();
+    }
+  );
+}
+
+/**
+ * Handle a procedure for different environments.
+ */
+function callForEnv(mocked: () => void, dev: () => void) {
   if (isEnvironmentType(EnvType.Mocked)) {
-    cy.log("Skip login - mocked env");
+    mocked();
   } else if (isEnvironmentType(EnvType.Dev)) {
-    cy.login();
+    dev();
   } else {
     throw new Error(
       "The environment type is not recognized. Values of CYPRESS_TEST_TYPE are defined by the 'EnvType' enum. "

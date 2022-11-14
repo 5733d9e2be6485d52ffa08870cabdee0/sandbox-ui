@@ -11,13 +11,14 @@ import {
   isEnvironmentType,
   EnvType,
   pageWasLoaded,
+  visitWithCookies,
 } from "../../utils/Util";
 
 const newInstanceName: string = uniqueName("new-instance");
 
 describe("the 'Create a SE instance' Modal", () => {
   beforeEach(() => {
-    cy.visit("/");
+    visitWithCookies("/");
     safeLogin();
     pageWasLoaded();
   });

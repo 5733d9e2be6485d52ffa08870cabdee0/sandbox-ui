@@ -27,8 +27,10 @@ export function visitWithCookies(path: string) {
         onBeforeLoad: (win) => {
           // I cannot use: cy.setCookie("notice_gdpr_prefs", "0,1,2:");
           // It causes this CypressError: 'Cypress detected that you returned a promise from a command while also invoking one or more cy commands in that promise.'
-          win.document.cookie = "notice_gdpr_prefs=0,1,2:";
-          win.document.cookie = "notice_preferences=2:";
+          win.document.cookie =
+            "notice_gdpr_prefs=0,1,2:;Secure;SameSite=None;Domain=.redhat.com";
+          win.document.cookie =
+            "notice_preferences=2:;Secure;SameSite=None;Domain=.redhat.com";
         },
       });
     }

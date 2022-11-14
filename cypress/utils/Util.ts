@@ -10,6 +10,11 @@ export function uniqueName(prefix: string) {
   }
 }
 
+/**
+ * Visit the desired page in Cypress.
+ * This function covers the necessery cookies settings before the page is loaded.
+ * @param path the desired URL. @see Cypress.visit
+ */
 export function visitWithCookies(path: string) {
   callForEnv(
     () => {

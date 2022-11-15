@@ -6,6 +6,7 @@ import {
 export type CreateInstanceError =
   | "name-taken"
   | "region-unavailable"
+  | "quota-error"
   | "generic-error";
 
 export interface CloudProviderWithRegions extends CloudProviderResponse {

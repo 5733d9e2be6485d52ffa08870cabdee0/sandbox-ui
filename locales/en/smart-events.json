@@ -100,7 +100,8 @@
       "instanceDetailsGenericError": "Error while retrieving the Smart Event instance details.",
       "instancesListGenericError": "Error while retrieving the list of Smart Event instances.",
       "invalidName": "A Smart Events Instance with this name already exists in your account.",
-      "processorsListGenericError": "Error while retrieving the list of Processors for this Smart Event instance."
+      "processorsListGenericError": "Error while retrieving the list of Processors for this Smart Event instance.",
+      "instanceQuotaExceeded": "Your organization is out of quota."
     },
     "instanceId": "Instance ID",
     "instancesListPageTitle": "Smart Events Instances",
@@ -113,7 +114,8 @@
     "selectRegion": "Select region",
     "smartEventInstance": "Smart Events Instance",
     "smartEventInstances": "Smart Event Instances",
-    "viewInformation": "View instance information"
+    "viewInformation": "View instance information",
+    "quotaExceededErrorDescription": "To deploy a new instance, delete an existing one first."
   },
   "processor": {
     "action": "Action",
@@ -146,7 +148,8 @@
       "malformedTransformation": "The Transformation Template for the Processor is invalid.",
       "missingProcessorType": "Please select a processor type.",
       "parametersSectionGenericError": "Error while retrieving the information related to the parameters section for this Processor.",
-      "processorDetailsGenericError": "Error while retrieving the Processor details."
+      "processorDetailsGenericError": "Error while retrieving the Processor details.",
+      "processorQuotaExceeded": "Your organization is out of quota. To create a new processor, delete an existing one first."
     },
     "filters": "Filters",
     "generalInformation": "General information",

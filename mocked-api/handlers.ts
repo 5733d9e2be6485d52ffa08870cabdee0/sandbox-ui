@@ -218,15 +218,30 @@ export const handlers = [
       );
     }
 
-    if (name == "error-test") {
+    if (name.includes("error-test")) {
       return res(
         ctx.status(500),
+        ctx.delay(apiDelay),
         ctx.json({
           kind: "ErrorsResponse",
           items: [
             {
               ...error_external_component,
               reason: `Creation was no successful probably due to external component fail'`,
+            },
+          ],
+        })
+      );
+    }
+
+    if (name.includes("quota-error")) {
+      return res(
+        ctx.status(402),
+        ctx.json({
+          kind: "ErrorsResponse",
+          items: [
+            {
+              ...error_quota_exceeded,
             },
           ],
         })
@@ -615,6 +630,20 @@ export const handlers = [
               reason: `Processor with name '${name}' already exists for bridge with id ${
                 bridgeId as string
               } for customer with id 'XXXXXXXXXX'`,
+            },
+          ],
+        })
+      );
+    }
+
+    if (name.includes("quota-error")) {
+      return res(
+        ctx.status(402),
+        ctx.json({
+          kind: "ErrorsResponse",
+          items: [
+            {
+              ...error_quota_exceeded,
             },
           ],
         })
@@ -1298,6 +1327,15 @@ const error_bridge_not_deletable = {
   code: "OPENBRIDGE-2",
   reason:
     "It is not possible to delete a Bridge instance with active Processors.",
+};
+
+const error_quota_exceeded = {
+  kind: "Error",
+  id: "40",
+  href: "/api/smartevents_mgmt/v1/errors/40",
+  code: "OPENBRIDGE-40",
+  reason:
+    "The requested resource could not be deployed because you are out of available quota.",
 };
 
 interface MockProcessorRequest extends Omit<ProcessorRequest, "filters"> {

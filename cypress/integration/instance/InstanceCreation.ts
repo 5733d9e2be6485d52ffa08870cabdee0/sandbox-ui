@@ -25,7 +25,7 @@ describe("the 'Create a SE instance' Modal", () => {
   it("Submit", () => {
     createInstance(newInstanceName);
 
-    //Assert that the process of the instnace's creation was started
+    //Assert that the process of the instance's creation was started
     cy.ouiaId("Instances list table", "PF4/Table")
       .ouiaId(newInstanceName, "PF4/TableRow")
       .should("be.visible")
@@ -44,10 +44,11 @@ describe("the 'Create a SE instance' Modal", () => {
               "This will be ready shortly."
             );
           });
+        cy.wait(150);
         cy.ouiaId("creating", "PF4/Button").click();
       });
 
-    //Assert that the process of the instnace's creation is monitored
+    //Assert that the process of the instance's creation is monitored
     cy.ouiaId("se-status", "QE/Popover")
       .should("be.visible")
       .within(() => {
@@ -83,7 +84,7 @@ describe("the 'Create a SE instance' Modal", () => {
       "not.exist"
     );
 
-    //Assertation that the instance was created
+    //Assertion that the instance was created
     cy.ouiaId("Instances list table", "PF4/Table")
       .ouiaId(newInstanceName, "PF4/TableRow")
       .within(() => {
@@ -162,8 +163,8 @@ describe("the 'Create a SE instance' Modal", () => {
 
   onlyOn(isEnvironmentType(EnvType.Dev), () => {
     /*
-     * The best practices does not recommand the "after" metod for UI.
-     * Cypress guaranted the order of the test execution.
+     * The best practices does not recommend the "after" method for UI.
+     * Cypress guaranteed the order of the test execution.
      */
     it("Clean the new instance", () => {
       deleteInstance(newInstanceName);
@@ -174,7 +175,7 @@ describe("the 'Create a SE instance' Modal", () => {
           .eq(2)
           .should("have.text", "Deleting");
 
-        // once deprovision is completed, entry should disappear
+        // once de-provision is completed, entry should disappear
         cy.ouiaId(newInstanceName, "PF4/TableRow", { timeout: 120000 }).should(
           "not.exist"
         );

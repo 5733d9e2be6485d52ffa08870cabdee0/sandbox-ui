@@ -88,7 +88,7 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
             cy.get("td:nth-child(3)").then(($state) => {
               cy.wrap($state).should("have.text", "Deleting");
             });
-            cy.wrap($item, { timeout: 60000 }).should("not.exist");
+            cy.wrap($item, { timeout: 120000 }).should("not.exist");
           });
       }
     });

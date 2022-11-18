@@ -1,5 +1,10 @@
 import { onlyOn } from "@cypress/skip-test";
-import { isEnvironmentType, EnvType, pageWasLoaded } from "../utils/Util";
+import {
+  isEnvironmentType,
+  EnvType,
+  pageWasLoaded,
+  visitWithCookies,
+} from "../utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Action Test", () => {
@@ -12,7 +17,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
       beforeEach(() => {
         const processorName: string = "Sink processor";
-        cy.visit(`${instanceUrl}/create-processor`);
+        visitWithCookies(`${instanceUrl}/create-processor`);
         pageWasLoaded();
 
         cy.ouiaId("sink", "Tile").should("be.visible").click();
@@ -179,7 +184,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     });
     describe("Details of a Sink Processor", () => {
       beforeEach(() => {
-        cy.visit(
+        visitWithCookies(
           "instance/3543edaa-1851-4ad7-96be-ebde7d20d717/processor/fa373030-c0d2-11ec-9d64-0242ac120002"
         );
         pageWasLoaded();

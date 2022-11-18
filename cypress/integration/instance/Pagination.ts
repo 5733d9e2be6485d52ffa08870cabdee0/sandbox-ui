@@ -7,13 +7,14 @@ import {
   isEnvironmentType,
   pageWasLoaded,
   safeLogin,
+  visitWithCookies,
   waitTillInstanceIsReady,
 } from "cypress/utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Instance List pagination test", () => {
     beforeEach(() => {
-      cy.visit("/");
+      visitWithCookies("/");
       safeLogin();
       pageWasLoaded();
     });

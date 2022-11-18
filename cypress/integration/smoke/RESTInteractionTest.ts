@@ -4,6 +4,7 @@ import {
   isEnvironmentType,
   safeLogin,
   uniqueName,
+  visitWithCookies,
 } from "../../utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Dev), () => {
@@ -79,7 +80,7 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
           expect(response.isOkStatusCode).to.equal(true);
         });
 
-        cy.visit("/");
+        visitWithCookies("/");
         cy.ouiaId(bridgeName)
           .should("be.visible")
           .within(($item) => {
@@ -93,7 +94,7 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
     });
 
     beforeEach(() => {
-      cy.visit("/");
+      visitWithCookies("/");
       safeLogin();
     });
 

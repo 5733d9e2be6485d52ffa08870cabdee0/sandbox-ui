@@ -1,5 +1,10 @@
 import { onlyOn } from "@cypress/skip-test";
-import { isEnvironmentType, EnvType, pageWasLoaded } from "../utils/Util";
+import {
+  isEnvironmentType,
+  EnvType,
+  pageWasLoaded,
+  visitWithCookies,
+} from "../utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Source Test", () => {
@@ -12,7 +17,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
       beforeEach(() => {
         const processorName: string = "Source processor";
-        cy.visit(`${instanceUrl}/create-processor`);
+        visitWithCookies(`${instanceUrl}/create-processor`);
         pageWasLoaded();
         cy.ouiaId("source", "Tile").should("be.visible").click();
         cy.ouiaId("processor-name", "PF4/TextInput")
@@ -185,7 +190,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
     describe("Details of a Source Processor", () => {
       beforeEach(() => {
-        cy.visit(
+        visitWithCookies(
           "instance/3543edaa-1851-4ad7-96be-ebde7d20d717/processor/sourcef4-ead8-6g8v-as8e-0642tdjek002"
         );
         pageWasLoaded();

@@ -62,17 +62,6 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add("login", () => {
-  //https://docs.cypress.io/guides/core-concepts/conditional-testing#Element-existence
-  cy.get("body", { timeout: 10000 })
-    .should("be.visible")
-    .then(($body) => {
-      if ($body.find('div[class="truste_overlay"]').length) {
-        // the form was found, do something else here
-        cy.get("button:contains('Accept default')").click().should("not.exist");
-      } else {
-        cy.log("Cookie's choise is not present");
-      }
-    });
   cy.get("#username-verification").type(Cypress.env("USER"));
   cy.get("#login-show-step2").click();
   cy.get("#password")

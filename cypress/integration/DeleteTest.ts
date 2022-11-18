@@ -1,10 +1,15 @@
 import { onlyOn } from "@cypress/skip-test";
-import { isEnvironmentType, EnvType, deleteInstance } from "../utils/Util";
+import {
+  isEnvironmentType,
+  EnvType,
+  deleteInstance,
+  visitWithCookies,
+} from "../utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Delete Test", () => {
     it("Instance", () => {
-      cy.visit("/");
+      visitWithCookies("/");
       deleteInstance("Instance ten");
       cy.ouiaId("Instances list table", "PF4/Table").within(() => {
         // once delete confirmed, state should change
@@ -21,7 +26,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     });
 
     it("Instance :: External component fail", () => {
-      cy.visit("/");
+      visitWithCookies("/");
 
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId("error-test", "PF4/TableRow")
@@ -48,7 +53,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
     it("Processor", () => {
       // Open 'Instance one'
-      cy.visit("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
+      visitWithCookies("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");
 
       cy.ouiaId("instance-details", "PF4/Tabs")
         .ouiaId("processors", "PF4/TabButton")

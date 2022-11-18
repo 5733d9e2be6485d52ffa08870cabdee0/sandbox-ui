@@ -8,6 +8,7 @@ import {
   isEnvironmentType,
   pageWasLoaded,
   safeLogin,
+  visitWithCookies,
 } from "cypress/utils/Util";
 import { format } from "date-fns";
 
@@ -17,7 +18,7 @@ const formatDate = (dateStr: string): string =>
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Instance statuses", () => {
     beforeEach(() => {
-      cy.visit("/");
+      visitWithCookies("/");
       safeLogin();
       pageWasLoaded();
     });
@@ -197,7 +198,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
 
   describe("Instance Creation is in progress", () => {
     beforeEach(() => {
-      cy.visit("/");
+      visitWithCookies("/");
       pageWasLoaded();
     });
 

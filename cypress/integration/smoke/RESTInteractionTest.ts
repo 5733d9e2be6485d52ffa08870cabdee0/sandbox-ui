@@ -86,8 +86,8 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
       cy.ouiaId(bridgeName)
         .should("be.visible")
         .within(() => {
-          cy.get("td:first").should("have.text", bridgeName);
-          cy.get("td:nth-child(3)").then(($state) => {
+          cy.get("td[data-label='Name']").should("have.text", bridgeName);
+          cy.get("td[data-label='Status']").then(($state) => {
             cy.wrap($state, { timeout: 240000 }).should("have.text", "Ready");
           });
         });

@@ -72,7 +72,7 @@ npm run cypress:run:e2e
 npm run cypress:open:e2e
 ```
 
-In such a case you do not need all credentials mentioned before. The basic set is:
+In such a case you do not need all credentials mentioned before. The basic set is ([the LoginConfig class](utils/Config.ts)):
 
 ```
 export CYPRESS_USER=<replce with your value>
@@ -92,8 +92,10 @@ If you want to write your own test than you should:
 
 ```
 describe("The New Test - describe briefly ", () => {
-    let loginConfig:LoginConfig;  //the basic configuration
-    let restConfig:RestConfig;    //use this in a case that the test will communicate via REST
+  //Only a test suite which runs with real data requires configuration:
+  //Delete this variables for mocked data
+  let loginConfig:LoginConfig;  //the basic configuration
+  let restConfig:RestConfig;    //use this only if the test will communicate via REST
 
   before(() => {
     loginConfig = new LoginConfig();

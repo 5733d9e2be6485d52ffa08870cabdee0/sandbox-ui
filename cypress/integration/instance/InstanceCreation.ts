@@ -179,8 +179,7 @@ describe("the 'Create a SE instance' Modal", () => {
       cy.ouiaId("Instances list table", "PF4/Table").within(() => {
         // once delete confirmed, state should change
         cy.ouiaId(newInstanceName, "PF4/TableRow")
-          .find("td")
-          .eq(2)
+          .find("[data-label='Status']")
           .should("have.text", "Deleting");
 
         // once de-provision is completed, entry should disappear

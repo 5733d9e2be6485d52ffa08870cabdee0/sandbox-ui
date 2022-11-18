@@ -1,4 +1,5 @@
 import { onlyOn } from "@cypress/skip-test";
+import { LoginConfig } from "cypress/utils/Config";
 import {
   EnvType,
   isEnvironmentType,
@@ -8,9 +9,14 @@ import {
 } from "../../utils/Util";
 
 describe("Basic Elements", () => {
+  let loginConfig: LoginConfig;
+
+  before(() => {
+    loginConfig = new LoginConfig();
+  });
   beforeEach(() => {
     visitWithCookies("/");
-    safeLogin();
+    safeLogin(loginConfig);
     pageWasLoaded();
   });
 

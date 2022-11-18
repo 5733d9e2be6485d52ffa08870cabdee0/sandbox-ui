@@ -1,4 +1,5 @@
 import { onlyOn } from "@cypress/skip-test";
+import { LoginConfig } from "cypress/utils/Config";
 import {
   progressStepsStatuses,
   SEInstanceStatus,
@@ -17,9 +18,15 @@ import {
 const newInstanceName: string = uniqueName("new-instance");
 
 describe("the 'Create a SE instance' Modal", () => {
+  let loginConfig: LoginConfig;
+
+  before(() => {
+    loginConfig = new LoginConfig();
+  });
+
   beforeEach(() => {
     visitWithCookies("/");
-    safeLogin();
+    safeLogin(loginConfig);
     pageWasLoaded();
   });
 

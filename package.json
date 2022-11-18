@@ -32,7 +32,7 @@
     "@patternfly/react-icons": "4.92.6",
     "@patternfly/react-styles": "4.91.6",
     "@patternfly/react-table": "4.111.4",
-    "@rhoas/app-services-ui-components": "2.13.2",
+    "@rhoas/app-services-ui-components": "2.14.3",
     "@rhoas/app-services-ui-shared": "0.16.4",
     "@rhoas/smart-events-management-sdk": "0.45.0",
     "@types/json-schema": "7.0.11",

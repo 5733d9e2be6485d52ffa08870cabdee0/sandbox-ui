@@ -1,4 +1,3 @@
-import { TableColumn } from "@app/components/Table";
 import {
   ActionsColumn,
   TableComposable,
@@ -10,6 +9,7 @@ import {
 } from "@patternfly/react-table";
 import React from "react";
 import { Skeleton } from "@patternfly/react-core";
+import { TableColumn } from "@app/components/TableWithPagination/TableWithPagination";
 
 export interface TableSkeletonProps {
   /** List of columns for the table */

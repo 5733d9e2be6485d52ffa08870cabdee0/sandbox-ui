@@ -426,16 +426,15 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         .ouiaId(processorName, "PF4/TableRow")
         .should("be.visible")
         .within(() => {
-          cy.get("td")
-            .eq(3)
-            .then(($state) => {
-              cy.wrap($state)
-                .ouiaId("creating", "PF4/Button")
-                .should("have.text", "Creating");
-              cy.wrap($state, { timeout: 45000 }).should("have.text", "Ready");
-            });
-          cy.get("td")
-            .eq(0)
+          cy.get("td[data-label='Status']")
+            .ouiaId("creating", "PF4/Button")
+            .should("have.text", "Creating");
+          cy.get("td[data-label='Status']", { timeout: 45000 }).should(
+            "have.text",
+            "Ready"
+          );
+
+          cy.get("td[data-label='Name']")
             .should("have.text", processorName, { timeout: 7000 })
             .find("a")
             .click();

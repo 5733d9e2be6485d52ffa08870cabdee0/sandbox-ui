@@ -74,9 +74,10 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         .within(() => {
           cy.get("td:first").should("contain.text", "Instance one");
           //The status column is loading and contains ready
-          cy.get("td:nth-child(3)").ouiaId("ready", "QE/ResourceStatus", {
-            timeout: 90000,
-          });
+          cy.get("td[data-label='Status']", { timeout: 90000 }).should(
+            "have.text",
+            "Ready"
+          );
         });
     });
   });

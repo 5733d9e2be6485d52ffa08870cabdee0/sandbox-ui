@@ -213,7 +213,6 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     it("Processor header details are visible", () => {
       const processorHeaderDetails = ["Name", "Type", "Time created", "Status"];
       cy.ouiaId("Processors list table", "PF4/Table")
-        .ouiaId("table-head", "PF4/TableRow")
         .find("th")
         .should("have.length", processorHeaderDetails.length)
         .each((item, index) => {

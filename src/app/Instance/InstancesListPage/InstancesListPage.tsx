@@ -13,12 +13,13 @@ import {
   TextContent,
   Title,
 } from "@patternfly/react-core";
-import { IAction, IRow, IRowData } from "@patternfly/react-table";
+import { IAction, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import {
   DEFAULT_PAGE_SIZE,
   FIRST_PAGE,
+  TableColumn,
   TableWithPagination,
 } from "@app/components/TableWithPagination/TableWithPagination";
 import CreateInstance, {
@@ -34,7 +35,6 @@ import {
   ManagedResourceStatus,
 } from "@rhoas/smart-events-management-sdk";
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
-import { TableRow } from "@app/components/Table";
 import { canDeleteResource, canEditResource } from "@utils/resourceUtils";
 import { ErrorWithDetail } from "../../../types/Error";
 import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
@@ -63,53 +63,56 @@ const InstancesListPage = (): JSX.Element => {
     [t]
   );
 
-  const columnNames = [
-    {
-      accessor: "name",
-      label: t("common.name"),
-      formatter: (value: IRowData, row?: IRow): JSX.Element => {
-        const bridgeId = (row as BridgeResponse)?.id ?? "";
-        const status = (row as BridgeResponse)?.status;
+  const columnNames: TableColumn[] = useMemo(
+    () => [
+      {
+        accessor: "name",
+        label: t("common.name"),
+        formatter: (value: unknown, row?: IRowData): JSX.Element => {
+          const bridgeId = (row as BridgeResponse)?.id ?? "";
+          const status = (row as BridgeResponse)?.status;
 
-        return canEditResource(status) ? (
-          <Link
-            data-testid="tableInstances-linkInstance"
-            to={`/instance/${bridgeId}`}
-          >
-            {value}
-          </Link>
-        ) : (
-          <>{value}</>
-        );
+          return canEditResource(status) ? (
+            <Link
+              data-testid="tableInstances-linkInstance"
+              to={`/instance/${bridgeId}`}
+            >
+              {value}
+            </Link>
+          ) : (
+            <>{value}</>
+          );
+        },
       },
-    },
-    {
-      accessor: "submitted_at",
-      label: t("common.submittedAt"),
-      formatter: (value: IRowData): string => {
-        const date = new Date(value as unknown as string);
-        return formatDistance(date, new Date()) + " " + t("common.ago");
+      {
+        accessor: "submitted_at",
+        label: t("common.submittedAt"),
+        formatter: (value: unknown): string => {
+          const date = new Date(value as string);
+          return formatDistance(date, new Date()) + " " + t("common.ago");
+        },
       },
-    },
-    {
-      accessor: "status",
-      label: t("common.status"),
-      formatter: (value: IRowData, row?: IRow): JSX.Element => {
-        const statusString = value as unknown as ManagedResourceStatus;
-        const requestedAt = new Date(
-          (row as BridgeResponse)?.modified_at ??
-            (row as BridgeResponse)?.submitted_at
-        );
-        return (
-          <SEStatusLabel
-            status={statusString}
-            resourceType={"bridge"}
-            requestedAt={requestedAt}
-          />
-        );
+      {
+        accessor: "status",
+        label: t("common.status"),
+        formatter: (value: unknown, row?: IRowData): JSX.Element => {
+          const statusString = value;
+          const requestedAt = new Date(
+            (row as BridgeResponse)?.modified_at ??
+              (row as BridgeResponse)?.submitted_at
+          );
+          return (
+            <SEStatusLabel
+              status={statusString as ManagedResourceStatus}
+              resourceType={"bridge"}
+              requestedAt={requestedAt}
+            />
+          );
+        },
       },
-    },
-  ];
+    ],
+    [t]
+  );
 
   const { bridgeListResponse, isLoading, getBridges, error } =
     useGetBridgesApi();
@@ -196,28 +199,29 @@ const InstancesListPage = (): JSX.Element => {
     resetDeleteInstance();
   }, [resetDeleteInstance]);
 
-  const tableActions = (rowData: TableRow): IAction[] => [
-    {
-      title: t("common.details"),
-      onClick: (): void => {
-        setSelectedInstance(rowData.originalData as BridgeResponse);
-        setShowInstanceDrawer(true);
+  const tableActions = useCallback(
+    (rowData: IRowData): IAction[] => [
+      {
+        title: t("common.details"),
+        onClick: (): void => {
+          setSelectedInstance(rowData as BridgeResponse);
+          setShowInstanceDrawer(true);
+        },
       },
-    },
-    {
-      title: t("instance.delete"),
-      onClick: (): void => {
-        const id = (rowData.originalData as BridgeResponse).id;
-        const name = (rowData.originalData as BridgeResponse).name;
-        if (id && name) {
-          deleteInstance(id, name);
-        }
+      {
+        title: t("instance.delete"),
+        onClick: (): void => {
+          const id = (rowData as BridgeResponse).id;
+          const name = (rowData as BridgeResponse).name;
+          if (id && name) {
+            deleteInstance(id, name);
+          }
+        },
+        isDisabled: !canDeleteResource((rowData as BridgeResponse).status),
       },
-      isDisabled: !canDeleteResource(
-        (rowData.originalData as BridgeResponse).status
-      ),
-    },
-  ];
+    ],
+    [t]
+  );
 
   const customToolbarElement = (
     <>
@@ -248,6 +252,16 @@ const InstancesListPage = (): JSX.Element => {
     [currentPageSize, getBridges]
   );
 
+  const rowOuiaId = useCallback(
+    (row): string | undefined => (row as BridgeResponse).name,
+    []
+  );
+  const renderActions = useCallback(
+    ({ row, ActionsColumn }): JSX.Element => (
+      <ActionsColumn items={tableActions(row as IRowData)} />
+    ),
+    [tableActions]
+  );
   const pageContent = (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -266,6 +280,7 @@ const InstancesListPage = (): JSX.Element => {
           <TableWithPagination
             columns={columnNames}
             customToolbarElement={customToolbarElement}
+            getRowOuiaId={rowOuiaId}
             isLoading={isLoading}
             rows={bridgeListResponse.items}
             totalRows={totalRows ?? 0}
@@ -275,9 +290,7 @@ const InstancesListPage = (): JSX.Element => {
             tableLabel={t(
               "smartEventsTempDictionary:instance.instancesListTable"
             )}
-            renderActions={({ row, ActionsColumn }): JSX.Element => (
-              <ActionsColumn items={tableActions(row)} />
-            )}
+            renderActions={renderActions}
           >
             <EmptyState variant="large">
               <EmptyStateIcon icon={PlusCircleIcon} />

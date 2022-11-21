@@ -4,7 +4,9 @@ export function uniqueName(prefix: string) {
   if (isEnvironmentType(EnvType.Mocked)) {
     return prefix;
   } else if (isEnvironmentType(EnvType.Dev)) {
-    return `testui-${prefix}-${Cypress._.uniqueId(Date.now().toString())}`;
+    return `testui-${Cypress.env("SUITE_HASH")}-${prefix}-${Cypress._.uniqueId(
+      Date.now().toString()
+    )}`;
   } else {
     throw new Error(
       "The environment type is not recognized. Values of CYPRESS_TEST_TYPE are defined by the 'EnvType' enum."

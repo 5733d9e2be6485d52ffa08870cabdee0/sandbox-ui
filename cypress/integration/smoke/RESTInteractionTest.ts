@@ -81,15 +81,17 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
         });
 
         visitWithCookies("/");
-        cy.ouiaId(bridgeName)
+        cy.ouiaId(bridgeName, "PF4/TableRow")
           .should("be.visible")
-          .within(($item) => {
+          .within(() => {
             cy.get("td:first").should("have.text", bridgeName);
             cy.get("td:nth-child(3)").then(($state) => {
               cy.wrap($state).should("have.text", "Deleting");
             });
-            cy.wrap($item, { timeout: 60000 }).should("not.exist");
           });
+        cy.ouiaId(bridgeName, "PF4/TableRow", { timeout: 120000 }).should(
+          "not.exist"
+        );
       }
     });
 

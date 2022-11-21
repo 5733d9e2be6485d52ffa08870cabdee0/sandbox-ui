@@ -34,6 +34,7 @@ jobs:
           echo "DEBUGENV=${{ secrets.CY_DEBUG_TEST }}" >> $GITHUB_ENV
           echo $DEBUGENV
           TOKEN=${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }} ./scripts/get-sso-token.sh >> $GITHUB_ENV
+          echo "CYPRESS_SUITE_HASH=`echo $RANDOM | md5sum | head -c 5`" >> $GITHUB_ENV
       - name: E2E tests
         uses: cypress-io/github-action@v4
         with:
@@ -49,6 +50,8 @@ jobs:
           CYPRESS_PASSWORD: ${{ secrets.CY_PASSWORD }}
           CYPRESS_SANDBOX_DEV_REST_URL: ${{ secrets.CY_SANDBOX_DEV_REST_URL }}
           CYPRESS_SANDBOX_DEV_REST_PATH: ${{ secrets.CY_SANDBOX_DEV_REST_PATH  }}
+      - name: Clear data
+        run: OB_TOKEN=${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }} $MANAGER_URL=${{ secrets.CY_SANDBOX_DEV_REST_URL }}./scripts/delete-bridges.sh
       - name: "Upload artifacts"
         uses: actions/upload-artifact@v3
         if: always() && !cancelled()

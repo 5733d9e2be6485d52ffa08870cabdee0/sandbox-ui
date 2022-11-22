@@ -1,3 +1,5 @@
+import { LoginConfig } from "cypress/utils/config/LoginConfig";
+
 Cypress.Commands.add(
   "ouiaId",
   { prevSubject: ["optional", "element"] },
@@ -61,11 +63,11 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("login", () => {
-  cy.get("#username-verification").type(Cypress.env("USER"));
+Cypress.Commands.add("login", (loginConfig: LoginConfig) => {
+  cy.get("#username-verification").type(loginConfig.user);
   cy.get("#login-show-step2").click();
   cy.get("#password")
     .should("be.visible")
-    .type(Cypress.env("PASSWORD"), { log: false });
+    .type(loginConfig.psw, { log: false });
   cy.get("#rh-password-verification-submit-button").click();
 });

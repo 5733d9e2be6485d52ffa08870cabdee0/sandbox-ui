@@ -1,3 +1,5 @@
+import { LoginConfig } from "cypress/utils/config/LoginConfig";
+
 declare namespace Cypress {
   interface Chainable {
     /**
@@ -42,6 +44,6 @@ declare namespace Cypress {
     /**
      *
      */
-    login(): Chainable<JQuery<Element>>;
+    login(loginConfig: LoginConfig): Chainable<JQuery<Element>>;
   }
 }

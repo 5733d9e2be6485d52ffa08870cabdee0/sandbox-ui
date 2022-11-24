@@ -14,14 +14,11 @@ import { instancesData, processorData } from "./data";
 import { schemaCatalogData, schemasData } from "./schemasData";
 import omit from "lodash.omit";
 import cloneDeep from "lodash.clonedeep";
-import { EventFilter, ProcessorSchemaType } from "../src/types/Processor";
 import { cloudProvidersData, cloudRegions } from "./cloudProvidersData";
-import { JSONSchema7, JSONSchema7Definition } from "json-schema";
-import { isJSONSchema } from "@utils/processorUtils";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
-  process.env.BASE_PATH ?? "/api/smartevents_mgmt/v1"
+  process.env.BASE_PATH ?? "/api/smartevents_mgmt/v2"
 }`;
 
 // api response delay in ms
@@ -47,7 +44,6 @@ const db = factory({
   processor: {
     id: primaryKey(String),
     bridge: oneOf("bridge"),
-    type: String,
     kind: String,
     name: String,
     href: String,
@@ -55,16 +51,7 @@ const db = factory({
     published_at: String,
     modified_at: String,
     status: String,
-    filters: Array,
-    transformationTemplate: String,
-    action: {
-      type: String,
-      parameters: String,
-    },
-    source: {
-      type: String,
-      parameters: String,
-    },
+    flows: String,
   },
   cloudProvider: {
     kind: String,
@@ -529,8 +516,7 @@ export const handlers = [
           ctx.delay(apiDelay),
           ctx.json(
             prepareProcessor(
-              processor as unknown as Record<string | number | symbol, unknown>,
-              true
+              processor as unknown as Record<string | number | symbol, unknown>
             )
           )
         );
@@ -555,9 +541,8 @@ export const handlers = [
   // create a processor
   rest.post(`${apiUrl}/bridges/:bridgeId/processors`, async (req, res, ctx) => {
     const { bridgeId } = req.params;
-    const processorRequest: MockProcessorRequest = await req.json();
-    const { name, transformationTemplate, filters, action, source } =
-      processorRequest;
+    const processorRequest: ProcessorRequest = await req.json();
+    const { name, flows } = processorRequest;
 
     const bridge = db.bridge.findFirst({
       where: {
@@ -633,25 +618,13 @@ export const handlers = [
     const processor = {
       kind: "Processor",
       id,
-      type: action ? "sink" : "source",
       name,
       href: `/api/smartevents_mgmt/v1/bridges/${
         bridge?.id ?? ""
       }/processors/${id}`,
       submitted_at: new Date().toISOString(),
       status: "accepted",
-      filters: filters,
-      transformationTemplate,
-      ...(action
-        ? {
-            action: convertParametersToString(action),
-          }
-        : {}),
-      ...(source
-        ? {
-            source: convertParametersToString(source),
-          }
-        : {}),
+      flows: JSON.stringify(flows),
       bridge,
     };
 
@@ -672,8 +645,7 @@ export const handlers = [
       ctx.delay(apiDelay),
       ctx.json(
         prepareProcessor(
-          newProcessor as unknown as Record<string | number | symbol, unknown>,
-          true
+          newProcessor as unknown as Record<string | number | symbol, unknown>
         )
       )
     );
@@ -684,8 +656,7 @@ export const handlers = [
     async (req, res, ctx) => {
       const { bridgeId, processorId } = req.params;
       const processorRequest: ProcessorRequest = await req.json();
-      const { name, filters, transformationTemplate, source, action } =
-        processorRequest;
+      const { name, flows } = processorRequest;
 
       const existingBridge = db.bridge.findFirst({
         where: {
@@ -782,10 +753,7 @@ export const handlers = [
           name,
           status: "accepted",
           modified_at: new Date().toISOString(),
-          filters: filters as unknown as EventFilter[],
-          transformationTemplate,
-          ...(action ? { action: convertParametersToString(action) } : {}),
-          ...(source ? { source: convertParametersToString(source) } : {}),
+          flows: JSON.stringify(flows),
         },
       });
 
@@ -807,8 +775,7 @@ export const handlers = [
             updatedProcessor as unknown as Record<
               string | number | symbol,
               unknown
-            >,
-            true
+            >
           )
         )
       );
@@ -1131,11 +1098,6 @@ const resourceStatusFlow = (
   }, waitTime);
 };
 
-interface ActionSourceType {
-  type: string;
-  parameters: string;
-}
-
 /**
  * Prepare bridge data to be returned by APIs
  *
@@ -1155,45 +1117,13 @@ const prepareBridge = (data: Record<string, unknown>): BridgeResponse => {
  * Prepare processor data to be returned by APIs
  *
  * @param data Processor to clean from unwanted properties before response
- * @param parseConfigParameters Flag indicating if action/source parameters should be parsed
  */
-const prepareProcessor = (
-  data: Record<string, unknown>,
-  parseConfigParameters = false
-): ProcessorResponse => {
+const prepareProcessor = (data: Record<string, unknown>): ProcessorResponse => {
   // removing properties not needed for the response
   const omitProperties = ["bridge"];
   const processor = cloneDeep(data);
 
-  if (!(processor.filters as Array<Record<string, unknown>>)?.length) {
-    omitProperties.push("filters");
-  }
-  if (processor.transformationTemplate === "") {
-    omitProperties.push("transformationTemplate");
-  }
-
-  if (processor.type === "source") {
-    omitProperties.push("action");
-  } else {
-    omitProperties.push("source");
-  }
-
-  if (parseConfigParameters) {
-    const configSection =
-      processor.type === ProcessorType.Source
-        ? ProcessorSchemaType.SOURCE
-        : ProcessorSchemaType.ACTION;
-    const parsedParameters = JSON.parse(
-      (processor[configSection] as ActionSourceType).parameters
-    ) as { [key: string]: unknown };
-    if (processor.type === ProcessorType.Source) {
-      (processor.source as typeof parsedParameters).parameters =
-        parsedParameters;
-    } else {
-      (processor.action as typeof parsedParameters).parameters =
-        parsedParameters;
-    }
-  }
+  processor.flows = JSON.parse(processor.flows as string);
 
   if (processor.modified_at === "") {
     omitProperties.push("modified_at");
@@ -1202,69 +1132,31 @@ const prepareProcessor = (
   return omit(processor, omitProperties) as ProcessorResponse;
 };
 
-/**
- * Convert actions/sources parameters to string because that's how they are stored
- * in our fake db
- *
- * @param data Processor action or source to convert
- * @returns Processor action or source with parameters property containing stringified parameters.
- */
-const convertParametersToString = (
-  data: MockProcessorRequest["action"] | MockProcessorRequest["source"]
-): { type: string; parameters: string } => {
-  // converting secrets fields to an empty object to simulate their server side obfuscation
-  const newData: { [key: string]: unknown } = {};
-  if (data) {
-    const schema = schemasData[data?.type ?? ""];
-    Object.keys(data.parameters).map((key) => {
-      const def: JSONSchema7Definition | undefined = (schema as JSONSchema7)
-        ?.properties?.[key];
-      if (def && isJSONSchema(def)) {
-        if (
-          def.oneOf &&
-          def.oneOf.find(
-            (item) => isJSONSchema(item) && item.format === "password"
-          ) !== undefined
-        ) {
-          newData[key] = {};
-        } else {
-          newData[key] = (data.parameters as { [key: string]: unknown })[key];
-        }
-      }
-    });
-  }
-
-  return {
-    type: data?.type ?? "",
-    parameters: JSON.stringify(newData),
-  };
-};
-
 const error_not_found = {
   kind: "Error",
   id: "4",
-  href: "/api/smartevents_mgmt/v1/errors/4",
+  href: "/api/smartevents_mgmt/v2/errors/4",
   code: "OPENBRIDGE-4",
 };
 
 const error_duplicated_resource = {
   kind: "Error",
   id: "1",
-  href: "/api/smartevents_mgmt/v1/errors/1",
+  href: "/api/smartevents_mgmt/v2/errors/1",
   code: "OPENBRIDGE-1",
 };
 
 const error_external_component = {
   kind: "Error",
   id: "1",
-  href: "/api/smartevents_mgmt/v1/errors/5",
+  href: "/api/smartevents_mgmt/v2/errors/5",
   code: "OPENBRIDGE-5",
 };
 
 const error_bridge_not_deletable = {
   kind: "Error",
   id: "2",
-  href: "/api/smartevents_mgmt/v1/errors/2",
+  href: "/api/smartevents_mgmt/v2/errors/2",
   code: "OPENBRIDGE-2",
   reason:
     "It is not possible to delete a Bridge instance with active Processors.",
@@ -1273,12 +1165,8 @@ const error_bridge_not_deletable = {
 const error_quota_exceeded = {
   kind: "Error",
   id: "40",
-  href: "/api/smartevents_mgmt/v1/errors/40",
+  href: "/api/smartevents_mgmt/v2/errors/40",
   code: "OPENBRIDGE-40",
   reason:
     "The requested resource could not be deployed because you are out of available quota.",
 };
-
-interface MockProcessorRequest extends Omit<ProcessorRequest, "filters"> {
-  filters: unknown[];
-}

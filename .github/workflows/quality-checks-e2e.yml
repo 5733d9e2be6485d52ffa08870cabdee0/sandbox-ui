@@ -51,7 +51,8 @@ jobs:
           CYPRESS_SANDBOX_DEV_REST_URL: ${{ secrets.CY_SANDBOX_DEV_REST_URL }}
           CYPRESS_SANDBOX_DEV_REST_PATH: ${{ secrets.CY_SANDBOX_DEV_REST_PATH  }}
       - name: Clear data
-        run: OB_TOKEN=${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }} $MANAGER_URL=${{ secrets.CY_SANDBOX_DEV_REST_URL }}./scripts/delete-bridges.sh
+        if: always()
+        run: OB_TOKEN="Bearer ${{ secrets.CY_OPENSHIFT_OFFLINE_TOKEN }}" $MANAGER_URL=${{ secrets.CY_SANDBOX_DEV_REST_URL }} ./scripts/delete-bridges.sh
       - name: "Upload artifacts"
         uses: actions/upload-artifact@v3
         if: always() && !cancelled()

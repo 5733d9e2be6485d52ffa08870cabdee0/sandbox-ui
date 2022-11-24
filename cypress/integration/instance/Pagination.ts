@@ -15,7 +15,6 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Instance List pagination test", () => {
     beforeEach(() => {
       visitWithCookies("/");
-      safeLogin();
       pageWasLoaded();
     });
     it("Select other page", () => {

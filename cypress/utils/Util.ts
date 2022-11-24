@@ -1,3 +1,5 @@
+import { LoginConfig } from "./config/LoginConfig";
+
 export function uniqueName(prefix: string) {
   if (isEnvironmentType(EnvType.Mocked)) {
     return prefix;
@@ -127,13 +129,13 @@ export function isEnvironmentType(type: EnvType) {
 /**
  * Handle a login procedure for different environments.
  */
-export function safeLogin() {
+export function safeLogin(loginConfig: LoginConfig) {
   callForEnv(
     () => {
       cy.log("Skip login - mocked env");
     },
     () => {
-      cy.login();
+      cy.login(loginConfig);
     }
   );
 }

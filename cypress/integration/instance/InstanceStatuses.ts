@@ -19,7 +19,6 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Instance statuses", () => {
     beforeEach(() => {
       visitWithCookies("/");
-      safeLogin();
       pageWasLoaded();
     });
 

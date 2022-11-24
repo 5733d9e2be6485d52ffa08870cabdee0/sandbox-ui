@@ -63,8 +63,23 @@ export CYPRESS_OB_TOKEN="$(curl -s --insecure -X POST https://sso.redhat.com/aut
 **Run E2E tests**
 
 ```
+npm run cypress:run:e2e
+```
+
+**You can run only one E2E test suite.**
+
+```
 npm run cypress:open:e2e
 ```
+
+In such a case you do not need all credentials mentioned before. The basic set is ([the LoginConfig class](utils/Config.ts)):
+
+```
+export CYPRESS_USER=<replce with your value>
+export CYPRESS_PASSWORD=<replce with your value>
+```
+
+Only if the test suite contains [the RestConfig class](utils/Config.ts) then you need the whole set of credentials.
 
 Clear entities which were added by the test suite.
 
@@ -77,6 +92,15 @@ If you want to write your own test than you should:
 
 ```
 describe("The New Test - describe briefly ", () => {
+  //Only a test suite which runs with real data requires configuration:
+  //Delete this variables for mocked data
+  let loginConfig:LoginConfig;  //the basic configuration
+  let restConfig:RestConfig;    //use this only if the test will communicate via REST
+
+  before(() => {
+    loginConfig = new LoginConfig();
+    restConfig = new RestConfig();
+  });
 
     beforeEach(() => {
     ...

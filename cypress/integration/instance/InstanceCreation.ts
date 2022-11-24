@@ -1,4 +1,5 @@
 import { onlyOn } from "@cypress/skip-test";
+import { LoginConfig } from "cypress/utils/Config";
 import {
   progressStepsStatuses,
   SEInstanceStatus,
@@ -17,9 +18,15 @@ import {
 const newInstanceName: string = uniqueName("new-instance");
 
 describe("the 'Create a SE instance' Modal", () => {
+  let loginConfig: LoginConfig;
+
+  before(() => {
+    loginConfig = new LoginConfig();
+  });
+
   beforeEach(() => {
     visitWithCookies("/");
-    safeLogin();
+    safeLogin(loginConfig);
     pageWasLoaded();
   });
 
@@ -172,8 +179,7 @@ describe("the 'Create a SE instance' Modal", () => {
       cy.ouiaId("Instances list table", "PF4/Table").within(() => {
         // once delete confirmed, state should change
         cy.ouiaId(newInstanceName, "PF4/TableRow")
-          .find("td")
-          .eq(2)
+          .find("[data-label='Status']")
           .should("have.text", "Deleting");
 
         // once de-provision is completed, entry should disappear

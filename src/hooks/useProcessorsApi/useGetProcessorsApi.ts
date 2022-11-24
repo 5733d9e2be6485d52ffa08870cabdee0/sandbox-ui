@@ -18,13 +18,11 @@ export function useGetProcessorsApi(): {
     isPolling?: boolean
   ) => void;
   processorListResponse?: ProcessorListResponse;
-  isLoading: boolean;
   error: unknown;
 } {
   const [processorListResponse, setProcessorListResponse] =
     useState<ProcessorListResponse>();
   const [error, setError] = useState<unknown>();
-  const [isLoading, setIsLoading] = useState(true);
   const prevCallTokenSource = useRef<CancelTokenSource>();
   const { getToken, apiBaseUrl } = useSmartEvents();
 
@@ -36,7 +34,9 @@ export function useGetProcessorsApi(): {
       processorType?: ProcessorType,
       isPolling?: boolean
     ): void => {
-      setIsLoading(!isPolling); // no loading, when the call is generated from a polling
+      if (!isPolling) {
+        setProcessorListResponse(undefined);
+      }
       prevCallTokenSource.current?.cancel();
 
       const CancelToken = axios.CancelToken;
@@ -49,11 +49,15 @@ export function useGetProcessorsApi(): {
           basePath: apiBaseUrl,
         })
       );
+
+      /** First page number, for the APIs, is 0 (instead of 1) */
+      const pageNumber = pageReq !== undefined ? pageReq - 1 : pageReq;
+
       processorsApi
         .listProcessors(
           bridgeId,
           undefined,
-          pageReq,
+          pageNumber,
           sizeReq,
           new Set<ManagedResourceStatus>(),
           processorType ?? undefined,
@@ -63,17 +67,15 @@ export function useGetProcessorsApi(): {
         )
         .then((response) => {
           setProcessorListResponse(response.data);
-          setIsLoading(false);
         })
         .catch((err) => {
           if (!axios.isCancel(err)) {
             setError(err);
-            setIsLoading(false);
           }
         });
     },
     [getToken, apiBaseUrl]
   );
 
-  return { getProcessors, isLoading, processorListResponse, error };
+  return { getProcessors, processorListResponse, error };
 }

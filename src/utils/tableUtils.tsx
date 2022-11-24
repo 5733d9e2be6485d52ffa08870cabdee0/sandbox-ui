@@ -1,5 +1,9 @@
 import React from "react";
-import { IRowData, Td as TableTd, Th as TableTh } from "@patternfly/react-table";
+import {
+  IRowData,
+  Td as TableTd,
+  Th as TableTh,
+} from "@patternfly/react-table";
 
 export interface TableColumn {
   /** Column identifier */

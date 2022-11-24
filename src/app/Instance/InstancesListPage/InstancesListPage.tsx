@@ -19,7 +19,6 @@ import {
 import { IAction, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
-import { TableColumn } from "@app/components/TableWithPagination/TableWithPagination";
 import CreateInstance, {
   CreateInstanceProps,
 } from "@app/Instance/CreateInstance/CreateInstance";
@@ -38,7 +37,7 @@ import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegionsApi";
-import { renderCell, renderHeader } from "@utils/tableUtils";
+import { renderCell, renderHeader, TableColumn } from "@utils/tableUtils";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["smartEventsTempDictionary"]);

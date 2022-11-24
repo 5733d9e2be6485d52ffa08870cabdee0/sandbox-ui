@@ -3,13 +3,11 @@
 import { rest } from "msw";
 import { factory, oneOf, primaryKey } from "@mswjs/data";
 import {
-  Action,
   BridgeRequest,
   BridgeResponse,
   ManagedResourceStatus,
   ProcessorRequest,
   ProcessorResponse,
-  ProcessorType,
 } from "@rhoas/smart-events-management-sdk";
 import { v4 as uuid } from "uuid";
 import { instancesData, processorData } from "./data";
@@ -20,11 +18,6 @@ import { EventFilter, ProcessorSchemaType } from "../src/types/Processor";
 import { cloudProvidersData, cloudRegions } from "./cloudProvidersData";
 import { JSONSchema7, JSONSchema7Definition } from "json-schema";
 import { isJSONSchema } from "@utils/processorUtils";
-import {
-  ENDPOINT_TYPE,
-  EndpointParametersType,
-  isEndpointType,
-} from "../src/types/ErrorHandlingMethods";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
@@ -48,10 +41,6 @@ const db = factory({
     modified_at: String,
     status: String,
     endpoint: String,
-    error_handler: {
-      type: String,
-      parameters: String,
-    },
     cloud_provider: String,
     region: String,
   },
@@ -188,12 +177,7 @@ export const handlers = [
   // create a bridge
   rest.post(`${apiUrl}/bridges`, async (req, res, ctx) => {
     const bridgeRequest: BridgeRequest = await req.json();
-    const {
-      name,
-      error_handler: errorHandler,
-      cloud_provider,
-      region,
-    } = bridgeRequest;
+    const { name, cloud_provider, region } = bridgeRequest;
 
     const existingBridge = db.bridge.findFirst({
       where: {
@@ -256,7 +240,6 @@ export const handlers = [
       owner: "rsanchez",
       href: `/api/smartevents_mgmt/v1/bridges/${id}`,
       submitted_at: new Date().toISOString(),
-      error_handler: prepareErrorHandler(id, errorHandler),
       status: "accepted",
       cloud_provider,
       region,
@@ -280,7 +263,7 @@ export const handlers = [
   rest.put(`${apiUrl}/bridges/:bridgeId`, async (req, res, ctx) => {
     const { bridgeId } = req.params;
     const bridgeRequest: BridgeRequest = await req.json();
-    const { name, error_handler: updatedErrorHandler } = bridgeRequest;
+    const { name } = bridgeRequest;
 
     const existingBridge = db.bridge.findFirst({
       where: {
@@ -318,10 +301,6 @@ export const handlers = [
         ...bridgeRequest,
         status: "accepted",
         modified_at: new Date().toISOString(),
-        error_handler: prepareErrorHandler(
-          bridgeId as string,
-          updatedErrorHandler
-        ),
       },
     });
 
@@ -1158,50 +1137,12 @@ interface ActionSourceType {
 }
 
 /**
- * Fills error handler parameters with missing values, then converts it.
- * It adds an endpoint parameter when the error handling method is endpoint
- *
- * @param id Bridge id
- * @param errorHandler Error handling type + parameters
- * */
-const prepareErrorHandler = (
-  id: string,
-  errorHandler?: Action
-): { type: string; parameters: string } => {
-  if (isEndpointType(errorHandler?.type)) {
-    const updatedParameters: EndpointParametersType = {
-      endpoint: `https://event-bridge-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com/api/smartevents_mgmt/v1/bridges/${id}/errors`,
-    };
-
-    return {
-      type: ENDPOINT_TYPE,
-      parameters: JSON.stringify(updatedParameters),
-    };
-  }
-
-  return convertParametersToString(errorHandler);
-};
-
-/**
  * Prepare bridge data to be returned by APIs
  *
  * @param data Bridge data to be processed
  * */
 const prepareBridge = (data: Record<string, unknown>): BridgeResponse => {
   let bridge = cloneDeep(data);
-
-  const errorHandler = bridge.error_handler as ActionSourceType;
-
-  if (errorHandler && errorHandler.type && errorHandler.type.length) {
-    const parsedParameters = JSON.parse(errorHandler.parameters) as {
-      [key: string]: unknown;
-    };
-    (bridge.error_handler as typeof parsedParameters).type = errorHandler.type;
-    (bridge.error_handler as typeof parsedParameters).parameters =
-      parsedParameters;
-  } else {
-    bridge = omit(bridge, "error_handler");
-  }
 
   if (bridge.modified_at === "") {
     bridge = omit(bridge, "modified_at");

@@ -16,12 +16,7 @@ import {
   TextContent,
   Title,
 } from "@patternfly/react-core";
-import {
-  IAction,
-  IRowData,
-  Td as TableTd,
-  Th as TableTh,
-} from "@patternfly/react-table";
+import { IAction, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import { TableColumn } from "@app/components/TableWithPagination/TableWithPagination";
@@ -43,6 +38,7 @@ import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegionsApi";
+import { renderCell, renderHeader } from "@utils/tableUtils";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["smartEventsTempDictionary"]);
@@ -246,42 +242,6 @@ const InstancesListPage = (): JSX.Element => {
         {t("common.quickStartAccess")}
       </EmptyStateBody>
     </EmptyState>
-  );
-
-  const renderHeader = useCallback(
-    ({
-      column,
-      Th,
-    }: {
-      column: TableColumn;
-      Th: typeof TableTh;
-    }): JSX.Element => <Th key={column.accessor}>{column.label}</Th>,
-    []
-  );
-
-  const renderCell = useCallback(
-    ({
-      column,
-      row,
-      colIndex,
-      Td,
-    }: {
-      column: TableColumn;
-      row: IRowData;
-      colIndex: number;
-      Td: typeof TableTd;
-    }): JSX.Element => {
-      const accessor = column.accessor;
-      const formatter: (value: unknown, row?: IRowData) => string | IRowData =
-        column.formatter ?? ((value: unknown): IRowData => value as IRowData);
-      const objectRowElement = row[accessor] as unknown;
-      return (
-        <Td key={colIndex} dataLabel={column.label}>
-          {formatter(objectRowElement, row)}
-        </Td>
-      );
-    },
-    []
   );
 
   const pageContent = (

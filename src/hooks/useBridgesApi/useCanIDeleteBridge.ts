@@ -22,7 +22,7 @@ export function useCanIDeleteBridge(): {
         })
       );
       return processorsApi
-        .listProcessors(bridgeId, undefined, 0, 1)
+        .getProcessors(bridgeId, undefined, 0, 1)
         .then((response) => {
           return response.data?.total === 0;
         })

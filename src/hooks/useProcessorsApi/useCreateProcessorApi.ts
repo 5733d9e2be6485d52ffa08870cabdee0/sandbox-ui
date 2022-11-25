@@ -7,7 +7,7 @@ import {
 import { useState } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 
-export function useAddProcessorToBridgeApi(): {
+export function useCreateProcessorApi(): {
   addProcessorToBridge: (
     bridgeId: string,
     processorRequest: ProcessorRequest
@@ -35,7 +35,7 @@ export function useAddProcessorToBridgeApi(): {
       })
     );
     processorsApi
-      .addProcessorToBridge(bridgeId, processorRequest)
+      .createProcessor(bridgeId, processorRequest)
       .then((response) => setProcessor(response.data))
       .catch((err) => setError(err))
       .finally(() => setIsLoading(false));

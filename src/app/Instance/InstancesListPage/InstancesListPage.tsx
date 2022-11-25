@@ -28,7 +28,6 @@ import {
 import DeleteInstance from "@app/Instance/DeleteInstance/DeleteInstance";
 import { canDeleteResource, canEditResource } from "@utils/resourceUtils";
 import { ErrorWithDetail } from "../../../types/Error";
-import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegionsApi";
@@ -145,7 +144,6 @@ const InstancesListPage = (): JSX.Element => {
   const [showCreateInstance, setShowCreateInstance] = useState(false);
   const { createBridge } = useCreateBridgeApi();
   const { getCloudProvidersWithRegions } = useGetCloudProvidersWithRegionsApi();
-  const { getSchema } = useGetSchemaApi();
 
   const onCreateBridge = useCallback(() => {
     setShowCreateInstance(false);
@@ -286,7 +284,6 @@ const InstancesListPage = (): JSX.Element => {
         isOpen={showCreateInstance}
         onClose={(): void => setShowCreateInstance((prev) => !prev)}
         getCloudProviders={getCloudProvidersWithRegions}
-        getSchema={getSchema}
         createBridge={handleCreate}
       />
       <Drawer isExpanded={showInstanceDrawer}>

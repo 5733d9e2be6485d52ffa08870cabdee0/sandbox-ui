@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import isEqual from "lodash.isequal";
-import isEqualWith from "lodash.isequalwith";
 import { useHistory, useParams } from "react-router-dom";
 import {
+  Alert,
   Button,
   Dropdown,
   DropdownItem,
@@ -17,29 +16,19 @@ import {
   TextContent,
 } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
-import ProcessorDetail from "@app/Processor/ProcessorDetail/ProcessorDetail";
 import { CaretDownIcon } from "@patternfly/react-icons";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
 import { useGetProcessorApi } from "../../../hooks/useProcessorsApi/useGetProcessorApi";
 import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
-import { Processor } from "../../../types/Processor";
 import ProcessorDetailSkeleton from "@app/Processor/ProcessorDetail/ProcessorDetailSkeleton";
-import ProcessorEdit from "@app/Processor/ProcessorEdit/ProcessorEdit";
-import { useUpdateProcessorApi } from "../../../hooks/useProcessorsApi/useUpdateProcessorApi";
-import {
-  ProcessorRequest,
-  ProcessorResponse,
-} from "@rhoas/smart-events-management-sdk";
+import { ProcessorResponse } from "@rhoas/smart-events-management-sdk";
 import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
 import { canDeleteResource, canEditResource } from "@utils/resourceUtils";
-import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";
-import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import {
   getErrorCode,
-  getErrorReason,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
@@ -61,13 +50,6 @@ const ProcessorDetailPage = (): JSX.Element => {
   const [processorRefreshInterval, setProcessorRefreshInterval] = useState(0);
   const [currentProcessor, setCurrentProcessor] = useState<ProcessorResponse>();
   const [isActionsOpen, setIsActionsOpen] = useState(false);
-  const [existingProcessorName, setExistingProcessorName] = useState<
-    string | undefined
-  >();
-  const [malformedTemplate, setMalformedTemplate] = useState<
-    string | undefined
-  >();
-  const [requestData, setRequestData] = useState<ProcessorRequest>();
 
   const [showActionModal, setShowActionModal] = useState<boolean>(false);
   const actionModalMessage = useRef<string>("");
@@ -109,21 +91,6 @@ const ProcessorDetailPage = (): JSX.Element => {
     processorRefreshInterval
   );
 
-  const {
-    updateProcessor,
-    processor: updatedProcessor,
-    isLoading: updateProcessorLoading,
-    error: updateProcessorError,
-  } = useUpdateProcessorApi();
-
-  const {
-    schemas,
-    isLoading: areSchemasLoading,
-    error: schemasError,
-  } = useGetSchemasApi();
-
-  const { getSchema, error: schemaError } = useGetSchemaApi();
-
   useEffect(() => {
     setCurrentProcessor(processor);
     if (processor && !canEditResource(processor?.status)) {
@@ -132,12 +99,6 @@ const ProcessorDetailPage = (): JSX.Element => {
       setProcessorRefreshInterval(0);
     }
   }, [processor]);
-
-  useEffect(() => {
-    setCurrentProcessor(updatedProcessor);
-    setIsEditing(false);
-    setProcessorRefreshInterval(refreshInterval);
-  }, [updatedProcessor]);
 
   useEffect(() => {
     if (bridgeError && axios.isAxiosError(bridgeError)) {
@@ -197,94 +158,6 @@ const ProcessorDetailPage = (): JSX.Element => {
     }
   }, [history, processor?.name, processorError, t]);
 
-  useEffect(() => {
-    if (schemasError && axios.isAxiosError(schemasError)) {
-      throw new ErrorWithDetail(
-        (
-          <TextContent>
-            <Text component="h1">
-              {processor?.name ?? t("common.processor")}
-            </Text>
-          </TextContent>
-        ),
-        t("processor.errors.processorDetailsGenericError")
-      );
-    }
-  }, [processor?.name, schemasError, t]);
-
-  useEffect(() => {
-    if (updateProcessorError && axios.isAxiosError(updateProcessorError)) {
-      if (
-        isServiceApiError(updateProcessorError) &&
-        getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_1
-      ) {
-        setExistingProcessorName(requestData?.name);
-      } else if (
-        isServiceApiError(updateProcessorError) &&
-        getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_19
-      ) {
-        setShowActionModal(true);
-        actionModalFn.current = (): void => {
-          setShowActionModal(false);
-          goToInstance();
-        };
-        actionModalMessage.current = t(
-          "processor.errors.cantUpdateProcessorBecauseNotReadyState"
-        );
-      } else if (
-        isServiceApiError(updateProcessorError) &&
-        getErrorCode(updateProcessorError) === APIErrorCodes.ERROR_22
-      ) {
-        setMalformedTemplate(
-          getErrorReason(updateProcessorError) ??
-            t("processor.errors.malformedTransformation")
-        );
-      } else {
-        setShowActionModal(true);
-        actionModalFn.current = (): void => {
-          setShowActionModal(false);
-        };
-        actionModalMessage.current = t("common.tryAgainLater");
-      }
-    }
-  }, [goToInstance, requestData?.name, t, updateProcessorError]);
-
-  const processorNotChanged = useCallback(
-    (prevDef: ProcessorResponse, updatedDef: ProcessorRequest): boolean =>
-      isEqualWith(
-        prevDef,
-        updatedDef,
-        (prev: ProcessorResponse, next: ProcessorRequest) =>
-          isEqual(prev.name, next.name) &&
-          isEqual(prev.filters, next.filters) &&
-          isEqual(prev.transformationTemplate, next.transformationTemplate) &&
-          isEqual(prev.action, next.action) &&
-          isEqual(prev.source, next.source)
-      ),
-    []
-  );
-
-  const handleUpdateProcessorSaving = useCallback(
-    (processorRequest: ProcessorRequest) => {
-      if (
-        currentProcessor &&
-        processorNotChanged(currentProcessor, processorRequest)
-      ) {
-        setIsEditing(false);
-        return;
-      }
-      setRequestData(processorRequest);
-      updateProcessor(instanceId, processorId, processorRequest);
-    },
-    [
-      currentProcessor,
-      instanceId,
-      processorId,
-      processorNotChanged,
-      updateProcessor,
-    ]
-  );
-
   const [showProcessorDeleteModal, setShowProcessorDeleteModal] =
     useState(false);
 
@@ -313,7 +186,7 @@ const ProcessorDetailPage = (): JSX.Element => {
 
   return (
     <>
-      {(isBridgeLoading || isProcessorLoading || areSchemasLoading) && (
+      {(isBridgeLoading || isProcessorLoading) && (
         <>
           <PageHeaderSkeleton
             pageTitle={t("processor.loadingProcessor")}
@@ -324,7 +197,7 @@ const ProcessorDetailPage = (): JSX.Element => {
           <ProcessorDetailSkeleton />
         </>
       )}
-      {bridge && currentProcessor && schemas && (
+      {bridge && currentProcessor && (
         <>
           <PageSection
             variant={PageSectionVariants.light}
@@ -373,8 +246,7 @@ const ProcessorDetailPage = (): JSX.Element => {
                     <SplitItem>
                       <Button
                         isAriaDisabled={
-                          !canEditResource(currentProcessor.status) ||
-                          schemaError !== undefined
+                          !canEditResource(currentProcessor.status)
                         }
                         ouiaId="edit"
                         onClick={(): void => setIsEditing(true)}
@@ -406,38 +278,27 @@ const ProcessorDetailPage = (): JSX.Element => {
               )}
             </Split>
           </PageSection>
-          {isEditing ? (
-            <ProcessorEdit
-              processor={currentProcessor}
-              isLoading={updateProcessorLoading}
-              saveButtonLabel={t("common.save")}
-              onSave={handleUpdateProcessorSaving}
-              onCancel={(): void => {
-                setMalformedTemplate(undefined);
-                setIsEditing(false);
-              }}
-              existingProcessorName={existingProcessorName}
-              malformedTransformationTemplate={malformedTemplate}
-              schemaCatalog={schemas}
-              getSchema={getSchema}
-            />
-          ) : (
-            <>
-              <ProcessorDetail
-                processor={currentProcessor as unknown as Processor}
-                schemaCatalog={schemas}
-                getSchema={getSchema}
-              />
-              <DeleteProcessor
-                showDeleteModal={showProcessorDeleteModal}
-                bridgeId={bridge.id}
-                processorId={currentProcessor.id}
-                processorName={currentProcessor.name as string}
-                onDeleted={handleOnDeleteProcessorSuccess}
-                onCanceled={(): void => setShowProcessorDeleteModal(false)}
-              />
-            </>
-          )}
+          <PageSection variant={PageSectionVariants.light}>
+            {isEditing ? (
+              <Alert variant="default" isInline title="Processor Editing TBD" />
+            ) : (
+              <>
+                <Alert
+                  variant="default"
+                  isInline
+                  title="Processor Detail TBD"
+                />
+                <DeleteProcessor
+                  showDeleteModal={showProcessorDeleteModal}
+                  bridgeId={bridge.id}
+                  processorId={currentProcessor.id}
+                  processorName={currentProcessor.name}
+                  onDeleted={handleOnDeleteProcessorSuccess}
+                  onCanceled={(): void => setShowProcessorDeleteModal(false)}
+                />
+              </>
+            )}
+          </PageSection>
         </>
       )}
       <ActionModal

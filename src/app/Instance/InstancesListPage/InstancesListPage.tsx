@@ -7,14 +7,10 @@ import {
 import {
   Drawer,
   DrawerContent,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
   PageSection,
   PageSectionVariants,
   Text,
   TextContent,
-  Title,
 } from "@patternfly/react-core";
 import { IAction, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
@@ -25,7 +21,6 @@ import CreateInstance, {
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
 import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
-import { PlusCircleIcon } from "@patternfly/react-icons";
 import {
   BridgeResponse,
   ManagedResourceStatus,
@@ -38,6 +33,7 @@ import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegionsApi";
 import { renderCell, renderHeader, TableColumn } from "@utils/tableUtils";
+import { EmptyState } from "@app/components/EmptyState/EmptyState";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["smartEventsTempDictionary"]);
@@ -230,17 +226,21 @@ const InstancesListPage = (): JSX.Element => {
     [tableActions]
   );
 
+  const onCreateInstance = (): void => setShowCreateInstance(true);
+
   const emptyStateNoData = (
-    <EmptyState variant="large">
-      <EmptyStateIcon icon={PlusCircleIcon} />
-      <Title headingLevel="h2" size="lg">
-        {t("instance.noInstances")}
-      </Title>
-      <EmptyStateBody>
-        {/* @TODO Quick start guide link missing */}
-        {t("common.quickStartAccess")}
-      </EmptyStateBody>
-    </EmptyState>
+    <EmptyState
+      title={t("instance.noInstances")}
+      createButton={{
+        title: t("instance.createSEInstance"),
+        onCreate: onCreateInstance,
+      }}
+      quickStartGuide={{
+        i18nKey: "common.quickStartAccess",
+        onQuickstartGuide:
+          (): void => {} /* @TODO Quick start guide link missing */,
+      }}
+    />
   );
 
   const pageContent = (
@@ -254,7 +254,7 @@ const InstancesListPage = (): JSX.Element => {
           actions={[
             {
               label: t("instance.createSEInstance"),
-              onClick: (): void => setShowCreateInstance(true),
+              onClick: onCreateInstance,
               isPrimary: true,
             },
           ]}
@@ -263,7 +263,7 @@ const InstancesListPage = (): JSX.Element => {
           emptyStateNoData={emptyStateNoData}
           emptyStateNoResults={
             emptyStateNoData
-          } /** https://issues.redhat.com/browse/MGDOBR-1229 */
+          } /** TODO https://issues.redhat.com/browse/MGDOBR-1229 */
           itemCount={totalRows}
           onPageChange={setPagination}
           page={page}

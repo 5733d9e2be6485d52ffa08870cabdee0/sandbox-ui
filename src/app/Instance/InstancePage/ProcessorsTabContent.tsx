@@ -1,10 +1,4 @@
-import {
-  EmptyState,
-  EmptyStateIcon,
-  PageSection,
-  Title,
-} from "@patternfly/react-core";
-import { PlusCircleIcon } from "@patternfly/react-icons";
+import { PageSection } from "@patternfly/react-core";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { IAction, IRowData } from "@patternfly/react-table";
 import {
@@ -26,6 +20,7 @@ import { canDeleteResource } from "@utils/resourceUtils";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import { renderCell, renderHeader, TableColumn } from "@utils/tableUtils";
+import { EmptyState } from "@app/components/EmptyState/EmptyState";
 
 interface ProcessorTabContentProps {
   instanceId: string;
@@ -159,13 +154,21 @@ export const ProcessorsTabContent = ({
     [tableActions]
   );
 
+  const onCreateProcessor = (): void => {
+    if (bridgeStatus === ManagedResourceStatus.Ready) {
+      history.push(`/instance/${instanceId}/create-processor`);
+    }
+  };
+
   const emptyStateNoData = (
-    <EmptyState variant="large">
-      <EmptyStateIcon icon={PlusCircleIcon} />
-      <Title headingLevel="h2" size="lg">
-        {t("processor.noProcessors")}
-      </Title>
-    </EmptyState>
+    <EmptyState
+      title={t("processor.noProcessors")}
+      createButton={{
+        title: t("processor.createProcessor"),
+        onCreate: onCreateProcessor,
+        isDisabled: bridgeStatus !== ManagedResourceStatus.Ready,
+      }}
+    />
   );
 
   usePolling(() => triggerGetProcessors(), 10000);
@@ -198,14 +201,10 @@ export const ProcessorsTabContent = ({
             "smartEventsTempDictionary:processor.processorsListTable"
           )}
           actions={[
+            /** TODO https://issues.redhat.com/browse/MGDOBR-1274 */
             {
               label: t("processor.createProcessor"),
-              onClick: (): void => {
-                /** https://issues.redhat.com/browse/MGDOBR-1274 */
-                if (bridgeStatus === ManagedResourceStatus.Ready) {
-                  history.push(`/instance/${instanceId}/create-processor`);
-                }
-              },
+              onClick: onCreateProcessor,
               isPrimary: true,
             },
           ]}
@@ -214,7 +213,7 @@ export const ProcessorsTabContent = ({
           emptyStateNoData={emptyStateNoData}
           emptyStateNoResults={
             emptyStateNoData
-          } /** https://issues.redhat.com/browse/MGDOBR-1229 */
+          } /** TODO https://issues.redhat.com/browse/MGDOBR-1229 */
           itemCount={totalRows}
           onPageChange={setPagination}
           page={page}

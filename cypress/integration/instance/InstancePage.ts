@@ -148,9 +148,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         .ouiaId("processors", "PF4/TabButton")
         .click();
       cy.ouiaId("processors", "PF4/TabContent").within(() => {
-        cy.ouiaId("rows-toolbar", "PF4/Toolbar")
-          .ouiaId("create-processor", "PF4/Button")
-          .should("be.visible");
+        cy.contains("button", "Create processor").should("be.visible");
         cy.ouiaId("Processors list table", "PF4/Table")
           .ouiaId("Processor three", "PF4/TableRow")
           .find("td")
@@ -188,9 +186,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         .ouiaId("processors", "PF4/TabButton")
         .click();
       cy.ouiaId("processors", "PF4/TabContent").within(() => {
-        cy.ouiaId("rows-toolbar", "PF4/Toolbar")
-          .ouiaId("create-processor", "PF4/Button")
-          .should("be.visible");
+        cy.contains("button", "Create processor").should("be.visible");
         cy.ouiaId("Processors list table", "PF4/Table")
           .ouiaId("Processor one", "PF4/TableRow")
           .find("td")

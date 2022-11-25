@@ -21,7 +21,7 @@ describe("Basic Elements", () => {
   });
 
   it("The Create SE Instance button is visible", () => {
-    cy.ouiaId("create-smart-event-instance", "PF4/Button").should("be.visible");
+    cy.contains("button", "Create Smart Events instance").should("be.visible");
   });
 
   /**

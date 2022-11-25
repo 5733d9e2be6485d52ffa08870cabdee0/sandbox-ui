@@ -52,7 +52,7 @@ export function pageWasLoaded() {
 }
 
 export function createInstance(newInstanceName: string, action?: string) {
-  cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
+  cy.contains("button", "Create Smart Events instance").click();
   cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
     cy.wrap($modal)
       .should("be.visible")

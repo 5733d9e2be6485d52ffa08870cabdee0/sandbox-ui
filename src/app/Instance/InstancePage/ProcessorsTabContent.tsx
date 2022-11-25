@@ -222,6 +222,9 @@ export const ProcessorsTabContent = ({
           renderHeader={renderHeader}
           renderCell={renderCell}
           setRowOuiaId={rowOuiaId}
+          tableOuiaId={t(
+            "smartEventsTempDictionary:processor.processorsListTable"
+          )}
         />
       </PageSection>
       <DeleteProcessor

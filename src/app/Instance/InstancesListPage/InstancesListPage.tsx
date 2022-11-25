@@ -272,6 +272,9 @@ const InstancesListPage = (): JSX.Element => {
           renderHeader={renderHeader}
           renderCell={renderCell}
           setRowOuiaId={rowOuiaId}
+          tableOuiaId={t(
+            "smartEventsTempDictionary:instance.instancesListTable"
+          )}
         />
       </PageSection>
     </>

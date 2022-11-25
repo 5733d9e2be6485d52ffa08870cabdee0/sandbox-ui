@@ -5,7 +5,6 @@ import CreateInstance, {
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import { CloudProviderWithRegions } from "@app/Instance/CreateInstance/types";
-import { JSONSchema7 } from "json-schema";
 
 const setupCreateInstance = (
   props: Partial<CreateInstanceProps>
@@ -13,7 +12,6 @@ const setupCreateInstance = (
   const {
     isOpen = true,
     onClose = jest.fn(),
-    getSchema = jest.fn(),
     getCloudProviders = (): Promise<CloudProviderWithRegions[]> =>
       new Promise<CloudProviderWithRegions[]>((resolve) => {
         resolve([cloudProvider]);
@@ -24,7 +22,6 @@ const setupCreateInstance = (
     <CreateInstance
       isOpen={isOpen}
       onClose={onClose}
-      getSchema={getSchema}
       getCloudProviders={getCloudProviders}
       createBridge={createBridge}
     />
@@ -90,50 +87,6 @@ describe("CreateInstance component", () => {
     );
   });
 
-  it("should display error handling section", async () => {
-    const { comp } = setupCreateInstance({});
-    await waitForI18n(comp);
-
-    expect(comp.getByText("Error handling")).toBeInTheDocument();
-
-    expect(
-      comp.baseElement.querySelector(
-        "[data-ouia-component-id='error-handling-method-selector']"
-      )
-    ).toBeInTheDocument();
-  });
-
-  it("should have 'Ignore' as default method for error handling", async () => {
-    const { comp } = setupCreateInstance({});
-    await waitForI18n(comp);
-
-    expect(
-      comp.baseElement.querySelector(
-        "[data-ouia-component-id='error-handling-method-selector'] .pf-c-select__toggle-text"
-      )
-    ).toHaveTextContent("Ignore");
-  });
-
-  it("should retrieve the schema of the selected handling strategy, when changing the method", async () => {
-    const getSchema = jest.fn(
-      (): Promise<object> =>
-        new Promise<object>((resolve) => {
-          resolve(demoSchema);
-        })
-    );
-    const { comp } = setupCreateInstance({ getSchema });
-    await waitForI18n(comp);
-
-    await waitFor(() => setErrorHandlingMethod(comp, "Webhook"));
-
-    await waitFor(() => {
-      expect(comp.getByText("Endpoint")).toBeInTheDocument();
-    });
-
-    expect(getSchema).toHaveBeenCalledTimes(1);
-    expect(getSchema).toHaveBeenCalledWith("webhook_sink_0.1", "action");
-  });
-
   it("should display cloud provider and region options", async () => {
     const { comp } = setupCreateInstance({});
     await waitForI18n(comp);
@@ -147,109 +100,6 @@ describe("CreateInstance component", () => {
     expect(
       comp.baseElement.querySelector("button#cloud-region")
     ).toHaveTextContent(cloudProvider.regions[0].display_name);
-  });
-
-  it("should create an instance with an error handling configuration", async () => {
-    const createBridge = jest.fn();
-    const { comp } = setupCreateInstance({
-      createBridge,
-      getSchema: (): Promise<object> =>
-        new Promise<object>((resolve) => {
-          resolve(demoSchema);
-        }),
-    });
-    await waitForI18n(comp);
-
-    const instanceName = "my instance";
-    setName(comp, instanceName);
-
-    await waitFor(() => setErrorHandlingMethod(comp, "Webhook"));
-
-    await waitFor(() => {
-      expect(comp.getByText("Endpoint")).toBeInTheDocument();
-    });
-
-    const endpointValue = "http://a.com";
-    fireEvent.change(comp.getByLabelText("Endpoint *"), {
-      target: { value: endpointValue },
-    });
-
-    submitForm(comp);
-
-    expectValidationErrorAlert(comp, false);
-    expect(createBridge).toHaveBeenCalledTimes(1);
-    expect(createBridge).toHaveBeenCalledWith(
-      {
-        name: instanceName,
-        cloud_provider: cloudProvider.id,
-        region: cloudProvider.regions[0].name,
-        error_handler: {
-          type: "webhook_sink_0.1",
-          parameters: {
-            endpoint: endpointValue,
-          },
-        },
-      },
-      expect.anything(),
-      expect.anything()
-    );
-  });
-
-  it("should display an error if required error handling parameters are missing on submit", async () => {
-    const createBridge = jest.fn();
-    const { comp } = setupCreateInstance({
-      createBridge,
-      getSchema: (): Promise<object> =>
-        new Promise<object>((resolve) => {
-          resolve(demoSchema);
-        }),
-    });
-    await waitForI18n(comp);
-
-    const instanceName = "my instance";
-    setName(comp, instanceName);
-
-    await waitFor(() => setErrorHandlingMethod(comp, "Webhook"));
-
-    await waitFor(() => {
-      expect(comp.getByText("Endpoint")).toBeInTheDocument();
-    });
-
-    expectValidationErrorAlert(comp, false);
-
-    submitForm(comp);
-
-    expectValidationErrorAlert(comp, true);
-    const endpointErrorMessage = "must have required property 'endpoint'";
-    expect(comp.getByText(endpointErrorMessage)).toBeInTheDocument();
-
-    expect(createBridge).toHaveBeenCalledTimes(0);
-
-    const endpointValue = "http://a.com";
-    fireEvent.change(comp.getByLabelText("Endpoint *"), {
-      target: { value: endpointValue },
-    });
-
-    submitForm(comp);
-
-    expectValidationErrorAlert(comp, false);
-    expect(comp.queryByText(endpointErrorMessage)).not.toBeInTheDocument();
-    expect(createBridge).toHaveBeenCalledTimes(1);
-    expect(createBridge).toHaveBeenCalledWith(
-      {
-        name: instanceName,
-        cloud_provider: cloudProvider.id,
-        region: cloudProvider.regions[0].name,
-        error_handler: {
-          type: "webhook_sink_0.1",
-          parameters: {
-            endpoint: endpointValue,
-          },
-        },
-      },
-      expect.anything(),
-      expect.anything()
-    );
   });
 
   it("should disable create button and inputs while loading", async () => {
@@ -379,20 +229,6 @@ const setName = (comp: RenderResult, name: string): void => {
   });
 };
 
-const setErrorHandlingMethod = async (
-  comp: RenderResult,
-  method: string
-): Promise<void> => {
-  const selector = comp.baseElement.querySelector(
-    "[data-ouia-component-id='error-handling-method-selector']"
-  );
-  fireEvent.click(
-    selector?.querySelector(".pf-c-select__toggle-arrow") as Node
-  );
-  await waitFor(() => comp.getByText(method));
-  fireEvent.click(comp.getByText(method));
-};
-
 const expectInputsAreDisabled = (comp: RenderResult): void => {
   expect(comp.getByLabelText("Name *")).toBeDisabled();
   expect(comp.getByRole("option")).toHaveAttribute("aria-disabled", "true");
@@ -445,17 +281,4 @@ const cloudProvider: CloudProviderWithRegions = {
 const cloudProviderUnavailable: CloudProviderWithRegions = {
   ...cloudProvider,
   regions: [{ ...cloudRegion, enabled: false }],
-};
-
-const demoSchema: JSONSchema7 = {
-  type: "object",
-  additionalProperties: false,
-  required: ["endpoint"],
-  properties: {
-    endpoint: {
-      title: "Endpoint",
-      description: "The Slack channel to receive messages from",
-      type: "string",
-    },
-  },
 };

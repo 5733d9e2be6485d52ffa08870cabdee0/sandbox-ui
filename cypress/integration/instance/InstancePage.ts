@@ -73,7 +73,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         .should("have.attr", "hidden");
     });
 
-    it("View error handler details", () => {
+    it.skip("View error handler details", () => {
       cy.ouiaId("error-handling", "PF4/TabButton").click();
 
       cy.ouiaId("error-handling-section", "PF4/Text")
@@ -160,7 +160,6 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           .then(($cells) => {
             expect($cells).have.length(5);
             expect($cells.eq(0)).have.text("Processor three");
-            expect($cells.eq(1)).have.text("Source");
             cy.wrap($cells)
               .eq(3)
               .ouiaId("creating", "PF4/Button")
@@ -202,7 +201,6 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           .then(($cells) => {
             expect($cells).have.length(5);
             expect($cells.eq(0)).have.text("Processor one");
-            expect($cells.eq(1)).have.text("Sink");
             cy.wrap($cells)
               .eq(3)
               .ouiaId("ready", "QE/ResourceStatus")

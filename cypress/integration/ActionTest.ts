@@ -7,7 +7,7 @@ import {
 } from "../utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
-  describe("Action Test", () => {
+  describe.skip("Action Test", () => {
     /**
      * This test suite verifies that actions are possible to modify and set the particular parameters.
      */

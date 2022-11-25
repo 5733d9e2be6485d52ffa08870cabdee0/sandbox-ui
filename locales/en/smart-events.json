@@ -9,7 +9,6 @@
     "copy": "Copy",
     "copied": "Copied",
     "create": "Create",
-    "deadLetterQueue": "Dead letter queue",
     "delete": "Delete",
     "description": "Description",
     "details": "Details",
@@ -68,15 +67,6 @@
     "unexpectedError": "Unexpected Error",
     "value": "Value",
     "yes": "Yes"
-  },
-  "errorHandling": {
-    "endpoint": "Endpoint URL",
-    "endpointDescription": "Invoke the endpoint below to retrieve the last errors, associated to this Smart Events instance.",
-    "errors": {
-      "cantFindSchema": "The information related to the error handling strategy for this Smart Events instance is currently missing.",
-      "schemaGenericError": "Error while retrieving the information related to the error handling strategy for this Smart Events instance.",
-      "schemaGenericErrorDuringCreation": "Error while retrieving information for the selected error handling method. Try again later."
-    }
   },
   "instance": {
     "createASEInstance": "Create a Smart Events instance",

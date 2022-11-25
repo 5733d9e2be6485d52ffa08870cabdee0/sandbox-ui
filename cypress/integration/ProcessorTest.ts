@@ -4,6 +4,7 @@ import {
   EnvType,
   pageWasLoaded,
   visitWithCookies,
+  waitTillTableIsLoaded,
 } from "../utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
@@ -33,6 +34,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           { Key: "data.surname", Type: "String equals", Value: "White" },
         ];
 
+        waitTillTableIsLoaded("Processors list table");
         cy.contains("button", "Create processor").click();
         cy.ouiaId("Create processor", "breadcrumb-item").should("be.visible");
         cy.ouiaId("sink", "Tile").should("be.visible").click();
@@ -120,6 +122,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           "Username": "Property not configured",
         };
 
+        waitTillTableIsLoaded("Processors list table");
         cy.contains("button", "Create processor").click();
         cy.ouiaId("Create processor", "breadcrumb-item").should("be.visible");
         cy.ouiaId("sink", "Tile").should("be.visible").click();
@@ -171,6 +174,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           { Key: "data.name", Type: "String equals", Value: "John" },
           { Key: "data.surname", Type: "String equals", Value: "White" },
         ];
+        waitTillTableIsLoaded("Processors list table");
         cy.contains("button", "Create processor").click();
         cy.ouiaId("Create processor", "breadcrumb-item").should("be.visible");
         cy.ouiaId("source", "Tile").should("be.visible").click();

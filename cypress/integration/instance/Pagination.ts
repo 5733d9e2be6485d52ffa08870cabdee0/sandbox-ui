@@ -6,9 +6,9 @@ import {
   EnvType,
   isEnvironmentType,
   pageWasLoaded,
-  safeLogin,
   visitWithCookies,
   waitTillInstanceIsReady,
+  waitTillTableIsLoaded,
 } from "cypress/utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
@@ -95,6 +95,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         (count) => {
           let initialInstanceCount = parseInt(count.text());
           deleteInstance("Instance ten");
+          waitTillTableIsLoaded("Instances list table");
           deletedInstanceNotExist("Instance ten");
           cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
             (count) => {

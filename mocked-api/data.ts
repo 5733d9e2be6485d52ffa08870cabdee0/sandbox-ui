@@ -301,6 +301,20 @@ export const instancesData = [
     cloud_provider: "aws",
     region: "us-east-1",
   },
+  {
+    kind: "Bridge",
+    id: "l567d63b-6fdc-43ce-afc8-45160f456502",
+    name: "Instance twenty two",
+    owner: "bebianco",
+    href: "/api/smartevents_mgmt/v1/bridges/l567d63b-6fdc-43ce-afc8-45160f456502",
+    status: "ready",
+    submitted_at: "2021-12-01T11:34:00Z",
+    published_at: "2021-12-01T11:35:00Z",
+    endpoint:
+      "https://l567d63b-6fdc-43ce-afc8-45160f456502.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
+    cloud_provider: "aws",
+    region: "us-east-1",
+  },
 ];
 
 export const processorData = [

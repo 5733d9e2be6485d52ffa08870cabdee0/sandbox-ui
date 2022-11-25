@@ -74,6 +74,12 @@ export function createInstance(newInstanceName: string, action?: string) {
   });
 }
 
+export function waitTillTableIsLoaded(tableName: string) {
+  cy.ouiaId(tableName, "PF4/Table").within(() => {
+    cy.get(".pf-c-skeleton").should("not.exist");
+  });
+}
+
 export function waitTillInstanceIsReady(instanceName: string) {
   cy.ouiaId("Instances list table", "PF4/Table")
     .ouiaId(instanceName, "PF4/TableRow")

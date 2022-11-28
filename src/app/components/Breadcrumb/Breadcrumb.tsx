@@ -5,7 +5,7 @@ import {
 } from "@patternfly/react-core";
 import { Link } from "react-router-dom";
 
-interface BreadcrumbProps {
+export interface BreadcrumbProps {
   /** Path describing the whole breadcrumb */
   path: {
     /** Linking this path item with a specific location */

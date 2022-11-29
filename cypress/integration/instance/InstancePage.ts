@@ -13,6 +13,7 @@ import {
 const formatDate = (dateStr: string): string =>
   format(new Date(dateStr), "PPPP p");
 
+const CREATE_PROCESSOR_BUTTON_LABEL = "Create processor";
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
   describe("Instance Page - Instance one", () => {
     beforeEach(() => {
@@ -148,7 +149,11 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         .ouiaId("processors", "PF4/TabButton")
         .click();
       cy.ouiaId("processors", "PF4/TabContent").within(() => {
-        cy.contains("button", "Create processor").should("be.visible");
+        cy.ouiaType("PF4/Toolbar").within(() => {
+          cy.contains("button", CREATE_PROCESSOR_BUTTON_LABEL).should(
+            "be.visible"
+          );
+        });
         cy.ouiaId("Processors list table", "PF4/Table")
           .ouiaId("Processor three", "PF4/TableRow")
           .find("td")
@@ -186,7 +191,11 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
         .ouiaId("processors", "PF4/TabButton")
         .click();
       cy.ouiaId("processors", "PF4/TabContent").within(() => {
-        cy.contains("button", "Create processor").should("be.visible");
+        cy.ouiaType("PF4/Toolbar").within(() => {
+          cy.contains("button", CREATE_PROCESSOR_BUTTON_LABEL).should(
+            "be.visible"
+          );
+        });
         cy.ouiaId("Processors list table", "PF4/Table")
           .ouiaId("Processor one", "PF4/TableRow")
           .find("td")

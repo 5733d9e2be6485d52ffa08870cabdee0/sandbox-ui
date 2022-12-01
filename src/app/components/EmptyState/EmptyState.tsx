@@ -29,7 +29,7 @@ export const EmptyState = ({
   title,
 }: EmptyStateProps): JSX.Element => {
   return (
-    <EmptyStatePF variant={EmptyStateVariant.xs}>
+    <EmptyStatePF variant={EmptyStateVariant.small}>
       <EmptyStateIcon icon={PlusCircleIcon} />
       <Title headingLevel="h2" size="lg">
         {title}

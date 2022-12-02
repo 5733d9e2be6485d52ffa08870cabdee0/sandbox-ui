@@ -132,7 +132,7 @@ export const ProcessorsTabContent = ({
   } = useGetProcessorsApi();
 
   const triggerGetProcessors = useCallback(
-    (): void => getProcessors(instanceId, page, perPage, undefined, true),
+    (): void => getProcessors(instanceId, page, perPage, true),
     [getProcessors, instanceId, page, perPage]
   );
 

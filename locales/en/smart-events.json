@@ -33,7 +33,7 @@
     "processor": "Processor",
     "processors": "Processors",
     "publishedAt": "Published at",
-    "quickStartAccess": "For help getting started, access the quick start guide.",
+    "quickStartAccess": "For help getting started, access the <0>quick start guide</0>.",
     "required": "Required",
     "resourceWillBeDeletedHTML": "The <strong>{{name}}</strong> {{type}} will be deleted.",
     "save": "Save",

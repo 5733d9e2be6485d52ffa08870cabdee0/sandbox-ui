@@ -77,7 +77,7 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
     });
 
     it("The Create SE Instance button is visible", () => {
-      cy.ouiaId("create-smart-event-instance", "PF4/Button").should(
+      cy.contains("button", "Create Smart Events instance").should(
         "be.visible"
       );
     });

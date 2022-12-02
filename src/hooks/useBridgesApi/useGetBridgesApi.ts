@@ -11,19 +11,19 @@ import { useSmartEvents } from "@contexts/SmartEventsContext";
 export function useGetBridgesApi(): {
   getBridges: (pageReq?: number, sizeReq?: number, isPolling?: boolean) => void;
   bridgeListResponse?: BridgeListResponse;
-  isLoading: boolean;
   error: unknown;
 } {
   const [bridgeListResponse, setBridgeListResponse] =
     useState<BridgeListResponse>();
   const [error, setError] = useState<unknown>();
-  const [isLoading, setIsLoading] = useState(true);
   const prevCallTokenSource = useRef<CancelTokenSource>();
   const { getToken, apiBaseUrl } = useSmartEvents();
 
   const getBridges = useCallback(
     (pageReq?: number, sizeReq?: number, isPolling = false): void => {
-      setIsLoading(!isPolling); // no loading, when the call is generated from a polling
+      if (!isPolling) {
+        setBridgeListResponse(undefined);
+      }
       prevCallTokenSource.current?.cancel();
 
       const CancelToken = axios.CancelToken;
@@ -36,10 +36,14 @@ export function useGetBridgesApi(): {
           basePath: apiBaseUrl,
         })
       );
+
+      /** First page number, for the APIs, is 0 (instead of 1) */
+      const pageNumber = pageReq !== undefined ? pageReq - 1 : pageReq;
+
       bridgeApi
         .getBridges(
           undefined,
-          pageReq,
+          pageNumber,
           sizeReq,
           new Set<ManagedResourceStatus>(),
           {
@@ -48,17 +52,15 @@ export function useGetBridgesApi(): {
         )
         .then((response) => {
           setBridgeListResponse(response.data);
-          setIsLoading(false);
         })
         .catch((err) => {
           if (!axios.isCancel(err)) {
             setError(err);
-            setIsLoading(false);
           }
         });
     },
     [getToken, apiBaseUrl]
   );
 
-  return { getBridges, isLoading, bridgeListResponse, error };
+  return { getBridges, bridgeListResponse, error };
 }

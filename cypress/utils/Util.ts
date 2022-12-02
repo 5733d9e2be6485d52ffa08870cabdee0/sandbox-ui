@@ -52,7 +52,7 @@ export function pageWasLoaded() {
 }
 
 export function createInstance(newInstanceName: string, action?: string) {
-  cy.ouiaId("create-smart-event-instance", "PF4/Button").click();
+  cy.contains("button", "Create Smart Events instance").click();
   cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
     cy.wrap($modal)
       .should("be.visible")
@@ -71,6 +71,12 @@ export function createInstance(newInstanceName: string, action?: string) {
       cy.ouiaId(action ?? "submit", "PF4/Button").click();
     });
     cy.wrap($modal, { timeout: 20000 }).should("not.exist");
+  });
+}
+
+export function waitTillTableIsLoaded(tableName: string) {
+  cy.ouiaId(tableName, "PF4/Table").within(() => {
+    cy.get(".pf-c-skeleton").should("not.exist");
   });
 }
 

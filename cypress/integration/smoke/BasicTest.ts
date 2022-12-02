@@ -3,8 +3,8 @@ import { LoginConfig } from "cypress/utils/Config";
 import {
   EnvType,
   isEnvironmentType,
-  safeLogin,
   pageWasLoaded,
+  safeLogin,
   visitWithCookies,
 } from "../../utils/Util";
 
@@ -21,7 +21,7 @@ describe("Basic Elements", () => {
   });
 
   it("The Create SE Instance button is visible", () => {
-    cy.ouiaId("create-smart-event-instance", "PF4/Button").should("be.visible");
+    cy.contains("button", "Create Smart Events instance").should("be.visible");
   });
 
   /**
@@ -51,7 +51,7 @@ describe("Basic Elements", () => {
     it("Mocked instances are visible", () => {
       //TODO: MGDOBR-710
       cy.wait(10000);
-      cy.ouiaType("PF4/TableRow").should("have.length", 11);
+      cy.ouiaType("PF4/TableRow").should("have.length", 21);
       cy.ouiaId("Instance two", "PF4/TableRow")
         .find("a[data-testid='tableInstances-linkInstance']")
         .should("be.visible")

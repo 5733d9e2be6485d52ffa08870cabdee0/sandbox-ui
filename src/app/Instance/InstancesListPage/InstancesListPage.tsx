@@ -1,35 +1,26 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useTranslation } from "@rhoas/app-services-ui-components";
 import {
-  Button,
+  TableView,
+  usePaginationSearchParams,
+  useTranslation,
+} from "@rhoas/app-services-ui-components";
+import {
   Drawer,
   DrawerContent,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
   PageSection,
   PageSectionVariants,
   Text,
   TextContent,
-  Title,
 } from "@patternfly/react-core";
 import { IAction, IRowData } from "@patternfly/react-table";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
-import {
-  DEFAULT_PAGE_SIZE,
-  FIRST_PAGE,
-  TableColumn,
-  TableWithPagination,
-} from "@app/components/TableWithPagination/TableWithPagination";
 import CreateInstance, {
   CreateInstanceProps,
 } from "@app/Instance/CreateInstance/CreateInstance";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
 import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
-import { PlusCircleIcon } from "@patternfly/react-icons";
-import { TableWithPaginationSkeleton } from "@app/components/TableWithPaginationSkeleton/TableWithPaginationSkeleton";
 import {
   BridgeResponse,
   ManagedResourceStatus,
@@ -41,13 +32,14 @@ import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegionsApi";
+import { renderCell, renderHeader, TableColumn } from "@utils/tableUtils";
+import { EmptyState } from "@app/components/EmptyState/EmptyState";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
-  const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
-  const [currentPageSize, setCurrentPageSize] =
-    useState<number>(DEFAULT_PAGE_SIZE);
+  const { page, perPage, setPagination } = usePaginationSearchParams();
+
   const [totalRows, setTotalRows] = useState<number>();
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
   const [selectedInstance, setSelectedInstance] = useState<BridgeResponse>();
@@ -114,24 +106,22 @@ const InstancesListPage = (): JSX.Element => {
     [t]
   );
 
-  const { bridgeListResponse, isLoading, getBridges, error } =
-    useGetBridgesApi();
+  const { bridgeListResponse, getBridges, error } = useGetBridgesApi();
 
   const triggerGetBridges = useCallback(
-    (): void => getBridges(currentPage, currentPageSize, true),
-    [currentPage, currentPageSize, getBridges]
+    (): void => getBridges(page, perPage, true),
+    [getBridges, page, perPage]
   );
 
   usePolling(() => triggerGetBridges(), 10000);
 
   useEffect(() => {
-    getBridges(FIRST_PAGE, DEFAULT_PAGE_SIZE);
-  }, [getBridges]);
+    getBridges(page, perPage);
+  }, [getBridges, page, perPage]);
 
   useEffect(() => {
     if (bridgeListResponse) {
-      setCurrentPage(bridgeListResponse.page ?? FIRST_PAGE);
-      setTotalRows(bridgeListResponse.total ?? 0);
+      setTotalRows(bridgeListResponse.total);
       if (selectedInstance) {
         const updatedInstance = bridgeListResponse.items?.find(
           (bridge) => bridge.id === selectedInstance.id
@@ -159,8 +149,8 @@ const InstancesListPage = (): JSX.Element => {
 
   const onCreateBridge = useCallback(() => {
     setShowCreateInstance(false);
-    getBridges(currentPage, currentPageSize);
-  }, [getBridges, currentPage, currentPageSize]);
+    getBridges(page, perPage);
+  }, [getBridges, page, perPage]);
 
   const handleCreate = useCallback<CreateInstanceProps["createBridge"]>(
     function (data, onSuccess, onError) {
@@ -190,9 +180,9 @@ const InstancesListPage = (): JSX.Element => {
 
   const handleOnDeleteSuccess = useCallback((): void => {
     setShowDeleteModal(false);
-    getBridges(currentPage, currentPageSize);
+    getBridges(page, perPage);
     resetDeleteInstance();
-  }, [currentPage, currentPageSize, getBridges, resetDeleteInstance]);
+  }, [getBridges, page, perPage, resetDeleteInstance]);
 
   const handleOnDeleteCancel = useCallback((): void => {
     setShowDeleteModal(false);
@@ -223,14 +213,75 @@ const InstancesListPage = (): JSX.Element => {
     [t]
   );
 
-  const customToolbarElement = (
+  const rowOuiaId = useCallback(
+    ({ row, rowIndex }): string =>
+      (row as BridgeResponse).name ?? `table-row-${String(rowIndex)}`,
+    []
+  );
+
+  const renderActions = useCallback(
+    ({ row, ActionsColumn }): JSX.Element => (
+      <ActionsColumn items={tableActions(row as IRowData)} />
+    ),
+    [tableActions]
+  );
+
+  const onCreateInstance = (): void => setShowCreateInstance(true);
+
+  const emptyStateNoData = (
+    <EmptyState
+      title={t("instance.noInstances")}
+      createButton={{
+        title: t("instance.createSEInstance"),
+        onCreate: onCreateInstance,
+      }}
+      quickStartGuide={{
+        i18nKey: "common.quickStartAccess",
+        onQuickstartGuide:
+          (): void => {} /* @TODO Quick start guide link missing */,
+      }}
+    />
+  );
+
+  const pageContent = (
     <>
-      <Button
-        ouiaId="create-smart-event-instance"
-        onClick={(): void => setShowCreateInstance(true)}
-      >
-        {t("instance.createSEInstance")}
-      </Button>
+      <PageSection variant={PageSectionVariants.light}>
+        {pageTitleElement}
+      </PageSection>
+      <PageSection>
+        <TableView
+          ariaLabel={t("smartEventsTempDictionary:instance.instancesListTable")}
+          actions={[
+            {
+              label: t("instance.createSEInstance"),
+              onClick: onCreateInstance,
+              isPrimary: true,
+            },
+          ]}
+          columns={columnNames}
+          data={bridgeListResponse?.items}
+          emptyStateNoData={emptyStateNoData}
+          emptyStateNoResults={
+            emptyStateNoData
+          } /** TODO https://issues.redhat.com/browse/MGDOBR-1229 */
+          itemCount={totalRows}
+          onPageChange={setPagination}
+          page={page}
+          perPage={perPage}
+          renderActions={renderActions}
+          renderHeader={renderHeader}
+          renderCell={renderCell}
+          setRowOuiaId={rowOuiaId}
+          tableOuiaId={t(
+            "smartEventsTempDictionary:instance.instancesListTable"
+          )}
+        />
+      </PageSection>
+    </>
+  );
+
+  return (
+    <>
       <CreateInstance
         isOpen={showCreateInstance}
         onClose={(): void => setShowCreateInstance((prev) => !prev)}
@@ -238,78 +289,6 @@ const InstancesListPage = (): JSX.Element => {
         getSchema={getSchema}
         createBridge={handleCreate}
       />
-    </>
-  );
-
-  const onPaginationChange = useCallback(
-    (pageNumber: number, pageSize: number): void => {
-      const correctPageNumber =
-        pageSize === currentPageSize ? pageNumber : FIRST_PAGE;
-      setCurrentPage(correctPageNumber);
-      setCurrentPageSize(pageSize);
-      getBridges(correctPageNumber, pageSize);
-    },
-    [currentPageSize, getBridges]
-  );
-
-  const rowOuiaId = useCallback(
-    (row): string | undefined => (row as BridgeResponse).name,
-    []
-  );
-  const renderActions = useCallback(
-    ({ row, ActionsColumn }): JSX.Element => (
-      <ActionsColumn items={tableActions(row as IRowData)} />
-    ),
-    [tableActions]
-  );
-  const pageContent = (
-    <>
-      <PageSection variant={PageSectionVariants.light}>
-        {pageTitleElement}
-      </PageSection>
-      <PageSection>
-        {totalRows === undefined && isLoading && (
-          <TableWithPaginationSkeleton
-            columns={columnNames}
-            customToolbarElement={customToolbarElement}
-            totalRows={currentPageSize}
-            hasActionColumn={true}
-          />
-        )}
-        {bridgeListResponse?.items && (
-          <TableWithPagination
-            columns={columnNames}
-            customToolbarElement={customToolbarElement}
-            getRowOuiaId={rowOuiaId}
-            isLoading={isLoading}
-            rows={bridgeListResponse.items}
-            totalRows={totalRows ?? 0}
-            pageNumber={currentPage}
-            pageSize={currentPageSize}
-            onPaginationChange={onPaginationChange}
-            tableLabel={t(
-              "smartEventsTempDictionary:instance.instancesListTable"
-            )}
-            renderActions={renderActions}
-          >
-            <EmptyState variant="large">
-              <EmptyStateIcon icon={PlusCircleIcon} />
-              <Title headingLevel="h2" size="lg">
-                {t("instance.noInstances")}
-              </Title>
-              <EmptyStateBody>
-                {/* @TODO Quick start guide link missing */}
-                {t("common.quickStartAccess")}
-              </EmptyStateBody>
-            </EmptyState>
-          </TableWithPagination>
-        )}
-      </PageSection>
-    </>
-  );
-
-  return (
-    <>
       <Drawer isExpanded={showInstanceDrawer}>
         <DrawerContent
           data-ouia-component-id="instance-drawer"

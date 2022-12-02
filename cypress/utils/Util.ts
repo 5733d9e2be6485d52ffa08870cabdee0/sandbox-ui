@@ -1,4 +1,4 @@
-import { LoginConfig } from "./config/LoginConfig";
+import { LoginConfig } from "./Config";
 
 export function uniqueName(prefix: string) {
   if (isEnvironmentType(EnvType.Mocked)) {
@@ -141,7 +141,12 @@ export function safeLogin(loginConfig: LoginConfig) {
       cy.log("Skip login - mocked env");
     },
     () => {
-      cy.login(loginConfig);
+      cy.get("#username-verification").type(loginConfig.user ?? "");
+      cy.get("#login-show-step2").click();
+      cy.get("#password")
+        .should("be.visible")
+        .type(loginConfig.psw ?? "", { log: false });
+      cy.get("#rh-password-verification-submit-button").click();
     }
   );
 }

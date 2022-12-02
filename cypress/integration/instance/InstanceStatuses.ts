@@ -7,7 +7,6 @@ import {
   EnvType,
   isEnvironmentType,
   pageWasLoaded,
-  safeLogin,
   visitWithCookies,
 } from "cypress/utils/Util";
 import { format } from "date-fns";

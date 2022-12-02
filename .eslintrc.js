@@ -13,9 +13,9 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     // "plugin:xstate/all", cos-ui // https://issues.redhat.com/browse/MGDOBR-510
-    // "plugin:storybook/recommended", app-services-ui-components
     "eslint:recommended",
     "prettier",
+    "plugin:storybook/recommended",
   ],
   plugins: [
     "@typescript-eslint",
@@ -35,20 +35,15 @@ module.exports = {
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-unsafe-return": "warn",
-
     "import/extensions": "off",
     "import/no-unresolved": "off",
-
     "object-curly-spacing": ["error", "always"],
     "semi": ["error", "always"],
-
     "react/jsx-uses-react": "off",
     "react/prop-types": "error",
     "react/react-in-jsx-scope": "off",
-
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
-
     "no-unused-vars": "off",
     "no-restricted-imports": [
       "error",
@@ -72,7 +67,6 @@ module.exports = {
       },
     ],
   },
-
   settings: {
     react: {
       version: "999.999.999",

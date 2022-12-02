@@ -23,7 +23,7 @@ import { format } from "date-fns";
 import { BridgeResponse } from "@rhoas/smart-events-management-sdk";
 import { getCloudProviderAndRegionForInstance } from "../../../types/CloudProviders";
 
-interface InstanceDetailsProps {
+export interface InstanceDetailsProps {
   instance: BridgeResponse;
   onClosingDetails: (event: React.MouseEvent<HTMLDivElement>) => void;
 }

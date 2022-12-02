@@ -9,6 +9,7 @@
     "mocked-api",
     "setupTests.ts"
   ],
+  "exclude": ["dist", "node_modules"],
   "compilerOptions": {
     "allowJs": false,
     "esModuleInterop": true,

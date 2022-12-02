@@ -85,3 +85,14 @@ It's possible to generate a fresh version of it, by running:
 ```sh
 npm run generate-error-catalog
 ```
+
+## Storybook
+
+A storybook is available to facilitate development and discovery of UI components.
+You can run it locally with the command:
+
+```sh
+npm run storybook
+```
+
+The script will build it and serve it on `http://localhost:6006/`

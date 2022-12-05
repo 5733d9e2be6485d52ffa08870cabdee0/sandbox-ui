@@ -39,10 +39,9 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
                 "have.text",
                 "Creating"
               );
-              cy.ouiaId("longer-than-expected", "PF4/Alert").should(
-                "have.text",
-                "Danger alert:This is taking longer than expected."
-              );
+              cy.get(
+                "[data-ouia-component-type='PF4/Alert']:contains('Danger alert:This is taking longer than expected.')"
+              ).should("be.visible");
             });
           cy.get("td:nth-child(4)")
             .click()

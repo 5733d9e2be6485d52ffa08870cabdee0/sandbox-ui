@@ -6,11 +6,14 @@
 
 # If Bridge contains Processors then only Processors are deleted by the script execution. If user wants to delete also Bridges then the script has to be executed again after some time (so the Processors can be removed first)!
 
-BRIDGES=($(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL/api/smartevents_mgmt/v1/bridges | jq '.items[] | select(.name | startswith('\"testui-$CYPRESS_SUITE_HASH\"')) | .id' | tr -d \"))
+BRIDGES=($(curl -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL/api/smartevents_mgmt/v1/bridges | jq '.items[] | select(.name | startswith('\"testui-$CYPRESS_SUITE_HASH\"')) | .id' | tr -d \"))
+REQUIRE_NEXT_RUN=false
+echo "Script found ${#BRIDGES[@]} bridge(s) for hash $CYPRESS_SUITE_HASH on url $MANAGER_URL"
 
 for i in "${BRIDGES[@]}"
 do
-   NUMBER_OF_PROCESSORS=$(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL/api/smartevents_mgmt/v1/bridges/$i/processors | jq '.items | length')
+  PROCESSORS=($(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL/api/smartevents_mgmt/v1/bridges/$i/processors | jq '.items[].id' | tr -d \"))
+  NUMBER_OF_PROCESSORS=${#PROCESSORS[@]}
   if [ "$NUMBER_OF_PROCESSORS" == "0" ]; then
     echo "No processors in Bridge $i."
     BRIDGE_STATUS=$(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL/api/smartevents_mgmt/v1/bridges/$i | jq '.status' | tr -d \")
@@ -19,10 +22,11 @@ do
       curl -s -H "Authorization: $OB_TOKEN" -X DELETE $MANAGER_URL/api/smartevents_mgmt/v1/bridges/$i
     else
       echo "Bridge $i status $BRIDGE_STATUS is incompatible with automated deletion, please remove it manually"
+      REQUIRE_NEXT_RUN=true
     fi
   else
     echo "$NUMBER_OF_PROCESSORS processors found in Bridge $i"
-    PROCESSORS=($(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL/api/smartevents_mgmt/v1/bridges/$i/processors | jq '.items[].id' | tr -d \"))
+    REQUIRE_NEXT_RUN=true
 
     for j in "${PROCESSORS[@]}"
     do
@@ -38,3 +42,9 @@ do
     echo "Bridge $i is not deleted, rerun the script after all Processors above are deleted to delete the Bridge!"
   fi
 done
+
+if [ "$REQUIRE_NEXT_RUN" == "true" ]; then
+  exit 1;
+else
+  exit 0;
+fi

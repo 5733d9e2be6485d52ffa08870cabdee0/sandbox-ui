@@ -8,7 +8,7 @@ import {
 } from "../utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
-  describe("Processor Test", () => {
+  describe.skip("Processor Test", () => {
     /**
      * This test suite verifies that the user can create all types of processors.
      * Because it is running with mocked data we have to assert all data immediately (no reload of the page).

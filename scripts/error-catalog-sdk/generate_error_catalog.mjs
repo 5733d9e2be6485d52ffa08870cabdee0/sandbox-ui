@@ -8,7 +8,7 @@ console.log("Fetching error catalog from backend");
 let errorList;
 await axios
   .get(
-    "https://event-bridge-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com//api/smartevents_mgmt/v1/errors"
+    "https://event-bridge-event-bridge-prod.apps.openbridge-dev.fdvn.p1.openshiftapps.com/api/smartevents_mgmt/v2/errors"
   )
   .then((response) => {
     errorList = response?.data?.items;

@@ -307,10 +307,7 @@ const InstancePage = (): JSX.Element => {
             activeKey={activeTabKey}
           >
             {activeTabKey === INSTANCE_PAGE_TAB_KEYS["error-handling"] && (
-              <ErrorHandlingTabContent
-                bridge={bridge}
-                isBridgeLoading={isBridgeLoading}
-              />
+              <ErrorHandlingTabContent />
             )}
           </TabContent>
         </PageSection>

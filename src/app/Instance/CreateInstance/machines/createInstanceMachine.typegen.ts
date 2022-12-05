@@ -2,7 +2,7 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true;
-  internalEvents: {
+  "internalEvents": {
     "": { type: "" };
     "done.invoke.saveBridge": {
       type: "done.invoke.saveBridge";
@@ -15,44 +15,36 @@ export interface Typegen0 {
     };
     "xstate.init": { type: "xstate.init" };
   };
-  invokeSrcNameMap: {
+  "invokeSrcNameMap": {
     createBridge: "done.invoke.saveBridge";
   };
-  missingImplementations: {
+  "missingImplementations": {
     actions: never;
     services: "createBridge";
     guards: never;
     delays: never;
   };
-  eventsCausingActions: {
+  "eventsCausingActions": {
     fieldInvalid: "";
     resetCreationErrorMessage: "submit";
     resetSubmittedState: "createError";
     setCreationError: "createError" | "providersAvailabilityError";
-    setErrorHandler: "errorHandlerChange";
-    setErrorHandlerValidator: "registerErrorHandlerValidator";
     setName: "nameChange";
     setProvider: "providerChange";
     triggerSubmit: "create";
   };
-  eventsCausingServices: {
+  "eventsCausingServices": {
     createBridge: "submit";
   };
-  eventsCausingGuards: {
-    isErrorHandlerValid: "" | "submit";
+  "eventsCausingGuards": {
     isGenericError: "";
     isNameValid: "";
     isProviderUnavailable: "";
-    isSubmitted: "errorHandlerChange" | "registerErrorHandlerValidator";
   };
-  eventsCausingDelays: {};
-  matchesStates:
+  "eventsCausingDelays": {};
+  "matchesStates":
     | "configuring"
     | "configuring.fields"
-    | "configuring.fields.errorHandler"
-    | "configuring.fields.errorHandler.invalid"
-    | "configuring.fields.errorHandler.valid"
-    | "configuring.fields.errorHandler.validate"
     | "configuring.fields.name"
     | "configuring.fields.name.invalid"
     | "configuring.fields.name.valid"
@@ -73,18 +65,12 @@ export interface Typegen0 {
           | "form"
           | "status"
           | {
-              fields?:
-                | "errorHandler"
-                | "name"
-                | {
-                    errorHandler?: "invalid" | "valid" | "validate";
-                    name?: "invalid" | "valid" | "validate";
-                  };
+              fields?: "name" | { name?: "invalid" | "valid" | "validate" };
               form?: "invalid" | "saved" | "saving" | "valid";
               status?: "submitted" | "unsubmitted";
             };
       };
-  tags:
+  "tags":
     | "configurable"
     | "creatable"
     | "creationUnavailable"

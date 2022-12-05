@@ -10,20 +10,14 @@ import {
   Stack,
   StackItem,
 } from "@patternfly/react-core";
-import { useTranslation } from "@rhoas/app-services-ui-components";
 
 const ProcessorDetailSkeleton = (): JSX.Element => {
-  const { t } = useTranslation(["smartEventsTempDictionary"]);
-
   return (
     <>
       <PageSection variant={PageSectionVariants.light}>
         <Stack hasGutter={true}>
           <StackItem>
-            <Skeleton
-              width="150px"
-              screenreaderText={t("processor.loadingProcessorType")}
-            />
+            <Skeleton width="150px" />
           </StackItem>
           <StackItem>
             <Skeleton width="80px" />

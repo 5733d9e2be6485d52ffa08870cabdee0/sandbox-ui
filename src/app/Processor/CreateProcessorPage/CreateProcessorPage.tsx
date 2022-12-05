@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 import {
   PageSection,
   PageSectionVariants,
@@ -12,40 +12,18 @@ import ProcessorEdit from "@app/Processor/ProcessorEdit/ProcessorEdit";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
 import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
-import { useAddProcessorToBridgeApi } from "../../../hooks/useProcessorsApi/useAddProcessorToBridgeApi";
-import { ProcessorRequest } from "@rhoas/smart-events-management-sdk";
 import { ErrorWithDetail } from "../../../types/Error";
 import ProcessorEditSkeleton from "@app/Processor/ProcessorEdit/ProcessorEditSkeleton";
-import { useGetSchemasApi } from "../../../hooks/useSchemasApi/useGetSchemasApi";
-import { useGetSchemaApi } from "../../../hooks/useSchemasApi/useGetSchemaApi";
+
 import {
   getErrorCode,
-  getErrorReason,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
-import { ActionModal } from "@app/components/ActionModal/ActionModal";
 
 const CreateProcessorPage = (): JSX.Element => {
   const { instanceId } = useParams<InstanceRouteParams>();
-  const [existingProcessorName, setExistingProcessorName] = useState<
-    string | undefined
-  >();
-  const [malformedTemplate, setMalformedTemplate] = useState<
-    string | undefined
-  >();
-  const [requestData, setRequestData] = useState<ProcessorRequest>();
-
-  const [showActionModal, setShowActionModal] = useState<boolean>(false);
-  const actionModalMessage = useRef<string>("");
-  const actionModalFn = useRef<() => void>((): void =>
-    setShowActionModal(false)
-  );
   const history = useHistory();
-  const goToInstance = useCallback(
-    (): void => history.push(`/instance/${instanceId}`),
-    [instanceId, history]
-  );
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const {
@@ -86,96 +64,9 @@ const CreateProcessorPage = (): JSX.Element => {
     }
   }, [bridgeError, history, t]);
 
-  const {
-    addProcessorToBridge,
-    isLoading: isAddLoading,
-    processor: addedProcessor,
-    error: createProcessorError,
-  } = useAddProcessorToBridgeApi();
-
-  const {
-    schemas,
-    isLoading: areSchemasLoading,
-    error: schemasError,
-  } = useGetSchemasApi();
-  const { getSchema } = useGetSchemaApi();
-
-  const handleSave = (requestData: ProcessorRequest): void => {
-    setRequestData(requestData);
-    addProcessorToBridge(instanceId, requestData);
-  };
-
-  useEffect(() => {
-    if (addedProcessor) {
-      goToInstance();
-    }
-  }, [addedProcessor, goToInstance]);
-
-  useEffect(() => {
-    if (createProcessorError && axios.isAxiosError(createProcessorError)) {
-      if (
-        isServiceApiError(createProcessorError) &&
-        getErrorCode(createProcessorError) === APIErrorCodes.ERROR_1
-      ) {
-        setExistingProcessorName(requestData?.name);
-      } else if (
-        (isServiceApiError(createProcessorError) &&
-          getErrorCode(createProcessorError) === APIErrorCodes.ERROR_2) ||
-        getErrorCode(createProcessorError) === APIErrorCodes.ERROR_4
-      ) {
-        setShowActionModal(true);
-        actionModalFn.current = (): void => {
-          setShowActionModal(false);
-          history.replace("/");
-        };
-        actionModalMessage.current = t(
-          "processor.errors.cantCreateProcessorBecauseInstanceNotAvailable"
-        );
-      } else if (
-        isServiceApiError(createProcessorError) &&
-        getErrorCode(createProcessorError) === APIErrorCodes.ERROR_22
-      ) {
-        setMalformedTemplate(
-          getErrorReason(createProcessorError) ??
-            t("processor.errors.malformedTransformation")
-        );
-      } else if (
-        isServiceApiError(createProcessorError) &&
-        getErrorCode(createProcessorError) === APIErrorCodes.ERROR_40
-      ) {
-        setShowActionModal(true);
-        actionModalFn.current = (): void => {
-          setShowActionModal(false);
-        };
-        actionModalMessage.current = t(
-          "processor.errors.processorQuotaExceeded"
-        );
-      } else {
-        setShowActionModal(true);
-        actionModalFn.current = (): void => {
-          setShowActionModal(false);
-        };
-        actionModalMessage.current = t("common.tryAgainLater");
-      }
-    }
-  }, [createProcessorError, history, requestData, t]);
-
-  useEffect(() => {
-    if (schemasError && axios.isAxiosError(schemasError)) {
-      throw new ErrorWithDetail(
-        (
-          <TextContent>
-            <Text component="h1">{t("common.processor")}</Text>
-          </TextContent>
-        ),
-        t("processor.errors.processorDetailsGenericError")
-      );
-    }
-  }, [schemasError, t]);
-
   return (
     <>
-      {(isBridgeLoading || areSchemasLoading) && (
+      {isBridgeLoading && (
         <>
           <PageHeaderSkeleton
             pageTitle={t("instance.processor.loadingProcessor")}
@@ -185,7 +76,7 @@ const CreateProcessorPage = (): JSX.Element => {
           <ProcessorEditSkeleton />
         </>
       )}
-      {bridge && schemas && (
+      {bridge && (
         <>
           <PageSection type="breadcrumb">
             <Breadcrumb
@@ -206,26 +97,9 @@ const CreateProcessorPage = (): JSX.Element => {
               </Text>
             </TextContent>
           </PageSection>
-          <ProcessorEdit
-            saveButtonLabel={t("common.create")}
-            onSave={handleSave}
-            onCancel={goToInstance}
-            isLoading={isAddLoading}
-            existingProcessorName={existingProcessorName}
-            malformedTransformationTemplate={malformedTemplate}
-            schemaCatalog={schemas}
-            getSchema={getSchema}
-            goBackToInstance={goToInstance}
-          />
+          <ProcessorEdit />
         </>
       )}
-      <ActionModal
-        ouiaId="processor-error-modal"
-        action={actionModalFn.current}
-        message={actionModalMessage.current}
-        showDialog={showActionModal}
-        title={t("processor.errors.cantCreateProcessor")}
-      />
     </>
   );
 };

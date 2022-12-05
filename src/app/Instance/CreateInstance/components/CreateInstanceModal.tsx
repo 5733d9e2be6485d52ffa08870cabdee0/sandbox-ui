@@ -19,7 +19,6 @@ const CreateInstanceModal: VoidFunctionComponent<CreateInstanceModalProps> = (
 
   return (
     <Modal
-      position="top"
       isOpen={true}
       title={t("instance.createASEInstance")}
       ouiaId="create-instance"

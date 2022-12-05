@@ -2,7 +2,7 @@
 
 export interface Typegen0 {
   "@@xstate/typegen": true;
-  internalEvents: {
+  "internalEvents": {
     "": { type: "" };
     "done.invoke.getProviders": {
       type: "done.invoke.getProviders";
@@ -15,33 +15,33 @@ export interface Typegen0 {
     };
     "xstate.init": { type: "xstate.init" };
   };
-  invokeSrcNameMap: {
+  "invokeSrcNameMap": {
     fetchCloudProviders: "done.invoke.getProviders";
   };
-  missingImplementations: {
+  "missingImplementations": {
     actions: "notifyProviderUnavailable";
     services: "fetchCloudProviders";
     guards: never;
     delays: never;
   };
-  eventsCausingActions: {
+  "eventsCausingActions": {
     notifyProviderUnavailable: "" | "error.platform.getProviders";
     setProvider: "providerChange";
     setProviders: "done.invoke.getProviders";
     setRegion: "regionChange";
   };
-  eventsCausingServices: {
+  "eventsCausingServices": {
     fetchCloudProviders: "xstate.init";
   };
-  eventsCausingGuards: {
+  "eventsCausingGuards": {
     availableProviders: "";
   };
-  eventsCausingDelays: {};
-  matchesStates:
+  "eventsCausingDelays": {};
+  "matchesStates":
     | "failure"
     | "fetching providers"
     | "ready"
     | "service unavailable"
     | "verify availability";
-  tags: never;
+  "tags": never;
 }

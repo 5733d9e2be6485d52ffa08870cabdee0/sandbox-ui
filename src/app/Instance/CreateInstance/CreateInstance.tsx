@@ -8,7 +8,6 @@ import CreateInstanceMachine from "@app/Instance/CreateInstance/machines/createI
 import { useMachine } from "@xstate/react";
 import { Form, FormSection } from "@patternfly/react-core";
 import CloudProviders from "@app/Instance/CreateInstance/components/CloudProviders";
-import { GetSchema } from "../../../hooks/useSchemasApi/useGetSchemaApi";
 import CreateInstanceModal from "@app/Instance/CreateInstance/components/CreateInstanceModal";
 import InstanceNameField from "@app/Instance/CreateInstance/components/InstanceNameField";
 import { BridgeRequest } from "@rhoas/smart-events-management-sdk";
@@ -18,16 +17,12 @@ import {
 } from "@app/Instance/CreateInstance/types";
 import InstanceAlert from "@app/Instance/CreateInstance/components/InstanceAlert";
 import InstanceAvailableSoonInfo from "@app/Instance/CreateInstance/components/InstanceAvailableSoonInfo";
-import ErrorHandlingCreate from "@app/Instance/ErrorHandling/ErrorHandlingCreate";
-import { useTranslation } from "@rhoas/app-services-ui-components";
 
 export interface CreateInstanceProps {
   /** Flag to indicate if the dialog is open */
   isOpen: boolean;
   /** Callback to close the dialog */
   onClose: () => void;
-  /** Callback to retrieve the schema used in error handling configuration */
-  getSchema: GetSchema;
   /** Callback to retrieve cloud providers and regions */
   getCloudProviders: () => Promise<CloudProviderWithRegions[]>;
   /** Callback to create a bridge */
@@ -53,9 +48,7 @@ type CreateInstanceDialogProps = Omit<CreateInstanceProps, "isOpen">;
 const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
   props
 ) => {
-  const { getSchema, getCloudProviders, onClose, createBridge } = props;
-
-  const { t } = useTranslation("smartEventsTempDictionary");
+  const { getCloudProviders, onClose, createBridge } = props;
 
   const [current, send] = useMachine(CreateInstanceMachine, {
     services: {
@@ -63,7 +56,6 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
         const {
           name,
           selectedProvider: { providerId, regionId },
-          errorHandler: { method, parameters },
         } = context;
         return (send) => {
           function onSuccess(): void {
@@ -77,9 +69,6 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
               name: name as string,
               cloud_provider: providerId as string,
               region: regionId as string,
-              ...(method !== undefined && parameters !== undefined
-                ? { error_handler: { type: method, parameters } }
-                : {}),
             },
             onSuccess,
             onError
@@ -122,23 +111,10 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
     [send]
   );
 
-  const setErrorHandler = useCallback(
-    (method?: string, parameters?: Record<string, unknown>) =>
-      send({ type: "errorHandlerChange", method, parameters }),
-    [send]
-  );
-
   const onSubmit = useCallback(
     (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       send({ type: "create" });
-    },
-    [send]
-  );
-
-  const registerValidateErrorHandlerParameters = useCallback(
-    (callback: () => boolean): void => {
-      send({ type: "registerErrorHandlerValidator", validator: callback });
     },
     [send]
   );
@@ -176,14 +152,6 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
             onChange={setProviders}
             isDisabled={isDisabled}
             onProviderError={onProviderError}
-          />
-        </FormSection>
-        <FormSection title={t("common.errorHandling")} titleElement="h3">
-          <ErrorHandlingCreate
-            getSchema={getSchema}
-            registerValidation={registerValidateErrorHandlerParameters}
-            onChange={setErrorHandler}
-            isDisabled={isDisabled}
           />
         </FormSection>
         <InstanceAvailableSoonInfo />

@@ -7,7 +7,7 @@ import {
 } from "../../utils/Util";
 
 onlyOn(isEnvironmentType(EnvType.Mocked), () => {
-  describe("Edit Smart Event Instance Tests", () => {
+  describe.skip("Edit Smart Event Instance Tests", () => {
     beforeEach(() => {
       //Open 'Instance one' page
       visitWithCookies("/instance/3543edaa-1851-4ad7-96be-ebde7d20d717");

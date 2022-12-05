@@ -81,11 +81,12 @@ export CYPRESS_PASSWORD=<replce with your value>
 
 Only if the test suite contains [the RestConfig class](utils/Config.ts) then you need the whole set of credentials.
 
-Clear entities which were added by the test suite. You can use [the delete script](../scripts/delete-bridges.sh).
+Clear entities which were added by the test suite. You can use [the delete script](../scripts/delete-bridges-in-loop.sh).
 Each run has own `$CYPRESS_SUITE_HASH` and each bridge instance is supposed to contain this hash in its name.
 
 ```
-OB_TOKEN="Bearer $CYPRESS_OB_TOKEN" MANAGER_URL=$CYPRESS_SANDBOX_DEV_REST_URL CYPRESS_SUITE_HASH="<replace-by-the-current-hash>" ./scripts/delete-bridges.sh
+export CYPRESS_SUITE_HASH="<replace-by-the-current-hash>"
+OB_TOKEN="Bearer $CYPRESS_OB_TOKEN" MANAGER_URL=$CYPRESS_SANDBOX_DEV_REST_URL ./scripts/delete-bridges-in-loop.sh
 ```
 
 Note: In case that you does not pass CYPRESS_SUITE_HASH then all instances which start with 'testui-' will be deleted!

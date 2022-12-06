@@ -1,0 +1,6 @@
+.camel-editor {
+  border: 1px solid var(--pf-global--BorderColor--100);
+  box-sizing: content-box;
+  padding: var(--pf-global--spacer--sm);
+  background-color: #ffffff;
+}

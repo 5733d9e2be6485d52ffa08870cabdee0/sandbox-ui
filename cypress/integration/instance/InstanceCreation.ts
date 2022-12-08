@@ -77,16 +77,6 @@ describe("the 'Create a SE instance' Modal", () => {
           "1 of 3 steps completed"
         );
         progressStepsStatuses(SEInstanceStatus.PREPARING);
-
-        if (isEnvironmentType(EnvType.Mocked)) {
-          //Preparing -> Ready state takes 9 secs.
-          //The Popover disappears on Dev when we assert this element.
-          cy.ouiaId("steps-count", "QE/StackItem", { timeout: 10000 }).should(
-            "have.text",
-            "2 of 3 steps completed"
-          );
-          progressStepsStatuses(SEInstanceStatus.PROVISIONING);
-        }
       });
     cy.ouiaId("se-status", "QE/Popover", { timeout: 60000 }).should(
       "not.exist"

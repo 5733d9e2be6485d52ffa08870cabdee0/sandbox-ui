@@ -52,7 +52,7 @@ jobs:
           CYPRESS_SANDBOX_DEV_REST_PATH: ${{ secrets.CY_SANDBOX_DEV_REST_PATH  }}
       - name: Clear data
         if: always()
-        run: OB_TOKEN="Bearer $CYPRESS_OB_TOKEN" MANAGER_URL=${{ secrets.CY_SANDBOX_DEV_REST_URL }} ./scripts/delete-bridges-in-loop.sh
+        run: OB_TOKEN="Bearer $CYPRESS_OB_TOKEN" MANAGER_URL=${{ secrets.CY_SANDBOX_DEV_REST_URL }} PATH=${{ secrets.CY_SANDBOX_DEV_REST_PATH  }} ./scripts/delete-bridges-in-loop.sh
       - name: "Upload artifacts"
         uses: actions/upload-artifact@v3
         if: always() && !cancelled()

@@ -2,24 +2,28 @@
 
 # Script used to delete Bridges and Processors used in E2E tests
 # Script will delete Bridges without Processors, for Bridges with Processors it will delete Processors if they are in proper state
-# Test Bridges are identified using "test-" prefix in their names
+# Test Bridges are identified using "testui-${hash}" prefix in their names
+
+[[ -z "${OB_TOKEN}" ]] && echo "Warning: Missing the token value, set using OB_TOKEN" || echo "Info: The token is set correctly"
+[[ -z "${CYPRESS_SUITE_HASH}" ]] && echo "Warning: Missing the hash value, set using CYPRESS_SUITE_HASH" || echo "Info: The hash is set correctly"
+[[ -z "${MANAGER_URL}" ]] && echo "Warning: Missing the manager url, set using MANAGER_URL" || echo "Info: The manager url is set correctly"
+[[ -z "${PATH}" ]] && echo "Warning: Missing the path value, set using PATH" || echo "Info: The path is set correctly"
 
 # If Bridge contains Processors then only Processors are deleted by the script execution. If user wants to delete also Bridges then the script has to be executed again after some time (so the Processors can be removed first)!
-
-BRIDGES=($(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL/api/smartevents_mgmt/v1/bridges | jq '.items[] | select(.name | startswith('\"testui-$CYPRESS_SUITE_HASH\"')) | .id' | tr -d \"))
+BRIDGES=($(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL$PATH/bridges | jq '.items[] | select(.name | startswith('\"testui-$CYPRESS_SUITE_HASH\"')) | .id' | tr -d \"))
 REQUIRE_NEXT_RUN=false
-echo "Script found ${#BRIDGES[@]} bridge(s) for hash $CYPRESS_SUITE_HASH on url $MANAGER_URL"
+echo "Script found ${#BRIDGES[@]} bridge(s) for hash $CYPRESS_SUITE_HASH on url $MANAGER_URL$PATH"
 
 for i in "${BRIDGES[@]}"
 do
-  PROCESSORS=($(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL/api/smartevents_mgmt/v1/bridges/$i/processors | jq '.items[].id' | tr -d \"))
+  PROCESSORS=($(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL$PATH/bridges/$i/processors | jq '.items[].id' | tr -d \"))
   NUMBER_OF_PROCESSORS=${#PROCESSORS[@]}
   if [ "$NUMBER_OF_PROCESSORS" == "0" ]; then
     echo "No processors in Bridge $i."
-    BRIDGE_STATUS=$(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL/api/smartevents_mgmt/v1/bridges/$i | jq '.status' | tr -d \")
+    BRIDGE_STATUS=$(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL$PATH/bridges/$i | jq '.status' | tr -d \")
     if [ "$BRIDGE_STATUS" == "ready" ] || [ "$BRIDGE_STATUS" == "failed" ]; then
       echo "Deleting Bridge $i"
-      curl -s -H "Authorization: $OB_TOKEN" -X DELETE $MANAGER_URL/api/smartevents_mgmt/v1/bridges/$i
+      curl -s -H "Authorization: $OB_TOKEN" -X DELETE $MANAGER_URL$PATH/bridges/$i
     else
       echo "Bridge $i status $BRIDGE_STATUS is incompatible with automated deletion, please remove it manually"
       REQUIRE_NEXT_RUN=true
@@ -30,10 +34,10 @@ do
 
     for j in "${PROCESSORS[@]}"
     do
-      PROCESSOR_STATUS=$(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL/api/smartevents_mgmt/v1/bridges/$i/processors/$j | jq '.status' | tr -d \")
+      PROCESSOR_STATUS=$(curl -s -H "Authorization: $OB_TOKEN" -X GET $MANAGER_URL$PATH/bridges/$i/processors/$j | jq '.status' | tr -d \")
       if [ "$PROCESSOR_STATUS" == "ready" ] || [ "$PROCESSOR_STATUS" == "failed" ]; then
         echo "Deleting Processor $j"
-        curl -s -H "Authorization: $OB_TOKEN" -X DELETE $MANAGER_URL/api/smartevents_mgmt/v1/bridges/$i/processors/$j
+        curl -s -H "Authorization: $OB_TOKEN" -X DELETE $MANAGER_URL$PATH/bridges/$i/processors/$j
       else
         echo "Processor $j status $PROCESSOR_STATUS is incompatible with automated deletion, please remove it manually"
       fi

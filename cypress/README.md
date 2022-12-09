@@ -49,6 +49,8 @@ Get a valid offline [token](https://console.redhat.com/openshift/token).
 ```
 export CYPRESS_USER=<replce with your value>
 export CYPRESS_PASSWORD=<replce with your value>
+export CYPRESS_SANDBOX_DEV_REST_URL=<replce with your value>
+export CYPRESS_SANDBOX_DEV_REST_PATH=<replce with your value>
 export OPENSHIFT_OFFLINE_TOKEN=<REPLACE WITH YOUR TOKEN>
 export CYPRESS_OB_TOKEN="$(curl -s --insecure -X POST https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token --header 'Content-Type: application/x-www-form-urlencoded' --data-urlencode 'client_id=cloud-services' --data-urlencode 'grant_type=refresh_token' --data-urlencode "refresh_token=$OPENSHIFT_OFFLINE_TOKEN" | jq --raw-output '.access_token')"
 ```
@@ -84,12 +86,12 @@ Only if the test suite contains [the RestConfig class](utils/Config.ts) then you
 Clear entities which were added by the test suite. You can use [the delete script](../scripts/delete-bridges-in-loop.sh).
 Each run has own `$CYPRESS_SUITE_HASH` and each bridge instance is supposed to contain this hash in its name.
 
+Note: In case that you does not pass CYPRESS_SUITE_HASH then all instances which start with 'testui-' will be deleted!
+
 ```
 export CYPRESS_SUITE_HASH="<replace-by-the-current-hash>"
-OB_TOKEN="Bearer $CYPRESS_OB_TOKEN" MANAGER_URL=$CYPRESS_SANDBOX_DEV_REST_URL ./scripts/delete-bridges-in-loop.sh
+OB_TOKEN="Bearer $CYPRESS_OB_TOKEN" MANAGER_URL=$CYPRESS_SANDBOX_DEV_REST_URL PATH=$CYPRESS_SANDBOX_DEV_REST_PATH ./scripts/delete-bridges-in-loop.sh
 ```
-
-Note: In case that you does not pass CYPRESS_SUITE_HASH then all instances which start with 'testui-' will be deleted!
 
 ### How to create tests
 

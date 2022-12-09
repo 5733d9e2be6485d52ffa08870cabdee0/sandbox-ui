@@ -30,7 +30,8 @@ describe("the 'Create a SE instance' Modal", () => {
     pageWasLoaded();
   });
 
-  it("Submit", () => {
+  //the test is skipped because the v2 is not ready for create instances
+  it.skip("Submit", () => {
     createInstance(newInstanceName);
 
     //Assert that the process of the instance's creation was started
@@ -90,7 +91,8 @@ describe("the 'Create a SE instance' Modal", () => {
   });
 
   // instance with name "error-test" already exists
-  it("Submit and expect error", () => {
+  //the test is skipped because the v2 is not ready for create instances
+  it.skip("Submit and expect error", () => {
     const errorInstanceName: string = "error-test";
     cy.contains("button", "Create Smart Events instance").click();
     cy.ouiaId("create-instance", "PF4/ModalContent").then(($modal) => {
@@ -158,7 +160,8 @@ describe("the 'Create a SE instance' Modal", () => {
      * The best practices does not recommend the "after" method for UI.
      * Cypress guaranteed the order of the test execution.
      */
-    it("Clean the new instance", () => {
+    //the test is skipped because the v2 is not ready for create instances
+    it.skip("Clean the new instance", () => {
       deleteInstance(newInstanceName);
       cy.ouiaId("Instances list table", "PF4/Table").within(() => {
         // once delete confirmed, state should change

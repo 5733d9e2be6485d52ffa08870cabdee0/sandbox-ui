@@ -1,8 +1,6 @@
-export { default } from "react-monaco-editor";
-
 import { SchemasSettings, setDiagnosticsOptions } from "monaco-yaml";
-
 import schema from "./camelDSLSchema.json";
+export { default } from "react-monaco-editor";
 
 const defaultSchema: SchemasSettings = {
   uri: "http://console.redhat.com/docs",
@@ -10,7 +8,6 @@ const defaultSchema: SchemasSettings = {
   schema,
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 setDiagnosticsOptions({
   enableSchemaRequest: true,
   hover: true,

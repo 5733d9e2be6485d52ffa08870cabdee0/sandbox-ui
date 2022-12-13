@@ -10,6 +10,7 @@ export default {
   },
   width: "100%",
   height: 500,
+  sinkConnectorsNames: [],
 } as ComponentMeta<typeof CamelDSLCodeEditor>;
 
 const Template: ComponentStory<typeof CamelDSLCodeEditor> = (args) => (
@@ -22,6 +23,27 @@ SampleProcessor.args = {
     uri: "rhose:bridge"
     steps:
       - set-body:
-          constant: "Hello Camel K from yaml"
+          constant: "Hello there"
       - to: "log:info"`,
+};
+
+export const InvalidSource = Template.bind({});
+InvalidSource.args = {
+  code: `- from:
+    uri: "some:source"
+    steps:
+      - set-body:
+          constant: "Hello there"
+      - to: "log:info"`,
+};
+
+export const ToSinkNamesSuggestions = Template.bind({});
+ToSinkNamesSuggestions.args = {
+  code: `- from:
+    uri: "rhose:bridge"
+    steps:
+      - set-body:
+          constant: "Hello there"
+      - to: `,
+  sinkConnectorsNames: ["myFirstSinkName", "mySecondSinkName"],
 };

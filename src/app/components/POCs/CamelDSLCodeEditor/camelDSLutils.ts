@@ -5,7 +5,7 @@ import { SchemasSettings, setDiagnosticsOptions } from "monaco-yaml";
 import schema from "./camelDSLSchema.json";
 
 const defaultSchema: SchemasSettings = {
-  uri: "http://example.com/schema-name.json",
+  uri: "http://console.redhat.com/docs",
   fileMatch: ["*"],
   schema,
 };

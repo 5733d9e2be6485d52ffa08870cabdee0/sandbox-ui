@@ -3,6 +3,7 @@
     "access": "Access",
     "actions": "Actions",
     "addressFormErrors": "Address form errors to proceed.",
+    "adjustYourFilters": "Adjust your filters and try again, or <0>clear all filters</0>.",
     "ago": "ago",
     "cancel": "Cancel",
     "close": "Close",
@@ -40,7 +41,8 @@
       "ready": "Ready",
       "creating": "Creating",
       "deleting": "Deleting",
-      "failed": "Failed"
+      "failed": "Failed",
+      "preparing": "Preparing"
     },
     "resourceSteps": {
       "pending": {

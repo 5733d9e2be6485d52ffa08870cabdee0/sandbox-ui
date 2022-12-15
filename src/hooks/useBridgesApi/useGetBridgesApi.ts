@@ -9,7 +9,13 @@ import axios, { CancelTokenSource } from "axios";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
 
 export function useGetBridgesApi(): {
-  getBridges: (pageReq?: number, sizeReq?: number, isPolling?: boolean) => void;
+  getBridges: (
+    pageReq?: number,
+    sizeReq?: number,
+    nameReq?: string,
+    statusesReq?: ManagedResourceStatus[],
+    isPolling?: boolean
+  ) => void;
   bridgeListResponse?: BridgeListResponse;
   error: unknown;
 } {
@@ -20,7 +26,13 @@ export function useGetBridgesApi(): {
   const { getToken, apiBaseUrl } = useSmartEvents();
 
   const getBridges = useCallback(
-    (pageReq?: number, sizeReq?: number, isPolling = false): void => {
+    (
+      pageReq?: number,
+      sizeReq?: number,
+      nameReq?: string,
+      statusesReq?: ManagedResourceStatus[],
+      isPolling = false
+    ): void => {
       if (!isPolling) {
         setBridgeListResponse(undefined);
       }
@@ -42,10 +54,10 @@ export function useGetBridgesApi(): {
 
       bridgeApi
         .getBridges(
-          undefined,
+          nameReq,
           pageNumber,
           sizeReq,
-          new Set<ManagedResourceStatus>(),
+          new Set<ManagedResourceStatus>(statusesReq),
           {
             cancelToken: source.token,
           }

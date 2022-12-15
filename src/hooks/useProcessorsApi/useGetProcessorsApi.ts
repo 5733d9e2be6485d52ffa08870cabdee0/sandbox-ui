@@ -13,6 +13,8 @@ export function useGetProcessorsApi(): {
     bridgeId: string,
     pageReq?: number,
     sizeReq?: number,
+    nameReq?: string,
+    statusesReq?: ManagedResourceStatus[],
     isPolling?: boolean
   ) => void;
   processorListResponse?: ProcessorListResponse;
@@ -29,6 +31,8 @@ export function useGetProcessorsApi(): {
       bridgeId: string,
       pageReq?: number,
       sizeReq?: number,
+      nameReq?: string,
+      statusesReq?: ManagedResourceStatus[],
       isPolling?: boolean
     ): void => {
       if (!isPolling) {
@@ -53,10 +57,10 @@ export function useGetProcessorsApi(): {
       processorsApi
         .getProcessors(
           bridgeId,
-          undefined,
+          nameReq,
           pageNumber,
           sizeReq,
-          new Set<ManagedResourceStatus>(),
+          new Set<ManagedResourceStatus>(statusesReq),
           {
             cancelToken: source.token,
           }

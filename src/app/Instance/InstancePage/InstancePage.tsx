@@ -41,9 +41,10 @@ import {
 import { APIErrorCodes } from "@openapi/generated/errors";
 import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
-import { ProcessorsTabContent } from "@app/Instance/InstancePage/ProcessorsTabContent";
+// import { ProcessorsTabContent } from "@app/Instance/InstancePage/ProcessorsTabContent";
 import { ErrorHandlingTabContent } from "@app/Instance/InstancePage/ErrorHandlingTabContent";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
+import { BridgeOverview } from "../BridgeOverview/BridgeOverview";
 
 const INSTANCE_PAGE_TAB_KEYS = {
   "processors": 0,
@@ -292,11 +293,7 @@ const InstancePage = (): JSX.Element => {
             activeKey={activeTabKey}
           >
             {activeTabKey === INSTANCE_PAGE_TAB_KEYS.processors && (
-              <ProcessorsTabContent
-                instanceId={instanceId}
-                pageTitle={getPageTitle(bridge)}
-                bridgeStatus={bridge?.status}
-              />
+              <BridgeOverview />
             )}
           </TabContent>
           <TabContent

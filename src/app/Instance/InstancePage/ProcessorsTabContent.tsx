@@ -8,11 +8,7 @@ import {
 } from "@rhoas/smart-events-management-sdk";
 import { Link, useHistory } from "react-router-dom";
 import { formatDistance } from "date-fns";
-import {
-  TableView,
-  usePaginationSearchParams,
-  useTranslation,
-} from "@rhoas/app-services-ui-components";
+import { TableView, useTranslation } from "@rhoas/app-services-ui-components";
 import { useGetProcessorsApi } from "../../../hooks/useProcessorsApi/useGetProcessorsApi";
 import { usePolling } from "../../../hooks/usePolling/usePolling";
 import { ErrorWithDetail } from "../../../types/Error";
@@ -20,7 +16,9 @@ import { canDeleteResource } from "@utils/resourceUtils";
 import DeleteProcessor from "@app/Processor/DeleteProcessor/DeleteProcessor";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import { renderCell, renderHeader, TableColumn } from "@utils/tableUtils";
-import { EmptyState } from "@app/components/EmptyState/EmptyState";
+import { EmptyStateNoData } from "@app/components/EmptyState/EmptyStateNoData";
+import { EmptyStateNoResults } from "@app/components/EmptyState/EmptyStateNoResults";
+import { useTablePageParams } from "../../../hooks/useTablePageParams/useTablePageParams";
 
 interface ProcessorTabContentProps {
   instanceId: string;
@@ -36,7 +34,15 @@ export const ProcessorsTabContent = ({
   const history = useHistory();
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
-  const { page, perPage, setPagination } = usePaginationSearchParams();
+  const {
+    pagination: { page, perPage, setPagination },
+    filters: {
+      filtersConfig: filters,
+      onClearAllFilters,
+      nameSearchParam,
+      statuses,
+    },
+  } = useTablePageParams();
 
   const [totalRows, setTotalRows] = useState<number>();
   const [deleteProcessorId, setDeleteProcessorId] = useState("");
@@ -131,10 +137,10 @@ export const ProcessorsTabContent = ({
     error: processorsError,
   } = useGetProcessorsApi();
 
-  const triggerGetProcessors = useCallback(
-    (): void => getProcessors(instanceId, page, perPage, true),
-    [getProcessors, instanceId, page, perPage]
-  );
+  const triggerGetProcessors = useCallback((): void => {
+    const nameParam = nameSearchParam ?? undefined;
+    getProcessors(instanceId, page, perPage, nameParam, statuses, true);
+  }, [getProcessors, instanceId, nameSearchParam, page, perPage, statuses]);
 
   const handleOnDeleteProcessorSuccess = useCallback((): void => {
     setShowProcessorDeleteModal(false);
@@ -160,23 +166,12 @@ export const ProcessorsTabContent = ({
     }
   };
 
-  const emptyStateNoData = (
-    <EmptyState
-      title={t("processor.noProcessors")}
-      createButton={{
-        title: t("processor.createProcessor"),
-        onCreate: onCreateProcessor,
-        isDisabled: bridgeStatus !== ManagedResourceStatus.Ready,
-      }}
-    />
-  );
-
   usePolling(() => triggerGetProcessors(), 10000);
 
-  useEffect(
-    () => getProcessors(instanceId, page, perPage),
-    [getProcessors, instanceId, page, perPage]
-  );
+  useEffect(() => {
+    const nameParam = nameSearchParam ?? undefined;
+    getProcessors(instanceId, page, perPage, nameParam, statuses);
+  }, [getProcessors, instanceId, nameSearchParam, page, perPage, statuses]);
 
   useEffect(() => {
     if (processorListResponse) {
@@ -210,11 +205,35 @@ export const ProcessorsTabContent = ({
           ]}
           columns={processorsOverviewColumns}
           data={processorListResponse?.items}
-          emptyStateNoData={emptyStateNoData}
+          emptyStateNoData={
+            <EmptyStateNoData
+              title={t("processor.noProcessors")}
+              createButton={{
+                title: t("processor.createProcessor"),
+                onCreate: onCreateProcessor,
+                isDisabled: bridgeStatus !== ManagedResourceStatus.Ready,
+              }}
+              quickStartGuide={{
+                i18nKey: "common.quickStartAccess",
+                onQuickstartGuide:
+                  (): void => {} /* @TODO Quick start guide link missing */,
+              }}
+            />
+          }
           emptyStateNoResults={
-            emptyStateNoData
-          } /** TODO https://issues.redhat.com/browse/MGDOBR-1229 */
+            <EmptyStateNoResults
+              bodyMsgI18nKey={"common.adjustYourFilters"}
+              onClearAllFilters={onClearAllFilters}
+              title={t("processor.noProcessors")}
+            />
+          }
+          filters={filters}
           itemCount={totalRows}
+          isFiltered={
+            (nameSearchParam && nameSearchParam.length > 0) ||
+            statuses.length > 0
+          }
+          onClearAllFilters={onClearAllFilters}
           onPageChange={setPagination}
           page={page}
           perPage={perPage}

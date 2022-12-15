@@ -1,9 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  TableView,
-  usePaginationSearchParams,
-  useTranslation,
-} from "@rhoas/app-services-ui-components";
+import { TableView, useTranslation } from "@rhoas/app-services-ui-components";
 import {
   Drawer,
   DrawerContent,
@@ -20,7 +16,6 @@ import CreateInstance, {
 } from "@app/Instance/CreateInstance/CreateInstance";
 import { InstanceDetails } from "@app/Instance/InstanceDetails/InstanceDetails";
 import { useGetBridgesApi } from "../../../hooks/useBridgesApi/useGetBridgesApi";
-import { usePolling } from "../../../hooks/usePolling/usePolling";
 import {
   BridgeResponse,
   ManagedResourceStatus,
@@ -32,12 +27,23 @@ import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import { useCreateBridgeApi } from "../../../hooks/useBridgesApi/useCreateBridgeApi";
 import { useGetCloudProvidersWithRegionsApi } from "../../../hooks/useCloudProvidersApi/useGetProvidersWithRegionsApi";
 import { renderCell, renderHeader, TableColumn } from "@utils/tableUtils";
-import { EmptyState } from "@app/components/EmptyState/EmptyState";
+import { EmptyStateNoData } from "@app/components/EmptyState/EmptyStateNoData";
+import { EmptyStateNoResults } from "@app/components/EmptyState/EmptyStateNoResults";
+import { usePolling } from "../../../hooks/usePolling/usePolling";
+import { useTablePageParams } from "../../../hooks/useTablePageParams/useTablePageParams";
 
 const InstancesListPage = (): JSX.Element => {
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
-  const { page, perPage, setPagination } = usePaginationSearchParams();
+  const {
+    pagination: { page, perPage, setPagination },
+    filters: {
+      filtersConfig: filters,
+      onClearAllFilters,
+      nameSearchParam,
+      statuses,
+    },
+  } = useTablePageParams();
 
   const [totalRows, setTotalRows] = useState<number>();
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
@@ -107,16 +113,17 @@ const InstancesListPage = (): JSX.Element => {
 
   const { bridgeListResponse, getBridges, error } = useGetBridgesApi();
 
-  const triggerGetBridges = useCallback(
-    (): void => getBridges(page, perPage, true),
-    [getBridges, page, perPage]
-  );
+  const triggerGetBridges = useCallback((): void => {
+    const nameParam = nameSearchParam ?? undefined;
+    getBridges(page, perPage, nameParam, statuses, true);
+  }, [getBridges, page, perPage, statuses, nameSearchParam]);
 
   usePolling(() => triggerGetBridges(), 10000);
 
   useEffect(() => {
-    getBridges(page, perPage);
-  }, [getBridges, page, perPage]);
+    const nameParam = nameSearchParam ?? undefined;
+    getBridges(page, perPage, nameParam, statuses);
+  }, [getBridges, page, perPage, statuses, nameSearchParam]);
 
   useEffect(() => {
     if (bridgeListResponse) {
@@ -226,21 +233,6 @@ const InstancesListPage = (): JSX.Element => {
 
   const onCreateInstance = (): void => setShowCreateInstance(true);
 
-  const emptyStateNoData = (
-    <EmptyState
-      title={t("instance.noInstances")}
-      createButton={{
-        title: t("instance.createSEInstance"),
-        onCreate: onCreateInstance,
-      }}
-      quickStartGuide={{
-        i18nKey: "common.quickStartAccess",
-        onQuickstartGuide:
-          (): void => {} /* @TODO Quick start guide link missing */,
-      }}
-    />
-  );
-
   const pageContent = (
     <>
       <PageSection variant={PageSectionVariants.light}>
@@ -258,11 +250,34 @@ const InstancesListPage = (): JSX.Element => {
           ]}
           columns={columnNames}
           data={bridgeListResponse?.items}
-          emptyStateNoData={emptyStateNoData}
+          emptyStateNoData={
+            <EmptyStateNoData
+              title={t("instance.noInstances")}
+              createButton={{
+                title: t("instance.createSEInstance"),
+                onCreate: onCreateInstance,
+              }}
+              quickStartGuide={{
+                i18nKey: "common.quickStartAccess",
+                onQuickstartGuide:
+                  (): void => {} /* @TODO Quick start guide link missing */,
+              }}
+            />
+          }
           emptyStateNoResults={
-            emptyStateNoData
-          } /** TODO https://issues.redhat.com/browse/MGDOBR-1229 */
+            <EmptyStateNoResults
+              bodyMsgI18nKey={"common.adjustYourFilters"}
+              onClearAllFilters={onClearAllFilters}
+              title={t("instance.noInstances")}
+            />
+          }
+          filters={filters}
           itemCount={totalRows}
+          isFiltered={
+            (nameSearchParam && nameSearchParam.length > 0) ||
+            statuses.length > 0
+          }
+          onClearAllFilters={onClearAllFilters}
           onPageChange={setPagination}
           page={page}
           perPage={perPage}

@@ -16,12 +16,12 @@ export const EventProcessor = (props: EventProcessorProps): JSX.Element => {
 
   return (
     <>
-      <GridItem span={4}>
+      <GridItem lg={4} md={6}>
         <Card>
           <CardTitle>Event processing</CardTitle>
           {!hasProcessor ? (
             <OBEmptyState
-              title={"No Processors"}
+              title={"No processors"}
               description={desc}
               buttonName={"Create processor"}
               variant={"secondary"}

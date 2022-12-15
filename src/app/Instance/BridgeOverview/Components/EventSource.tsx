@@ -29,13 +29,13 @@ export const EventSource = (props: EventSourceProps): JSX.Element => {
 
   return (
     <>
-      <GridItem span={4}>
+      <GridItem lg={4} md={6}>
         <Card>
           <CardTitle>Event sources</CardTitle>
           {!hasSource ? (
             <>
               <OBEmptyState
-                title={"No Source Connectors"}
+                title={"No source connectors"}
                 description={desc}
                 buttonName={"Create source connector"}
                 variant={"secondary"}
@@ -45,7 +45,7 @@ export const EventSource = (props: EventSourceProps): JSX.Element => {
             </>
           ) : (
             <OBDashboardTableView
-              name={"Source Connectors"}
+              name={"Source connectors"}
               data={EventSourceList}
             />
           )}

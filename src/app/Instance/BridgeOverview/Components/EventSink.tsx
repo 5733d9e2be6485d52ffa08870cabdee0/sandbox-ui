@@ -30,7 +30,7 @@ export const EventSink = (props: EventSinkProps): JSX.Element => {
 
   return (
     <>
-      <GridItem span={4}>
+      <GridItem lg={4} md={12}>
         <Card>
           <CardTitle>Event sinks</CardTitle>
           {!hasSink ? (
@@ -47,7 +47,10 @@ export const EventSink = (props: EventSinkProps): JSX.Element => {
             </>
           ) : (
             <>
-              <OBDashboardTableView name={"processor"} data={EventSinkList} />
+              <OBDashboardTableView
+                name={"sink connector"}
+                data={EventSinkList}
+              />
             </>
           )}
 

@@ -34,6 +34,7 @@ export const OBDashboardTableView = (
   props: ProcessorTableViewProps
 ): JSX.Element => {
   const rowActions = [{ title: "edit" }, { title: "delete" }];
+
   const { data, name } = props;
 
   return (

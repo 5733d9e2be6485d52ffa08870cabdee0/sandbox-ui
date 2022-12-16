@@ -9,49 +9,42 @@ import {
   TextContent,
   Title,
 } from "@patternfly/react-core";
-import React, { useState } from "react";
-import { ProcessorList } from "../BridgeOverview";
+import React from "react";
+import { Data } from "../BridgeOverview";
 import { OBDashboardTableView } from "./OBDashboardTableView";
 import { OBEmptyState } from "./OBEmptyState";
 
 interface EventSinkProps {
-  EventSinkList: ProcessorList[];
+  EventSinkList: Data[];
+  changeState: () => void;
 }
 
 export const EventSink = (props: EventSinkProps): JSX.Element => {
-  const [hasSink, setHasSink] = useState<boolean>(false);
-  const { EventSinkList } = props;
+  const { EventSinkList, changeState } = props;
   const desc =
     "Create a source connector to send events from an external system to this bridge";
-
-  const handleClick = (): void => {
-    setHasSink(!hasSink);
-  };
 
   return (
     <>
       <GridItem lg={4} md={12}>
         <Card>
           <CardTitle>Event sinks</CardTitle>
-          {!hasSink ? (
+          {EventSinkList.length == 0 ? (
             <>
-              {" "}
               <OBEmptyState
                 title={"No sink connectors"}
                 description={desc}
                 buttonName={"Create sink connector"}
-                changeState={handleClick}
+                changeState={changeState}
                 variant={"primary"}
               />
               <Divider inset={{ default: "insetMd" }} />
             </>
           ) : (
-            <>
-              <OBDashboardTableView
-                name={"sink connector"}
-                data={EventSinkList}
-              />
-            </>
+            <OBDashboardTableView
+              name={"sink connector"}
+              data={EventSinkList}
+            />
           )}
 
           <Stack hasGutter style={{ padding: "1rem" }}>
@@ -62,7 +55,7 @@ export const EventSink = (props: EventSinkProps): JSX.Element => {
               <TextContent>
                 <Text component="p">
                   {
-                    "Processors can be send an evnet payload back to the bridge for additional processing"
+                    "Processors can be send an event payload back to the bridge for additional processing"
                   }
                 </Text>
               </TextContent>
@@ -76,7 +69,7 @@ export const EventSink = (props: EventSinkProps): JSX.Element => {
               <TextContent>
                 <Text component="p">
                   {
-                    "Processors can route an evnet payload through the error handling method"
+                    "Processors can route an event payload through the error handling method"
                   }
                 </Text>
               </TextContent>

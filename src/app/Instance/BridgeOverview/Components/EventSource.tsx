@@ -11,18 +11,18 @@ import {
   TextContent,
   Title,
 } from "@patternfly/react-core";
-import React, { useState } from "react";
-import { ProcessorList } from "../BridgeOverview";
+import React from "react";
+import { Data } from "../BridgeOverview";
 import { OBDashboardTableView } from "./OBDashboardTableView";
 import { OBEmptyState } from "./OBEmptyState";
 
 interface EventSourceProps {
-  EventSourceList: ProcessorList[];
+  EventSourceList: Data[];
+  changeState: () => void;
 }
 
 export const EventSource = (props: EventSourceProps): JSX.Element => {
-  const [hasSource, setHasSource] = useState<boolean>(false);
-  const { EventSourceList } = props;
+  const { EventSourceList, changeState } = props;
 
   const desc =
     "Create a source connector to send events from an external system to this bridge";
@@ -32,14 +32,14 @@ export const EventSource = (props: EventSourceProps): JSX.Element => {
       <GridItem lg={4} md={6}>
         <Card>
           <CardTitle>Event sources</CardTitle>
-          {!hasSource ? (
+          {EventSourceList.length == 0 ? (
             <>
               <OBEmptyState
                 title={"No source connectors"}
                 description={desc}
                 buttonName={"Create source connector"}
                 variant={"secondary"}
-                changeState={(): void => setHasSource(!hasSource)}
+                changeState={changeState}
               />
               <Divider inset={{ default: "insetMd" }} />
             </>

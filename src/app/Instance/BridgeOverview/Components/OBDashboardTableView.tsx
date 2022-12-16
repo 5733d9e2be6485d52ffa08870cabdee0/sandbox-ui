@@ -23,15 +23,15 @@ import {
 } from "@patternfly/react-table";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import React from "react";
-import { ProcessorList } from "../BridgeOverview";
+import { Data } from "../BridgeOverview";
 
-interface ProcessorTableViewProps {
-  data: ProcessorList[];
+interface OBDashboardTableViewProps {
+  data: Data[];
   name: string;
 }
 
 export const OBDashboardTableView = (
-  props: ProcessorTableViewProps
+  props: OBDashboardTableViewProps
 ): JSX.Element => {
   const rowActions = [{ title: "edit" }, { title: "delete" }];
 

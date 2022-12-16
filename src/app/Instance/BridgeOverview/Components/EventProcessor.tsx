@@ -1,16 +1,16 @@
 import { Card, CardTitle, GridItem } from "@patternfly/react-core";
-import React, { useState } from "react";
+import React from "react";
 import { OBEmptyState } from "./OBEmptyState";
-import { ProcessorList } from "../BridgeOverview";
+import { Data } from "../BridgeOverview";
 import { OBDashboardTableView } from "./OBDashboardTableView";
 
 interface EventProcessorProps {
-  EventProcessorList: ProcessorList[];
+  EventProcessorList: Data[];
+  changeState: () => void;
 }
 
 export const EventProcessor = (props: EventProcessorProps): JSX.Element => {
-  const [hasProcessor, setHasProcessor] = useState<boolean>(false);
-  const { EventProcessorList } = props;
+  const { EventProcessorList, changeState } = props;
   const desc =
     "Processors use Camel DSL to filter and transform events before routing events to one or more actions";
 
@@ -19,13 +19,13 @@ export const EventProcessor = (props: EventProcessorProps): JSX.Element => {
       <GridItem lg={4} md={6}>
         <Card>
           <CardTitle>Event processing</CardTitle>
-          {!hasProcessor ? (
+          {EventProcessorList.length == 0 ? (
             <OBEmptyState
               title={"No processors"}
               description={desc}
               buttonName={"Create processor"}
               variant={"secondary"}
-              changeState={(): void => setHasProcessor(!hasProcessor)}
+              changeState={changeState}
             />
           ) : (
             <OBDashboardTableView

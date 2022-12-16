@@ -9,7 +9,7 @@ import {
 } from "@patternfly/react-core";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import React from "react";
-interface EmptyStateProps {
+interface OBEmptyStateProps {
   title: string;
   description: string;
   buttonName: string;
@@ -32,7 +32,7 @@ export const OBEmptyState = ({
   buttonName,
   changeState,
   variant,
-}: EmptyStateProps): JSX.Element => {
+}: OBEmptyStateProps): JSX.Element => {
   return (
     <>
       <CardBody>

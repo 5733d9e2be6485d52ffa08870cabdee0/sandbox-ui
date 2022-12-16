@@ -18,8 +18,6 @@ import React, { useState } from "react";
 export const GettingStarted = (): JSX.Element => {
   const [isCardExpanded, setIsCardExpanded] = useState<boolean>(false);
 
-  console.log(setIsCardExpanded);
-
   return (
     <>
       <Card isExpanded={isCardExpanded}>

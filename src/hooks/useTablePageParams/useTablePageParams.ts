@@ -7,6 +7,7 @@ import {
 } from "@rhoas/app-services-ui-components";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { useCallback } from "react";
+import { CREATING_STATUS } from "@utils/statusUtils";
 
 /**
  * Custom hook useful for managing page parameters in pages where we have overview tables
@@ -87,9 +88,9 @@ export function useTablePageParams(): {
           chips: statusesChips.chips,
           options: {
             [ManagedResourceStatus.Ready]: t("common.statuses.ready"),
-            [ManagedResourceStatus.Preparing]: t("common.statuses.preparing"),
-            [ManagedResourceStatus.Deleting]: t("common.statuses.deleting"),
+            [CREATING_STATUS]: t("common.statuses.creating"),
             [ManagedResourceStatus.Failed]: t("common.statuses.failed"),
+            [ManagedResourceStatus.Deleting]: t("common.statuses.deleting"),
           },
           onToggle: statusesChips.toggle,
           onRemoveChip: statusesChips.remove,

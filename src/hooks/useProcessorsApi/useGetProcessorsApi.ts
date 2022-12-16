@@ -7,6 +7,7 @@ import {
 import { useCallback, useRef, useState } from "react";
 import axios, { CancelTokenSource } from "axios";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
+import { getUserFacingStatuses, ResourceStatus } from "@utils/statusUtils";
 
 export function useGetProcessorsApi(): {
   getProcessors: (
@@ -60,7 +61,7 @@ export function useGetProcessorsApi(): {
           nameReq ?? undefined,
           pageNumber,
           sizeReq,
-          new Set<ManagedResourceStatus>(statusesReq),
+          getUserFacingStatuses(statusesReq as ResourceStatus[]),
           {
             cancelToken: source.token,
           }

@@ -138,14 +138,13 @@ export const ProcessorsTabContent = ({
   } = useGetProcessorsApi();
 
   const triggerGetProcessors = useCallback((): void => {
-    const nameParam = nameSearchParam ?? undefined;
-    getProcessors(instanceId, page, perPage, nameParam, statuses, true);
+    getProcessors(instanceId, nameSearchParam, page, perPage, statuses, true);
   }, [getProcessors, instanceId, nameSearchParam, page, perPage, statuses]);
 
   const handleOnDeleteProcessorSuccess = useCallback((): void => {
     setShowProcessorDeleteModal(false);
-    getProcessors(instanceId, page, perPage);
-  }, [getProcessors, instanceId, page, perPage]);
+    getProcessors(instanceId, nameSearchParam, page, perPage, statuses);
+  }, [getProcessors, instanceId, nameSearchParam, page, perPage, statuses]);
 
   const rowOuiaId = useCallback(
     ({ row, rowIndex }): string =>
@@ -169,8 +168,7 @@ export const ProcessorsTabContent = ({
   usePolling(() => triggerGetProcessors(), 10000);
 
   useEffect(() => {
-    const nameParam = nameSearchParam ?? undefined;
-    getProcessors(instanceId, page, perPage, nameParam, statuses);
+    getProcessors(instanceId, nameSearchParam, page, perPage, statuses);
   }, [getProcessors, instanceId, nameSearchParam, page, perPage, statuses]);
 
   useEffect(() => {

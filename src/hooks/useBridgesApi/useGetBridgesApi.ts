@@ -10,9 +10,9 @@ import { useSmartEvents } from "@contexts/SmartEventsContext";
 
 export function useGetBridgesApi(): {
   getBridges: (
+    nameReq: string | null,
     pageReq?: number,
     sizeReq?: number,
-    nameReq?: string,
     statusesReq?: ManagedResourceStatus[],
     isPolling?: boolean
   ) => void;
@@ -27,9 +27,9 @@ export function useGetBridgesApi(): {
 
   const getBridges = useCallback(
     (
+      nameReq: string | null,
       pageReq?: number,
       sizeReq?: number,
-      nameReq?: string,
       statusesReq?: ManagedResourceStatus[],
       isPolling = false
     ): void => {
@@ -54,7 +54,7 @@ export function useGetBridgesApi(): {
 
       bridgeApi
         .getBridges(
-          nameReq,
+          nameReq ?? undefined,
           pageNumber,
           sizeReq,
           new Set<ManagedResourceStatus>(statusesReq),

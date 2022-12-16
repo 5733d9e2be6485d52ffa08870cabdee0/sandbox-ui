@@ -114,15 +114,13 @@ const InstancesListPage = (): JSX.Element => {
   const { bridgeListResponse, getBridges, error } = useGetBridgesApi();
 
   const triggerGetBridges = useCallback((): void => {
-    const nameParam = nameSearchParam ?? undefined;
-    getBridges(page, perPage, nameParam, statuses, true);
+    getBridges(nameSearchParam, page, perPage, statuses, true);
   }, [getBridges, page, perPage, statuses, nameSearchParam]);
 
   usePolling(() => triggerGetBridges(), 10000);
 
   useEffect(() => {
-    const nameParam = nameSearchParam ?? undefined;
-    getBridges(page, perPage, nameParam, statuses);
+    getBridges(nameSearchParam, page, perPage, statuses);
   }, [getBridges, page, perPage, statuses, nameSearchParam]);
 
   useEffect(() => {
@@ -154,8 +152,8 @@ const InstancesListPage = (): JSX.Element => {
 
   const onCreateBridge = useCallback(() => {
     setShowCreateInstance(false);
-    getBridges(page, perPage);
-  }, [getBridges, page, perPage]);
+    getBridges(nameSearchParam, page, perPage, statuses);
+  }, [getBridges, nameSearchParam, page, perPage, statuses]);
 
   const handleCreate = useCallback<CreateInstanceProps["createBridge"]>(
     function (data, onSuccess, onError) {
@@ -185,9 +183,16 @@ const InstancesListPage = (): JSX.Element => {
 
   const handleOnDeleteSuccess = useCallback((): void => {
     setShowDeleteModal(false);
-    getBridges(page, perPage);
+    getBridges(nameSearchParam, page, perPage, statuses);
     resetDeleteInstance();
-  }, [getBridges, page, perPage, resetDeleteInstance]);
+  }, [
+    getBridges,
+    nameSearchParam,
+    page,
+    perPage,
+    resetDeleteInstance,
+    statuses,
+  ]);
 
   const handleOnDeleteCancel = useCallback((): void => {
     setShowDeleteModal(false);

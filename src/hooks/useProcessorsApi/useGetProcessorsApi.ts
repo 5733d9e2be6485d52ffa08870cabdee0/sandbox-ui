@@ -11,9 +11,9 @@ import { useSmartEvents } from "@contexts/SmartEventsContext";
 export function useGetProcessorsApi(): {
   getProcessors: (
     bridgeId: string,
+    nameReq: string | null,
     pageReq?: number,
     sizeReq?: number,
-    nameReq?: string,
     statusesReq?: ManagedResourceStatus[],
     isPolling?: boolean
   ) => void;
@@ -29,9 +29,9 @@ export function useGetProcessorsApi(): {
   const getProcessors = useCallback(
     (
       bridgeId: string,
+      nameReq: string | null,
       pageReq?: number,
       sizeReq?: number,
-      nameReq?: string,
       statusesReq?: ManagedResourceStatus[],
       isPolling?: boolean
     ): void => {
@@ -57,7 +57,7 @@ export function useGetProcessorsApi(): {
       processorsApi
         .getProcessors(
           bridgeId,
-          nameReq,
+          nameReq ?? undefined,
           pageNumber,
           sizeReq,
           new Set<ManagedResourceStatus>(statusesReq),

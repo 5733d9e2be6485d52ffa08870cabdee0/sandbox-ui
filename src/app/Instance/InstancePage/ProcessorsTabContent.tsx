@@ -42,7 +42,7 @@ export const ProcessorsTabContent = ({
       nameSearchParam,
       statuses,
     },
-  } = useTablePageParams();
+  } = useTablePageParams({ hasNameFilter: true, hasStatusesFilter: true });
 
   const [totalRows, setTotalRows] = useState<number>();
   const [deleteProcessorId, setDeleteProcessorId] = useState("");
@@ -229,7 +229,7 @@ export const ProcessorsTabContent = ({
           itemCount={totalRows}
           isFiltered={
             (nameSearchParam && nameSearchParam.length > 0) ||
-            statuses.length > 0
+            (statuses && statuses.length > 0)
           }
           onClearAllFilters={onClearAllFilters}
           onPageChange={setPagination}

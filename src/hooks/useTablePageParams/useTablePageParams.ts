@@ -13,17 +13,20 @@ import { CREATING_STATUS } from "@utils/statusUtils";
  * Custom hook useful for managing page parameters in pages where we have overview tables
  * Managed page parameters are: pagination and filters (resource's name and status)
  */
-export function useTablePageParams(): {
+export function useTablePageParams({
+  hasNameFilter = true,
+  hasStatusesFilter = true,
+}): {
   pagination: {
     page: number;
     perPage: number;
     setPagination: (page: number, perPage: number) => void;
   };
   filters: {
-    filtersConfig: { [p: string]: FilterType };
+    filtersConfig?: { [p: string]: FilterType };
     onClearAllFilters: () => void;
     nameSearchParam: string | null;
-    statuses: ManagedResourceStatus[];
+    statuses?: ManagedResourceStatus[];
   };
 } {
   const { t } = useTranslation(["smartEventsTempDictionary"]);
@@ -66,6 +69,36 @@ export function useTablePageParams(): {
     updateSearchParams(urlQueryParams);
   };
 
+  const filtersConfig: { [p: string]: FilterType } = {};
+
+  if (hasNameFilter) {
+    filtersConfig[t("common.name")] = {
+      type: "search",
+      chips: nameSearchParam ? [nameSearchParam] : [],
+      onSearch: onNameSearch,
+      onRemoveChip: onClearNameFilter,
+      onRemoveGroup: onClearNameFilter,
+      validate: () => true,
+      errorMessage: "",
+    };
+  }
+
+  if (hasStatusesFilter) {
+    filtersConfig[t("common.status")] = {
+      type: "checkbox",
+      chips: statusesChips.chips,
+      options: {
+        [ManagedResourceStatus.Ready]: t("common.statuses.ready"),
+        [CREATING_STATUS]: t("common.statuses.creating"),
+        [ManagedResourceStatus.Failed]: t("common.statuses.failed"),
+        [ManagedResourceStatus.Deleting]: t("common.statuses.deleting"),
+      },
+      onToggle: statusesChips.toggle,
+      onRemoveChip: statusesChips.remove,
+      onRemoveGroup: statusesChips.clear,
+    };
+  }
+
   return {
     pagination: {
       page,
@@ -73,33 +106,11 @@ export function useTablePageParams(): {
       setPagination,
     },
     filters: {
-      filtersConfig: {
-        [t("common.name")]: {
-          type: "search",
-          chips: nameSearchParam ? [nameSearchParam] : [],
-          onSearch: onNameSearch,
-          onRemoveChip: onClearNameFilter,
-          onRemoveGroup: onClearNameFilter,
-          validate: () => true,
-          errorMessage: "",
-        },
-        [t("common.status")]: {
-          type: "checkbox",
-          chips: statusesChips.chips,
-          options: {
-            [ManagedResourceStatus.Ready]: t("common.statuses.ready"),
-            [CREATING_STATUS]: t("common.statuses.creating"),
-            [ManagedResourceStatus.Failed]: t("common.statuses.failed"),
-            [ManagedResourceStatus.Deleting]: t("common.statuses.deleting"),
-          },
-          onToggle: statusesChips.toggle,
-          onRemoveChip: statusesChips.remove,
-          onRemoveGroup: statusesChips.clear,
-        },
-      },
+      filtersConfig:
+        Object.keys(filtersConfig).length === 0 ? undefined : filtersConfig,
       onClearAllFilters,
       nameSearchParam,
-      statuses: statusesChips.chips,
+      statuses: hasStatusesFilter ? statusesChips.chips : undefined,
     },
   };
 }

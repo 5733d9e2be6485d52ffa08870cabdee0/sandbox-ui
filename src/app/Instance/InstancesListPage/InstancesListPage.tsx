@@ -43,7 +43,7 @@ const InstancesListPage = (): JSX.Element => {
       nameSearchParam,
       statuses,
     },
-  } = useTablePageParams();
+  } = useTablePageParams({ hasNameFilter: true, hasStatusesFilter: true });
 
   const [totalRows, setTotalRows] = useState<number>();
   const [showInstanceDrawer, setShowInstanceDrawer] = useState<boolean>(false);
@@ -280,7 +280,7 @@ const InstancesListPage = (): JSX.Element => {
           itemCount={totalRows}
           isFiltered={
             (nameSearchParam && nameSearchParam.length > 0) ||
-            statuses.length > 0
+            (statuses && statuses.length > 0)
           }
           onClearAllFilters={onClearAllFilters}
           onPageChange={setPagination}

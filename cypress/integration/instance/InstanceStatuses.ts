@@ -25,6 +25,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       const instanceName: string = "Instance three";
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(instanceName, "PF4/TableRow")
+        .scrollIntoView()
         .should("be.visible")
         .within(() => {
           //the name does not contain a link at the detail page
@@ -73,6 +74,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       const instanceName: string = "Instance eight";
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(instanceName, "PF4/TableRow")
+        .scrollIntoView()
         .should("be.visible")
         .within(() => {
           //the name does not contain a link at the detail page
@@ -122,6 +124,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       const instanceName: string = "Instance four";
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(instanceName, "PF4/TableRow")
+        .scrollIntoView()
         .should("be.visible")
         .within(() => {
           //the name does not contain a link at the detail page
@@ -171,6 +174,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       const instanceName: string = "Instance two";
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(instanceName, "PF4/TableRow")
+        .scrollIntoView()
         .should("be.visible")
         .within(() => {
           cy.get("td:first")
@@ -203,6 +207,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       const instanceName: string = "Instance three";
       cy.ouiaId("Instances list table", "PF4/Table")
         .ouiaId(instanceName, "PF4/TableRow")
+        .scrollIntoView()
         .should("be.visible")
         .within(() => {
           cy.get("td:first").should("have.html", instanceName);

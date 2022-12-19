@@ -41,7 +41,6 @@ import {
 import { APIErrorCodes } from "@openapi/generated/errors";
 import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
-// import { ProcessorsTabContent } from "@app/Instance/InstancePage/ProcessorsTabContent";
 import { ErrorHandlingTabContent } from "@app/Instance/InstancePage/ErrorHandlingTabContent";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import { BridgeOverview } from "../BridgeOverview/BridgeOverview";

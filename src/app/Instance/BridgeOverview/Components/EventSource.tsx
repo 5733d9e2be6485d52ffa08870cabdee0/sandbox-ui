@@ -12,17 +12,17 @@ import {
   Title,
 } from "@patternfly/react-core";
 import React from "react";
-import { Data } from "../BridgeOverview";
+import { DemoData } from "../BridgeOverview";
 import { OBDashboardTableView } from "./OBDashboardTableView";
 import { OBEmptyState } from "./OBEmptyState";
 
 interface EventSourceProps {
-  EventSourceList: Data[];
-  changeState: () => void;
+  eventSourceList: DemoData[];
+  onAddingSourceConnector: () => void;
 }
 
 export const EventSource = (props: EventSourceProps): JSX.Element => {
-  const { EventSourceList, changeState } = props;
+  const { eventSourceList, onAddingSourceConnector } = props;
 
   const desc =
     "Create a source connector to send events from an external system to this bridge";
@@ -32,21 +32,21 @@ export const EventSource = (props: EventSourceProps): JSX.Element => {
       <GridItem lg={4} md={6}>
         <Card>
           <CardTitle>Event sources</CardTitle>
-          {EventSourceList.length == 0 ? (
+          {eventSourceList.length == 0 ? (
             <>
               <OBEmptyState
                 title={"No source connectors"}
                 description={desc}
                 buttonName={"Create source connector"}
                 variant={"secondary"}
-                changeState={changeState}
+                changeState={onAddingSourceConnector}
               />
               <Divider inset={{ default: "insetMd" }} />
             </>
           ) : (
             <OBDashboardTableView
               name={"Source connectors"}
-              data={EventSourceList}
+              data={eventSourceList}
             />
           )}
 

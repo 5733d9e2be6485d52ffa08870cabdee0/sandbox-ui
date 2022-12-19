@@ -10,17 +10,17 @@ import {
   Title,
 } from "@patternfly/react-core";
 import React from "react";
-import { Data } from "../BridgeOverview";
+import { DemoData } from "../BridgeOverview";
 import { OBDashboardTableView } from "./OBDashboardTableView";
 import { OBEmptyState } from "./OBEmptyState";
 
 interface EventSinkProps {
-  EventSinkList: Data[];
-  changeState: () => void;
+  eventSinkList: DemoData[];
+  onAddingSinkConnector: () => void;
 }
 
 export const EventSink = (props: EventSinkProps): JSX.Element => {
-  const { EventSinkList, changeState } = props;
+  const { eventSinkList, onAddingSinkConnector } = props;
   const desc =
     "Create a source connector to send events from an external system to this bridge";
 
@@ -29,13 +29,13 @@ export const EventSink = (props: EventSinkProps): JSX.Element => {
       <GridItem lg={4} md={12}>
         <Card>
           <CardTitle>Event sinks</CardTitle>
-          {EventSinkList.length == 0 ? (
+          {eventSinkList.length == 0 ? (
             <>
               <OBEmptyState
                 title={"No sink connectors"}
                 description={desc}
                 buttonName={"Create sink connector"}
-                changeState={changeState}
+                changeState={onAddingSinkConnector}
                 variant={"primary"}
               />
               <Divider inset={{ default: "insetMd" }} />
@@ -43,7 +43,7 @@ export const EventSink = (props: EventSinkProps): JSX.Element => {
           ) : (
             <OBDashboardTableView
               name={"sink connector"}
-              data={EventSinkList}
+              data={eventSinkList}
             />
           )}
 

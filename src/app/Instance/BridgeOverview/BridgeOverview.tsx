@@ -6,20 +6,16 @@ import { EventSink } from "./Components/EventSink";
 import { EventSource } from "./Components/EventSource";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 
-export type ButtonProps = {
-  changeState?: () => void | undefined;
-};
-
-export interface Data {
+export interface DemoData {
   name: string;
   connectors: string[];
   status: ManagedResourceStatus;
 }
 
 export const BridgeOverview = (): JSX.Element => {
-  const [sourceList, setSourceList] = useState<Data[]>([]);
-  const [processorList, setProcessorList] = useState<Data[]>([]);
-  const [sinkList, setSinkList] = useState<Data[]>([]);
+  const [sourceList, setSourceList] = useState<DemoData[]>([]);
+  const [processorList, setProcessorList] = useState<DemoData[]>([]);
+  const [sinkList, setSinkList] = useState<DemoData[]>([]);
 
   const handleSourceList = useCallback((): void => {
     setSourceList([
@@ -84,16 +80,19 @@ export const BridgeOverview = (): JSX.Element => {
           <GettingStarted />
           {/* Event Source */}
           <EventSource
-            EventSourceList={sourceList}
-            changeState={handleSourceList}
+            eventSourceList={sourceList}
+            onAddingSourceConnector={handleSourceList}
           />
           {/* Event Processor */}
           <EventProcessor
-            EventProcessorList={processorList}
-            changeState={handleProcessorList}
+            eventProcessorList={processorList}
+            onAddingProcessor={handleProcessorList}
           />
           {/* Event Sinks */}
-          <EventSink EventSinkList={sinkList} changeState={handleSinkList} />
+          <EventSink
+            eventSinkList={sinkList}
+            onAddingSinkConnector={handleSinkList}
+          />
         </Grid>
       </PageSection>
     </>

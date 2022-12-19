@@ -23,10 +23,10 @@ import {
 } from "@patternfly/react-table";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import React from "react";
-import { Data } from "../BridgeOverview";
+import { DemoData } from "../BridgeOverview";
 
 interface OBDashboardTableViewProps {
-  data: Data[];
+  data: DemoData[];
   name: string;
 }
 

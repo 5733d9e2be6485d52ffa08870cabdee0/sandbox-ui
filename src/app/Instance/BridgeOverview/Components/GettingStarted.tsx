@@ -26,8 +26,9 @@ export const GettingStarted = (): JSX.Element => {
             setIsCardExpanded(!isCardExpanded);
           }}
         >
-          {isCardExpanded && <CardTitle>Getting Started</CardTitle>}
-          {!isCardExpanded && (
+          {isCardExpanded ? (
+            <CardTitle>Getting Started</CardTitle>
+          ) : (
             <Level hasGutter>
               <CardTitle>Getting Started</CardTitle>
               <LabelGroup numLabels={4}>
@@ -122,7 +123,3 @@ export const GettingStarted = (): JSX.Element => {
     </>
   );
 };
-
-//  <Button href="#" component="a" variant="link" isInline icon={<ArrowRightIcon />} iconPosition="right">
-//               View all set up cluster steps
-//             </Button>

@@ -1,4 +1,5 @@
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
@@ -14,6 +15,21 @@ module.exports = {
         extensions: config.resolve.extensions,
       }),
     ];
+    config.plugins.push(
+      new MonacoWebpackPlugin({
+        languages: ["yaml"],
+        customLanguages: [
+          {
+            label: "yaml",
+            entry: "monaco-yaml",
+            worker: {
+              id: "monaco-yaml/yamlWorker",
+              entry: "monaco-yaml/yaml.worker",
+            },
+          },
+        ],
+      })
+    );
     return config;
   },
   framework: "@storybook/react",

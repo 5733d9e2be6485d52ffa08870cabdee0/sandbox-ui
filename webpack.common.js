@@ -10,6 +10,7 @@ delete dependencies.serve; // Needed for nodeshift bug
 const webpack = require("webpack");
 const ChunkMapper = require("@redhat-cloud-services/frontend-components-config/chunk-mapper");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 const isPatternflyStyles = (stylesheet) =>
   stylesheet.includes("@patternfly/react-styles/css/") ||
@@ -102,6 +103,19 @@ module.exports = (env, argv) => {
           document.head.appendChild(preloadLinkTag);
           document.head.appendChild(linkTag);
         },
+      }),
+      new MonacoWebpackPlugin({
+        languages: ["yaml"],
+        customLanguages: [
+          {
+            label: "yaml",
+            entry: "monaco-yaml",
+            worker: {
+              id: "monaco-yaml/yamlWorker",
+              entry: "monaco-yaml/yaml.worker",
+            },
+          },
+        ],
       }),
       new ChunkMapper({
         modules: [federatedModuleName],

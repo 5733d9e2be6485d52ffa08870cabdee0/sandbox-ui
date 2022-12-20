@@ -90,20 +90,23 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     });
 
     it("Page size after deleting an Instance ", () => {
+      const instanceTen = "Instance ten";
+      let initialInstanceCount = 0;
       cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
         (count) => {
-          const instanceTen = "Instance ten";
-          let initialInstanceCount = parseInt(count.text());
-          deleteInstance(instanceTen);
-          waitTillInstanceIsReady(instanceTen);
-          deletedInstanceNotExist(instanceTen);
-          cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
-            (count) => {
-              let instanceCountAfterDelete = parseInt(count.text());
-              expect(instanceCountAfterDelete).to.be.equal(
-                initialInstanceCount - 1
-              );
-            }
+          initialInstanceCount = parseInt(count.text());
+        }
+      );
+      deleteInstance(instanceTen);
+      //After the modal confirmed that the page is loading again and contains just the skeleton table.
+      //Instance one is mocked to be ready.
+      waitTillInstanceIsReady("Instance one");
+      deletedInstanceNotExist(instanceTen);
+      cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
+        (count) => {
+          let instanceCountAfterDelete = parseInt(count.text());
+          expect(instanceCountAfterDelete).to.be.equal(
+            initialInstanceCount - 1
           );
         }
       );

@@ -108,11 +108,6 @@ export const handlers = [
     const status = req.url.searchParams.getAll("status");
 
     const bridgeQuery = {
-      take: size,
-      skip: page * size,
-      orderBy: {
-        submitted_at: "desc",
-      },
       where: {},
     } as QueryOptions & QuerySelector<Partial<BridgeResponse>>;
 
@@ -130,8 +125,17 @@ export const handlers = [
     }
 
     const items = db.bridge
-      .findMany(bridgeQuery)
+      .findMany({
+        take: size,
+        skip: page * size,
+        orderBy: {
+          submitted_at: "desc",
+        },
+        ...bridgeQuery,
+      })
       .map((item) => prepareBridge(item as unknown as Record<string, unknown>));
+
+    const count = db.bridge.count(bridgeQuery);
 
     return res(
       ctx.status(200),
@@ -141,7 +145,7 @@ export const handlers = [
         items,
         page,
         size: items.length,
-        total: db.bridge.count(),
+        total: count,
       })
     );
   }),

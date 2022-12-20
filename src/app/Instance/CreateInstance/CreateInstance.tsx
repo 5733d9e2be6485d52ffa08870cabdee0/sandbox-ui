@@ -31,6 +31,8 @@ export interface CreateInstanceProps {
     onSuccess: () => void,
     onError: (error: CreateInstanceError) => void
   ) => void;
+  /** The parent container to append the dialog to. Defaults to "document.body". */
+  appendTo?: () => HTMLElement;
 }
 
 const FORM_ID = "create-instance-form";
@@ -48,7 +50,7 @@ type CreateInstanceDialogProps = Omit<CreateInstanceProps, "isOpen">;
 const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
   props
 ) => {
-  const { getCloudProviders, onClose, createBridge } = props;
+  const { getCloudProviders, onClose, createBridge, appendTo } = props;
 
   const [current, send] = useMachine(CreateInstanceMachine, {
     services: {
@@ -133,6 +135,7 @@ const CreatBridgeDialog: VoidFunctionComponent<CreateInstanceDialogProps> = (
       isSaving={isSaving}
       isDisabled={isDisabled}
       isLoading={isSaving}
+      appendTo={appendTo}
     >
       <Form id={FORM_ID} onSubmit={onSubmit}>
         <FormSection>

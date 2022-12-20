@@ -4,6 +4,7 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import SEStatusLabel from "./SEStatusLabel";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
+import { sub } from "date-fns";
 
 export default {
   title: "Shared/SEStatusLabel",
@@ -39,6 +40,18 @@ export const Provisioning = Template.bind({});
 Provisioning.args = {
   status: ManagedResourceStatus.Provisioning,
   resourceType: "bridge",
+};
+
+export const CreatingOver5Minutes = Template.bind({});
+CreatingOver5Minutes.args = {
+  status: ManagedResourceStatus.Accepted,
+  requestedAt: sub(new Date(), { minutes: 6 }),
+};
+
+export const CreatingOver10Minutes = Template.bind({});
+CreatingOver10Minutes.args = {
+  status: ManagedResourceStatus.Accepted,
+  requestedAt: sub(new Date(), { minutes: 11 }),
 };
 
 export const Ready = Template.bind({});

@@ -10,7 +10,7 @@ import {
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { Trans } from "@rhoas/app-services-ui-components";
 
-interface EmptyStateNoDataProps {
+export interface EmptyStateNoDataProps {
   createButton: {
     title: string;
     onCreate: () => void;

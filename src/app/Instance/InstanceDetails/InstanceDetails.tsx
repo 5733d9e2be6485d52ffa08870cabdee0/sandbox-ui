@@ -131,7 +131,7 @@ export const InstanceDetails = ({
                 <StackItem>
                   {instance.endpoint ? (
                     <ClipboardCopy
-                      data-ouia-component-id="instance-details-endpoint"
+                      ouiaId="instance-details-endpoint"
                       isBlock
                       isReadOnly
                       hoverTip={t("common.copy")}

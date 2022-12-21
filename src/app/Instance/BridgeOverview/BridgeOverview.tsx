@@ -35,17 +35,17 @@ export const BridgeOverview = (): JSX.Element => {
   const handleProcessorList = useCallback((): void => {
     setProcessorList([
       {
-        name: " disk-space-cleanup",
+        name: "disk space cleanup",
         connectors: ["Ansible playbook", "AI/ML learning Azure Database"],
         status: ManagedResourceStatus.Ready,
       },
       {
-        name: " 870-du29c-9nc-w-1ik",
+        name: "confirmed order analysis",
         connectors: ["AI/ML learning Azure Database"],
         status: ManagedResourceStatus.Failed,
       },
       {
-        name: " wi-9nc-w-1ik-ygsds",
+        name: "invoices generation and fulfillment notification",
         connectors: ["Azure Bigdata serverless Sink"],
         status: ManagedResourceStatus.Failed,
       },

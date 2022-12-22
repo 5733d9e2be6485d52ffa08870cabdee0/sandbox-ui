@@ -37,7 +37,6 @@ export const sampleSubmit: PlayFunction<
 
   await waitFor(
     () => {
-      // expect(canvas.getByLabelText("Name *")).toBeEnabled();
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
       expect(canvas.getByLabelText("Name *")).toBeEnabled();
     },

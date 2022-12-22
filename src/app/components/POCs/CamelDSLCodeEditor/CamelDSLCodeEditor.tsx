@@ -43,7 +43,7 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
     code,
     onChange,
     width = "100%",
-    height = "500",
+    height = "100%",
     sinkConnectorsNames,
   } = props;
 
@@ -112,18 +112,21 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
 
   return (
     <div className="camel-editor">
-      <MonacoEditor
-        width={width}
-        height={height}
-        language="yaml"
-        value={code}
-        options={{
-          scrollbar: { alwaysConsumeMouseWheel: false },
-        }}
-        onChange={onChange}
-        editorWillMount={onEditorWillMount}
-        editorDidMount={onEditorMount}
-      />
+      <div className="camel-editor-inner">
+        <MonacoEditor
+          width={width}
+          height={height}
+          language="yaml"
+          value={code}
+          options={{
+            scrollbar: { alwaysConsumeMouseWheel: false },
+            scrollBeyondLastLine: false,
+          }}
+          onChange={onChange}
+          editorWillMount={onEditorWillMount}
+          editorDidMount={onEditorMount}
+        />
+      </div>
     </div>
   );
 };

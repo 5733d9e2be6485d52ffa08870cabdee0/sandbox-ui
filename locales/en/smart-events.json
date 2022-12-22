@@ -133,6 +133,7 @@
     "notFound": "Processor not found",
     "processorName": "Processor name",
     "processorsListTable": "Processors list table",
+    "processorYAMLGuide": "Processor YAML Guide",
     "processorWillBeAvailableShortly": "Your Processor will be ready for use shortly after creation."
   }
 }

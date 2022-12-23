@@ -49,6 +49,10 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
 
   const completionProvider = useRef<monacoEditor.IDisposable>();
 
+  const updateErrorStatus = useCallback((errorCount: number): void => {
+    console.log(`There are ${errorCount} errors`);
+  }, []);
+
   const createToProposals = useCallback(
     (range: Range): Suggestion[] => {
       return (sinkConnectorsNames ?? []).map((name) => ({
@@ -109,6 +113,22 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
     },
     []
   );
+
+  useEffect(() => {
+    const onMarkersChange = monacoEditor.editor.onDidChangeMarkers(
+      ([resource]) => {
+        const markers: monacoEditor.editor.IMarker[] =
+          monacoEditor.editor.getModelMarkers({ resource });
+        const errors = markers.filter(
+          (marker) => marker.severity === monacoEditor.MarkerSeverity.Error
+        );
+        updateErrorStatus(errors.length);
+      }
+    );
+    return () => {
+      onMarkersChange.dispose();
+    };
+  }, [updateErrorStatus]);
 
   return (
     <div className="camel-editor">

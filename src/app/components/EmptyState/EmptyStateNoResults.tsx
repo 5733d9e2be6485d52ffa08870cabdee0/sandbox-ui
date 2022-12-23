@@ -9,7 +9,7 @@ import {
 import { SearchIcon } from "@patternfly/react-icons";
 import { Trans } from "@rhoas/app-services-ui-components";
 
-interface EmptyStateNoResultsProps {
+export interface EmptyStateNoResultsProps {
   bodyMsgI18nKey: string;
   onClearAllFilters: () => void;
   title: string;

@@ -1,19 +1,19 @@
 import React from "react";
 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { EmptyState } from "@app/components/EmptyState/EmptyState";
+import { EmptyStateNoData } from "@app/components/EmptyState/EmptyStateNoData";
 
 export default {
-  title: "Shared/EmptyState",
-  component: EmptyState,
-} as ComponentMeta<typeof EmptyState>;
+  title: "Shared/EmptyState/NoData",
+  component: EmptyStateNoData,
+} as ComponentMeta<typeof EmptyStateNoData>;
 
-const Template: ComponentStory<typeof EmptyState> = (args) => (
-  <EmptyState {...args} />
+const Template: ComponentStory<typeof EmptyStateNoData> = (args) => (
+  <EmptyStateNoData {...args} />
 );
 
-export const EmptyStateBase = Template.bind({});
-EmptyStateBase.args = {
+export const NoData = Template.bind({});
+NoData.args = {
   title: "No Smart Event instances",
   createButton: {
     title: "Create Smart Events instance",

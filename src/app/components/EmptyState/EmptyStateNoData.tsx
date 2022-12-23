@@ -10,7 +10,7 @@ import {
 import { PlusCircleIcon } from "@patternfly/react-icons";
 import { Trans } from "@rhoas/app-services-ui-components";
 
-interface EmptyStateProps {
+interface EmptyStateNoDataProps {
   createButton: {
     title: string;
     onCreate: () => void;
@@ -23,11 +23,11 @@ interface EmptyStateProps {
   title: string;
 }
 
-export const EmptyState = ({
+export const EmptyStateNoData = ({
   createButton,
   quickStartGuide,
   title,
-}: EmptyStateProps): JSX.Element => {
+}: EmptyStateNoDataProps): JSX.Element => {
   return (
     <EmptyStatePF variant={EmptyStateVariant.small}>
       <EmptyStateIcon icon={PlusCircleIcon} />

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Card,
   CardBody,
@@ -13,9 +14,8 @@ import {
   ListItem,
 } from "@patternfly/react-core";
 import { InfoCircleIcon } from "@patternfly/react-icons";
-import React, { useState } from "react";
 
-export const GettingStarted = (): JSX.Element => {
+export const BOGettingStarted = (): JSX.Element => {
   const [isCardExpanded, setIsCardExpanded] = useState<boolean>(false);
 
   return (
@@ -62,7 +62,7 @@ export const GettingStarted = (): JSX.Element => {
                 </Label>
                 <p>
                   First configure a sink connector needed to route processed
-                  events to your externalsystems.
+                  events to your external systems
                 </p>
               </Flex>
               <Flex
@@ -90,7 +90,7 @@ export const GettingStarted = (): JSX.Element => {
                 </Label>
                 <p>
                   Configure a source connector or use the ingress endpoint to
-                  send events to your bridge.
+                  send events to your bridge
                 </p>
               </Flex>
 
@@ -104,8 +104,7 @@ export const GettingStarted = (): JSX.Element => {
                   Quickstart guides
                 </Label>
                 <p>
-                  Get started with features using our step-by-step
-                  documenattion.
+                  Get started with features using our step-by-step documenattion
                 </p>
                 <List isPlain>
                   <ListItem>

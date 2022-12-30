@@ -1,9 +1,9 @@
-import { Grid, PageSection } from "@patternfly/react-core";
 import React, { useCallback, useState } from "react";
-import { GettingStarted } from "./Components/GettingStarted";
-import { EventProcessor } from "./Components/EventProcessor";
-import { EventSink } from "./Components/EventSink";
-import { EventSource } from "./Components/EventSource";
+import { Grid, GridItem, PageSection } from "@patternfly/react-core";
+import { BOGettingStarted } from "./Components/BOGettingStarted";
+import { BOProcessorList } from "./Components/BOProcessorList";
+import { BOSinkList } from "./Components/BOSinkList";
+import { BOSourceList } from "./Components/BOSourceList";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 
 export interface DemoData {
@@ -76,23 +76,25 @@ export const BridgeOverview = (): JSX.Element => {
     <>
       <PageSection isFilled>
         <Grid hasGutter={true} sm={12}>
-          {/* Getting started */}
-          <GettingStarted />
-          {/* Event Source */}
-          <EventSource
-            eventSourceList={sourceList}
-            onAddingSourceConnector={handleSourceList}
-          />
-          {/* Event Processor */}
-          <EventProcessor
-            eventProcessorList={processorList}
-            onAddingProcessor={handleProcessorList}
-          />
-          {/* Event Sinks */}
-          <EventSink
-            eventSinkList={sinkList}
-            onAddingSinkConnector={handleSinkList}
-          />
+          <BOGettingStarted />
+          <GridItem lg={4} md={6}>
+            <BOSourceList
+              sourceList={sourceList}
+              onAddingSourceConnector={handleSourceList}
+            />
+          </GridItem>
+          <GridItem lg={4} md={6}>
+            <BOProcessorList
+              processorList={processorList}
+              onAddingProcessor={handleProcessorList}
+            />
+          </GridItem>
+          <GridItem lg={4} md={12}>
+            <BOSinkList
+              sinkList={sinkList}
+              onAddingSinkConnector={handleSinkList}
+            />
+          </GridItem>
         </Grid>
       </PageSection>
     </>

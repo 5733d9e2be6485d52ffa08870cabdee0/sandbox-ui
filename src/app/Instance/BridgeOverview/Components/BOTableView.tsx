@@ -1,7 +1,7 @@
+import React from "react";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import {
   Button,
-  CardBody,
   Divider,
   Flex,
   FlexItem,
@@ -22,41 +22,35 @@ import {
   Tr,
 } from "@patternfly/react-table";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
-import React from "react";
 import { DemoData } from "../BridgeOverview";
 
-interface OBDashboardTableViewProps {
-  data: DemoData[];
+interface BOTableViewProps {
+  demoData: DemoData[];
   name: string;
 }
 
-export const OBDashboardTableView = (
-  props: OBDashboardTableViewProps
-): JSX.Element => {
-  const rowActions = [{ title: "edit" }, { title: "delete" }];
+export const BOTableView = (props: BOTableViewProps): JSX.Element => {
+  const rowActions = [{ title: "Edit" }, { title: "Delete" }];
 
-  const { data, name } = props;
+  const { demoData, name } = props;
 
   return (
     <>
-      <CardBody>
-        <Split hasGutter>
-          <SplitItem isFilled>
-            <TextContent>
-              <Text component="h4">{name}</Text>
-            </TextContent>
-          </SplitItem>
-          <SplitItem>
-            <Button variant="secondary">Create {name}</Button>
-          </SplitItem>
-        </Split>
-      </CardBody>
-
-      <Divider />
+      <Split hasGutter>
+        <SplitItem isFilled>
+          <TextContent>
+            <Text component="h4">{name}</Text>
+          </TextContent>
+        </SplitItem>
+        <SplitItem>
+          <Button variant="secondary">Create {name}</Button>
+        </SplitItem>
+      </Split>
+      <Divider style={{ paddingTop: "1rem" }} />
       <TableComposable variant="compact">
-        {data &&
-          data.map((processor, rowIndex) => (
-            <Tbody key={rowIndex}>
+        {demoData &&
+          demoData.map((processor, rowIndex) => (
+            <Tbody key={rowIndex} style={{ border: "0rem" }}>
               <Tr>
                 <Td>
                   <Stack>

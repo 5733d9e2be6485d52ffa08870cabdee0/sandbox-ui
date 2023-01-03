@@ -7,10 +7,11 @@ export default {
   component: CamelDSLCodeEditor,
   args: {
     onChange: (): void => {},
+    onValidate: (): void => {},
+    width: "100%",
+    height: 500,
+    sinkConnectorsNames: [],
   },
-  width: "100%",
-  height: 500,
-  sinkConnectorsNames: [],
 } as ComponentMeta<typeof CamelDSLCodeEditor>;
 
 const Template: ComponentStory<typeof CamelDSLCodeEditor> = (args) => (

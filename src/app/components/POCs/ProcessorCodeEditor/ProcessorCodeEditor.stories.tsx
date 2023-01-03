@@ -5,6 +5,10 @@ import ProcessorCodeEditor from "@app/components/POCs/ProcessorCodeEditor/Proces
 export default {
   title: "PoCs/Processor Code Editor",
   component: ProcessorCodeEditor,
+  args: {
+    onChange: () => {},
+    onValidate: () => {},
+  },
 } as ComponentMeta<typeof ProcessorCodeEditor>;
 
 const Template: ComponentStory<typeof ProcessorCodeEditor> = (args) => (

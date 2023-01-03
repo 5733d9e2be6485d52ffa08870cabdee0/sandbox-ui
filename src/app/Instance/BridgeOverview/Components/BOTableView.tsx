@@ -6,6 +6,7 @@ import {
   Flex,
   FlexItem,
   Label,
+  LabelGroup,
   Split,
   SplitItem,
   Stack,
@@ -23,6 +24,7 @@ import {
 } from "@patternfly/react-table";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { DemoData } from "../BridgeOverview";
+import "./OBDashboardTableView.css";
 
 interface BOTableViewProps {
   demoData: DemoData[];
@@ -55,13 +57,18 @@ export const BOTableView = (props: BOTableViewProps): JSX.Element => {
                 <Td>
                   <Stack>
                     <StackItem>
-                      <Flex>
-                        <FlexItem style={{ flexBasis: "100px" }}>
+                      <Flex flexWrap={{ default: "nowrap" }}>
+                        <FlexItem>
                           <TextContent>
                             <Text component="h4">
                               <a href="#">
                                 {" "}
-                                <Truncate content={processor.name}></Truncate>
+                                <Truncate
+                                  content={processor.name}
+                                  className={
+                                    "OB-Dashboard__resource__truncated-string"
+                                  }
+                                />
                               </a>
                             </Text>
                           </TextContent>
@@ -77,12 +84,23 @@ export const BOTableView = (props: BOTableViewProps): JSX.Element => {
                         </FlexItem>
                       </Flex>
                     </StackItem>
-
-                    {processor.connectors?.map((connector, rowIndex) => (
-                      <StackItem key={rowIndex} style={{ padding: "0.2rem" }}>
-                        <Label color="green">{connector}</Label>
-                      </StackItem>
-                    ))}
+                    <StackItem
+                      key={rowIndex}
+                      className={"OB-Dashboard__resource__labels"}
+                    >
+                      <LabelGroup>
+                        {processor.connectors?.map((connector, rowIndex) => (
+                          <Label key={rowIndex} color="green">
+                            <Truncate
+                              content={connector}
+                              className={
+                                "OB-Dashboard__resource__truncated-string"
+                              }
+                            />
+                          </Label>
+                        ))}
+                      </LabelGroup>
+                    </StackItem>
                   </Stack>
                 </Td>
                 <Td isActionCell>

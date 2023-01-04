@@ -24,14 +24,16 @@ import {
 } from "@patternfly/react-table";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { DemoData } from "../BridgeOverview";
-import "./OBDashboardTableView.css";
+import "./BODashboardTableView.css";
 
-interface BOTableViewProps {
+interface BODashboardTableViewProps {
   demoData: DemoData[];
   name: string;
 }
 
-export const BOTableView = (props: BOTableViewProps): JSX.Element => {
+export const BODashboardTableView = (
+  props: BODashboardTableViewProps
+): JSX.Element => {
   const rowActions = [{ title: "Edit" }, { title: "Delete" }];
 
   const { demoData, name } = props;
@@ -48,11 +50,11 @@ export const BOTableView = (props: BOTableViewProps): JSX.Element => {
           <Button variant="secondary">Create {name}</Button>
         </SplitItem>
       </Split>
-      <Divider style={{ paddingTop: "1rem" }} />
+      <Divider className={"BO-Dashboard__resource__divider"} />
       <TableComposable variant="compact">
         {demoData &&
           demoData.map((processor, rowIndex) => (
-            <Tbody key={rowIndex} style={{ border: "0rem" }}>
+            <Tbody key={rowIndex}>
               <Tr>
                 <Td>
                   <Stack>
@@ -66,7 +68,7 @@ export const BOTableView = (props: BOTableViewProps): JSX.Element => {
                                 <Truncate
                                   content={processor.name}
                                   className={
-                                    "OB-Dashboard__resource__truncated-string"
+                                    "BO-Dashboard__resource__truncated-string"
                                   }
                                 />
                               </a>
@@ -86,7 +88,7 @@ export const BOTableView = (props: BOTableViewProps): JSX.Element => {
                     </StackItem>
                     <StackItem
                       key={rowIndex}
-                      className={"OB-Dashboard__resource__labels"}
+                      className={"BO-Dashboard__resource__labels"}
                     >
                       <LabelGroup>
                         {processor.connectors?.map((connector, rowIndex) => (
@@ -94,7 +96,7 @@ export const BOTableView = (props: BOTableViewProps): JSX.Element => {
                             <Truncate
                               content={connector}
                               className={
-                                "OB-Dashboard__resource__truncated-string"
+                                "BO-Dashboard__resource__truncated-string"
                               }
                             />
                           </Label>

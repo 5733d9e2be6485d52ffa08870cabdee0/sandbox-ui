@@ -1,8 +1,0 @@
-.OB-Dashboard__resource__truncated-string {
-  --pf-c-truncate--MinWidth: 0;
-  --pf-c-truncate__start--MinWidth: 0;
-}
-
-.OB-Dashboard__resource__labels {
-  padding: var(--pf-global--spacer--xs) 0;
-}

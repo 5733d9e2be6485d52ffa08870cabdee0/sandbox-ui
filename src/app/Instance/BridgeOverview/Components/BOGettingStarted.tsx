@@ -78,6 +78,11 @@ export const BOGettingStarted = (): JSX.Element => {
                   Create a processor to filter and transform events before
                   routing events to sinks
                 </p>
+                <List isPlain>
+                  <ListItem>
+                    <a href="#">Learn about YAML templates</a>
+                  </ListItem>
+                </List>
               </Flex>
               <Flex
                 spaceItems={{ default: "spaceItemsSm" }}
@@ -104,14 +109,14 @@ export const BOGettingStarted = (): JSX.Element => {
                   Quickstart guides
                 </Label>
                 <p>
-                  Get started with features using our step-by-step documenattion
+                  Get started with features using our step-by-step documenation
                 </p>
                 <List isPlain>
                   <ListItem>
-                    <a href="#">Getting started quickstart</a>
+                    <a href="#">View getting started quickstart</a>
                   </ListItem>
                   <ListItem>
-                    <a href="#">Quickstart</a>
+                    <a href="#">View introduction documentation</a>
                   </ListItem>
                 </List>
               </Flex>

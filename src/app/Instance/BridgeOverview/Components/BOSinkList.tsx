@@ -12,7 +12,7 @@ import {
   Title,
 } from "@patternfly/react-core";
 import { DemoData } from "../BridgeOverview";
-import { BOTableView } from "./BOTableView";
+import { BODashboardTableView } from "./BODashboardTableView";
 import { BOEmptyState } from "./BOEmptyState";
 
 interface BOSinkListProps {
@@ -35,13 +35,13 @@ export const BOSinkList = (props: BOSinkListProps): JSX.Element => {
               title={"No sink connectors"}
               description={desc}
               buttonLabel={"Create sink connector"}
-              changeState={onAddingSinkConnector}
+              onButtonClick={onAddingSinkConnector}
               variant={"primary"}
             />
-            <Divider component="div" />
+            <Divider />
           </>
         ) : (
-          <BOTableView name={"sink connector"} demoData={sinkList} />
+          <BODashboardTableView name={"sink connectors"} demoData={sinkList} />
         )}
       </CardBody>
       <CardFooter>

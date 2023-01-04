@@ -14,7 +14,7 @@ interface BOEmptyStateProps {
   title: string;
   description: string;
   buttonLabel: string;
-  changeState?: () => void | undefined;
+  onButtonClick: () => void;
   variant: ButtonProps["variant"];
 }
 
@@ -22,7 +22,7 @@ export const BOEmptyState = ({
   title,
   description,
   buttonLabel,
-  changeState,
+  onButtonClick,
   variant,
 }: BOEmptyStateProps): JSX.Element => {
   return (
@@ -33,7 +33,7 @@ export const BOEmptyState = ({
       </Title>
       <EmptyStateBody>{description}</EmptyStateBody>
       <EmptyStatePrimary>
-        <Button variant={variant} onClick={changeState}>
+        <Button variant={variant} onClick={onButtonClick}>
           {buttonLabel}
         </Button>
       </EmptyStatePrimary>

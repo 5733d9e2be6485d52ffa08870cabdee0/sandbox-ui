@@ -14,7 +14,7 @@ import {
   Title,
 } from "@patternfly/react-core";
 import { DemoData } from "../BridgeOverview";
-import { BOTableView } from "./BOTableView";
+import { BODashboardTableView } from "./BODashboardTableView";
 import { BOEmptyState } from "./BOEmptyState";
 
 interface BOSourceListProps {
@@ -39,12 +39,15 @@ export const BOSourceList = (props: BOSourceListProps): JSX.Element => {
               description={desc}
               buttonLabel={"Create source connector"}
               variant={"secondary"}
-              changeState={onAddingSourceConnector}
+              onButtonClick={onAddingSourceConnector}
             />
             <Divider />
           </>
         ) : (
-          <BOTableView name={"Source connectors"} demoData={sourceList} />
+          <BODashboardTableView
+            name={"Source connectors"}
+            demoData={sourceList}
+          />
         )}
       </CardBody>
       <CardFooter>

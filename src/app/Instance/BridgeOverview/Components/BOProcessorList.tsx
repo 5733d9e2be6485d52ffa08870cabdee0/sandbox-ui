@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardBody, CardTitle } from "@patternfly/react-core";
 import { BOEmptyState } from "./BOEmptyState";
 import { DemoData } from "../BridgeOverview";
-import { BOTableView } from "./BOTableView";
+import { BODashboardTableView } from "./BODashboardTableView";
 
 interface BOProcessorListProps {
   processorList: DemoData[];
@@ -24,10 +24,10 @@ export const BOProcessorList = (props: BOProcessorListProps): JSX.Element => {
             description={desc}
             buttonLabel={"Create processor"}
             variant={"secondary"}
-            changeState={onAddingProcessor}
+            onButtonClick={onAddingProcessor}
           />
         ) : (
-          <BOTableView name={"processor"} demoData={processorList} />
+          <BODashboardTableView name={"processors"} demoData={processorList} />
         )}
       </CardBody>
     </Card>

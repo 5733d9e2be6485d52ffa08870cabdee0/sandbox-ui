@@ -7,7 +7,7 @@ import {
   Title,
 } from "@patternfly/react-core";
 import { SearchIcon } from "@patternfly/react-icons";
-import { Trans } from "@rhoas/app-services-ui-components";
+import { Trans, useTranslation } from "@rhoas/app-services-ui-components";
 
 export interface EmptyStateNoResultsProps {
   bodyMsgI18nKey: string;
@@ -20,6 +20,8 @@ export const EmptyStateNoResults = ({
   onClearAllFilters,
   title,
 }: EmptyStateNoResultsProps): JSX.Element => {
+  const { t } = useTranslation("smartEventsTempDictionary");
+
   return (
     <EmptyStatePF variant={EmptyStateVariant.small}>
       <EmptyStateIcon icon={SearchIcon} />
@@ -28,7 +30,7 @@ export const EmptyStateNoResults = ({
       </Title>
       <EmptyStateBody>
         <Trans
-          ns={"smartEventsTempDictionary"}
+          t={t}
           i18nKey={bodyMsgI18nKey}
           components={[
             <a key="on-clear-filters" onClick={onClearAllFilters} />,

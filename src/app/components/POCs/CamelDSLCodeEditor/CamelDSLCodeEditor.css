@@ -1,15 +1,15 @@
 .camel-editor {
-  height: calc(100% - (var(--pf-global--spacer--sm) * 2));
+  width: 100%;
+  height: 100%;
   border: 1px solid var(--pf-global--BorderColor--100);
-  box-sizing: content-box;
+  box-sizing: border-box;
   padding: var(--pf-global--spacer--sm);
   background-color: #ffffff;
-  overflow: hidden;
 }
 
 /*
   Adding an inner container because the padding on the outer one is interfering
-  with how monaco editor calculate le height of its parent element
+  with how monaco editor calculate the height of its parent element
  */
 .camel-editor-inner {
   width: 100%;

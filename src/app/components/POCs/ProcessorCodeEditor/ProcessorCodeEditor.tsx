@@ -2,17 +2,21 @@ import React, { useCallback, VoidFunctionComponent } from "react";
 import CamelDSLCodeEditor from "@app/components/POCs/CamelDSLCodeEditor/CamelDSLCodeEditor";
 import { Button, Flex, FlexItem } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
+import "./ProcessorCodeEditor.css";
 
 export interface ProcessorCodeEditorProps {
   code: string;
   onChange: (value: string) => void;
   onValidate: (isValid: boolean) => void;
+  onGuideClick: () => void;
+  sinkConnectorsNames: string[];
 }
 
 const ProcessorCodeEditor: VoidFunctionComponent<ProcessorCodeEditorProps> = (
   props
 ) => {
-  const { code, onChange, onValidate } = props;
+  const { code, onChange, onValidate, onGuideClick, sinkConnectorsNames } =
+    props;
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const handleChange = useCallback(
@@ -31,19 +35,24 @@ const ProcessorCodeEditor: VoidFunctionComponent<ProcessorCodeEditorProps> = (
 
   return (
     <Flex
+      className={"processor-code-editor"}
       direction={{ default: "column" }}
-      style={{ height: "100%" }}
       flexWrap={{ default: "nowrap" }}
     >
       <FlexItem>
-        <Button variant="link">{t("processor.processorYAMLGuide")}</Button>
+        <Button variant="link" onClick={onGuideClick}>
+          {t("processor.processorYAMLGuide")}
+        </Button>
       </FlexItem>
-      <FlexItem flex={{ default: "flex_2" }} style={{ minHeight: 0 }}>
+      <FlexItem
+        className={"processor-code-editor__editing-container"}
+        flex={{ default: "flex_2" }}
+      >
         <CamelDSLCodeEditor
           code={code}
           onChange={handleChange}
           onValidate={handleValidation}
-          sinkConnectorsNames={[]}
+          sinkConnectorsNames={sinkConnectorsNames}
           height={"100%"}
         />
       </FlexItem>

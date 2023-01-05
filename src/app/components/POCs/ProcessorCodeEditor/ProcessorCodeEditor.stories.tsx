@@ -8,6 +8,8 @@ export default {
   args: {
     onChange: () => {},
     onValidate: () => {},
+    onGuideClick: () => {},
+    sinkConnectorsNames: [],
   },
 } as ComponentMeta<typeof ProcessorCodeEditor>;
 

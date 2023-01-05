@@ -150,6 +150,7 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
           options={{
             scrollbar: { alwaysConsumeMouseWheel: false },
             scrollBeyondLastLine: false,
+            automaticLayout: true,
           }}
           onChange={onChange}
           editorWillMount={onEditorWillMount}

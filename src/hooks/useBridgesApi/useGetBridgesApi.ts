@@ -7,9 +7,16 @@ import {
 import { useCallback, useRef, useState } from "react";
 import axios, { CancelTokenSource } from "axios";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
+import { getUserFacingStatuses, ResourceStatus } from "@utils/statusUtils";
 
 export function useGetBridgesApi(): {
-  getBridges: (pageReq?: number, sizeReq?: number, isPolling?: boolean) => void;
+  getBridges: (
+    nameReq: string | null,
+    pageReq?: number,
+    sizeReq?: number,
+    statusesReq?: ManagedResourceStatus[],
+    isPolling?: boolean
+  ) => void;
   bridgeListResponse?: BridgeListResponse;
   error: unknown;
 } {
@@ -20,7 +27,13 @@ export function useGetBridgesApi(): {
   const { getToken, apiBaseUrl } = useSmartEvents();
 
   const getBridges = useCallback(
-    (pageReq?: number, sizeReq?: number, isPolling = false): void => {
+    (
+      nameReq: string | null,
+      pageReq?: number,
+      sizeReq?: number,
+      statusesReq?: ManagedResourceStatus[],
+      isPolling = false
+    ): void => {
       if (!isPolling) {
         setBridgeListResponse(undefined);
       }
@@ -42,10 +55,10 @@ export function useGetBridgesApi(): {
 
       bridgeApi
         .getBridges(
-          undefined,
+          nameReq ?? undefined,
           pageNumber,
           sizeReq,
-          new Set<ManagedResourceStatus>(),
+          getUserFacingStatuses(statusesReq as ResourceStatus[]),
           {
             cancelToken: source.token,
           }

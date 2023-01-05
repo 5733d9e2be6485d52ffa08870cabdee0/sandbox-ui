@@ -5,6 +5,10 @@ import CreateInstance, {
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 import { customRender, waitForI18n } from "@utils/testUtils";
 import { CloudProviderWithRegions } from "@app/Instance/CreateInstance/types";
+import {
+  cloudProvider,
+  cloudProviderUnavailable,
+} from "@app/Instance/CreateInstance/storiesHelpers";
 
 const setupCreateInstance = (
   props: Partial<CreateInstanceProps>
@@ -259,26 +263,4 @@ const expectValidationErrorAlert = (
   } else {
     expect(comp.queryByText(validationMessage)).not.toBeInTheDocument();
   }
-};
-
-const cloudRegion = {
-  kind: "CloudRegion",
-  name: "us-east-1",
-  display_name: "US East, N. Virginia",
-  enabled: true,
-};
-
-const cloudProvider: CloudProviderWithRegions = {
-  kind: "CloudProvider",
-  id: "aws",
-  name: "aws",
-  href: "/api/v1/cloud_providers/aws",
-  display_name: "Amazon Web Services",
-  enabled: true,
-  regions: [cloudRegion],
-};
-
-const cloudProviderUnavailable: CloudProviderWithRegions = {
-  ...cloudProvider,
-  regions: [{ ...cloudRegion, enabled: false }],
 };

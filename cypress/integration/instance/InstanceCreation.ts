@@ -70,14 +70,8 @@ describe("the 'Create a SE instance' Modal", () => {
           "0 of 3 steps completed"
         );
         progressStepsStatuses(SEInstanceStatus.ACCEPTED);
-
-        //The first steps takes about 65 secs.
-        cy.ouiaId("steps-count", "QE/StackItem", { timeout: 90000 }).should(
-          "have.text",
-          "1 of 3 steps completed"
-        );
-        progressStepsStatuses(SEInstanceStatus.PREPARING);
       });
+    //Assertion of the other steps is not reliable enough. The UI updates the page every 10 seconds and it hides some states.
     cy.ouiaId("se-status", "QE/Popover", { timeout: 60000 }).should(
       "not.exist"
     );

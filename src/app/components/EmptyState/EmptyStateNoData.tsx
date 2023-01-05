@@ -8,9 +8,9 @@ import {
   Title,
 } from "@patternfly/react-core";
 import { PlusCircleIcon } from "@patternfly/react-icons";
-import { Trans } from "@rhoas/app-services-ui-components";
+import { Trans, useTranslation } from "@rhoas/app-services-ui-components";
 
-interface EmptyStateProps {
+export interface EmptyStateNoDataProps {
   createButton: {
     title: string;
     onCreate: () => void;
@@ -23,11 +23,13 @@ interface EmptyStateProps {
   title: string;
 }
 
-export const EmptyState = ({
+export const EmptyStateNoData = ({
   createButton,
   quickStartGuide,
   title,
-}: EmptyStateProps): JSX.Element => {
+}: EmptyStateNoDataProps): JSX.Element => {
+  const { t } = useTranslation("smartEventsTempDictionary");
+
   return (
     <EmptyStatePF variant={EmptyStateVariant.small}>
       <EmptyStateIcon icon={PlusCircleIcon} />
@@ -37,7 +39,7 @@ export const EmptyState = ({
       {quickStartGuide && (
         <EmptyStateBody>
           <Trans
-            ns={"smartEventsTempDictionary"}
+            t={t}
             i18nKey={quickStartGuide.i18nKey}
             components={[
               <a

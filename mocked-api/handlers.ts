@@ -15,6 +15,7 @@ import { schemaCatalogData, schemasData } from "./schemasData";
 import omit from "lodash.omit";
 import cloneDeep from "lodash.clonedeep";
 import { cloudProvidersData, cloudRegions } from "./cloudProvidersData";
+import { QueryOptions, QuerySelector } from "@mswjs/data/lib/query/queryTypes";
 
 // api url
 const apiUrl = `${process.env.BASE_URL ?? ""}${
@@ -103,6 +104,25 @@ export const handlers = [
   rest.get(`${apiUrl}/bridges`, (req, res, ctx) => {
     const page = parseInt(req.url.searchParams.get("page") ?? "0");
     const size = parseInt(req.url.searchParams.get("size") ?? "10");
+    const name = req.url.searchParams.get("name");
+    const status = req.url.searchParams.getAll("status");
+
+    const bridgeQuery = {
+      where: {},
+    } as QueryOptions & QuerySelector<Partial<BridgeResponse>>;
+
+    if (bridgeQuery.where && name) {
+      bridgeQuery.where.name = {
+        contains: name,
+        gte: name,
+      };
+    }
+
+    if (bridgeQuery.where && status.length) {
+      bridgeQuery.where.status = {
+        in: status,
+      };
+    }
 
     const items = db.bridge
       .findMany({
@@ -111,8 +131,11 @@ export const handlers = [
         orderBy: {
           submitted_at: "desc",
         },
+        ...bridgeQuery,
       })
       .map((item) => prepareBridge(item as unknown as Record<string, unknown>));
+
+    const count = db.bridge.count(bridgeQuery);
 
     return res(
       ctx.status(200),
@@ -122,7 +145,7 @@ export const handlers = [
         items,
         page,
         size: items.length,
-        total: db.bridge.count(),
+        total: count,
       })
     );
   }),
@@ -406,6 +429,8 @@ export const handlers = [
 
     const page = parseInt(req.url.searchParams.get("page") ?? "0");
     const size = parseInt(req.url.searchParams.get("size") ?? "10");
+    const name = req.url.searchParams.get("name");
+    const status = req.url.searchParams.getAll("status");
 
     const bridge = db.bridge.findFirst({
       where: {
@@ -441,7 +466,20 @@ export const handlers = [
           },
         },
       },
-    };
+    } as QueryOptions & QuerySelector<Partial<ProcessorResponse>>;
+
+    if (query.where && name) {
+      query.where.name = {
+        contains: name,
+        gte: name,
+      };
+    }
+
+    if (query.where && status.length) {
+      query.where.status = {
+        in: status,
+      };
+    }
 
     const count = db.processor.count(query);
 

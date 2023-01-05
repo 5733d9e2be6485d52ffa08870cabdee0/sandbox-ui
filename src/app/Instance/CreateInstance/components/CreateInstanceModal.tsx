@@ -9,13 +9,22 @@ interface CreateInstanceModalProps {
   isSaving: boolean;
   isDisabled: boolean;
   isLoading: boolean;
+  appendTo?: () => HTMLElement;
 }
 
 const CreateInstanceModal: VoidFunctionComponent<CreateInstanceModalProps> = (
   props
 ) => {
   const { t } = useTranslation(["smartEventsTempDictionary"]);
-  const { children, formId, onClose, isSaving, isDisabled, isLoading } = props;
+  const {
+    children,
+    formId,
+    onClose,
+    isSaving,
+    isDisabled,
+    isLoading,
+    appendTo,
+  } = props;
 
   return (
     <Modal
@@ -24,6 +33,7 @@ const CreateInstanceModal: VoidFunctionComponent<CreateInstanceModalProps> = (
       ouiaId="create-instance"
       width={640}
       onClose={onClose}
+      appendTo={appendTo}
       actions={[
         <Button
           key="submit"

@@ -7,12 +7,15 @@ import {
 import { useCallback, useRef, useState } from "react";
 import axios, { CancelTokenSource } from "axios";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
+import { getUserFacingStatuses, ResourceStatus } from "@utils/statusUtils";
 
 export function useGetProcessorsApi(): {
   getProcessors: (
     bridgeId: string,
+    nameReq: string | null,
     pageReq?: number,
     sizeReq?: number,
+    statusesReq?: ManagedResourceStatus[],
     isPolling?: boolean
   ) => void;
   processorListResponse?: ProcessorListResponse;
@@ -27,8 +30,10 @@ export function useGetProcessorsApi(): {
   const getProcessors = useCallback(
     (
       bridgeId: string,
+      nameReq: string | null,
       pageReq?: number,
       sizeReq?: number,
+      statusesReq?: ManagedResourceStatus[],
       isPolling?: boolean
     ): void => {
       if (!isPolling) {
@@ -53,10 +58,10 @@ export function useGetProcessorsApi(): {
       processorsApi
         .getProcessors(
           bridgeId,
-          undefined,
+          nameReq ?? undefined,
           pageNumber,
           sizeReq,
-          new Set<ManagedResourceStatus>(),
+          getUserFacingStatuses(statusesReq as ResourceStatus[]),
           {
             cancelToken: source.token,
           }

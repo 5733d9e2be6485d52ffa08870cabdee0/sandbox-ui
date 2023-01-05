@@ -15,7 +15,7 @@ import { DemoData } from "../BridgeOverview";
 import { BODashboardTableView } from "./BODashboardTableView";
 import { BOEmptyState } from "./BOEmptyState";
 
-interface BOSinkListProps {
+export interface BOSinkListProps {
   sinkList: DemoData[];
   onAddingSinkConnector: () => void;
 }

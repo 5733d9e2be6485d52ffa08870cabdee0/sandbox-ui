@@ -10,7 +10,7 @@ import {
 } from "@patternfly/react-core";
 import { PlusCircleIcon } from "@patternfly/react-icons";
 
-interface BOEmptyStateProps {
+export interface BOEmptyStateProps {
   title: string;
   description: string;
   buttonLabel: string;

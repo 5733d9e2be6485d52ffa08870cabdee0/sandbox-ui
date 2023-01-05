@@ -17,7 +17,7 @@ import { DemoData } from "../BridgeOverview";
 import { BODashboardTableView } from "./BODashboardTableView";
 import { BOEmptyState } from "./BOEmptyState";
 
-interface BOSourceListProps {
+export interface BOSourceListProps {
   sourceList: DemoData[];
   onAddingSourceConnector: () => void;
 }

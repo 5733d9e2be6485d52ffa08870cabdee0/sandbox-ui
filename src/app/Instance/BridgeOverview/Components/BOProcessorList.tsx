@@ -4,7 +4,7 @@ import { BOEmptyState } from "./BOEmptyState";
 import { DemoData } from "../BridgeOverview";
 import { BODashboardTableView } from "./BODashboardTableView";
 
-interface BOProcessorListProps {
+export interface BOProcessorListProps {
   processorList: DemoData[];
   onAddingProcessor: () => void;
 }

@@ -13,6 +13,8 @@ export interface CamelDSLCodeEditorProps {
   code: string;
   /** Callback for changes in the code */
   onChange: (value: string) => void;
+  /** Callback for changes in the validation status */
+  onValidate: (errorsCount: number, warningsCount: number) => void;
   /** Width of the code editor */
   width?: string | number;
   /** Height of the code editor */
@@ -42,12 +44,20 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
   const {
     code,
     onChange,
+    onValidate,
     width = "100%",
-    height = "500",
+    height = "100%",
     sinkConnectorsNames,
   } = props;
 
   const completionProvider = useRef<monacoEditor.IDisposable>();
+
+  const updateErrorStatus = useCallback(
+    (errorCount: number, warningsCount: number): void => {
+      onValidate(errorCount, warningsCount);
+    },
+    [onValidate]
+  );
 
   const createToProposals = useCallback(
     (range: Range): Suggestion[] => {
@@ -110,20 +120,43 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
     []
   );
 
+  useEffect(() => {
+    const onMarkersChange = monacoEditor.editor.onDidChangeMarkers(
+      ([resource]) => {
+        const markers: monacoEditor.editor.IMarker[] =
+          monacoEditor.editor.getModelMarkers({ resource });
+        const errors = markers.filter(
+          (marker) => marker.severity === monacoEditor.MarkerSeverity.Error
+        );
+        const warnings = markers.filter(
+          (marker) => marker.severity === monacoEditor.MarkerSeverity.Warning
+        );
+        updateErrorStatus(errors.length, warnings.length);
+      }
+    );
+    return () => {
+      onMarkersChange.dispose();
+    };
+  }, [updateErrorStatus]);
+
   return (
     <div className="camel-editor">
-      <MonacoEditor
-        width={width}
-        height={height}
-        language="yaml"
-        value={code}
-        options={{
-          scrollbar: { alwaysConsumeMouseWheel: false },
-        }}
-        onChange={onChange}
-        editorWillMount={onEditorWillMount}
-        editorDidMount={onEditorMount}
-      />
+      <div className="camel-editor-inner">
+        <MonacoEditor
+          width={width}
+          height={height}
+          language="yaml"
+          value={code}
+          options={{
+            scrollbar: { alwaysConsumeMouseWheel: false },
+            scrollBeyondLastLine: false,
+            automaticLayout: true,
+          }}
+          onChange={onChange}
+          editorWillMount={onEditorWillMount}
+          editorDidMount={onEditorMount}
+        />
+      </div>
     </div>
   );
 };

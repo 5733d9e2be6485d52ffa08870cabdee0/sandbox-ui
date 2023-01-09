@@ -388,7 +388,8 @@
           },
           "uri": {
             "type": "string",
-            "enum": ["rhose:bridge"]
+            "enum": ["rhose:bridge"],
+            "description": "All the events are processed from the current bridge"
           }
         },
         "required": ["steps", "uri"]

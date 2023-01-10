@@ -95,7 +95,6 @@ const ProcessorEditHeader: FunctionComponent<ProcessorEditHeaderProps> = (
                       helperTextInvalidIcon={<ExclamationCircleIcon />}
                     >
                       <TextInput
-                        className="pf-c-form-control"
                         id={"processor-name"}
                         value={nameValue}
                         type="text"
@@ -111,7 +110,7 @@ const ProcessorEditHeader: FunctionComponent<ProcessorEditHeaderProps> = (
                   </Form>
                 </div>
                 <div className="pf-c-inline-edit__group pf-m-action-group pf-m-icon-group">
-                  <div className="pf-c-inline-edit__action pf-m-valid">
+                  <div className="pf-c-inline-edit__action">
                     <Button
                       variant={"plain"}
                       onClick={onDoneEditing}

@@ -1,0 +1,7 @@
+.processor-code-editor {
+  height: 100%;
+}
+
+.processor-code-editor__editing-container {
+  min-height: 0;
+}

@@ -13,13 +13,14 @@ import {
   TextInput,
   ValidatedOptions,
 } from "@patternfly/react-core";
-import { useTranslation } from "@rhoas/app-services-ui-components";
 import {
   CheckIcon,
   ExclamationCircleIcon,
   PencilAltIcon,
   TimesIcon,
 } from "@patternfly/react-icons";
+import { useTranslation } from "@rhoas/app-services-ui-components";
+import "./ProcessorEditHeader.css";
 
 export interface ProcessorEditHeaderProps {
   name?: string;
@@ -79,10 +80,7 @@ const ProcessorEditHeader: FunctionComponent<ProcessorEditHeaderProps> = (
           {isEditing ? (
             <div className="pf-c-inline-edit pf-m-inline-editable">
               <div className="pf-c-inline-edit__group">
-                <div
-                  className="pf-c-inline-edit__input"
-                  style={{ maxWidth: 400 }}
-                >
+                <div className="pf-c-inline-edit__input processor-name-input">
                   <Form id={"processor-name-form"} onSubmit={onFormSubmit}>
                     <FormGroup
                       fieldId="processor-name"

@@ -23,22 +23,18 @@ import { useTranslation } from "@rhoas/app-services-ui-components";
 import "./ProcessorEditHeader.css";
 
 export interface ProcessorEditHeaderProps {
-  name?: string;
+  name: string;
   onNameChange: (name: string) => void;
   showCreateAction: boolean;
   onCreate: () => void;
+  isLoading?: boolean;
 }
 
 const ProcessorEditHeader: FunctionComponent<ProcessorEditHeaderProps> = (
   props
 ) => {
   const { t } = useTranslation("smartEventsTempDictionary");
-  const {
-    name = t("processor.processorName") ?? "Processor name",
-    onNameChange,
-    onCreate,
-    showCreateAction,
-  } = props;
+  const { name, onNameChange, onCreate, showCreateAction, isLoading } = props;
   const [isEditing, setIsEditing] = useState(false);
   const [nameValue, setNameValue] = useState(name);
 
@@ -73,6 +69,12 @@ const ProcessorEditHeader: FunctionComponent<ProcessorEditHeaderProps> = (
     setNameValue(name);
   }, [name]);
 
+  useEffect(() => {
+    if (isLoading && isEditing) {
+      setIsEditing(false);
+    }
+  }, [isLoading, isEditing]);
+
   return (
     <PageSection variant={PageSectionVariants.light} hasShadowBottom={true}>
       <Split hasGutter={true}>
@@ -96,6 +98,7 @@ const ProcessorEditHeader: FunctionComponent<ProcessorEditHeaderProps> = (
                     >
                       <TextInput
                         id={"processor-name"}
+                        aria-label={t("processor.processorName")}
                         value={nameValue}
                         type="text"
                         onChange={onChangeInputValue}
@@ -140,6 +143,7 @@ const ProcessorEditHeader: FunctionComponent<ProcessorEditHeaderProps> = (
                   variant={"plain"}
                   aria-label={t("processor.editName")}
                   onClick={onStartEditing}
+                  isDisabled={isLoading}
                 >
                   <PencilAltIcon />
                 </Button>
@@ -149,7 +153,13 @@ const ProcessorEditHeader: FunctionComponent<ProcessorEditHeaderProps> = (
         </SplitItem>
         {showCreateAction && (
           <SplitItem>
-            <Button onClick={onCreate}>{t("processor.deployProcessor")}</Button>
+            <Button
+              onClick={onCreate}
+              isLoading={isLoading}
+              isDisabled={isLoading}
+            >
+              {t("processor.deployProcessor")}
+            </Button>
           </SplitItem>
         )}
       </Split>

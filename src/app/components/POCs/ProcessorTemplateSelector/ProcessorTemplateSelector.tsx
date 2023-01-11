@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Card,
@@ -15,34 +15,38 @@ import {
   Title,
 } from "@patternfly/react-core";
 import { useTranslation } from "@rhoas/app-services-ui-components";
-import "./ProcessorTemplateSelector.css";
 import ProcessorCodeEditor from "@app/components/POCs/ProcessorCodeEditor/ProcessorCodeEditor";
-
-interface ProcessorTemplate {
-  icon?: React.ComponentType;
-  title: string;
-  description: string;
-  code: string;
-}
+import { ProcessorTemplate } from "@app/components/POCs/ProcessorEdit/ProcessorTemplates";
+import "./ProcessorTemplateSelector.css";
 
 export interface ProcessorTemplateSelectorProps {
-  onCancel: () => void;
-  onNext: (templateCode: string) => void;
-  onSkip: () => void;
   templates: ProcessorTemplate[];
+  selectedTemplate: ProcessorTemplate["id"];
+  onSelect: (templateId: ProcessorTemplate["id"]) => void;
+  onNext: () => void;
+  onCancel: () => void;
+  onSkip: () => void;
 }
 
 export const ProcessorTemplateSelector = ({
-  onCancel,
-  onNext,
-  onSkip,
   templates,
+  selectedTemplate,
+  onSelect,
+  onNext,
+  onCancel,
+  onSkip,
 }: ProcessorTemplateSelectorProps): JSX.Element => {
   const { t } = useTranslation("smartEventsTempDictionary");
+  const [selection, setSelection] = useState(selectedTemplate);
 
-  const [selectedTemplate, setSelectedTemplate] = useState<ProcessorTemplate>(
-    templates[0]
+  const codePreview = useMemo(
+    () => templates.find((template) => template.id === selection)?.code ?? "",
+    [templates, selection]
   );
+
+  useEffect(() => {
+    setSelection(selectedTemplate);
+  }, [selectedTemplate]);
 
   return (
     <Grid className="processor-template-selector" hasGutter>
@@ -61,22 +65,17 @@ export const ProcessorTemplateSelector = ({
             </TextContent>
           </FlexItem>
           {templates.map((template) => (
-            <FlexItem key={template.title}>
+            <FlexItem key={template.id}>
               <Card
-                id={template.title}
+                id={template.id}
+                data-testid={template.id}
                 onClick={(event): void => {
-                  const clickedTemplateTitle = event.currentTarget.id;
-                  if (clickedTemplateTitle !== selectedTemplate.title) {
-                    const clickedTemplate =
-                      templates.find(
-                        (template) => template.title === clickedTemplateTitle
-                      ) ?? selectedTemplate;
-                    setSelectedTemplate(clickedTemplate);
-                  }
+                  setSelection(event.currentTarget.id);
+                  onSelect(event.currentTarget.id);
                 }}
                 isCompact
                 isSelectableRaised
-                isSelected={selectedTemplate.title === template.title}
+                isSelected={selection === template.id}
               >
                 <CardBody>
                   <EmptyState>
@@ -92,26 +91,27 @@ export const ProcessorTemplateSelector = ({
           ))}
         </Flex>
       </GridItem>
-      <GridItem lg={9} sm={8}>
+      <GridItem
+        className="processor-template-selector__right-section"
+        lg={9}
+        sm={8}
+      >
         <Flex
           direction={{ default: "column" }}
           className="processor-template-selector__preview-section"
         >
           <FlexItem flex={{ default: "flex_1" }}>
             <ProcessorCodeEditor
-              code={selectedTemplate.code}
-              onChange={(): void => {}}
-              onValidate={(): void => {}}
+              code={codePreview}
               onGuideClick={(): void => {}}
               readOnly={true}
               sinkConnectorsNames={[]}
+              onValidate={(): void => {}}
+              onChange={(): void => {}}
             />
           </FlexItem>
           <FlexItem>
-            <Button
-              variant="primary"
-              onClick={(): void => onNext(selectedTemplate.code)}
-            >
+            <Button variant="primary" onClick={onNext}>
               {t("common.next")}
             </Button>{" "}
             <Button variant="secondary" onClick={onSkip}>

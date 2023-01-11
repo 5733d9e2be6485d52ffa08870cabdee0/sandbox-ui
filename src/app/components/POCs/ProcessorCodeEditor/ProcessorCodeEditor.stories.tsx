@@ -9,7 +9,7 @@ export default {
     onChange: () => {},
     onValidate: () => {},
     onGuideClick: () => {},
-    sinkConnectorsNames: [],
+    sinkConnectorsNames: ["one", "two"],
   },
 } as ComponentMeta<typeof ProcessorCodeEditor>;
 
@@ -26,5 +26,6 @@ CodeEditor.args = {
     steps:
       - set-body:
           constant: "Hello there"
-      - to: "log:info"`,
+      - to:
+          uri: "log:info"`,
 };

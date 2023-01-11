@@ -8,3 +8,13 @@
   height: 100%;
   overflow-y: auto;
 }
+
+.processor-template-selector__right-section {
+  background-color: var(--pf-global--BackgroundColor--light-300);
+  border-left: 1px solid var(--pf-global--BorderColor--100);
+}
+
+.processor-template-selector__left-section,
+.processor-template-selector__right-section {
+  padding: var(--pf-global--spacer--md);
+}

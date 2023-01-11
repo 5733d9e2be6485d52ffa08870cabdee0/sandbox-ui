@@ -19,6 +19,8 @@ export interface CamelDSLCodeEditorProps {
   width?: string | number;
   /** Height of the code editor */
   height?: string | number;
+  /** Editor is Read-only */
+  readOnly: boolean;
   /** Sink names to use as suggested values for the 'to' property */
   sinkConnectorsNames: string[];
 }
@@ -47,6 +49,7 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
     onValidate,
     width = "100%",
     height = "100%",
+    readOnly,
     sinkConnectorsNames,
   } = props;
 
@@ -151,6 +154,8 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
             scrollbar: { alwaysConsumeMouseWheel: false },
             scrollBeyondLastLine: false,
             automaticLayout: true,
+            domReadOnly: readOnly,
+            readOnly,
           }}
           onChange={onChange}
           editorWillMount={onEditorWillMount}

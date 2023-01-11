@@ -1,0 +1,13 @@
+.processor-template-selector,
+.processor-template-selector__preview-section {
+  height: 100%;
+}
+
+.processor-template-selector__template-selection {
+  max-width: 22em;
+}
+
+.processor-template-selector__left-section {
+  max-height: 100vh;
+  overflow-y: auto;
+}

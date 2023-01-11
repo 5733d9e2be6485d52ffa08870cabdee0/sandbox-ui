@@ -24,6 +24,7 @@
     "key": "Key",
     "loading": "Loading",
     "name": "Name",
+    "next": "Next",
     "no": "No",
     "notAvailable": "Not available",
     "owner": "Owner",
@@ -36,6 +37,7 @@
     "required": "Required",
     "resourceWillBeDeletedHTML": "The <strong>{{name}}</strong> {{type}} will be deleted.",
     "save": "Save",
+    "skipAndUseBlankEditor": "Skip, and use a blank editor",
     "status": "Status",
     "statuses": {
       "ready": "Ready",
@@ -135,6 +137,8 @@
     "processorName": "Processor name",
     "processorsListTable": "Processors list table",
     "processorYAMLGuide": "Processor YAML Guide",
-    "processorWillBeAvailableShortly": "Your Processor will be ready for use shortly after creation."
+    "processorWillBeAvailableShortly": "Your Processor will be ready for use shortly after creation.",
+    "templateSelection": "Select processor template",
+    "templateSelectionDescription": "Select a template to use as a basis for your processor YAML."
   }
 }

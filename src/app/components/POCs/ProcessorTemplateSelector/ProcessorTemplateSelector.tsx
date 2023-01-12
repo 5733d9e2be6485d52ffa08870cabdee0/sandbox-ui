@@ -46,7 +46,11 @@ export const ProcessorTemplateSelector = ({
 
   return (
     <Grid className="processor-template-selector" hasGutter>
-      <GridItem span={3}>
+      <GridItem
+        className="processor-template-selector__left-section"
+        span={3}
+        sm={4}
+      >
         <Flex direction={{ default: "column" }}>
           <FlexItem>
             <TextContent>
@@ -88,7 +92,7 @@ export const ProcessorTemplateSelector = ({
           ))}
         </Flex>
       </GridItem>
-      <GridItem span={9}>
+      <GridItem span={9} sm={8}>
         <Flex
           direction={{ default: "column" }}
           className="processor-template-selector__preview-section"

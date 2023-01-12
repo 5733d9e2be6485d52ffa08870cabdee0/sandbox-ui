@@ -2,3 +2,8 @@
 .processor-template-selector__preview-section {
   height: 100%;
 }
+
+.processor-template-selector__left-section {
+  height: 100%;
+  overflow-y: auto;
+}

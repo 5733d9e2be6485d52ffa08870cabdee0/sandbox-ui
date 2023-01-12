@@ -43,7 +43,7 @@ import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
 import { ErrorHandlingTabContent } from "@app/Instance/InstancePage/ErrorHandlingTabContent";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
-import { BridgeOverview } from "../BridgeOverview/BridgeOverview";
+import { ProcessorsTabContent } from "./ProcessorsTabContent";
 
 const INSTANCE_PAGE_TAB_KEYS = {
   "processors": 0,
@@ -292,7 +292,11 @@ const InstancePage = (): JSX.Element => {
             activeKey={activeTabKey}
           >
             {activeTabKey === INSTANCE_PAGE_TAB_KEYS.processors && (
-              <BridgeOverview />
+              <ProcessorsTabContent
+                instanceId={instanceId}
+                pageTitle={getPageTitle(bridge)}
+                bridgeStatus={bridge?.status}
+              />
             )}
           </TabContent>
           <TabContent

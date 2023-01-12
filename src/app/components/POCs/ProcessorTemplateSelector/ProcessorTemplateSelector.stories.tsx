@@ -22,12 +22,7 @@ TemplateSelection.args = {
       title: "Basic Processor",
       description:
         "This basic processor template has a filter and a transformation template.",
-      code: `- kind: Processor
-metadata:
-  name: processor-name
-  bridge_id: a8c1cb57-0ab3-4ccb-8c55-ef8a8b1646
-flows:
-- from:
+      code: `- from:
     uri: "rhose:bridge"
     steps:
     - filter:
@@ -45,12 +40,7 @@ flows:
       title: "Routing Processor",
       description:
         "This routing processor template has context based routing. It will send events to different sinks based on some conditions.",
-      code: `- kind: Processor
-metadata:
-  name: processor-name
-  bridge_id: a8c1cb57-0ab3-4ccb-8c55-ef8a8b1646
-flows:
-- from:
+      code: `- from:
     uri: rhose:bridge
     steps:
     - choice:

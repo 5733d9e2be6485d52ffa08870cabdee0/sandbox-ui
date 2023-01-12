@@ -154,7 +154,6 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
             scrollbar: { alwaysConsumeMouseWheel: false },
             scrollBeyondLastLine: false,
             automaticLayout: true,
-            domReadOnly: readOnly,
             readOnly,
           }}
           onChange={onChange}

@@ -8,8 +8,8 @@ import {
   EmptyStateIcon,
   Flex,
   FlexItem,
-  Split,
-  SplitItem,
+  Grid,
+  GridItem,
   Text,
   TextContent,
   Title,
@@ -45,12 +45,9 @@ export const ProcessorTemplateSelector = ({
   );
 
   return (
-    <Split className="processor-template-selector" hasGutter>
-      <SplitItem className="processor-template-selector__left-section">
-        <Flex
-          direction={{ default: "column" }}
-          className="processor-template-selector__template-selection"
-        >
+    <Grid className="processor-template-selector" hasGutter>
+      <GridItem span={3}>
+        <Flex direction={{ default: "column" }}>
           <FlexItem>
             <TextContent>
               <Text component="h6">{t("processor.templateSelection")}</Text>
@@ -90,8 +87,8 @@ export const ProcessorTemplateSelector = ({
             </FlexItem>
           ))}
         </Flex>
-      </SplitItem>
-      <SplitItem isFilled>
+      </GridItem>
+      <GridItem span={9}>
         <Flex
           direction={{ default: "column" }}
           className="processor-template-selector__preview-section"
@@ -121,7 +118,7 @@ export const ProcessorTemplateSelector = ({
             </Button>
           </FlexItem>
         </Flex>
-      </SplitItem>
-    </Split>
+      </GridItem>
+    </Grid>
   );
 };

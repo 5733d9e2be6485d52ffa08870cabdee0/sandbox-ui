@@ -109,10 +109,13 @@
     "quotaExceededErrorDescription": "To deploy a new instance, delete an existing one first."
   },
   "processor": {
+    "cancelEdits": "Cancel edits",
     "createProcessor": "Create processor",
     "creatingProcessor": "Creating processor",
     "delete": "Delete processor",
     "deleteProcessor": "Delete Processor?",
+    "deployProcessor": "Deploy Processor",
+    "editName": "Edit name",
     "errors": {
       "cantCreateProcessor": "Error while creating a Processor",
       "cantCreateProcessorBecauseInstanceNotAvailable": "The Smart Events instance you are associating it with is in the deletion phase or does not exist anymore.",
@@ -134,10 +137,12 @@
     "loadingProcessor": "Loading processor",
     "noProcessors": "No processors for this Smart Event instance",
     "notFound": "Processor not found",
+    "pleaseEnterAProcessorName": "Please enter a processor name",
     "processorName": "Processor name",
     "processorsListTable": "Processors list table",
-    "processorYAMLGuide": "Processor YAML Guide",
     "processorWillBeAvailableShortly": "Your Processor will be ready for use shortly after creation.",
+    "processorYAMLGuide": "Processor YAML Guide",
+    "setName": "Set name",
     "templateSelection": "Select processor template",
     "templateSelectionDescription": "Select a template to use as a basis for your processor YAML."
   }

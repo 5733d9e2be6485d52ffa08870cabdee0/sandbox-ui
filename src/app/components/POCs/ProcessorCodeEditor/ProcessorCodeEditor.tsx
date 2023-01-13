@@ -9,14 +9,21 @@ export interface ProcessorCodeEditorProps {
   onChange: (value: string) => void;
   onValidate: (isValid: boolean) => void;
   onGuideClick: () => void;
+  readOnly?: boolean;
   sinkConnectorsNames: string[];
 }
 
 const ProcessorCodeEditor: VoidFunctionComponent<ProcessorCodeEditorProps> = (
   props
 ) => {
-  const { code, onChange, onValidate, onGuideClick, sinkConnectorsNames } =
-    props;
+  const {
+    code,
+    onChange,
+    onValidate,
+    onGuideClick,
+    readOnly = false,
+    sinkConnectorsNames,
+  } = props;
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const handleChange = useCallback(
@@ -52,6 +59,7 @@ const ProcessorCodeEditor: VoidFunctionComponent<ProcessorCodeEditorProps> = (
           code={code}
           onChange={handleChange}
           onValidate={handleValidation}
+          readOnly={readOnly}
           sinkConnectorsNames={sinkConnectorsNames}
           height={"100%"}
         />

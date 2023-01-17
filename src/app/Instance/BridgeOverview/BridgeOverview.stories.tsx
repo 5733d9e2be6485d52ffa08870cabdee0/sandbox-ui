@@ -3,7 +3,7 @@ import React from "react";
 import { BridgeOverview } from "./BridgeOverview";
 
 export default {
-  title: "Bridge/BridgeOverview",
+  title: "POCs/BridgeOverview",
   component: BridgeOverview,
 } as ComponentMeta<typeof BridgeOverview>;
 

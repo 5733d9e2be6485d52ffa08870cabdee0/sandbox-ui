@@ -52,10 +52,10 @@ export const BODashboardTableView = (
       </Split>
       <Divider className={"BO-Dashboard__resource__divider"} />
       <TableComposable variant="compact">
-        {demoData &&
-          demoData.map((processor, rowIndex) => (
-            <Tbody key={rowIndex}>
-              <Tr>
+        <Tbody className={"BO-Dashboard__table-body"}>
+          {demoData &&
+            demoData.map((processor, rowIndex) => (
+              <Tr key={rowIndex}>
                 <Td>
                   <Stack>
                     <StackItem>
@@ -109,8 +109,8 @@ export const BODashboardTableView = (
                   {rowActions ? <ActionsColumn items={rowActions} /> : null}
                 </Td>
               </Tr>
-            </Tbody>
-          ))}
+            ))}
+        </Tbody>
       </TableComposable>
     </>
   );

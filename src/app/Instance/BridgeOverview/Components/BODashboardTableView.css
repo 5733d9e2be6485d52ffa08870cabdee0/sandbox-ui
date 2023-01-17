@@ -10,3 +10,7 @@
 .BO-Dashboard__resource__divider {
   padding: var(--pf-global--spacer--md) 0;
 }
+
+.BO-Dashboard__table-body {
+  --pf-c-table--tbody--responsive--border-width--base: 0;
+}

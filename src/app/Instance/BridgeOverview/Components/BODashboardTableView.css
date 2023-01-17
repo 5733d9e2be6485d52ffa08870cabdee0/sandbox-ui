@@ -1,0 +1,16 @@
+.BO-Dashboard__resource__truncated-string {
+  --pf-c-truncate--MinWidth: 0;
+  --pf-c-truncate__start--MinWidth: 0;
+}
+
+.BO-Dashboard__resource__labels {
+  padding: var(--pf-global--spacer--xs) 0;
+}
+
+.BO-Dashboard__resource__divider {
+  padding: var(--pf-global--spacer--md) 0;
+}
+
+.BO-Dashboard__table-body {
+  --pf-c-table--tbody--responsive--border-width--base: 0;
+}

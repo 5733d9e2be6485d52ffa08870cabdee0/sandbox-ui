@@ -41,9 +41,9 @@ import {
 import { APIErrorCodes } from "@openapi/generated/errors";
 import axios from "axios";
 import { ErrorWithDetail } from "../../../types/Error";
-import { ProcessorsTabContent } from "@app/Instance/InstancePage/ProcessorsTabContent";
 import { ErrorHandlingTabContent } from "@app/Instance/InstancePage/ErrorHandlingTabContent";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
+import { ProcessorsTabContent } from "./ProcessorsTabContent";
 
 const INSTANCE_PAGE_TAB_KEYS = {
   "processors": 0,

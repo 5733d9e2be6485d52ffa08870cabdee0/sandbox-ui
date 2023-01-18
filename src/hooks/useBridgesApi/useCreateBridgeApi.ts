@@ -28,18 +28,18 @@ export function useCreateBridgeApi(): {
         if (isServiceApiError(error)) {
           const errorCode = getErrorCode(error);
           switch (errorCode) {
-            case APIErrorCodes.ERROR_1:
+            case APIErrorCodes.ERROR_3:
               onError("name-taken");
               break;
-            case APIErrorCodes.ERROR_33:
-            case APIErrorCodes.ERROR_34:
+            case APIErrorCodes.ERROR_13:
+            case APIErrorCodes.ERROR_14:
               // When the cloud provider or region used to create a bridge
               // become unavailable, we can disable the creation form because
               // we only support 1 provider and 1 region.
               // This will of course change when we'll expand the cloud provider support.
               onError("region-unavailable");
               break;
-            case APIErrorCodes.ERROR_40:
+            case APIErrorCodes.ERROR_16:
               onError("quota-error");
               break;
             default:

@@ -1172,39 +1172,39 @@ const prepareProcessor = (data: Record<string, unknown>): ProcessorResponse => {
 
 const error_not_found = {
   kind: "Error",
-  id: "4",
-  href: "/api/smartevents_mgmt/v2/errors/4",
-  code: "OPENBRIDGE-4",
+  id: "5",
+  href: "/api/smartevents_mgmt/v2/errors/5",
+  code: "OPENBRIDGE-5",
 };
 
 const error_duplicated_resource = {
+  kind: "Error",
+  id: "3",
+  href: "/api/smartevents_mgmt/v2/errors/3",
+  code: "OPENBRIDGE-3",
+};
+
+const error_external_component = {
   kind: "Error",
   id: "1",
   href: "/api/smartevents_mgmt/v2/errors/1",
   code: "OPENBRIDGE-1",
 };
 
-const error_external_component = {
-  kind: "Error",
-  id: "1",
-  href: "/api/smartevents_mgmt/v2/errors/5",
-  code: "OPENBRIDGE-5",
-};
-
 const error_bridge_not_deletable = {
   kind: "Error",
-  id: "2",
-  href: "/api/smartevents_mgmt/v2/errors/2",
-  code: "OPENBRIDGE-2",
+  id: "4",
+  href: "/api/smartevents_mgmt/v2/errors/4",
+  code: "OPENBRIDGE-4",
   reason:
     "It is not possible to delete a Bridge instance with active Processors.",
 };
 
 const error_quota_exceeded = {
   kind: "Error",
-  id: "40",
-  href: "/api/smartevents_mgmt/v2/errors/40",
-  code: "OPENBRIDGE-40",
+  id: "16",
+  href: "/api/smartevents_mgmt/v2/errors/16",
+  code: "OPENBRIDGE-16",
   reason:
     "The requested resource could not be deployed because you are out of available quota.",
 };

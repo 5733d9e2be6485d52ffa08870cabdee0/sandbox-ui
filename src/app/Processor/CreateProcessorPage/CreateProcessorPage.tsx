@@ -41,7 +41,7 @@ const CreateProcessorPage = (): JSX.Element => {
     if (bridgeError && axios.isAxiosError(bridgeError)) {
       if (
         isServiceApiError(bridgeError) &&
-        getErrorCode(bridgeError) === APIErrorCodes.ERROR_4
+        getErrorCode(bridgeError) === APIErrorCodes.ERROR_5
       ) {
         /* When the instance is not found on the server, we are going to replace
          * the current URL with a fake URL that does not match any route.

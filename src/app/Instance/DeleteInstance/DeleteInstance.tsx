@@ -94,7 +94,7 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
       const genericErrorMsg = t("instance.errors.cantDeleteTryLater");
       if (
         isServiceApiError(bridgeDeleteError) &&
-        getErrorCode(bridgeDeleteError) === APIErrorCodes.ERROR_2
+        getErrorCode(bridgeDeleteError) === APIErrorCodes.ERROR_4
       ) {
         setDeleteBlockedReason(
           getErrorReason(bridgeDeleteError) ?? genericErrorMsg
@@ -102,7 +102,7 @@ const DeleteInstance = (props: DeleteInstanceProps): JSX.Element => {
         shouldRedirectToHome.current = true;
       } else if (
         isServiceApiError(bridgeDeleteError) &&
-        getErrorCode(bridgeDeleteError) === APIErrorCodes.ERROR_4
+        getErrorCode(bridgeDeleteError) === APIErrorCodes.ERROR_5
       ) {
         setDeleteBlockedReason(
           t("instance.errors.cantDeleteBecauseNotExisting")

@@ -45,7 +45,7 @@ export const PROCESSOR_TEMPLATES: ProcessorTemplate[] = [
             - kamelet:
                 name: template
                 parameters:
-                  template: '{"text": "Sugar is low: \${body.propertyName}"}'
+                  template: '{"text": "Value is low: \${body.propertyName}"}'
             - to:
                 uri: "SlackAction1"
           - simple: "\${body.propertyName} > 5 && \${body.propertyName} <= 10"

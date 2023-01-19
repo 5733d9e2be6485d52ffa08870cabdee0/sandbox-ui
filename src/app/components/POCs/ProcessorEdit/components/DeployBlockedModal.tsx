@@ -1,13 +1,7 @@
 import React, { VoidFunctionComponent } from "react";
-import {
-  Button,
-  Modal,
-  ModalVariant,
-  Text,
-  TextContent,
-  TextVariants,
-} from "@patternfly/react-core";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core";
 import { Trans, useTranslation } from "@rhoas/app-services-ui-components";
+import WarningModal from "@app/components/WarningModal/WarningModal";
 
 interface DeployBlockedModalProps {
   errorsCount: number;
@@ -21,17 +15,10 @@ const DeployBlockedModal: VoidFunctionComponent<DeployBlockedModalProps> = (
   const { t } = useTranslation("smartEventsTempDictionary");
 
   return (
-    <Modal
-      variant={ModalVariant.small}
-      title="Syntax error"
-      titleIconVariant="danger"
-      isOpen={true}
+    <WarningModal
+      title={t("processor.errors.syntaxError")}
+      closeButtonLabel={t("processor.goBackToEditing")}
       onClose={onClose}
-      actions={[
-        <Button key="confirm" variant="primary" onClick={onClose}>
-          {t("processor.goBackToEditing")}
-        </Button>,
-      ]}
     >
       <TextContent>
         <Text component={TextVariants.p}>
@@ -42,10 +29,14 @@ const DeployBlockedModal: VoidFunctionComponent<DeployBlockedModalProps> = (
           />
         </Text>
         <Text component={TextVariants.p}>
-          {t("processor.errors.pleaseFixIssuesAndTryAgain")}
+          <Trans
+            t={t}
+            i18nKey={"processor.errors.pleaseFixIssuesAndTryAgain"}
+            count={errorsCount}
+          />
         </Text>
       </TextContent>
-    </Modal>
+    </WarningModal>
   );
 };
 

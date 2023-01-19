@@ -10,6 +10,8 @@ import {
   FlexItem,
   Grid,
   GridItem,
+  Stack,
+  StackItem,
   Text,
   TextContent,
   Title,
@@ -49,14 +51,17 @@ export const ProcessorTemplateSelector = ({
   }, [selectedTemplate]);
 
   return (
-    <Grid className="processor-template-selector" hasGutter>
+    <Grid className="processor-template-selector">
       <GridItem
         className="processor-template-selector__left-section"
         lg={3}
         sm={4}
       >
-        <Flex direction={{ default: "column" }}>
-          <FlexItem>
+        <Flex
+          direction={{ default: "column" }}
+          className="processor-template-selector__templates"
+        >
+          <FlexItem className="processor-template-selector__templates__header">
             <TextContent>
               <Text component="h6">{t("processor.templateSelection")}</Text>
               <Text component="small">
@@ -64,31 +69,41 @@ export const ProcessorTemplateSelector = ({
               </Text>
             </TextContent>
           </FlexItem>
-          {templates.map((template) => (
-            <FlexItem key={template.id}>
-              <Card
-                id={template.id}
-                data-testid={template.id}
-                onClick={(event): void => {
-                  setSelection(event.currentTarget.id);
-                  onSelect(event.currentTarget.id);
-                }}
-                isCompact
-                isSelectableRaised
-                isSelected={selection === template.id}
-              >
-                <CardBody>
-                  <EmptyState>
-                    <EmptyStateIcon icon={template.icon} />
-                    <Title headingLevel="h2" size="lg">
-                      {template.title}
-                    </Title>
-                    <EmptyStateBody>{template.description}</EmptyStateBody>
-                  </EmptyState>
-                </CardBody>
-              </Card>
-            </FlexItem>
-          ))}
+          <FlexItem
+            flex={{ default: "flex_1" }}
+            className="processor-template-selector__templates__list"
+          >
+            <Stack
+              hasGutter={true}
+              className={"processor-template-selector__templates__scrollable"}
+            >
+              {templates.map((template) => (
+                <StackItem key={template.id}>
+                  <Card
+                    id={template.id}
+                    data-testid={template.id}
+                    onClick={(event): void => {
+                      setSelection(event.currentTarget.id);
+                      onSelect(event.currentTarget.id);
+                    }}
+                    isCompact
+                    isSelectableRaised
+                    isSelected={selection === template.id}
+                  >
+                    <CardBody>
+                      <EmptyState>
+                        <EmptyStateIcon icon={template.icon} />
+                        <Title headingLevel="h2" size="lg">
+                          {template.title}
+                        </Title>
+                        <EmptyStateBody>{template.description}</EmptyStateBody>
+                      </EmptyState>
+                    </CardBody>
+                  </Card>
+                </StackItem>
+              ))}
+            </Stack>
+          </FlexItem>
         </Flex>
       </GridItem>
       <GridItem

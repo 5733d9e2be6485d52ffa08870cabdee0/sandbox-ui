@@ -1,25 +1,24 @@
-import React, { useEffect } from "react";
-import {
-  PageSection,
-  PageSectionVariants,
-  Text,
-  TextContent,
-} from "@patternfly/react-core";
+import React, { useCallback, useEffect } from "react";
+import { PageSection, Text, TextContent } from "@patternfly/react-core";
 import { useHistory, useParams } from "react-router-dom";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import axios from "axios";
-import ProcessorEdit from "@app/Processor/ProcessorEdit/ProcessorEdit";
 import { Breadcrumb } from "@app/components/Breadcrumb/Breadcrumb";
 import { useGetBridgeApi } from "../../../hooks/useBridgesApi/useGetBridgeApi";
 import PageHeaderSkeleton from "@app/components/PageHeaderSkeleton/PageHeaderSkeleton";
 import { ErrorWithDetail } from "../../../types/Error";
-import ProcessorEditSkeleton from "@app/Processor/ProcessorEdit/ProcessorEditSkeleton";
 
 import {
   getErrorCode,
   isServiceApiError,
 } from "@openapi/generated/errorHelpers";
 import { APIErrorCodes } from "@openapi/generated/errors";
+import ProcessorEdit, {
+  ProcessorEditProps,
+} from "@app/components/POCs/ProcessorEdit/ProcessorEdit";
+import { PROCESSOR_TEMPLATES } from "@app/components/POCs/ProcessorEdit/ProcessorTemplates";
+import { useCreateProcessorApi } from "../../../hooks/useProcessorsApi/useCreateProcessorApi";
+import ProcessorEditLoading from "@app/components/POCs/ProcessorEditLoading/ProcessorEditLoading";
 
 const CreateProcessorPage = (): JSX.Element => {
   const { instanceId } = useParams<InstanceRouteParams>();
@@ -64,6 +63,30 @@ const CreateProcessorPage = (): JSX.Element => {
     }
   }, [bridgeError, history, t]);
 
+  const { createProcessor } = useCreateProcessorApi();
+
+  const goToInstance = useCallback(
+    (): void => history.push(`/instance/${instanceId}`),
+    [instanceId, history]
+  );
+
+  const onProcessorCreated = useCallback((): void => {
+    goToInstance();
+  }, [goToInstance]);
+
+  const handleCreateProcessor = useCallback<
+    ProcessorEditProps["createProcessor"]
+  >(
+    function (data, onSuccess, onError) {
+      const handleOnSuccess = (): void => {
+        onSuccess();
+        onProcessorCreated();
+      };
+      createProcessor(instanceId, data, handleOnSuccess, onError);
+    },
+    [createProcessor, instanceId, onProcessorCreated]
+  );
+
   return (
     <>
       {isBridgeLoading && (
@@ -73,7 +96,7 @@ const CreateProcessorPage = (): JSX.Element => {
             hasActionDropdown={false}
             hasLabel={false}
           />
-          <ProcessorEditSkeleton />
+          <ProcessorEditLoading />
         </>
       )}
       {bridge && (
@@ -87,17 +110,12 @@ const CreateProcessorPage = (): JSX.Element => {
               ]}
             />
           </PageSection>
-          <PageSection
-            variant={PageSectionVariants.light}
-            hasShadowBottom={true}
-          >
-            <TextContent>
-              <Text component="h1" ouiaId="page-name">
-                {t("processor.createProcessor")}
-              </Text>
-            </TextContent>
-          </PageSection>
-          <ProcessorEdit />
+          <ProcessorEdit
+            processorTemplates={PROCESSOR_TEMPLATES}
+            onCancel={goToInstance}
+            sinkValuesSuggestions={["someSink", "anotherSink"]}
+            createProcessor={handleCreateProcessor}
+          />
         </>
       )}
     </>

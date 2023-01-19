@@ -16,7 +16,9 @@ export interface Typegen0 {
   };
   "eventsCausingActions": {
     clearSelectedTemplate: "skip template";
+    resetCreationErrorMessage: "close error alert";
     setCode: "change code";
+    setCreationError: "create error";
     setProcessorName: "change processor name";
     setSelectedTemplate: "select template";
     setValidation: "update validation";

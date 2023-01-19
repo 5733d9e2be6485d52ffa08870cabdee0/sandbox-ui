@@ -1,45 +1,59 @@
 import {
   Configuration,
-  ProcessorResponse,
   ProcessorRequest,
   ProcessorsApi,
 } from "@rhoas/smart-events-management-sdk";
-import { useState } from "react";
+import { useCallback } from "react";
 import { useSmartEvents } from "@contexts/SmartEventsContext";
+import { CreateProcessorError } from "@app/components/POCs/ProcessorEdit/ProcessorMachine";
+import {
+  getErrorCode,
+  isServiceApiError,
+} from "@openapi/generated/errorHelpers";
+import { APIErrorCodes } from "@openapi/generated/errors";
+
+export interface CreateProcessor {
+  (
+    bridgeId: string,
+    data: ProcessorRequest,
+    onSuccess: () => void,
+    onError: (error: CreateProcessorError) => void
+  ): void;
+}
 
 export function useCreateProcessorApi(): {
-  addProcessorToBridge: (
-    bridgeId: string,
-    processorRequest: ProcessorRequest
-  ) => void;
-  processor?: ProcessorResponse;
-  isLoading: boolean;
-  error: unknown;
+  createProcessor: CreateProcessor;
 } {
-  const [processor, setProcessor] = useState<ProcessorResponse>();
-  const [error, setError] = useState<unknown>();
-  const [isLoading, setIsLoading] = useState(false);
   const { getToken, apiBaseUrl } = useSmartEvents();
 
-  const addProcessorToBridge = (
-    bridgeId: string,
-    processorRequest: ProcessorRequest
-  ): void => {
-    setProcessor(undefined);
-    setError(undefined);
-    setIsLoading(true);
-    const processorsApi = new ProcessorsApi(
-      new Configuration({
-        accessToken: getToken,
-        basePath: apiBaseUrl,
-      })
-    );
-    processorsApi
-      .createProcessor(bridgeId, processorRequest)
-      .then((response) => setProcessor(response.data))
-      .catch((err) => setError(err))
-      .finally(() => setIsLoading(false));
-  };
+  const createProcessor = useCallback<CreateProcessor>(
+    async (bridgeId, data, onSuccess, onError) => {
+      const processorsApi = new ProcessorsApi(
+        new Configuration({
+          accessToken: getToken,
+          basePath: apiBaseUrl,
+        })
+      );
+      try {
+        await processorsApi.createProcessor(bridgeId, data);
+        onSuccess();
+      } catch (error) {
+        if (isServiceApiError(error)) {
+          const errorCode = getErrorCode(error);
+          switch (errorCode) {
+            case APIErrorCodes.ERROR_3:
+              onError("name-taken");
+              break;
+            default:
+              onError("generic-error");
+          }
+        } else {
+          onError("generic-error");
+        }
+      }
+    },
+    [apiBaseUrl, getToken]
+  );
 
-  return { addProcessorToBridge, isLoading, processor, error };
+  return { createProcessor };
 }

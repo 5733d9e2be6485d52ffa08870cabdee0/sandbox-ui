@@ -65,12 +65,12 @@ const DeleteProcessor = (props: DeleteProcessorProps): JSX.Element => {
       const genericErrorMsg = t("processor.errors.cantDeleteTryLater");
       if (
         isServiceApiError(error) &&
-        getErrorCode(error) === APIErrorCodes.ERROR_19
+        getErrorCode(error) === APIErrorCodes.ERROR_11
       ) {
         setDeleteBlockedReason(getErrorReason(error) ?? genericErrorMsg);
       } else if (
         isServiceApiError(error) &&
-        getErrorCode(error) === APIErrorCodes.ERROR_4
+        getErrorCode(error) === APIErrorCodes.ERROR_5
       ) {
         setDeleteBlockedReason(
           t("processor.errors.cantDeleteBecauseNotExisting")

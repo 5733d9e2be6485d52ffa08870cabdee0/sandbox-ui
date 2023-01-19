@@ -104,7 +104,7 @@ const ProcessorDetailPage = (): JSX.Element => {
     if (bridgeError && axios.isAxiosError(bridgeError)) {
       if (
         isServiceApiError(bridgeError) &&
-        getErrorCode(bridgeError) === APIErrorCodes.ERROR_4
+        getErrorCode(bridgeError) === APIErrorCodes.ERROR_5
       ) {
         /* When the instance is not found on the server, we are going to replace
          * the current URL with a fake URL that does not match any route.
@@ -133,9 +133,9 @@ const ProcessorDetailPage = (): JSX.Element => {
     if (processorError && axios.isAxiosError(processorError)) {
       if (
         isServiceApiError(processorError) &&
-        getErrorCode(processorError) === APIErrorCodes.ERROR_4
+        getErrorCode(processorError) === APIErrorCodes.ERROR_5
       ) {
-        /* When the instance is not found on the server, we are going to replace
+        /* When the processor is not found on the server, we are going to replace
          * the current URL with a fake URL that does not match any route.
          * In this way, the PageNotFound component will be shown.
          */

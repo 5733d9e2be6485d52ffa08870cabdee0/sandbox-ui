@@ -42,7 +42,7 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
 
     after(() => {
       if (bridgeId != undefined) {
-        const options = {
+        /*const options = {
           method: "DELETE",
           url: `${restConfig.restUrl}/${bridgeId}`,
           headers: {
@@ -54,7 +54,7 @@ onlyOn(isEnvironmentType(EnvType.Dev), () => {
         cy.request(options).then((response) => {
           expect(response.body).to.not.be.null;
           expect(response.isOkStatusCode).to.equal(true);
-        });
+        });*/
 
         visitWithCookies("/");
         cy.ouiaId(bridgeName, "PF4/TableRow")

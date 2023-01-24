@@ -102,6 +102,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
       //Instance one is mocked to be ready.
       waitTillInstanceIsReady("Instance one");
       deletedInstanceNotExist(instanceTen);
+      waitTillInstanceIsReady("Instance one");
       cy.get(".pf-c-pagination__total-items >b:nth-of-type(2)").then(
         (count) => {
           let instanceCountAfterDelete = parseInt(count.text());

@@ -48,7 +48,8 @@ export function pageWasLoaded() {
   //If you remove this line the next waiting rutine (loading-table) was succesful even if the page (DOM) was empty
   //Tests was randomly failing that an element was reattached to DOM.
   cy.get("#nav-toggle", { timeout: 30000 }).should("be.visible");
-  cy.ouiaId("loading-table", "PF4/Card").should("not.exist");
+  //The mocked / dev should contain Instance one in the ready state, check that this instance is displayed correctly (no skeleton)
+  waitTillInstanceIsReady("Instance one");
 }
 
 export function createInstance(newInstanceName: string, action?: string) {

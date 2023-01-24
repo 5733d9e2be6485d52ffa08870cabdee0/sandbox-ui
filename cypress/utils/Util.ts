@@ -49,7 +49,7 @@ export function pageWasLoaded() {
   //Tests was randomly failing that an element was reattached to DOM.
   cy.get("#nav-toggle", { timeout: 30000 }).should("be.visible");
   //The mocked / dev should contain Instance one in the ready state, check that this instance is displayed correctly (no skeleton)
-  waitTillInstanceIsReady("Instance one");
+  cy.get('div[class="pf-c-skeleton"]').should("not.exist");
 }
 
 export function createInstance(newInstanceName: string, action?: string) {

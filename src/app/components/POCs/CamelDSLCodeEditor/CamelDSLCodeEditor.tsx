@@ -93,7 +93,7 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
               endLineNumber: position.lineNumber,
               endColumn: position.column,
             });
-            const match = textUntilPosition.match(/to\s*:\s("[^"]*"\s*)?$/);
+            const match = textUntilPosition.match(/uri\s*:\s("[^"]*"\s*)?$/);
             if (!match) {
               return { suggestions: [] };
             }

@@ -3,9 +3,10 @@ import { ComponentStory, ComponentMeta } from "@storybook/react";
 import ProcessorEditHeader from "@app/components/POCs/ProcessorEditHeader/ProcessorEditHeader";
 
 export default {
-  title: "PoCs/Processor Edit Header",
+  title: "PoCs/Create Processor/Components/Processor Header",
   component: ProcessorEditHeader,
   args: {
+    name: "Processor name",
     onCreate: () => {},
     showCreateAction: true,
   },

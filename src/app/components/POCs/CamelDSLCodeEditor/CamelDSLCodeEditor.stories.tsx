@@ -25,7 +25,8 @@ SampleProcessor.args = {
     steps:
       - set-body:
           constant: "Hello there"
-      - to: "log:info"`,
+      - to:
+          uri: "log:info"`,
 };
 
 export const InvalidSource = Template.bind({});
@@ -35,7 +36,8 @@ InvalidSource.args = {
     steps:
       - set-body:
           constant: "Hello there"
-      - to: "log:info"`,
+      - to:
+          uri: "log:info"`,
 };
 
 export const ToSinkNamesSuggestions = Template.bind({});
@@ -45,6 +47,7 @@ ToSinkNamesSuggestions.args = {
     steps:
       - set-body:
           constant: "Hello there"
-      - to: `,
+      - to:
+          uri: `,
   sinkConnectorsNames: ["myFirstSinkName", "mySecondSinkName"],
 };

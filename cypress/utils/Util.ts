@@ -41,14 +41,12 @@ export function visitWithCookies(path: string) {
 
 /**
  * Wait that page is loaded correctly and there is no skeleton.
- * It means no ouiaId("loading-table", "PF4/Card")
  */
 export function pageWasLoaded() {
   //added waiting on any element to be clear that dom is not empty
-  //If you remove this line the next waiting rutine (loading-table) was succesful even if the page (DOM) was empty
-  //Tests was randomly failing that an element was reattached to DOM.
+  //If you remove this line the next waiting rutine (div[class="pf-c-skeleton"]) is valid: the page is empty => skeleton does not exist
   cy.get("#nav-toggle", { timeout: 30000 }).should("be.visible");
-  cy.ouiaId("loading-table", "PF4/Card").should("not.exist");
+  cy.get('div[class="pf-c-skeleton"]').should("not.exist");
 }
 
 export function createInstance(newInstanceName: string, action?: string) {

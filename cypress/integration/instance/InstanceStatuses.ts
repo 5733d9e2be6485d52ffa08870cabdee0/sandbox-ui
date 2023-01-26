@@ -19,6 +19,8 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     beforeEach(() => {
       visitWithCookies("/");
       pageWasLoaded();
+      //The first load might be incorrect, I will wait till the table is updated
+      cy.wait(8000);
     });
 
     it("Accepted", () => {

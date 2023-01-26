@@ -61,7 +61,7 @@
     "@cypress/skip-test": "2.6.1",
     "@mswjs/data": "0.11.0",
     "@pmmmwh/react-refresh-webpack-plugin": "0.5.10",
-    "@redhat-cloud-services/frontend-components-config": "4.6.39",
+    "@redhat-cloud-services/frontend-components-config": "4.6.40",
     "@storybook/addon-actions": "6.5.15",
     "@storybook/addon-essentials": "6.5.15",
     "@storybook/addon-interactions": "6.5.15",

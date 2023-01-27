@@ -1,6 +1,7 @@
 export enum ResourceStatus {
   READY,
   CREATING,
+  UPDATING,
   DELETING,
   FAILED,
 }

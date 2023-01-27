@@ -42,6 +42,7 @@
     "statuses": {
       "ready": "Ready",
       "creating": "Creating",
+      "updating": "Updating",
       "deleting": "Deleting",
       "failed": "Failed"
     },

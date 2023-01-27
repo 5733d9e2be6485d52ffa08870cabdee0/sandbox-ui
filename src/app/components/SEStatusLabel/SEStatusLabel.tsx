@@ -34,6 +34,10 @@ const SEStatusLabel: VoidFunctionComponent<SEStatusLabelProps> = (props) => {
       case ManagedResourceStatus.Preparing:
       case ManagedResourceStatus.Provisioning:
         return ResourceStatus.CREATING;
+      case ManagedResourceStatus.UpdateAccepted:
+      case ManagedResourceStatus.UpdatePreparing:
+      case ManagedResourceStatus.UpdateProvisioning:
+        return ResourceStatus.UPDATING;
       case ManagedResourceStatus.Deprovision:
       case ManagedResourceStatus.Deleting:
       case ManagedResourceStatus.Deleted:

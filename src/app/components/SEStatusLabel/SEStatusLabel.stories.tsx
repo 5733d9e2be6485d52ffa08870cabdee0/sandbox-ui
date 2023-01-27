@@ -60,6 +60,38 @@ Ready.args = {
   resourceType: "bridge",
 };
 
+export const UpdateAccepted = Template.bind({});
+UpdateAccepted.args = {
+  status: ManagedResourceStatus.UpdateAccepted,
+  resourceType: "processor",
+};
+
+export const UpdatePreparing = Template.bind({});
+UpdatePreparing.args = {
+  status: ManagedResourceStatus.UpdatePreparing,
+  resourceType: "processor",
+};
+
+export const UpdateProvisioning = Template.bind({});
+UpdateProvisioning.args = {
+  status: ManagedResourceStatus.UpdateProvisioning,
+  resourceType: "processor",
+};
+
+export const UpdatingOver5Minutes = Template.bind({});
+UpdatingOver5Minutes.args = {
+  status: ManagedResourceStatus.UpdateAccepted,
+  resourceType: "processor",
+  requestedAt: sub(new Date(), { minutes: 6 }),
+};
+
+export const UpdatingOver10Minutes = Template.bind({});
+UpdatingOver10Minutes.args = {
+  status: ManagedResourceStatus.UpdateAccepted,
+  resourceType: "processor",
+  requestedAt: sub(new Date(), { minutes: 11 }),
+};
+
 export const Deprovision = Template.bind({});
 Deprovision.args = {
   status: ManagedResourceStatus.Deprovision,

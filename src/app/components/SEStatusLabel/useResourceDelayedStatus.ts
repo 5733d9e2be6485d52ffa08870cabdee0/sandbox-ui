@@ -16,7 +16,7 @@ export function useResourceDelayedStatus(
   const [pollingInterval, setPollingInterval] = useState(1000);
 
   const checkCreatedAt = useCallback(() => {
-    if (status === ResourceStatus.CREATING) {
+    if (status === ResourceStatus.CREATING || ResourceStatus.UPDATING) {
       const elapsed = differenceInMinutes(new Date(), requestedAt);
       if (elapsed >= errorAfterMinutes) {
         setAlert(ResourceStatusDelayed.ERROR);

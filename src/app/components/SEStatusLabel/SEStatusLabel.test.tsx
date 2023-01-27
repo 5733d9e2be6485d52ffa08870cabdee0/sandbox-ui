@@ -7,7 +7,7 @@ import SEStatusLabel, {
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import { fireEvent, RenderResult, waitFor } from "@testing-library/react";
 
-const labels = ["Creating", "Ready", "Failed", "Deleting"];
+const labels = ["Creating", "Ready", "Failed", "Deleting", "Updating"];
 const creatingInstance = "Creating instance";
 const creatingProcessor = "Creating processor";
 const takingLonger = "This is taking longer than expected.";
@@ -43,6 +43,10 @@ describe("SEStatusLabel", () => {
   testCorrectLabel(ManagedResourceStatus.Deleting, labels[3]);
   testCorrectLabel(ManagedResourceStatus.Deprovision, labels[3]);
   testCorrectLabel(ManagedResourceStatus.Deleted, labels[3]);
+
+  testCorrectLabel(ManagedResourceStatus.UpdateAccepted, labels[4]);
+  testCorrectLabel(ManagedResourceStatus.UpdatePreparing, labels[4]);
+  testCorrectLabel(ManagedResourceStatus.UpdateProvisioning, labels[4]);
 
   it("should display the first step in the popover content for 'accepted'", async () => {
     const { comp } = setupStatusLabel({

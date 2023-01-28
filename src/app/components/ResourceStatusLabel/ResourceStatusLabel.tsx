@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useMemo } from "react";
 import {
   ResourceStatus,
   ResourceStatusDelayed,
@@ -31,8 +31,39 @@ export const ResourceStatusLabel = forwardRef<
   ResourceStatusLabelProps
 >((props, ref) => {
   const { t } = useTranslation(["smartEventsTempDictionary"]);
-
   const { status, creationDelayed } = props;
+
+  const delayedInfo = useMemo(() => {
+    return (
+      <>
+        {!creationDelayed && (
+          <Flex>
+            <FlexItem>
+              <HelperText>
+                <HelperTextItem
+                  variant="indeterminate"
+                  data-ouia-component-id="ready-shortly"
+                  data-ouia-component-type="QE/HelperTextItem"
+                >
+                  {t("common.thisWillBeReadyShortly")}
+                </HelperTextItem>
+              </HelperText>
+            </FlexItem>
+          </Flex>
+        )}
+        {creationDelayed && (
+          <Alert
+            variant={creationDelayed}
+            isInline
+            isPlain
+            title={t("common.thisIsTakingLongerThanExpected")}
+            ouiaId="longer-than-expected"
+          />
+        )}
+      </>
+    );
+  }, [creationDelayed, t]);
+
   switch (status) {
     case ResourceStatus.READY:
       return (
@@ -53,30 +84,19 @@ export const ResourceStatusLabel = forwardRef<
             <Button ref={ref} variant={"link"} isInline ouiaId="creating">
               {t("common.statuses.creating")}
             </Button>
-            {!creationDelayed && (
-              <Flex>
-                <FlexItem>
-                  <HelperText>
-                    <HelperTextItem
-                      variant="indeterminate"
-                      data-ouia-component-id="ready-shortly"
-                      data-ouia-component-type="QE/HelperTextItem"
-                    >
-                      {t("common.thisWillBeReadyShortly")}
-                    </HelperTextItem>
-                  </HelperText>
-                </FlexItem>
-              </Flex>
-            )}
-            {creationDelayed && (
-              <Alert
-                variant={creationDelayed}
-                isInline
-                isPlain
-                title={t("common.thisIsTakingLongerThanExpected")}
-                ouiaId="longer-than-expected"
-              />
-            )}
+            {delayedInfo}
+          </SplitItem>
+        </Split>
+      );
+    case ResourceStatus.UPDATING:
+      return (
+        <Split hasGutter className="mas-c-status">
+          <SplitItem>
+            <Spinner size="md" />
+          </SplitItem>
+          <SplitItem>
+            <span>{t("common.statuses.updating")}</span>
+            {delayedInfo}
           </SplitItem>
         </Split>
       );

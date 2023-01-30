@@ -19,10 +19,11 @@ import { useTranslation } from "@rhoas/app-services-ui-components";
 
 export interface BOSourceListProps {
   sourceList: BOTableItem[];
+  bridgeIngressEndpoint: string | undefined;
 }
 
 export const BOSourceList = (props: BOSourceListProps): JSX.Element => {
-  const { sourceList } = props;
+  const { sourceList, bridgeIngressEndpoint } = props;
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   return (
@@ -74,7 +75,7 @@ export const BOSourceList = (props: BOSourceListProps): JSX.Element => {
               clickTip="Copied"
               variant={ClipboardCopyVariant.expansion}
             >
-              {t("common.ingressEndpoint")}
+              {bridgeIngressEndpoint}
             </ClipboardCopy>
           </StackItem>
         </Stack>

@@ -11,10 +11,17 @@ export interface BridgeOverviewProps {
   processorList: ProcessorResponse[] | undefined;
   processorsError: unknown;
   bridgeStatus: string | undefined;
+  bridgeIngressEndpoint: string | undefined;
 }
 
 export const BridgeOverview = (props: BridgeOverviewProps): JSX.Element => {
-  const { processorList, processorsError, bridgeStatus, instanceId } = props;
+  const {
+    processorList,
+    processorsError,
+    bridgeStatus,
+    instanceId,
+    bridgeIngressEndpoint,
+  } = props;
 
   return (
     <>
@@ -22,7 +29,10 @@ export const BridgeOverview = (props: BridgeOverviewProps): JSX.Element => {
         <Grid hasGutter={true} sm={12}>
           <BOGettingStarted />
           <GridItem lg={4} md={6}>
-            <BOSourceList sourceList={[]} />
+            <BOSourceList
+              sourceList={[]}
+              bridgeIngressEndpoint={bridgeIngressEndpoint}
+            />
           </GridItem>
           <GridItem lg={4} md={6}>
             <BOProcessorList

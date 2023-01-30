@@ -6,11 +6,13 @@ import { BridgeOverview } from "../BridgeOverview/BridgeOverview";
 interface BridgeOverviewTabContentProps {
   instanceId: string;
   bridgeStatus: string | undefined;
+  bridgeIngressEndpoint: string | undefined;
 }
 
 export const BridgeOverviewTabContent = ({
   instanceId,
   bridgeStatus,
+  bridgeIngressEndpoint,
 }: BridgeOverviewTabContentProps): JSX.Element => {
   const {
     getProcessors,
@@ -36,6 +38,7 @@ export const BridgeOverviewTabContent = ({
       processorList={processorListResponse?.items}
       processorsError={processorsError}
       bridgeStatus={bridgeStatus}
+      bridgeIngressEndpoint={bridgeIngressEndpoint}
     />
   );
 };

@@ -308,6 +308,7 @@ const InstancePage = (): JSX.Element => {
               <BridgeOverviewTabContent
                 instanceId={instanceId}
                 bridgeStatus={bridge?.status}
+                bridgeIngressEndpoint={bridge?.endpoint}
               />
             )}
           </TabContent>

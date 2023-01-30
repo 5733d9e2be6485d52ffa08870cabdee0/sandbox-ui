@@ -3,10 +3,9 @@ import {
   Card,
   CardBody,
   CardTitle,
-  Stack,
-  StackItem,
-  Text,
-  TextContent,
+  EmptyState,
+  EmptyStateBody,
+  Title,
 } from "@patternfly/react-core";
 import { BOEmptyState } from "./BOEmptyState";
 import { BODashboardTableView } from "./BODashboardTableView";
@@ -18,7 +17,6 @@ import {
 import { BODashboardSkeleton } from "./BODashboardSkeleton";
 import { useHistory } from "react-router-dom";
 import { convertProcessorsToTableItems } from "./BOUtils";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
 
 export interface BOProcessorListProps {
   instanceId: string;
@@ -49,24 +47,14 @@ export const BOProcessorList = (props: BOProcessorListProps): JSX.Element => {
         <CardTitle>{t("processor.eventProcessing")}</CardTitle>
         <CardBody>
           {processorsError && (
-            <Stack hasGutter style={{ textAlign: "center" }}>
-              <StackItem>
-                <ExclamationCircleIcon color="grey" size="md" />
-              </StackItem>
-              <StackItem>
-                <TextContent>
-                  <Text component="h3">{t("common.unexpectedError")}</Text>
-                </TextContent>
-              </StackItem>
-              <StackItem>
-                <TextContent>
-                  <Text component="p">
-                    {t("instance.errors.processorsListGenericError")}{" "}
-                    {t("common.tryAgainLater")}
-                  </Text>
-                </TextContent>
-              </StackItem>
-            </Stack>
+            <EmptyState>
+              <Title headingLevel="h2" size="md">
+                {t("common.unexpectedError")}
+              </Title>
+              <EmptyStateBody>
+                {t("instance.errors.processorsListGenericError")}
+              </EmptyStateBody>
+            </EmptyState>
           )}
           {!processorsError &&
             (processorList?.length === 0 ? (

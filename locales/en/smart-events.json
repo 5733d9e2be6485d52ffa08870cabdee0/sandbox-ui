@@ -20,13 +20,14 @@
     "genericError": "Generic Error",
     "id": "ID",
     "ingressEndpoint": "Ingress endpoint URL",
-    "ingressEndpointDescription": "To ingest events into the Smart Events instance, use a CloudEvents message to send POST requests to the ingress endpoint URL",
+    "ingressEndpointDescription": "To ingest events into the Smart Events Bridge, use a CloudEvents message to send POST requests to the ingress endpoint URL",
     "key": "Key",
     "loading": "Loading",
     "name": "Name",
     "next": "Next",
     "no": "No",
     "notAvailable": "Not available",
+    "overview": "Overview",
     "owner": "Owner",
     "pageDoesNotExistError": "The page you are looking for does not exist. It might have been moved or deleted.",
     "pageNotFound": "Page not found",
@@ -139,12 +140,14 @@
       "processorQuotaExceeded": "Your organization is out of quota. To create a new processor, delete an existing one first.",
       "syntaxError": "Syntax Error"
     },
+    "eventProcessing": "Event processing",
     "goBackToEditing": "Go back to editing",
     "issuesFound_one": "{{count}} Issue found",
     "issuesFound_other": "{{count}} Issues found",
     "loadingProcessor": "Loading processor",
     "noIssuesFound": "No issues found",
-    "noProcessors": "No processors for this Smart Event instance",
+    "noProcessors": "No processors",
+    "noProcessorsDescription": "Processors use Camel DSL to filter and transform events before routing events to one or more actions.",
     "notFound": "Processor not found",
     "pleaseEnterAProcessorName": "Please enter a processor name",
     "processorName": "Processor name",
@@ -154,5 +157,23 @@
     "setName": "Set name",
     "templateSelection": "Select processor template",
     "templateSelectionDescription": "Select a template to use as a basis for your processor YAML."
+  },
+  "sinkConnector": {
+    "createSinkConnector": "Create sink connector",
+    "eventSinks": "Event sinks",
+    "noSinkConnectors": "No sink connectors",
+    "noSinkConnectorsDescription": "Create a sink connector to route event payloads to an external system.",
+    "sendThroughErrorHandling": "Send through error handling",
+    "sendThroughErrorHandlingDescription": "Processors can route an event payload through the error handling method.",
+    "sendToBridge": "Send to bridge",
+    "sendToBridgeDescription": "Processors can be send an event payload back to the bridge for additional processing.",
+    "sinkConnectors": "Sink connectors"
+  },
+  "sourceConnector": {
+    "createSourceConnector": "Create source connector",
+    "eventSources": "Event sources",
+    "noSourceConnectors": "No source connectors",
+    "noSourceConnectorsDescription": "Create a source connector to send events from an external system to this bridge.",
+    "sourceConnectors": "Source connectors"
   }
 }

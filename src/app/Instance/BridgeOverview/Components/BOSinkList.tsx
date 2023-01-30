@@ -11,62 +11,70 @@ import {
   TextContent,
   Title,
 } from "@patternfly/react-core";
-import { DemoData } from "../BridgeOverview";
 import { BODashboardTableView } from "./BODashboardTableView";
 import { BOEmptyState } from "./BOEmptyState";
+import { useTranslation } from "@rhoas/app-services-ui-components";
+import { BOTableItem } from "./BODashboardTableView";
 
 export interface BOSinkListProps {
-  sinkList: DemoData[];
-  onAddingSinkConnector: () => void;
+  sinkList: BOTableItem[];
 }
 
 export const BOSinkList = (props: BOSinkListProps): JSX.Element => {
-  const { sinkList, onAddingSinkConnector } = props;
-  const desc =
-    "Create a source connector to send events from an external system to this bridge";
+  const { sinkList } = props;
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   return (
     <Card>
-      <CardTitle>Event sinks</CardTitle>
+      <CardTitle>{t("sinkConnector.eventSinks")}</CardTitle>
       <CardBody>
         {sinkList.length == 0 ? (
           <>
             <BOEmptyState
-              title={"No sink connectors"}
-              description={desc}
-              buttonLabel={"Create sink connector"}
-              onButtonClick={onAddingSinkConnector}
+              title={t("sinkConnector.noSinkConnectors")}
+              description={t("sinkConnector.noSinkConnectorsDescription")}
+              createButton={{
+                title: t("sinkConnector.createSinkConnector"),
+                onCreate: (): void => {},
+                isDisabled: false,
+              }}
               variant={"primary"}
             />
             <Divider />
           </>
         ) : (
-          <BODashboardTableView name={"sink connectors"} demoData={sinkList} />
+          <BODashboardTableView
+            name={t("sinkConnector.sinkConnectors")}
+            createButton={{
+              title: t("sinkConnector.createSinkConnector"),
+              onCreate: (): void => {},
+              isDisabled: false,
+            }}
+            itemsList={[]}
+          />
         )}
       </CardBody>
       <CardFooter>
         <Stack hasGutter>
           <StackItem>
-            <Title headingLevel={"h4"}>Send to bridge</Title>
+            <Title headingLevel={"h4"}>{t("sinkConnector.sendToBridge")}</Title>
           </StackItem>
           <StackItem>
             <TextContent>
               <Text component="p">
-                {
-                  "Processors can be send an event payload back to the bridge for additional processing"
-                }
+                {t("sinkConnector.sendToBridgeDescription")}
               </Text>
             </TextContent>
           </StackItem>
           <StackItem>
-            <Title headingLevel={"h4"}>Send through error handling</Title>
+            <Title headingLevel={"h4"}>
+              {t("sinkConnector.sendThroughErrorHandling")}
+            </Title>
           </StackItem>
           <StackItem>
             <TextContent>
               <Text component="p">
-                {
-                  "Processors can route an event payload through the error handling method"
-                }
+                {t("sinkConnector.sendThroughErrorHandlingDescription")}
               </Text>
             </TextContent>
           </StackItem>

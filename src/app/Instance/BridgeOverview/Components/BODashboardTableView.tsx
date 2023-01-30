@@ -23,12 +23,27 @@ import {
   Tr,
 } from "@patternfly/react-table";
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
-import { DemoData } from "../BridgeOverview";
 import "./BODashboardTableView.css";
+import { Link } from "react-router-dom";
+
+export interface BOTableItem {
+  id: string;
+  name: string;
+  url: string;
+  status: ManagedResourceStatus;
+  labels: string[];
+  modified_at?: string;
+  submitted_at: string;
+}
 
 interface BODashboardTableViewProps {
-  demoData: DemoData[];
+  itemsList: BOTableItem[] | undefined;
   name: string;
+  createButton: {
+    title: string;
+    onCreate: () => void;
+    isDisabled?: boolean;
+  };
 }
 
 export const BODashboardTableView = (
@@ -36,7 +51,7 @@ export const BODashboardTableView = (
 ): JSX.Element => {
   const rowActions = [{ title: "Edit" }, { title: "Delete" }];
 
-  const { demoData, name } = props;
+  const { name, createButton, itemsList } = props;
 
   return (
     <>
@@ -47,69 +62,76 @@ export const BODashboardTableView = (
           </TextContent>
         </SplitItem>
         <SplitItem>
-          <Button variant="secondary">Create {name}</Button>
+          <Button
+            variant="secondary"
+            isDisabled={createButton.isDisabled}
+            onClick={createButton.onCreate}
+          >
+            {createButton.title}
+          </Button>
         </SplitItem>
       </Split>
       <Divider className={"BO-Dashboard__resource__divider"} />
       <TableComposable variant="compact">
         <Tbody className={"BO-Dashboard__table-body"}>
-          {demoData &&
-            demoData.map((processor, rowIndex) => (
-              <Tr key={rowIndex}>
-                <Td>
-                  <Stack>
-                    <StackItem>
-                      <Flex flexWrap={{ default: "nowrap" }}>
-                        <FlexItem>
-                          <TextContent>
-                            <Text component="h4">
-                              <a href="#">
-                                {" "}
-                                <Truncate
-                                  content={processor.name}
-                                  className={
-                                    "BO-Dashboard__resource__truncated-string"
-                                  }
-                                />
-                              </a>
-                            </Text>
-                          </TextContent>
-                        </FlexItem>
-                        <FlexItem>
-                          {processor.status != ManagedResourceStatus.Ready && (
-                            <SEStatusLabel
-                              status={processor.status}
-                              resourceType={"bridge"}
-                              requestedAt={new Date()}
-                            />
-                          )}
-                        </FlexItem>
-                      </Flex>
-                    </StackItem>
-                    <StackItem
-                      key={rowIndex}
-                      className={"BO-Dashboard__resource__labels"}
-                    >
-                      <LabelGroup>
-                        {processor.connectors?.map((connector, rowIndex) => (
-                          <Label key={rowIndex} color="green">
-                            <Truncate
-                              content={connector}
-                              className={
-                                "BO-Dashboard__resource__truncated-string"
-                              }
-                            />
-                          </Label>
-                        ))}
-                      </LabelGroup>
-                    </StackItem>
-                  </Stack>
-                </Td>
-                <Td isActionCell>
-                  {rowActions ? <ActionsColumn items={rowActions} /> : null}
-                </Td>
-              </Tr>
-            ))}
+          {itemsList?.map((item) => (
+            <Tr key={item.id}>
+              <Td>
+                <Stack>
+                  <StackItem>
+                    <Flex flexWrap={{ default: "nowrap" }}>
+                      <FlexItem>
+                        <TextContent>
+                          <Text component="h4">
+                            <Link to={item.url}>
+                              {" "}
+                              <Truncate
+                                content={item.name}
+                                className={
+                                  "BO-Dashboard__resource__truncated-string"
+                                }
+                              />
+                            </Link>
+                          </Text>
+                        </TextContent>
+                      </FlexItem>
+                      <FlexItem>
+                        {item.status != ManagedResourceStatus.Ready && (
+                          <SEStatusLabel
+                            status={item.status}
+                            resourceType={"processor"}
+                            requestedAt={
+                              new Date(item.modified_at ?? item.submitted_at)
+                            }
+                          />
+                        )}
+                      </FlexItem>
+                    </Flex>
+                  </StackItem>
+                  <StackItem
+                    key={item.id}
+                    className={"BO-Dashboard__resource__labels"}
+                  >
+                    <LabelGroup>
+                      {item.labels?.map((label, rowIndex) => (
+                        <Label key={rowIndex} color="green">
+                          <Truncate
+                            content={label}
+                            className={
+                              "BO-Dashboard__resource__truncated-string"
+                            }
+                          />
+                        </Label>
+                      ))}
+                    </LabelGroup>
+                  </StackItem>
+                </Stack>
+              </Td>
+              <Td isActionCell>
+                {rowActions ? <ActionsColumn items={rowActions} /> : null}
+              </Td>
+            </Tr>
+          ))}
         </Tbody>
       </TableComposable>
     </>

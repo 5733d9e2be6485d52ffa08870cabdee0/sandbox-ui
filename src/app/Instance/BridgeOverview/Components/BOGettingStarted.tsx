@@ -16,7 +16,7 @@ import {
 import { InfoCircleIcon } from "@patternfly/react-icons";
 
 export const BOGettingStarted = (): JSX.Element => {
-  const [isCardExpanded, setIsCardExpanded] = useState<boolean>(false);
+  const [isCardExpanded, setIsCardExpanded] = useState<boolean>(true);
 
   return (
     <Card isExpanded={isCardExpanded}>

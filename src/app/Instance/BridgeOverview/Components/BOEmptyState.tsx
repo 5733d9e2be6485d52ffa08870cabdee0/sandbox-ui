@@ -13,16 +13,18 @@ import { PlusCircleIcon } from "@patternfly/react-icons";
 export interface BOEmptyStateProps {
   title: string;
   description: string;
-  buttonLabel: string;
-  onButtonClick: () => void;
+  createButton: {
+    title: string;
+    onCreate: () => void;
+    isDisabled?: boolean;
+  };
   variant: ButtonProps["variant"];
 }
 
 export const BOEmptyState = ({
   title,
   description,
-  buttonLabel,
-  onButtonClick,
+  createButton,
   variant,
 }: BOEmptyStateProps): JSX.Element => {
   return (
@@ -33,8 +35,12 @@ export const BOEmptyState = ({
       </Title>
       <EmptyStateBody>{description}</EmptyStateBody>
       <EmptyStatePrimary>
-        <Button variant={variant} onClick={onButtonClick}>
-          {buttonLabel}
+        <Button
+          variant={variant}
+          isDisabled={createButton.isDisabled}
+          onClick={createButton.onCreate}
+        >
+          {createButton.title}
         </Button>
       </EmptyStatePrimary>
     </EmptyState>

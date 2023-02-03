@@ -19,15 +19,15 @@ export const PROCESSOR_TEMPLATES: ProcessorTemplate[] = [
     code: `- from:
     uri: "rhose:bridge"
     steps:
-    - filter:
-        simple: '\${header.type} == "StorageService"'
-        steps:
-        - kamelet:
-            name: template
-            parameters:
-              template: '{"text": "hello \${body.name}"}'
-        - to:
-            uri: "SomeAction"`,
+      - filter:
+          simple: '\${header.type} == "StorageService"'
+          steps:
+          - kamelet:
+              name: template
+              parameters:
+                template: '{"text": "hello \${body.name}"}'
+          - to:
+              uri: "SomeAction"`,
   },
   {
     id: "routing",
@@ -38,26 +38,26 @@ export const PROCESSOR_TEMPLATES: ProcessorTemplate[] = [
     code: `- from:
     uri: "rhose:bridge"
     steps:
-    - choice:
-        when:
-          - simple: "\${body.propertyName} <= 5"
-            steps:
-            - kamelet:
-                name: template
-                parameters:
-                  template: '{"text": "Value is low: \${body.propertyName}"}'
-            - to:
-                uri: "SlackAction1"
-          - simple: "\${body.propertyName} > 5 && \${body.propertyName} <= 10"
-            steps:
-            - kamelet:
-                name: template
-                parameters:
-                  template: '{"text": "Value is within range: \${body.propertyName}"}'
-            - to:
-                uri: "HttpAction1"
-        otherwise:
-          to:
-            uri: "ErrorAction1"`,
+      - choice:
+          when:
+            - simple: "\${body.propertyName} <= 5"
+              steps:
+                - kamelet:
+                    name: template
+                    parameters:
+                      template: '{"text": "Value is low: \${body.propertyName}"}'
+                - to:
+                    uri: "SlackAction1"
+            - simple: "\${body.propertyName} > 5 && \${body.propertyName} <= 10"
+              steps:
+                - kamelet:
+                    name: template
+                    parameters:
+                      template: '{"text": "Value is within range: \${body.propertyName}"}'
+                - to:
+                    uri: "HttpAction1"
+          otherwise:
+            to:
+              uri: "ErrorAction1"`,
   },
 ];

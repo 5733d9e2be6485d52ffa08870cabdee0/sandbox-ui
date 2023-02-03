@@ -115,16 +115,6 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
     [createToProposals]
   );
 
-  const onEditorMount = useCallback(
-    (editorInstance: monacoEditor.editor.IStandaloneCodeEditor): void => {
-      const model = editorInstance.getModel();
-      if (model) {
-        model.updateOptions({ tabSize: 2 });
-      }
-    },
-    []
-  );
-
   useEffect(() => {
     const onMarkersChange = monacoEditor.editor.onDidChangeMarkers(
       ([resource]) => {
@@ -157,10 +147,10 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
             scrollBeyondLastLine: false,
             automaticLayout: true,
             readOnly,
+            tabSize: 2,
           }}
           onChange={onChange}
           editorWillMount={onEditorWillMount}
-          editorDidMount={onEditorMount}
         />
       </div>
     </div>

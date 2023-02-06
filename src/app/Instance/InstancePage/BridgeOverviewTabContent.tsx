@@ -1,4 +1,6 @@
+import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import React, { useCallback, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { usePolling } from "src/hooks/usePolling/usePolling";
 import { useGetProcessorsApi } from "src/hooks/useProcessorsApi/useGetProcessorsApi";
 import { BridgeOverview } from "../BridgeOverview/BridgeOverview";
@@ -14,6 +16,7 @@ export const BridgeOverviewTabContent = ({
   bridgeStatus,
   bridgeIngressEndpoint,
 }: BridgeOverviewTabContentProps): JSX.Element => {
+  const history = useHistory();
   const {
     getProcessors,
     processorListResponse,
@@ -21,16 +24,21 @@ export const BridgeOverviewTabContent = ({
   } = useGetProcessorsApi();
 
   const triggerGetProcessors = useCallback(
-    (): void =>
-      getProcessors(instanceId, null, undefined, undefined, undefined, true),
+    (): void => getProcessors(instanceId, null, 1, 10, undefined, true),
     [getProcessors, instanceId]
   );
 
   usePolling(() => triggerGetProcessors(), 10000);
 
   useEffect(() => {
-    getProcessors(instanceId, null, undefined, undefined, undefined, true);
+    getProcessors(instanceId, null, 1, 10, undefined, true);
   }, [getProcessors, instanceId]);
+
+  const onCreateProcessor = (): void => {
+    if (bridgeStatus === ManagedResourceStatus.Ready) {
+      history.push(`/instance/${instanceId}/create-processor`);
+    }
+  };
 
   return (
     <BridgeOverview
@@ -39,6 +47,7 @@ export const BridgeOverviewTabContent = ({
       processorsError={processorsError}
       bridgeStatus={bridgeStatus}
       bridgeIngressEndpoint={bridgeIngressEndpoint}
+      onCreateProcessor={onCreateProcessor}
     />
   );
 };

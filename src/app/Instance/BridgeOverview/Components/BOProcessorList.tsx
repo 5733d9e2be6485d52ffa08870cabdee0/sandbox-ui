@@ -15,7 +15,7 @@ import {
   ProcessorResponse,
 } from "@rhoas/smart-events-management-sdk";
 import { BODashboardSkeleton } from "./BODashboardSkeleton";
-import { useHistory } from "react-router-dom";
+
 import { convertProcessorsToTableItems } from "./BOUtils";
 
 export interface BOProcessorListProps {
@@ -23,23 +23,24 @@ export interface BOProcessorListProps {
   processorList: ProcessorResponse[] | undefined;
   bridgeStatus: string | undefined;
   processorsError: unknown;
+  onCreateProcessor: () => void;
 }
 
 export const BOProcessorList = (props: BOProcessorListProps): JSX.Element => {
-  const { instanceId, processorList, bridgeStatus, processorsError } = props;
-  const history = useHistory();
+  const {
+    instanceId,
+    processorList,
+    bridgeStatus,
+    processorsError,
+    onCreateProcessor,
+  } = props;
+
   const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   const itemsList = useMemo(
     () => convertProcessorsToTableItems(processorList, instanceId),
     [instanceId, processorList]
   );
-
-  const onCreateProcessor = (): void => {
-    if (bridgeStatus === ManagedResourceStatus.Ready) {
-      history.push(`/instance/${instanceId}/create-processor`);
-    }
-  };
 
   return (
     <>

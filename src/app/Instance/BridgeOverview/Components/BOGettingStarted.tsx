@@ -21,12 +21,13 @@ export const BOGettingStarted = (): JSX.Element => {
   return (
     <Card isExpanded={isCardExpanded}>
       <CardHeader
+        toggleButtonProps={{ "aria-label": "getting started toggler" }}
         onExpand={(): void => {
           setIsCardExpanded(!isCardExpanded);
         }}
       >
         {isCardExpanded ? (
-          <CardTitle>Getting Started</CardTitle>
+          <CardTitle>Getting started</CardTitle>
         ) : (
           <Level hasGutter>
             <CardTitle>Getting Started</CardTitle>

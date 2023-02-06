@@ -6,9 +6,6 @@ import { BridgeOverview } from "./BridgeOverview";
 export default {
   title: "PoCs/Bridge Overview",
   component: BridgeOverview,
-  args: {
-    requestedAt: new Date(),
-  },
 } as ComponentMeta<typeof BridgeOverview>;
 
 const processorData = [
@@ -65,6 +62,7 @@ const processorData = [
 const Template: ComponentStory<typeof BridgeOverview> = (args) => (
   <BridgeOverview {...args} />
 );
+
 export const WithoutData = Template.bind({});
 WithoutData.args = {
   processorList: [],
@@ -75,4 +73,17 @@ export const WithData = Template.bind({});
 WithData.args = {
   processorList: processorData,
   bridgeStatus: ManagedResourceStatus.Ready,
+};
+
+export const BridgeStatus = Template.bind({});
+BridgeStatus.storyName = "Bridge Status - Failed";
+BridgeStatus.args = {
+  bridgeStatus: ManagedResourceStatus.Failed,
+  processorList: [],
+};
+
+export const ProcessorsError = Template.bind({});
+ProcessorsError.storyName = "Processors Error - Generic";
+ProcessorsError.args = {
+  processorsError: "generic-error",
 };

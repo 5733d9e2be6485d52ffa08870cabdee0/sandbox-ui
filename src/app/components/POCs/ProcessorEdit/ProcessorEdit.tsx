@@ -1,7 +1,9 @@
 import React, { useCallback, VoidFunctionComponent } from "react";
 import { useMachine } from "@xstate/react";
 import { PageSection, PageSectionVariants } from "@patternfly/react-core";
-import ProcessorMachine from "@app/components/POCs/ProcessorEdit/ProcessorMachine";
+import ProcessorMachine, {
+  CreateProcessorError,
+} from "@app/components/POCs/ProcessorEdit/ProcessorMachine";
 import ProcessorEditHeader from "@app/components/POCs/ProcessorEditHeader/ProcessorEditHeader";
 import ProcessorCodeEditor from "@app/components/POCs/ProcessorCodeEditor/ProcessorCodeEditor";
 import { ProcessorTemplateSelector } from "@app/components/POCs/ProcessorTemplateSelector/ProcessorTemplateSelector";
@@ -9,6 +11,10 @@ import { ProcessorTemplate } from "@app/components/POCs/ProcessorEdit/ProcessorT
 import DeployBlockedModal from "@app/components/POCs/ProcessorEdit/components/DeployBlockedModal";
 import { useTranslation } from "@rhoas/app-services-ui-components";
 import "./ProcessorEdit.css";
+import { ProcessorRequest } from "@rhoas/smart-events-management-sdk";
+import { yamlToJson } from "@app/components/POCs/ProcessorEdit/utils";
+import NameTakenModal from "@app/components/POCs/ProcessorEdit/components/NameTakenModal";
+import GenericErrorModal from "@app/components/POCs/ProcessorEdit/components/GenericErrorModal";
 
 export interface ProcessorEditProps {
   /** List of processor templates */
@@ -17,12 +23,9 @@ export interface ProcessorEditProps {
   sinkValuesSuggestions: string[];
   /** Callback to create a processor */
   createProcessor: (
-    data: {
-      processorName: string;
-      code: string;
-    },
+    data: ProcessorRequest,
     onSuccess: () => void,
-    onError: () => void
+    onError: (error: CreateProcessorError) => void
   ) => void;
   /** Callback to cancel the creation flow */
   onCancel: () => void;
@@ -54,14 +57,19 @@ const ProcessorEdit: VoidFunctionComponent<ProcessorEditProps> = (props) => {
     services: {
       createProcessor: (context) => {
         const { code, processorName } = context;
+        const flows = yamlToJson(code);
         return (send) => {
           function onSuccess(): void {
             send("create success");
           }
-          function onError(): void {
-            send("create error");
+          function onError(error: CreateProcessorError): void {
+            send({ type: "create error", error });
           }
-          createProcessor({ processorName, code }, onSuccess, onError);
+          createProcessor(
+            { name: processorName, flows: flows as object },
+            onSuccess,
+            onError
+          );
         };
       },
     },
@@ -75,11 +83,15 @@ const ProcessorEdit: VoidFunctionComponent<ProcessorEditProps> = (props) => {
     code,
     codeErrors,
     sinkSuggestions,
+    creationError,
   } = current.context;
+
   const templateSelectionStep = current.hasTag("step 1");
   const codeEditingStep = current.hasTag("step 2");
   const isSaving = current.matches("processor deployment.saving");
   const isDeployBlocked = current.matches("code editing.deploy blocked");
+  const isNameTaken = creationError === "name-taken";
+  const isGenericError = creationError === "generic-error";
 
   const handleCreateProcessor = useCallback((): void => {
     send({ type: "create processor" });
@@ -123,6 +135,10 @@ const ProcessorEdit: VoidFunctionComponent<ProcessorEditProps> = (props) => {
 
   const handleCloseInvalidModal = useCallback((): void => {
     send("close invalid alert");
+  }, [send]);
+
+  const handleCloseErrorModals = useCallback((): void => {
+    send("close error alert");
   }, [send]);
 
   return (
@@ -172,6 +188,15 @@ const ProcessorEdit: VoidFunctionComponent<ProcessorEditProps> = (props) => {
               errorsCount={codeErrors}
               onClose={handleCloseInvalidModal}
             />
+          )}
+          {isNameTaken && (
+            <NameTakenModal
+              processorName={processorName}
+              onClose={handleCloseErrorModals}
+            />
+          )}
+          {isGenericError && (
+            <GenericErrorModal onClose={handleCloseErrorModals} />
           )}
         </PageSection>
       )}

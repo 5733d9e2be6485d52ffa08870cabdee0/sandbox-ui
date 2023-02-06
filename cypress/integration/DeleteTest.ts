@@ -63,10 +63,10 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           .ouiaId("Processor one", "PF4/TableRow")
           .find("td")
           .then(($cells) => {
-            expect($cells).have.length(5);
+            expect($cells).have.length(4);
             expect($cells.eq(0)).have.text("Processor one");
-            expect($cells.eq(3)).have.text("Ready");
-            cy.wrap($cells.eq(4)).ouiaType("PF4/Dropdown").click();
+            expect($cells.eq(2)).have.text("Ready");
+            cy.wrap($cells.eq(3)).ouiaType("PF4/Dropdown").click();
           });
       });
 
@@ -86,7 +86,7 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           // once delete confirmed, state should change
           cy.ouiaId("Processor one", "PF4/TableRow")
             .find("td")
-            .eq(3)
+            .eq(2)
             .should("have.text", "Deleting");
 
           // once deprovision is completed, entry should disappear

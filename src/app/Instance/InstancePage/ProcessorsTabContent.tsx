@@ -68,17 +68,6 @@ export const ProcessorsTabContent = ({
         },
       },
       {
-        accessor: "type",
-        label: t("common.type"),
-        formatter: (value: unknown): string => {
-          const typeString = value as string;
-          return !typeString || !typeString.length
-            ? ""
-            : typeString.charAt(0).toUpperCase() +
-                typeString.slice(1).toLowerCase();
-        },
-      },
-      {
         accessor: "submitted_at",
         label: t("common.submittedAt"),
         formatter: (value: unknown): string => {

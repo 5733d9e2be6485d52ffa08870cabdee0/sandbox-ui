@@ -6,15 +6,29 @@
 
 .processor-template-selector__left-section {
   height: 100%;
+  padding: var(--pf-global--spacer--md) 0 0;
+}
+
+.processor-template-selector__templates {
+  height: 100%;
+}
+
+.processor-template-selector__templates__list {
+  overflow-y: hidden;
+}
+
+.processor-template-selector__templates__scrollable,
+.processor-template-selector__templates__header {
+  padding: 0 var(--pf-global--spacer--lg);
+}
+
+.processor-template-selector__templates__scrollable {
   overflow-y: auto;
+  padding-top: var(--pf-global--spacer--md);
 }
 
 .processor-template-selector__right-section {
   background-color: var(--pf-global--BackgroundColor--light-300);
   border-left: 1px solid var(--pf-global--BorderColor--100);
-}
-
-.processor-template-selector__left-section,
-.processor-template-selector__right-section {
-  padding: var(--pf-global--spacer--md);
+  padding: var(--pf-global--spacer--md) var(--pf-global--spacer--lg);
 }

@@ -8,7 +8,10 @@ interface ProcessorMachineContext {
   code: string;
   codeErrors: number;
   sinkSuggestions: string[];
+  creationError: CreateProcessorError | null;
 }
+
+export type CreateProcessorError = "name-taken" | "generic-error";
 
 const createProcessorMachine = createMachine(
   {
@@ -23,9 +26,10 @@ const createProcessorMachine = createMachine(
         | { type: "change code"; value: string }
         | { type: "update validation"; errorsCount: number }
         | { type: "close invalid alert" }
+        | { type: "close error alert" }
         | { type: "create processor" }
         | { type: "create success" }
-        | { type: "create error" },
+        | { type: "create error"; error: CreateProcessorError },
     },
     context: {
       processorName: "",
@@ -34,6 +38,7 @@ const createProcessorMachine = createMachine(
       code: "",
       codeErrors: 0,
       sinkSuggestions: [],
+      creationError: null,
     },
     predictableActionArguments: true,
     preserveActionOrder: true,
@@ -62,7 +67,13 @@ const createProcessorMachine = createMachine(
         tags: "step 2",
         initial: "editing",
         states: {
-          "editing": {},
+          "editing": {
+            on: {
+              "close error alert": {
+                actions: "resetCreationErrorMessage",
+              },
+            },
+          },
           "deploy blocked": {
             on: {
               "close invalid alert": {
@@ -106,6 +117,7 @@ const createProcessorMachine = createMachine(
                 target: "saved",
               },
               "create error": {
+                actions: "setCreationError",
                 target: "#processor.code editing",
               },
             },
@@ -146,6 +158,15 @@ const createProcessorMachine = createMachine(
           codeErrors: errorsCount,
         };
       }),
+      setCreationError: assign((_context, { error }) => {
+        return {
+          creationError: error,
+        };
+      }),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      resetCreationErrorMessage: assign((_context) => ({
+        creationError: null,
+      })),
     },
     guards: {
       "code is valid": ({ codeErrors }) => codeErrors === 0,

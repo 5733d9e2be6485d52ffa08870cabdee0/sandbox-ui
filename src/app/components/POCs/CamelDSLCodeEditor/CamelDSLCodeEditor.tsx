@@ -93,7 +93,9 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
               endLineNumber: position.lineNumber,
               endColumn: position.column,
             });
-            const match = textUntilPosition.match(/uri\s*:\s("[^"]*"\s*)?$/);
+            const match = textUntilPosition.match(
+              /to\s*:\s*uri\s*:\s("[^"]*"\s*)?$/
+            );
             if (!match) {
               return { suggestions: [] };
             }
@@ -111,16 +113,6 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
         });
     },
     [createToProposals]
-  );
-
-  const onEditorMount = useCallback(
-    (editorInstance: monacoEditor.editor.IStandaloneCodeEditor): void => {
-      const model = editorInstance.getModel();
-      if (model) {
-        model.updateOptions({ tabSize: 2 });
-      }
-    },
-    []
   );
 
   useEffect(() => {
@@ -155,10 +147,10 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
             scrollBeyondLastLine: false,
             automaticLayout: true,
             readOnly,
+            tabSize: 2,
           }}
           onChange={onChange}
           editorWillMount={onEditorWillMount}
-          editorDidMount={onEditorMount}
         />
       </div>
     </div>

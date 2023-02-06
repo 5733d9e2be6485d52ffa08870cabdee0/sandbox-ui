@@ -158,13 +158,13 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           .ouiaId("Processor three", "PF4/TableRow")
           .find("td")
           .then(($cells) => {
-            expect($cells).have.length(5);
+            expect($cells).have.length(4);
             expect($cells.eq(0)).have.text("Processor three");
             cy.wrap($cells)
-              .eq(3)
+              .eq(2)
               .ouiaId("creating", "PF4/Button")
               .should("have.text", "Creating");
-            cy.wrap($cells.eq(4)).ouiaType("PF4/Dropdown").should("be.visible");
+            cy.wrap($cells.eq(3)).ouiaType("PF4/Dropdown").should("be.visible");
           });
         cy.ouiaId("creating", "PF4/Button").click();
       });
@@ -199,20 +199,20 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
           .ouiaId("Processor one", "PF4/TableRow")
           .find("td")
           .then(($cells) => {
-            expect($cells).have.length(5);
+            expect($cells).have.length(4);
             expect($cells.eq(0)).have.text("Processor one");
             cy.wrap($cells)
-              .eq(3)
+              .eq(2)
               .ouiaId("ready", "QE/ResourceStatus")
               .should("be.visible")
               .should("have.text", "Ready");
-            cy.wrap($cells.eq(4)).ouiaType("PF4/Dropdown").should("be.visible");
+            cy.wrap($cells.eq(3)).ouiaType("PF4/Dropdown").should("be.visible");
           });
       });
     });
 
     it("Processor header details are visible", () => {
-      const processorHeaderDetails = ["Name", "Type", "Time created", "Status"];
+      const processorHeaderDetails = ["Name", "Time created", "Status"];
       cy.ouiaId("Processors list table", "PF4/Table")
         .find("th")
         .should("have.length", processorHeaderDetails.length)

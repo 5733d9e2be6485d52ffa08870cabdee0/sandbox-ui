@@ -36,7 +36,7 @@ ActionHidden.args = {
   showCreateAction: false,
 };
 
-export const ExistingProcessorName = Template.bind({});
-ExistingProcessorName.args = {
+export const ProvidedProcessorName = Template.bind({});
+ProvidedProcessorName.args = {
   name: "My Slack Processor",
 };

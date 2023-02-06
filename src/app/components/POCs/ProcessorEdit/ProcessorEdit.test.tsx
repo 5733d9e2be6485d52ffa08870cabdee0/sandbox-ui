@@ -5,8 +5,7 @@ import ProcessorEdit, {
   ProcessorEditProps,
 } from "@app/components/POCs/ProcessorEdit/ProcessorEdit";
 import { CamelDSLCodeEditorProps } from "@app/components/POCs/CamelDSLCodeEditor/CamelDSLCodeEditor";
-import { CodeIcon, DataSinkIcon } from "@patternfly/react-icons";
-import { ProcessorTemplate } from "@app/components/POCs/ProcessorEdit/ProcessorTemplates";
+import { demoTemplates } from "@app/components/POCs/ProcessorEdit/storyUtils";
 
 const setupCreateProcessor = (
   props: Partial<ProcessorEditProps>
@@ -15,7 +14,7 @@ const setupCreateProcessor = (
   const comp = customRender(
     <ProcessorEdit
       onCancel={onCancel}
-      processorTemplates={testTemplates}
+      processorTemplates={demoTemplates}
       createProcessor={createProcessor}
       sinkValuesSuggestions={[]}
     />
@@ -66,10 +65,10 @@ describe("ProcessorEdit component", () => {
 
     expect(comp.getByText(selectProcessorTemplateString)).toBeInTheDocument();
     // no other ways to check that the first template card is selected without looking at its CSS classes
-    expect(comp.getByTestId(testTemplates[0].id)).toHaveClass(
+    expect(comp.getByTestId(demoTemplates[0].id)).toHaveClass(
       selectedPFCardCSSClass
     );
-    expect(comp.queryByDisplayValue(testTemplates[0].code)).toBeInTheDocument();
+    expect(comp.queryByDisplayValue(demoTemplates[0].code)).toBeInTheDocument();
   });
 
   it("should allow the user to pick a different template", async () => {
@@ -78,18 +77,18 @@ describe("ProcessorEdit component", () => {
 
     expect(comp.getByText(selectProcessorTemplateString)).toBeInTheDocument();
 
-    fireEvent.click(comp.getByTestId(testTemplates[1].id));
+    fireEvent.click(comp.getByTestId(demoTemplates[1].id));
 
     expect(
-      comp.queryByDisplayValue(testTemplates[0].code)
+      comp.queryByDisplayValue(demoTemplates[0].code)
     ).not.toBeInTheDocument();
-    expect(comp.getByTestId(testTemplates[0].id)).not.toHaveClass(
+    expect(comp.getByTestId(demoTemplates[0].id)).not.toHaveClass(
       selectedPFCardCSSClass
     );
-    expect(comp.getByTestId(testTemplates[1].id)).toHaveClass(
+    expect(comp.getByTestId(demoTemplates[1].id)).toHaveClass(
       selectedPFCardCSSClass
     );
-    expect(comp.queryByDisplayValue(testTemplates[1].code)).toBeInTheDocument();
+    expect(comp.queryByDisplayValue(demoTemplates[1].code)).toBeInTheDocument();
   });
 
   it("should display the second step when clicking 'Next'", async () => {
@@ -190,7 +189,7 @@ describe("ProcessorEdit component", () => {
     // warning message is displayed for empty name
     expect(comp.getByText(emptyNameMessage)).toBeInTheDocument();
 
-    // change name to a non empty value
+    // change name to a non-empty value
     fireEvent.change(comp.getByLabelText(processorNameLabel), {
       target: { value: newProcessorName },
     });
@@ -266,28 +265,64 @@ describe("ProcessorEdit component", () => {
     expect(createProcessor).toHaveBeenCalledTimes(1);
     expect(createProcessor).toHaveBeenCalledWith(
       {
-        processorName: newProcessorName,
-        code: testTemplates[0].code,
+        name: newProcessorName,
+        flows: demoTemplates[0].code,
       },
       expect.anything(),
       expect.anything()
     );
   });
-});
 
-const testTemplates: ProcessorTemplate[] = [
-  {
-    id: "first",
-    title: "First Template",
-    description: "First template description.",
-    icon: CodeIcon,
-    code: "first-template-code",
-  },
-  {
-    id: "second",
-    title: "Second Template",
-    description: "Second Template description.",
-    icon: DataSinkIcon,
-    code: "second-template-code",
-  },
-];
+  it("should display an error when the processor name is already taken", async () => {
+    const processorAlreadyExistingMessage = "Processor already existing";
+    const { comp } = setupCreateProcessor({
+      createProcessor: (_data, _onSuccess, onError) => {
+        onError("name-taken");
+      },
+    });
+    await waitForI18n(comp);
+
+    fireEvent.click(comp.getByText(nextLabel));
+
+    expect(comp.getByText(deployProcessorLabel)).toBeInTheDocument();
+
+    expect(
+      comp.queryByText(processorAlreadyExistingMessage)
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(comp.getByText(deployProcessorLabel));
+
+    expect(comp.getByText(processorAlreadyExistingMessage)).toBeInTheDocument();
+
+    fireEvent.click(comp.getByText("Close"));
+
+    expect(
+      comp.queryByText(processorAlreadyExistingMessage)
+    ).not.toBeInTheDocument();
+  });
+
+  it("should display an error when the deploy request fails", async () => {
+    const genericErrorMessage = "Something went wrong";
+
+    const { comp } = setupCreateProcessor({
+      createProcessor: (_data, _onSuccess, onError) => {
+        onError("generic-error");
+      },
+    });
+    await waitForI18n(comp);
+
+    fireEvent.click(comp.getByText(nextLabel));
+
+    expect(comp.getByText(deployProcessorLabel)).toBeInTheDocument();
+
+    expect(comp.queryByText(genericErrorMessage)).not.toBeInTheDocument();
+
+    fireEvent.click(comp.getByText(deployProcessorLabel));
+
+    expect(comp.getByText(genericErrorMessage)).toBeInTheDocument();
+
+    fireEvent.click(comp.getByText("Close"));
+
+    expect(comp.queryByText(genericErrorMessage)).not.toBeInTheDocument();
+  });
+});

@@ -608,6 +608,22 @@ export const handlers = [
       );
     }
 
+    if (name.includes("error-test")) {
+      return res(
+        ctx.status(500),
+        ctx.delay(apiDelay),
+        ctx.json({
+          kind: "ErrorsResponse",
+          items: [
+            {
+              ...error_external_component,
+              reason: `Creation was no successful probably due to external component fail'`,
+            },
+          ],
+        })
+      );
+    }
+
     const existingProcessor = db.processor.findFirst({
       where: {
         name: {

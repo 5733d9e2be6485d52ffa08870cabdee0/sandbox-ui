@@ -212,6 +212,9 @@ onlyOn(isEnvironmentType(EnvType.Mocked), () => {
     });
 
     it("Processor header details are visible", () => {
+      cy.ouiaId("instance-details", "PF4/Tabs")
+        .ouiaId("processors", "PF4/TabButton")
+        .click();
       const processorHeaderDetails = ["Name", "Time created", "Status"];
       cy.ouiaId("Processors list table", "PF4/Table")
         .find("th")

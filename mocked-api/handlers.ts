@@ -53,6 +53,7 @@ const db = factory({
     modified_at: String,
     status: String,
     flows: String,
+    owner: String,
   },
   cloudProvider: {
     kind: String,

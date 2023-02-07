@@ -316,6 +316,7 @@ export const processorData = [
     published_at: "2022-04-12T12:12:52.416527+0000",
     status: "ready",
     flows: "[]",
+    owner: "",
   },
   {
     kind: "Processor",
@@ -327,6 +328,7 @@ export const processorData = [
     published_at: "2022-04-15T12:12:52.416527+0000",
     status: "ready",
     flows: "[]",
+    owner: "",
   },
   {
     kind: "Processor",
@@ -338,6 +340,7 @@ export const processorData = [
     published_at: "2022-04-15T12:12:52.416527+0000",
     status: "accepted",
     flows: "[]",
+    owner: "",
   },
   {
     kind: "Processor",
@@ -349,5 +352,6 @@ export const processorData = [
     published_at: "2022-05-15T12:12:52.416527+0000",
     status: "ready",
     flows: "[]",
+    owner: "",
   },
 ];

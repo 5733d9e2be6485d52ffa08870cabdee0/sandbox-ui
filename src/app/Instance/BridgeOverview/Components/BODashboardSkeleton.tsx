@@ -5,7 +5,7 @@ import { TableComposable, Tbody, Td, Tr } from "@patternfly/react-table";
 export const BODashboardSkeleton = (): JSX.Element => {
   return (
     <>
-      <TableComposable>
+      <TableComposable variant="compact">
         <Tbody>
           <Tr>
             <Td>

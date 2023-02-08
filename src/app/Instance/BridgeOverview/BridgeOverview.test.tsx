@@ -77,15 +77,14 @@ describe("Bridge Overview", () => {
     await waitForI18n(comp);
 
     expect(comp.queryByText("No processors")).not.toBeInTheDocument();
-    expect(comp.queryByText("Processor one")).toBeInTheDocument();
-    expect(comp.queryByText("Processor two")).toBeInTheDocument();
-    expect(comp.queryByText("Processor three")).toBeInTheDocument();
-    expect(comp.queryByText("Processor four")).toBeInTheDocument();
 
-    expect(comp.getByRole("link", { name: "Processor one" })).toHaveAttribute(
-      "href",
-      "/instance/3543edaa-1851-4ad7-96be-ebde7d20d717/processor/a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7"
-    );
+    processorData.map((processor) => {
+      expect(comp.queryByText(processor.name)).toBeInTheDocument();
+      expect(comp.getByRole("link", { name: processor.name })).toHaveAttribute(
+        "href",
+        processor.url
+      );
+    });
   });
 
   it("should disable create processor button, when bridgeStatus is failed", async () => {

@@ -70,8 +70,10 @@ describe("Bridge Overview", () => {
   });
 
   it("should display list of processors", async () => {
+    const instanceId = "3543edaa-1851-4ad7-96be-ebde7d20d717";
     const { comp } = setupBridgeOverview({
       processorList: processorData,
+      instanceId: "3543edaa-1851-4ad7-96be-ebde7d20d717",
     });
 
     await waitForI18n(comp);
@@ -82,7 +84,7 @@ describe("Bridge Overview", () => {
       expect(comp.queryByText(processor.name)).toBeInTheDocument();
       expect(comp.getByRole("link", { name: processor.name })).toHaveAttribute(
         "href",
-        processor.url
+        `/instance/${instanceId}/processor/${processor.id}`
       );
     });
   });

@@ -31,7 +31,7 @@
   "dependencies": {
     "@patternfly/patternfly": "4.224.2",
     "@patternfly/react-charts": "6.94.19",
-    "@patternfly/react-code-editor": "4.82.67",
+    "@patternfly/react-code-editor": "4.82.113",
     "@patternfly/react-core": "4.276.8",
     "@patternfly/react-icons": "4.93.6",
     "@patternfly/react-styles": "4.92.6",
@@ -51,7 +51,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-error-boundary": "4.0.3",
-    "react-monaco-editor": "0.41.2",
+    "react-monaco-editor": "0.50.0",
     "react-router-dom": "5.2.1",
     "xstate": "4.37.1"
   },
@@ -138,5 +138,8 @@
   },
   "msw": {
     "workerDirectory": "public"
+  },
+  "overrides": {
+    "react-monaco-editor": "0.50.0"
   }
 }

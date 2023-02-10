@@ -92,7 +92,7 @@ const ProcessorCodeEditor: VoidFunctionComponent<ProcessorCodeEditorProps> = (
       <FlexItem>
         <Split>
           <SplitItem isFilled={true}>
-            <Button variant="link" onClick={onGuideClick}>
+            <Button variant="link" isInline={true} onClick={onGuideClick}>
               {t("processor.processorYAMLGuide")}
             </Button>
           </SplitItem>

@@ -1,10 +1,6 @@
 .camel-editor {
   width: 100%;
   height: 100%;
-  border: 1px solid var(--pf-global--BorderColor--100);
-  box-sizing: border-box;
-  padding: var(--pf-global--spacer--sm);
-  background-color: #ffffff;
 }
 
 /*
@@ -13,5 +9,21 @@
  */
 .camel-editor-inner {
   width: 100%;
+  height: 100%;
+}
+
+/*PF CodeEditor not supporting height 100% configuration */
+.camel-editor .pf-c-code-editor {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+.camel-editor .pf-c-code-editor__main {
+  flex-grow: 1;
+}
+
+.camel-editor .pf-c-code-editor__code {
   height: 100%;
 }

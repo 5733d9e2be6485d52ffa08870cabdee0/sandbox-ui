@@ -1,6 +1,6 @@
 import { SchemasSettings, setDiagnosticsOptions } from "monaco-yaml";
 import schema from "./camelDSLSchema.json";
-export { default } from "react-monaco-editor";
+export * from "@patternfly/react-code-editor";
 
 const defaultSchema: SchemasSettings = {
   uri: "http://console.redhat.com/docs",

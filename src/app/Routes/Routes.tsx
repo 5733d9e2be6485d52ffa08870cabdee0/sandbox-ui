@@ -21,7 +21,7 @@ const Routes = (): JSX.Element => {
           <CreateProcessorPage />
         </Route>
         <Route
-          path={`/instance/:instanceId/:tabName(processors|error-handling)`}
+          path={`/instance/:instanceId/:tabName(overview|processors|error-handling)`}
         >
           <InstancePage />
         </Route>

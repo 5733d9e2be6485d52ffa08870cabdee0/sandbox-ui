@@ -44,10 +44,12 @@ import { ErrorWithDetail } from "../../../types/Error";
 import { ErrorHandlingTabContent } from "@app/Instance/InstancePage/ErrorHandlingTabContent";
 import SEStatusLabel from "@app/components/SEStatusLabel/SEStatusLabel";
 import { ProcessorsTabContent } from "./ProcessorsTabContent";
+import { BridgeOverviewTabContent } from "./BridgeOverviewTabContent";
 
 const INSTANCE_PAGE_TAB_KEYS = {
-  "processors": 0,
-  "error-handling": 1,
+  "overview": 0,
+  "processors": 1,
+  "error-handling": 2,
 };
 
 export interface InstanceRouteParams {
@@ -56,8 +58,7 @@ export interface InstanceRouteParams {
 }
 
 const InstancePage = (): JSX.Element => {
-  const { instanceId, tabName = "processors" } =
-    useParams<InstanceRouteParams>();
+  const { instanceId, tabName = "overview" } = useParams<InstanceRouteParams>();
   const { t } = useTranslation(["smartEventsTempDictionary"]);
   const history = useHistory();
 
@@ -258,6 +259,18 @@ const InstancePage = (): JSX.Element => {
             onSelect={handleTabClick}
           >
             <Tab
+              eventKey={INSTANCE_PAGE_TAB_KEYS.overview}
+              ouiaId="overview"
+              tabContentId="instance-page__tabs-overview"
+              title={
+                isBridgeLoading ? (
+                  <Skeleton fontSize="xl" width={"100px"} />
+                ) : (
+                  <TabTitleText>{t("common.overview")}</TabTitleText>
+                )
+              }
+            />
+            <Tab
               eventKey={INSTANCE_PAGE_TAB_KEYS.processors}
               ouiaId="processors"
               tabContentId="instance-page__tabs-processors"
@@ -284,6 +297,21 @@ const InstancePage = (): JSX.Element => {
           </Tabs>
         </PageSection>
         <PageSection isFilled padding={{ default: "noPadding" }}>
+          <TabContent
+            key={INSTANCE_PAGE_TAB_KEYS.overview}
+            eventKey={INSTANCE_PAGE_TAB_KEYS.overview}
+            id={"instance-page__tabs-overview"}
+            ouiaId="overview"
+            activeKey={activeTabKey}
+          >
+            {activeTabKey === INSTANCE_PAGE_TAB_KEYS.overview && (
+              <BridgeOverviewTabContent
+                instanceId={instanceId}
+                bridgeStatus={bridge?.status}
+                bridgeIngressEndpoint={bridge?.endpoint}
+              />
+            )}
+          </TabContent>
           <TabContent
             key={INSTANCE_PAGE_TAB_KEYS.processors}
             eventKey={INSTANCE_PAGE_TAB_KEYS.processors}

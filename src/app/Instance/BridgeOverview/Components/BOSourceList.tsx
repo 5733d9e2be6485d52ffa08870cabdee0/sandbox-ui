@@ -13,20 +13,18 @@ import {
   TextContent,
   Title,
 } from "@patternfly/react-core";
-import { DemoData } from "../BridgeOverview";
-import { BODashboardTableView } from "./BODashboardTableView";
+import { BODashboardTableView, BOTableItem } from "./BODashboardTableView";
 import { BOEmptyState } from "./BOEmptyState";
+import { useTranslation } from "@rhoas/app-services-ui-components";
 
 export interface BOSourceListProps {
-  sourceList: DemoData[];
-  onAddingSourceConnector: () => void;
+  sourceList: BOTableItem[];
+  bridgeIngressEndpoint: string | undefined;
 }
 
 export const BOSourceList = (props: BOSourceListProps): JSX.Element => {
-  const { sourceList, onAddingSourceConnector } = props;
-
-  const desc =
-    "Create a source connector to send events from an external system to this bridge";
+  const { sourceList, bridgeIngressEndpoint } = props;
+  const { t } = useTranslation(["smartEventsTempDictionary"]);
 
   return (
     <Card>
@@ -35,32 +33,38 @@ export const BOSourceList = (props: BOSourceListProps): JSX.Element => {
         {sourceList.length == 0 ? (
           <>
             <BOEmptyState
-              title={"No source connectors"}
-              description={desc}
-              buttonLabel={"Create source connector"}
+              title={t("sourceConnector.noSourceConnectors")}
+              description={t("sourceConnector.noSourceConnectorsDescription")}
+              createButton={{
+                title: t("sourceConnector.createSourceConnector"),
+                onCreate: (): void => {},
+                isDisabled: false,
+              }}
               variant={"secondary"}
-              onButtonClick={onAddingSourceConnector}
             />
             <Divider />
           </>
         ) : (
           <BODashboardTableView
-            name={"Source connectors"}
-            demoData={sourceList}
+            name={t("sourceConnector.sourceConnectors")}
+            createButton={{
+              title: t("sourceConnector.createSourceConnector"),
+              onCreate: (): void => {},
+              isDisabled: false,
+            }}
+            itemsList={[]}
           />
         )}
       </CardBody>
       <CardFooter>
         <Stack hasGutter>
           <StackItem>
-            <Title headingLevel={"h4"}>{"Ingress endpoint URL"}</Title>
+            <Title headingLevel={"h4"}>{t("common.ingressEndpoint")}</Title>
           </StackItem>
           <StackItem>
             <TextContent>
               <Text component="p">
-                {
-                  "To ingest events into the smart Events bridge, use a CloudEvents message to send POST requests to the ingress endpoint URL"
-                }
+                {t("common.ingressEndpointDescription")}
               </Text>
             </TextContent>
           </StackItem>
@@ -71,7 +75,7 @@ export const BOSourceList = (props: BOSourceListProps): JSX.Element => {
               clickTip="Copied"
               variant={ClipboardCopyVariant.expansion}
             >
-              {"Ingress endpoint"}
+              {bridgeIngressEndpoint}
             </ClipboardCopy>
           </StackItem>
         </Stack>

@@ -8,7 +8,7 @@
 }
 
 .BO-Dashboard__resource__divider {
-  padding: var(--pf-global--spacer--md) 0;
+  padding: var(--pf-global--spacer--md) 0 0 0;
 }
 
 .BO-Dashboard__table-body {

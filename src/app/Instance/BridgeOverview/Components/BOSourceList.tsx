@@ -7,6 +7,7 @@ import {
   ClipboardCopy,
   ClipboardCopyVariant,
   Divider,
+  Skeleton,
   Stack,
   StackItem,
   Text,
@@ -47,6 +48,8 @@ export const BOSourceList = (props: BOSourceListProps): JSX.Element => {
         ) : (
           <BODashboardTableView
             name={t("sourceConnector.sourceConnectors")}
+            onEditProcessor={(): void => {}}
+            deleteProcessor={(): void => {}}
             createButton={{
               title: t("sourceConnector.createSourceConnector"),
               onCreate: (): void => {},
@@ -69,14 +72,18 @@ export const BOSourceList = (props: BOSourceListProps): JSX.Element => {
             </TextContent>
           </StackItem>
           <StackItem>
-            <ClipboardCopy
-              isReadOnly
-              hoverTip="Copy"
-              clickTip="Copied"
-              variant={ClipboardCopyVariant.expansion}
-            >
-              {bridgeIngressEndpoint}
-            </ClipboardCopy>
+            {bridgeIngressEndpoint ? (
+              <ClipboardCopy
+                isReadOnly
+                hoverTip="Copy"
+                clickTip="Copied"
+                variant={ClipboardCopyVariant.expansion}
+              >
+                {bridgeIngressEndpoint}
+              </ClipboardCopy>
+            ) : (
+              <Skeleton width="100%" />
+            )}
           </StackItem>
         </Stack>
       </CardFooter>

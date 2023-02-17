@@ -14,6 +14,8 @@ const setupBridgeOverview = (
 ): { comp: RenderResult } => {
   const {
     onCreateProcessor = jest.fn(),
+    onEditProcessor = jest.fn(),
+    deleteProcessor = jest.fn(),
     instanceId = "3543edaa-1851-4ad7-96be-ebde7d20d717",
     processorList,
     bridgeStatus,
@@ -23,7 +25,9 @@ const setupBridgeOverview = (
   const comp = customRender(
     <BrowserRouter>
       <BridgeOverview
+        deleteProcessor={deleteProcessor}
         onCreateProcessor={onCreateProcessor}
+        onEditProcessor={onEditProcessor}
         instanceId={instanceId}
         processorList={processorList}
         processorsError={processorsError}
@@ -32,8 +36,23 @@ const setupBridgeOverview = (
       />
     </BrowserRouter>
   );
+
   return { comp };
 };
+
+const processor = [
+  {
+    kind: "Processor",
+    id: "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
+    name: "Processor one",
+    href: "/api/smartevents_mgmt/v2/bridges/3543edaa-1851-4ad7-96be-ebde7d20d717/processors/a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
+    submitted_at: "2022-04-12T12:10:46.029400+0000",
+    published_at: "2022-04-12T12:12:52.416527+0000",
+    status: ManagedResourceStatus.Ready,
+    flows: [],
+    owner: "",
+  },
+];
 
 describe("Bridge Overview", () => {
   it("should check for getting started card is open by default", async () => {
@@ -73,7 +92,6 @@ describe("Bridge Overview", () => {
     const instanceId = "3543edaa-1851-4ad7-96be-ebde7d20d717";
     const { comp } = setupBridgeOverview({
       processorList: processorData,
-      instanceId: "3543edaa-1851-4ad7-96be-ebde7d20d717",
     });
 
     await waitForI18n(comp);
@@ -113,6 +131,51 @@ describe("Bridge Overview", () => {
     ).toBeEnabled();
     fireEvent.click(comp.getByRole("button", { name: "Create processor" }));
     expect(onCreateProcessor).toHaveBeenCalledTimes(1);
+  });
+
+  it("should check for delete functionality", async () => {
+    const deleteProcessor = jest.fn();
+
+    const { comp } = setupBridgeOverview({
+      processorList: processor,
+      bridgeStatus: ManagedResourceStatus.Ready,
+      deleteProcessor,
+    });
+
+    await waitForI18n(comp);
+
+    expect(comp.queryByText("Delete")).not.toBeInTheDocument();
+    expect(comp.getByRole("button", { name: "Actions" })).toBeInTheDocument();
+    fireEvent.click(comp.getByRole("button", { name: "Actions" }));
+    expect(comp.queryByText("Delete")).toBeInTheDocument();
+    fireEvent.click(comp.getByRole("menuitem", { name: "Delete" }));
+    expect(deleteProcessor).toHaveBeenCalledWith(
+      "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
+      "Processor one"
+    );
+    expect(deleteProcessor).toHaveBeenCalledTimes(1);
+  });
+
+  it("should check for edit functionality", async () => {
+    const onEditProcessor = jest.fn();
+
+    const { comp } = setupBridgeOverview({
+      processorList: processor,
+      bridgeStatus: ManagedResourceStatus.Ready,
+      onEditProcessor,
+    });
+
+    await waitForI18n(comp);
+
+    expect(comp.queryByText("Edit")).not.toBeInTheDocument();
+    expect(comp.getByRole("button", { name: "Actions" })).toBeInTheDocument();
+    fireEvent.click(comp.getByRole("button", { name: "Actions" }));
+    expect(comp.queryByText("Edit")).toBeInTheDocument();
+    fireEvent.click(comp.getByRole("menuitem", { name: "Edit" }));
+    expect(onEditProcessor).toHaveBeenCalledTimes(1);
+    expect(onEditProcessor).toHaveBeenCalledWith(
+      "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7"
+    );
   });
 
   it("should display generic error message", async () => {

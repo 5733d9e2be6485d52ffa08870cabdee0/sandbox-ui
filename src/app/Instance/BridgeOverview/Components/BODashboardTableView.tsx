@@ -39,10 +39,9 @@ export interface BOTableItem {
 
 interface BODashboardTableViewProps {
   itemsList: BOTableItem[] | undefined;
-
   name: string;
-  onEditProcessor: (processorId: string) => void;
-  deleteProcessor: (processorId: string, processorName: string) => void;
+  onEditItem: (processorId: string) => void;
+  onDeleteItem: (processorId: string, processorName: string) => void;
   createButton: {
     title: string;
     onCreate: () => void;
@@ -53,8 +52,7 @@ interface BODashboardTableViewProps {
 export const BODashboardTableView = (
   props: BODashboardTableViewProps
 ): JSX.Element => {
-  const { name, createButton, itemsList, deleteProcessor, onEditProcessor } =
-    props;
+  const { name, createButton, itemsList, onDeleteItem, onEditItem } = props;
 
   return (
     <>
@@ -137,13 +135,12 @@ export const BODashboardTableView = (
                       {
                         title: "Edit",
                         isDisabled: !canEditResource(item.status),
-                        onClick: () => onEditProcessor(item.id),
+                        onClick: () => onEditItem(item.id),
                       },
                       {
                         title: "Delete",
                         isDisabled: !item || !canDeleteResource(item.status),
-                        onClick: (): void =>
-                          deleteProcessor(item.id, item.name),
+                        onClick: () => onDeleteItem(item.id, item.name),
                       },
                     ]}
                   />

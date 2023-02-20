@@ -76,8 +76,8 @@ export const BOProcessorList = (props: BOProcessorListProps): JSX.Element => {
             ) : (
               <BODashboardTableView
                 name={t("common.processors")}
-                deleteProcessor={deleteProcessor}
-                onEditProcessor={onEditProcessor}
+                onDeleteItem={deleteProcessor}
+                onEditItem={onEditProcessor}
                 createButton={{
                   title: t("processor.createProcessor"),
                   onCreate: onCreateProcessor,

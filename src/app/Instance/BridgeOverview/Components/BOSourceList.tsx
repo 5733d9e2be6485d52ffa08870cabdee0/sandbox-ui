@@ -48,8 +48,8 @@ export const BOSourceList = (props: BOSourceListProps): JSX.Element => {
         ) : (
           <BODashboardTableView
             name={t("sourceConnector.sourceConnectors")}
-            onEditProcessor={(): void => {}}
-            deleteProcessor={(): void => {}}
+            onEditItem={(): void => {}}
+            onDeleteItem={(): void => {}}
             createButton={{
               title: t("sourceConnector.createSourceConnector"),
               onCreate: (): void => {},

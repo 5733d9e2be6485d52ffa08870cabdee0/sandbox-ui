@@ -9,7 +9,7 @@ import { ProcessorResponse } from "@rhoas/smart-events-management-sdk";
 export interface BridgeOverviewProps {
   instanceId: string;
   onCreateProcessor: () => void;
-  deleteProcessor: (processorId: string, processorName: string) => void;
+  onDeleteProcessor: (processorId: string, processorName: string) => void;
   onEditProcessor: (processorId: string) => void;
   processorList: ProcessorResponse[] | undefined;
   processorsError: unknown;
@@ -26,7 +26,7 @@ export const BridgeOverview = (props: BridgeOverviewProps): JSX.Element => {
     bridgeIngressEndpoint,
     onCreateProcessor,
     onEditProcessor,
-    deleteProcessor,
+    onDeleteProcessor,
   } = props;
 
   return (
@@ -47,7 +47,7 @@ export const BridgeOverview = (props: BridgeOverviewProps): JSX.Element => {
               bridgeStatus={bridgeStatus}
               processorsError={processorsError}
               onCreateProcessor={onCreateProcessor}
-              deleteProcessor={deleteProcessor}
+              onDeleteProcessor={onDeleteProcessor}
               onEditProcessor={onEditProcessor}
             />
           </GridItem>

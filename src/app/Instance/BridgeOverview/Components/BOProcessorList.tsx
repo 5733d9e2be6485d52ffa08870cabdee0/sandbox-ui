@@ -25,7 +25,7 @@ export interface BOProcessorListProps {
   processorsError: unknown;
   onCreateProcessor: () => void;
   onEditProcessor: (processorId: string) => void;
-  deleteProcessor: (processorId: string, processorName: string) => void;
+  onDeleteProcessor: (processorId: string, processorName: string) => void;
 }
 
 export const BOProcessorList = (props: BOProcessorListProps): JSX.Element => {
@@ -35,7 +35,7 @@ export const BOProcessorList = (props: BOProcessorListProps): JSX.Element => {
     bridgeStatus,
     processorsError,
     onCreateProcessor,
-    deleteProcessor,
+    onDeleteProcessor,
     onEditProcessor,
   } = props;
 
@@ -76,7 +76,7 @@ export const BOProcessorList = (props: BOProcessorListProps): JSX.Element => {
             ) : (
               <BODashboardTableView
                 name={t("common.processors")}
-                onDeleteItem={deleteProcessor}
+                onDeleteItem={onDeleteProcessor}
                 onEditItem={onEditProcessor}
                 createButton={{
                   title: t("processor.createProcessor"),

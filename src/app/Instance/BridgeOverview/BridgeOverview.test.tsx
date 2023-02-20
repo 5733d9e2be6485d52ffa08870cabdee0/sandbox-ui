@@ -15,7 +15,7 @@ const setupBridgeOverview = (
   const {
     onCreateProcessor = jest.fn(),
     onEditProcessor = jest.fn(),
-    deleteProcessor = jest.fn(),
+    onDeleteProcessor = jest.fn(),
     instanceId = "3543edaa-1851-4ad7-96be-ebde7d20d717",
     processorList,
     bridgeStatus,
@@ -25,7 +25,7 @@ const setupBridgeOverview = (
   const comp = customRender(
     <BrowserRouter>
       <BridgeOverview
-        deleteProcessor={deleteProcessor}
+        onDeleteProcessor={onDeleteProcessor}
         onCreateProcessor={onCreateProcessor}
         onEditProcessor={onEditProcessor}
         instanceId={instanceId}
@@ -134,12 +134,12 @@ describe("Bridge Overview", () => {
   });
 
   it("should check for delete functionality", async () => {
-    const deleteProcessor = jest.fn();
+    const onDeleteProcessor = jest.fn();
 
     const { comp } = setupBridgeOverview({
       processorList: processor,
       bridgeStatus: ManagedResourceStatus.Ready,
-      deleteProcessor,
+      onDeleteProcessor,
     });
 
     await waitForI18n(comp);
@@ -149,11 +149,11 @@ describe("Bridge Overview", () => {
     fireEvent.click(comp.getByRole("button", { name: "Actions" }));
     expect(comp.queryByText("Delete")).toBeInTheDocument();
     fireEvent.click(comp.getByRole("menuitem", { name: "Delete" }));
-    expect(deleteProcessor).toHaveBeenCalledWith(
+    expect(onDeleteProcessor).toHaveBeenCalledWith(
       "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
       "Processor one"
     );
-    expect(deleteProcessor).toHaveBeenCalledTimes(1);
+    expect(onDeleteProcessor).toHaveBeenCalledTimes(1);
   });
 
   it("should check for edit functionality", async () => {

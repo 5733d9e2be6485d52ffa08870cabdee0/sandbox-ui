@@ -23,7 +23,7 @@ export const BridgeOverviewTabContent = ({
     useState(false);
   const history = useHistory();
 
-  const deleteProcessor = (
+  const onDeleteProcessor = (
     processorId: string,
     processorName: string
   ): void => {
@@ -73,7 +73,7 @@ export const BridgeOverviewTabContent = ({
         bridgeStatus={bridgeStatus}
         bridgeIngressEndpoint={bridgeIngressEndpoint}
         onCreateProcessor={onCreateProcessor}
-        deleteProcessor={deleteProcessor}
+        onDeleteProcessor={onDeleteProcessor}
         onEditProcessor={onEditProcessor}
       />
       <DeleteProcessor

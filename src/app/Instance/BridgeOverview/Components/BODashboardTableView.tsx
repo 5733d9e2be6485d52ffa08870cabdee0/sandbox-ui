@@ -129,22 +129,20 @@ export const BODashboardTableView = (
                 </Stack>
               </Td>
               <Td isActionCell>
-                {
-                  <ActionsColumn
-                    items={[
-                      {
-                        title: "Edit",
-                        isDisabled: !canEditResource(item.status),
-                        onClick: () => onEditItem(item.id),
-                      },
-                      {
-                        title: "Delete",
-                        isDisabled: !item || !canDeleteResource(item.status),
-                        onClick: () => onDeleteItem(item.id, item.name),
-                      },
-                    ]}
-                  />
-                }
+                <ActionsColumn
+                  items={[
+                    {
+                      title: "Edit",
+                      isDisabled: !canEditResource(item.status),
+                      onClick: () => onEditItem(item.id),
+                    },
+                    {
+                      title: "Delete",
+                      isDisabled: !canDeleteResource(item.status),
+                      onClick: () => onDeleteItem(item.id, item.name),
+                    },
+                  ]}
+                />
               </Td>
             </Tr>
           ))}

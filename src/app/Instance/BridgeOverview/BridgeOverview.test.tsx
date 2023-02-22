@@ -36,7 +36,6 @@ const setupBridgeOverview = (
       />
     </BrowserRouter>
   );
-
   return { comp };
 };
 
@@ -58,12 +57,14 @@ describe("Bridge Overview", () => {
   it("should check for getting started card is open by default", async () => {
     const { comp } = setupBridgeOverview({});
     await waitForI18n(comp);
+
     expect(comp.queryByText("Learn about YAML templates")).toBeInTheDocument();
   });
 
   it("should check for getting started card is closed, after clicking on toggle button", async () => {
     const { comp } = setupBridgeOverview({});
     await waitForI18n(comp);
+
     expect(comp.getByLabelText("getting started toggler")).toBeInTheDocument();
     fireEvent.click(comp.getByLabelText("getting started toggler"));
     expect(
@@ -80,9 +81,15 @@ describe("Bridge Overview", () => {
     expect(comp.getByDisplayValue(IngressEndpoint)).toBeInTheDocument();
   });
 
+  it("should display skeleton, while loading ingress endpoint", async () => {
+    const { comp } = setupBridgeOverview({});
+    await waitForI18n(comp);
+
+    expect(comp.queryByText("Loading ingress endpoint")).toBeInTheDocument();
+  });
+
   it("should display no processor", async () => {
     const { comp } = setupBridgeOverview({ processorList: [] });
-
     await waitForI18n(comp);
 
     expect(comp.getByText("No processors")).toBeInTheDocument();
@@ -93,11 +100,9 @@ describe("Bridge Overview", () => {
     const { comp } = setupBridgeOverview({
       processorList: processorData,
     });
-
     await waitForI18n(comp);
 
     expect(comp.queryByText("No processors")).not.toBeInTheDocument();
-
     processorData.map((processor) => {
       expect(comp.queryByText(processor.name)).toBeInTheDocument();
       expect(comp.getByRole("link", { name: processor.name })).toHaveAttribute(
@@ -135,13 +140,11 @@ describe("Bridge Overview", () => {
 
   it("should check for delete functionality", async () => {
     const onDeleteProcessor = jest.fn();
-
     const { comp } = setupBridgeOverview({
       processorList: processor,
       bridgeStatus: ManagedResourceStatus.Ready,
       onDeleteProcessor,
     });
-
     await waitForI18n(comp);
 
     expect(comp.queryByText("Delete")).not.toBeInTheDocument();
@@ -156,15 +159,40 @@ describe("Bridge Overview", () => {
     expect(onDeleteProcessor).toHaveBeenCalledTimes(1);
   });
 
+  it("should disable the delete button, when processor is not in ready or failed state", async () => {
+    const { comp } = setupBridgeOverview({
+      processorList: [
+        {
+          kind: "Processor",
+          id: "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
+          name: "Processor one",
+          href: "/api/smartevents_mgmt/v2/bridges/3543edaa-1851-4ad7-96be-ebde7d20d717/processors/a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
+          submitted_at: "2022-04-12T12:10:46.029400+0000",
+          published_at: "2022-04-12T12:12:52.416527+0000",
+          status: ManagedResourceStatus.Accepted,
+          flows: [],
+          owner: "",
+        },
+      ],
+      bridgeStatus: ManagedResourceStatus.Ready,
+    });
+    await waitForI18n(comp);
+
+    expect(comp.getByRole("button", { name: "Actions" })).toBeInTheDocument();
+    fireEvent.click(comp.getByRole("button", { name: "Actions" }));
+    expect(comp.getByRole("menuitem", { name: "Delete" })).toHaveAttribute(
+      "aria-disabled",
+      "true"
+    );
+  });
+
   it("should check for edit functionality", async () => {
     const onEditProcessor = jest.fn();
-
     const { comp } = setupBridgeOverview({
       processorList: processor,
       bridgeStatus: ManagedResourceStatus.Ready,
       onEditProcessor,
     });
-
     await waitForI18n(comp);
 
     expect(comp.queryByText("Edit")).not.toBeInTheDocument();
@@ -175,6 +203,33 @@ describe("Bridge Overview", () => {
     expect(onEditProcessor).toHaveBeenCalledTimes(1);
     expect(onEditProcessor).toHaveBeenCalledWith(
       "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7"
+    );
+  });
+
+  it("should disable the edit button, when processor is not in ready or failed state", async () => {
+    const { comp } = setupBridgeOverview({
+      processorList: [
+        {
+          kind: "Processor",
+          id: "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
+          name: "Processor one",
+          href: "/api/smartevents_mgmt/v2/bridges/3543edaa-1851-4ad7-96be-ebde7d20d717/processors/a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
+          submitted_at: "2022-04-12T12:10:46.029400+0000",
+          published_at: "2022-04-12T12:12:52.416527+0000",
+          status: ManagedResourceStatus.Accepted,
+          flows: [],
+          owner: "",
+        },
+      ],
+      bridgeStatus: ManagedResourceStatus.Ready,
+    });
+    await waitForI18n(comp);
+
+    expect(comp.getByRole("button", { name: "Actions" })).toBeInTheDocument();
+    fireEvent.click(comp.getByRole("button", { name: "Actions" }));
+    expect(comp.getByRole("menuitem", { name: "Edit" })).toHaveAttribute(
+      "aria-disabled",
+      "true"
     );
   });
 

@@ -82,7 +82,10 @@ export const BOSourceList = (props: BOSourceListProps): JSX.Element => {
                 {bridgeIngressEndpoint}
               </ClipboardCopy>
             ) : (
-              <Skeleton width="100%" />
+              <Skeleton
+                width="100%"
+                screenreaderText="Loading ingress endpoint"
+              />
             )}
           </StackItem>
         </Stack>

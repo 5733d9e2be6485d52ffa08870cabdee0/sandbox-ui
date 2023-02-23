@@ -79,6 +79,9 @@ describe("Bridge Overview", () => {
     await waitForI18n(comp);
 
     expect(comp.getByDisplayValue(IngressEndpoint)).toBeInTheDocument();
+    expect(
+      comp.queryByText("Loading ingress endpoint")
+    ).not.toBeInTheDocument();
   });
 
   it("should display skeleton, while loading ingress endpoint", async () => {
@@ -163,15 +166,8 @@ describe("Bridge Overview", () => {
     const { comp } = setupBridgeOverview({
       processorList: [
         {
-          kind: "Processor",
-          id: "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
-          name: "Processor one",
-          href: "/api/smartevents_mgmt/v2/bridges/3543edaa-1851-4ad7-96be-ebde7d20d717/processors/a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
-          submitted_at: "2022-04-12T12:10:46.029400+0000",
-          published_at: "2022-04-12T12:12:52.416527+0000",
+          ...processor[0],
           status: ManagedResourceStatus.Accepted,
-          flows: [],
-          owner: "",
         },
       ],
       bridgeStatus: ManagedResourceStatus.Ready,
@@ -210,15 +206,8 @@ describe("Bridge Overview", () => {
     const { comp } = setupBridgeOverview({
       processorList: [
         {
-          kind: "Processor",
-          id: "a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
-          name: "Processor one",
-          href: "/api/smartevents_mgmt/v2/bridges/3543edaa-1851-4ad7-96be-ebde7d20d717/processors/a72fb8e7-162b-4ae8-9672-f9f5b86fb3d7",
-          submitted_at: "2022-04-12T12:10:46.029400+0000",
-          published_at: "2022-04-12T12:12:52.416527+0000",
+          ...processor[0],
           status: ManagedResourceStatus.Accepted,
-          flows: [],
-          owner: "",
         },
       ],
       bridgeStatus: ManagedResourceStatus.Ready,

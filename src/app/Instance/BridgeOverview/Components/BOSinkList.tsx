@@ -45,6 +45,8 @@ export const BOSinkList = (props: BOSinkListProps): JSX.Element => {
         ) : (
           <BODashboardTableView
             name={t("sinkConnector.sinkConnectors")}
+            onDeleteItem={(): void => {}}
+            onEditItem={(): void => {}}
             createButton={{
               title: t("sinkConnector.createSinkConnector"),
               onCreate: (): void => {},

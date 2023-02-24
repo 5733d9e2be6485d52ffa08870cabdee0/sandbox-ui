@@ -7,6 +7,10 @@ import { processorData } from "./BOStoriesHelper";
 export default {
   title: "PoCs/Bridge Overview",
   component: BridgeOverview,
+  args: {
+    bridgeIngressEndpoint:
+      "https://3543edaa-1851-4ad7-96be-ebde7d20d717.apps.openbridge-dev.fdvn.p1.openshiftapps.com/events",
+  },
 } as ComponentMeta<typeof BridgeOverview>;
 
 const Template: ComponentStory<typeof BridgeOverview> = (args) => (

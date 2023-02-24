@@ -25,6 +25,7 @@ import {
 import { ManagedResourceStatus } from "@rhoas/smart-events-management-sdk";
 import "./BODashboardTableView.css";
 import { Link } from "react-router-dom";
+import { canDeleteResource, canEditResource } from "@utils/resourceUtils";
 
 export interface BOTableItem {
   id: string;
@@ -39,6 +40,8 @@ export interface BOTableItem {
 interface BODashboardTableViewProps {
   itemsList: BOTableItem[] | undefined;
   name: string;
+  onEditItem: (processorId: string) => void;
+  onDeleteItem: (processorId: string, processorName: string) => void;
   createButton: {
     title: string;
     onCreate: () => void;
@@ -49,9 +52,7 @@ interface BODashboardTableViewProps {
 export const BODashboardTableView = (
   props: BODashboardTableViewProps
 ): JSX.Element => {
-  const rowActions = [{ title: "Edit" }, { title: "Delete" }];
-
-  const { name, createButton, itemsList } = props;
+  const { name, createButton, itemsList, onDeleteItem, onEditItem } = props;
 
   return (
     <>
@@ -128,7 +129,20 @@ export const BODashboardTableView = (
                 </Stack>
               </Td>
               <Td isActionCell>
-                {rowActions ? <ActionsColumn items={rowActions} /> : null}
+                <ActionsColumn
+                  items={[
+                    {
+                      title: "Edit",
+                      isDisabled: !canEditResource(item.status),
+                      onClick: () => onEditItem(item.id),
+                    },
+                    {
+                      title: "Delete",
+                      isDisabled: !canDeleteResource(item.status),
+                      onClick: () => onDeleteItem(item.id, item.name),
+                    },
+                  ]}
+                />
               </Td>
             </Tr>
           ))}

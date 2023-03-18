@@ -132,7 +132,7 @@
     "uuid": "9.0.0",
     "webpack": "5.76.2",
     "webpack-cli": "4.10.0",
-    "webpack-dev-server": "4.13.0",
+    "webpack-dev-server": "4.13.1",
     "webpack-merge": "5.8.0"
   },
   "msw": {

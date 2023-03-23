@@ -24,8 +24,13 @@ CodeEditor.args = {
   code: `- from:
     uri: "rhose:bridge"
     steps:
-      - set-body:
-          constant: "Hello there"
-      - to:
-          uri: "log:info"`,
+      - filter:
+          simple: '\${header.type} == "StorageService"'
+          steps:
+          - kamelet:
+              name: template
+              parameters:
+                template: 'hello \${body.name}'
+          - to:
+              uri: "SomeAction"`,
 };

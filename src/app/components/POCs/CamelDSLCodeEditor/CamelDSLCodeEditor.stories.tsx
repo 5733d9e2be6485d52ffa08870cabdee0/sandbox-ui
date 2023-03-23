@@ -23,10 +23,15 @@ SampleProcessor.args = {
   code: `- from:
     uri: "rhose:bridge"
     steps:
-      - set-body:
-          constant: "Hello there"
-      - to:
-          uri: "log:info"`,
+      - filter:
+          simple: '\${header.type} == "StorageService"'
+          steps:
+          - kamelet:
+              name: template
+              parameters:
+                template: 'hello \${body.name}'
+          - to:
+              uri: "SomeAction"`,
 };
 
 export const InvalidSource = Template.bind({});
@@ -34,10 +39,15 @@ InvalidSource.args = {
   code: `- from:
     uri: "some:source"
     steps:
-      - set-body:
-          constant: "Hello there"
-      - to:
-          uri: "log:info"`,
+      - filter:
+          simple: '\${header.type} == "StorageService"'
+          steps:
+          - kamelet:
+              name: template
+              parameters:
+                template: 'hello \${body.name}'
+          - to:
+              uri: "SomeAction"`,
 };
 
 export const ToSinkNamesSuggestions = Template.bind({});
@@ -45,9 +55,14 @@ ToSinkNamesSuggestions.args = {
   code: `- from:
     uri: "rhose:bridge"
     steps:
-      - set-body:
-          constant: "Hello there"
-      - to:
-          uri: `,
+      - filter:
+          simple: '\${header.type} == "StorageService"'
+          steps:
+          - kamelet:
+              name: template
+              parameters:
+                template: 'hello \${body.name}'
+          - to:
+              uri: `,
   sinkConnectorsNames: ["myFirstSinkName", "mySecondSinkName"],
 };

@@ -93,7 +93,7 @@
     "core-js": "3.29.1",
     "css-loader": "6.7.3",
     "css-minimizer-webpack-plugin": "4.2.2",
-    "cssnano": "5.1.15",
+    "cssnano": "6.0.0",
     "cypress": "12.8.1",
     "dotenv-webpack": "8.0.1",
     "eslint": "8.36.0",

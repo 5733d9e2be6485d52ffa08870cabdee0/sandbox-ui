@@ -14,7 +14,6 @@ import {
   MenuFooter,
   MenuList,
   MenuItem,
-  Text,
   Title,
   Popper,
   Button,
@@ -26,13 +25,7 @@ import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons";
 
 import { global_danger_color_100 } from "@patternfly/react-tokens";
 
-interface ItemData {
-  text: string;
-  href?: string;
-  isDisabled?: boolean;
-}
-
-type ItemArrayType = any[];
+type ItemArrayType = unknown[];
 
 export const ComposableContextSelector: React.FunctionComponent = () => {
   const items: ItemArrayType = [
@@ -102,17 +95,17 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
     </Flex>,
   ];
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const [selected, setSelected] = React.useState(
     typeof items[0] === "string" ? items[0] : items[0].text
   );
-  const [filteredItems, setFilteredItems] =
-    React.useState<ItemArrayType>(items);
-  const [searchInputValue, setSearchInputValue] = React.useState<string>("");
+
   const menuRef = React.useRef<HTMLDivElement>(null);
   const toggleRef = React.useRef<HTMLButtonElement>(null);
   const menuFooterBtnRef = React.useRef<HTMLButtonElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleMenuKeys = (event: KeyboardEvent) => {
     if (!isOpen) {
       return;
@@ -134,6 +127,7 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleClickOutside = (event: MouseEvent) => {
     if (isOpen && !menuRef.current?.contains(event.target as Node)) {
       setIsOpen(false);
@@ -148,8 +142,10 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
       window.removeEventListener("keydown", handleMenuKeys);
       window.removeEventListener("click", handleClickOutside);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, menuRef]);
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const onToggleClick = (ev: React.MouseEvent) => {
     ev.stopPropagation(); // Stop handleClickOutside from handling
     setTimeout(() => {
@@ -174,27 +170,10 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
     </MenuToggle>
   );
 
-  const onSelect = (
-    ev: React.MouseEvent<Element, MouseEvent>,
-    itemId: string
-  ) => {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const onSelect = (itemId: string) => {
     setSelected(itemId);
     setIsOpen(!isOpen);
-  };
-
-  const onSearchButtonClick = () => {
-    const filtered =
-      searchInputValue === ""
-        ? items
-        : items.filter((item) => {
-            const str = typeof item === "string" ? item : item.text;
-            return (
-              str.toLowerCase().indexOf(searchInputValue.toLowerCase()) !== -1
-            );
-          });
-
-    setFilteredItems(filtered || []);
-    setIsOpen(true); // Keep menu open after search executed
   };
 
   const menu = (
@@ -206,7 +185,7 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
       style={
         {
           "--pf-c-menu--Width": "98%",
-        } as React.CSSPropertie
+        } as React.CSSProperties
       }
     >
       <MenuContent>
@@ -369,7 +348,6 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
       <Popper
         trigger={toggle}
         popper={menu}
-        appendTo={containerRef.current}
         isVisible={isOpen}
         popperMatchesTriggerWidth={false}
       />

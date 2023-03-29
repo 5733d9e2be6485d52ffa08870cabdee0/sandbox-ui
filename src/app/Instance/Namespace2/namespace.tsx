@@ -171,7 +171,10 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
   );
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const onSelect = (itemId: string) => {
+  const onSelect = (
+    _ev: React.MouseEvent<Element, MouseEvent>,
+    itemId: string
+  ) => {
     setSelected(itemId);
     setIsOpen(!isOpen);
   };

@@ -1,6 +1,10 @@
 import React from "react";
 import "./namespace.css";
 import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardTitle,
   DataList,
   DataListCell,
   DataListItem,
@@ -303,7 +307,10 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
                               </DescriptionList>
                             </Flex>
                           </FlexItem>
-                          <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+                          <FlexItem
+                            alignSelf={{ default: "alignSelfCenter" }}
+                            align={{ default: "alignRight" }}
+                          >
                             <Label color="purple">ROSA</Label>
                           </FlexItem>
                         </Flex>
@@ -368,7 +375,10 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
                               </FlexItem>
                             </Flex>
                           </FlexItem>
-                          <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+                          <FlexItem
+                            alignSelf={{ default: "alignSelfCenter" }}
+                            align={{ default: "alignRight" }}
+                          >
                             <Label color="purple">ROSA</Label>
                           </FlexItem>
                         </Flex>
@@ -433,7 +443,10 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
                               </FlexItem>
                             </Flex>
                           </FlexItem>
-                          <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+                          <FlexItem
+                            alignSelf={{ default: "alignSelfCenter" }}
+                            align={{ default: "alignRight" }}
+                          >
                             <Label color="purple">ROSA</Label>
                           </FlexItem>
                         </Flex>
@@ -456,19 +469,77 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
   );
   return (
     <div ref={containerRef}>
-      <FormGroup
-        label="Deployment"
-        isRequired
-        labelIcon={<OutlinedQuestionCircleIcon />}
-        fieldId="menu-toggle-cluster-namespace"
-      >
-        <Popper
-          trigger={toggle}
-          popper={menu}
-          isVisible={isOpen}
-          popperMatchesTriggerWidth={false}
-        />
-      </FormGroup>
+      <Flex direction={{ default: "column" }}>
+        <FlexItem>
+          <Card>
+            <CardTitle>Card 1</CardTitle>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardFooter>Footer 1</CardFooter>
+          </Card>
+        </FlexItem>
+        <FlexItem>
+          <Card>
+            <CardTitle>Card 2</CardTitle>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardFooter>Footer 2</CardFooter>
+          </Card>
+        </FlexItem>
+        <FlexItem>
+          <Card>
+            <CardTitle>Card 3</CardTitle>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardBody>Content to fill page</CardBody>
+            <CardFooter>Footer 3</CardFooter>
+          </Card>
+        </FlexItem>
+        <FlexItem>
+          <FormGroup
+            label="Deployment"
+            isRequired
+            labelIcon={<OutlinedQuestionCircleIcon />}
+            fieldId="menu-toggle-cluster-namespace"
+          >
+            <Popper
+              trigger={toggle}
+              popper={menu}
+              isVisible={isOpen}
+              popperMatchesTriggerWidth={false}
+            />
+          </FormGroup>
+        </FlexItem>
+      </Flex>
     </div>
   );
 };

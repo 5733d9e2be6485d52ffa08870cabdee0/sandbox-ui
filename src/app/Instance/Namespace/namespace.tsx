@@ -303,7 +303,10 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
                               </DescriptionList>
                             </Flex>
                           </FlexItem>
-                          <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+                          <FlexItem
+                            alignSelf={{ default: "alignSelfCenter" }}
+                            align={{ default: "alignRight" }}
+                          >
                             <Label color="purple">ROSA</Label>
                           </FlexItem>
                         </Flex>
@@ -368,7 +371,10 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
                               </FlexItem>
                             </Flex>
                           </FlexItem>
-                          <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+                          <FlexItem
+                            alignSelf={{ default: "alignSelfCenter" }}
+                            align={{ default: "alignRight" }}
+                          >
                             <Label color="purple">ROSA</Label>
                           </FlexItem>
                         </Flex>
@@ -433,7 +439,10 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
                               </FlexItem>
                             </Flex>
                           </FlexItem>
-                          <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
+                          <FlexItem
+                            alignSelf={{ default: "alignSelfCenter" }}
+                            align={{ default: "alignRight" }}
+                          >
                             <Label color="purple">ROSA</Label>
                           </FlexItem>
                         </Flex>

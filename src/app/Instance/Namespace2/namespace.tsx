@@ -133,7 +133,16 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const [selected, setSelected] = React.useState(
-    typeof items[0] === "string" ? items[0] : ""
+    // eslint-disable-next-line no-constant-condition
+    typeof items[0] === "string"
+      ? items[0]
+      : // eslint-disable-next-line no-constant-condition
+      "number"
+      ? items[0]
+      : // eslint-disable-next-line no-constant-condition
+      "undefined"
+      ? items[0]
+      : ""
   );
   const [selectedDataListItemId, setSelectedDataListItemId] =
     React.useState("");
@@ -223,8 +232,8 @@ export const ComposableContextSelector: React.FunctionComponent = () => {
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const onSelect = (
-    _ev: React.MouseEvent<Element, MouseEvent>,
-    itemId: string
+    _ev: React.MouseEvent<Element, MouseEvent> | undefined,
+    itemId: string | number | undefined
   ) => {
     setSelected(itemId);
     setIsOpen(!isOpen);

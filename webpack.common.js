@@ -13,7 +13,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 const isPatternflyStyles = (stylesheet) =>
-  stylesheet.includes("@patternfly/react-styles/css/") ||
+  (stylesheet.includes("@patternfly/react-styles/css/") &&
+    !stylesheet.includes(
+      "@patternfly/react-styles/css/components/Topology/"
+    )) ||
   stylesheet.includes("@patternfly/react-core/");
 
 const ASSET_PATH = process.env.DEMO_APP ? "/" : "auto";

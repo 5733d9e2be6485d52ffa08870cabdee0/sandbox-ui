@@ -185,7 +185,7 @@ const customComponentFactory: ComponentFactory = (
         case ModelKind.graph:
           return withPanZoom()(GraphComponent);
         case ModelKind.node:
-          return withSelection()(CustomNode);
+          return withSelection()(CustomNode as React.FC);
         case ModelKind.edge:
           return DefaultEdge;
         default:

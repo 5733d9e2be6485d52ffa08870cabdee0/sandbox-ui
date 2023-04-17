@@ -14,7 +14,6 @@ interface NodeInformationProps {
 const NodeInformation = (props: NodeInformationProps): JSX.Element => {
   const { nodeId } = props;
   const nodeInfo = NODES_12.find((node) => node.id === nodeId);
-  console.log(nodeInfo);
 
   return (
     <DescriptionList

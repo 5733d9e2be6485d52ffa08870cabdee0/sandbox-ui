@@ -166,7 +166,7 @@ const customLayoutFactory: LayoutFactory = (
       return new ForceLayout(graph, {
         // linkDistance: 10,
         // collideDistance: 30,
-        groupDistance: 150,
+        groupDistance: 250,
       });
   }
 };

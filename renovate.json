@@ -14,7 +14,11 @@
     },
     {
       "matchPackageNames": ["react-monaco-editor"],
-      "allowedVersions": "<=0.41.2"
+      "allowedVersions": "<=0.50.0"
+    },
+    {
+      "matchPackageNames": ["monaco-editor"],
+      "allowedVersions": "<=0.34.0"
     }
   ]
 }

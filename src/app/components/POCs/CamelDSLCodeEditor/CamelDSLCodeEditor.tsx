@@ -5,7 +5,7 @@ import React, {
   VoidFunctionComponent,
 } from "react";
 import * as monacoEditor from "monaco-editor";
-import MonacoEditor from "./camelDSLutils";
+import { CodeEditor, Language } from "./camelDSLutils";
 import "./CamelDSLCodeEditor.css";
 
 export interface CamelDSLCodeEditorProps {
@@ -43,15 +43,7 @@ interface Suggestion {
 const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
   props
 ) => {
-  const {
-    code,
-    onChange,
-    onValidate,
-    width = "100%",
-    height = "100%",
-    readOnly,
-    sinkConnectorsNames,
-  } = props;
+  const { code, onChange, onValidate, readOnly, sinkConnectorsNames } = props;
 
   const completionProvider = useRef<monacoEditor.IDisposable>();
 
@@ -83,7 +75,17 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
   });
 
   const onEditorWillMount = useCallback(
-    (editorInstance: typeof monacoEditor): void => {
+    (
+      editor: monacoEditor.editor.IStandaloneCodeEditor,
+      editorInstance: typeof monacoEditor
+    ): void => {
+      editor.addCommand(
+        editorInstance.KeyMod.Shift | editorInstance.KeyCode.Tab,
+        () => {
+          void editor.getAction("editor.action.outdentLines")?.run();
+          console.log("doing a shift tab");
+        }
+      );
       completionProvider.current =
         editorInstance.languages.registerCompletionItemProvider("yaml", {
           provideCompletionItems: function (model, position) {
@@ -137,11 +139,11 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
   return (
     <div className="camel-editor">
       <div className="camel-editor-inner">
-        <MonacoEditor
-          width={width}
-          height={height}
-          language="yaml"
-          value={code}
+        <CodeEditor
+          width={"100%"}
+          height={"100%"}
+          language={Language.yaml}
+          code={code}
           options={{
             scrollbar: { alwaysConsumeMouseWheel: false },
             scrollBeyondLastLine: false,
@@ -150,7 +152,10 @@ const CamelDSLCodeEditor: VoidFunctionComponent<CamelDSLCodeEditorProps> = (
             tabSize: 2,
           }}
           onChange={onChange}
-          editorWillMount={onEditorWillMount}
+          onEditorDidMount={onEditorWillMount}
+          isLanguageLabelVisible={true}
+          isDownloadEnabled={true}
+          isCopyEnabled={true}
         />
       </div>
     </div>

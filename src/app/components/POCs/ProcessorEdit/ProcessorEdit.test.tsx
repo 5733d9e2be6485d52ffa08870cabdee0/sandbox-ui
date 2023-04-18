@@ -4,7 +4,6 @@ import { customRender, waitForI18n } from "@utils/testUtils";
 import ProcessorEdit, {
   ProcessorEditProps,
 } from "@app/components/POCs/ProcessorEdit/ProcessorEdit";
-import { CamelDSLCodeEditorProps } from "@app/components/POCs/CamelDSLCodeEditor/CamelDSLCodeEditor";
 import { demoTemplates } from "@app/components/POCs/ProcessorEdit/storyUtils";
 
 const setupCreateProcessor = (
@@ -33,21 +32,7 @@ const editNameLabel = "Edit name";
 const cancelNameEditsLabel = "Cancel edits";
 const deployProcessorLabel = "Deploy Processor";
 
-jest.mock("@app/components/POCs/CamelDSLCodeEditor/CamelDSLCodeEditor", () => {
-  const MockedEditor = ({
-    code,
-    onChange,
-  }: CamelDSLCodeEditorProps): JSX.Element => {
-    return (
-      <textarea
-        value={code}
-        onChange={(event): void => onChange(event.target.value)}
-      />
-    );
-  };
-  MockedEditor.displayName = "CamelDSLCodeEditor";
-  return MockedEditor;
-});
+jest.mock("@app/components/POCs/CamelDSLCodeEditor/CamelDSLCodeEditor");
 
 describe("ProcessorEdit component", () => {
   it("should display template selection as first step", async () => {

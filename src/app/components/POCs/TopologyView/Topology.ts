@@ -26,7 +26,7 @@ export const NODES_6: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.rect,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Source",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -58,7 +58,7 @@ export const NODES_6: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.ellipse,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Processor",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -73,7 +73,7 @@ export const NODES_6: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.rhombus,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     collapsed: false,
     data: {
       type: "Topic",
@@ -104,8 +104,8 @@ export const NODES_6: NodeModel[] = [
     label: "Reward topic",
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
-    status: NodeStatus.default,
     shape: NodeShape.rhombus,
+    status: NodeStatus.info,
     data: {
       type: "Topic",
       owner: "smartEvents_kafka_supporting",
@@ -171,7 +171,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.rect,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Source",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -201,7 +201,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.ellipse,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Processor",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -216,7 +216,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.rhombus,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     collapsed: false,
     data: {
       type: "Topic",
@@ -232,7 +232,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.ellipse,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Processor",
       owner: "openbridge_kafka_supporting",
@@ -247,7 +247,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.rhombus,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Topic",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -277,7 +277,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.rhombus,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Topic",
       owner: "openbridge_kafka_supporting",
@@ -292,7 +292,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.hexagon,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Sink",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -308,7 +308,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.ellipse,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Processor",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -323,7 +323,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.rhombus,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Topic",
       owner: "openbridge_kafka_supporting",
@@ -338,7 +338,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.hexagon,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Sink",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -353,7 +353,7 @@ export const NODES_12: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.rect,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Source",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -483,7 +483,7 @@ export const NODES_12_Without_Edges: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.rect,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Source",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -498,7 +498,7 @@ export const NODES_12_Without_Edges: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.ellipse,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Processor",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -544,7 +544,7 @@ export const NODES_12_Without_Edges: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.hexagon,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Sink",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -559,7 +559,7 @@ export const NODES_12_Without_Edges: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.rect,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Source",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -574,7 +574,7 @@ export const NODES_12_Without_Edges: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.ellipse,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Processor",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",
@@ -590,7 +590,7 @@ export const NODES_12_Without_Edges: NodeModel[] = [
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NodeShape.hexagon,
-    status: NodeStatus.default,
+    status: NodeStatus.info,
     data: {
       type: "Sink",
       owner: "service-account-b047725a-a416-4e5a-aeb0-a77a461a3788",

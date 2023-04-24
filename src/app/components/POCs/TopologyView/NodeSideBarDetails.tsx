@@ -6,14 +6,14 @@ import {
   DescriptionListTerm,
 } from "@patternfly/react-core";
 import React from "react";
-import { NODES_12 } from "./Topology";
+import { NodeModel } from "@patternfly/react-topology";
 
 interface NodeInformationProps {
-  nodeId: string;
+  node: NodeModel | undefined;
 }
+
 const NodeInformation = (props: NodeInformationProps): JSX.Element => {
-  const { nodeId } = props;
-  const nodeInfo = NODES_12.find((node) => node.id === nodeId);
+  const { node } = props;
 
   return (
     <DescriptionList
@@ -23,32 +23,30 @@ const NodeInformation = (props: NodeInformationProps): JSX.Element => {
     >
       <DescriptionListGroup>
         <DescriptionListTerm>{"Name"}</DescriptionListTerm>
-        <DescriptionListDescription>
-          {nodeInfo?.label}
-        </DescriptionListDescription>
+        <DescriptionListDescription>{node?.label}</DescriptionListDescription>
       </DescriptionListGroup>
       <DescriptionListGroup>
         <DescriptionListTerm>{"Type"}</DescriptionListTerm>
         <DescriptionListDescription>
-          {nodeInfo?.data.type}
+          {node?.data.type}
         </DescriptionListDescription>
       </DescriptionListGroup>
       <DescriptionListGroup>
         <DescriptionListTerm>{"Owner"}</DescriptionListTerm>
         <DescriptionListDescription>
-          {nodeInfo?.data.owner}
+          {node?.data.owner}
         </DescriptionListDescription>
       </DescriptionListGroup>
       <DescriptionListGroup>
         <DescriptionListTerm>{"Time created"}</DescriptionListTerm>
         <DescriptionListDescription>
-          {nodeInfo?.data.timeCreated}
+          {node?.data.timeCreated}
         </DescriptionListDescription>
       </DescriptionListGroup>{" "}
       <DescriptionListGroup>
         <DescriptionListTerm>{"Time Updated"}</DescriptionListTerm>
         <DescriptionListDescription>
-          {nodeInfo?.data.timeUpdated}
+          {node?.data.timeUpdated}
         </DescriptionListDescription>
       </DescriptionListGroup>
     </DescriptionList>

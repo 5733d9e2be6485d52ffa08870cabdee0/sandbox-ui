@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { RegionsIcon as Icon4 } from "@patternfly/react-icons";
 import { DataSourceIcon as Icon1 } from "@patternfly/react-icons";
 import { DataSinkIcon as Icon2 } from "@patternfly/react-icons";
@@ -23,7 +23,7 @@ import {
   SELECTION_EVENT,
   TopologyControlBar,
   TopologySideBar,
-  TopologyView,
+  TopologyView as PFTopologyView,
   Visualization,
   VisualizationProvider,
   VisualizationSurface,
@@ -36,16 +36,17 @@ import {
   LayoutFactory,
   Model,
   Node,
-  ElementModel,
+  EdgeModel,
+  NodeModel,
 } from "@patternfly/react-topology";
-import { Topology } from "./Topology";
-import NodeInformation from "./NodeInformation";
+
+import NodeInformation from "./NodeSideBarDetails";
 
 export interface TopologyViewDemoProps {
-  layout: Topology["layout"];
-  NODES: Topology["NODES_12"];
-  EDGES: Topology["EDGES_12"];
-  truncateLength: number;
+  layout: string;
+  nodes: NodeModel[];
+  edges: EdgeModel[];
+  truncateLength?: number;
 }
 
 interface CustomNodeProps {
@@ -55,8 +56,6 @@ interface DataEdgeProps {
   element: Edge;
 }
 
-let setTruncateLength: number;
-
 const DataEdge: React.FC<DataEdgeProps> = ({ element, ...rest }) => (
   <DefaultEdge
     element={element}
@@ -65,14 +64,6 @@ const DataEdge: React.FC<DataEdgeProps> = ({ element, ...rest }) => (
     {...rest}
   />
 );
-export interface NodeModel extends Omit<ElementModel, "data"> {
-  data: {
-    type: string;
-    owner: string;
-    TimeCreated: string;
-    TimeUpdated: string;
-  };
-}
 
 const CustomNode: React.FC<CustomNodeProps & WithSelectionProps> = ({
   element,
@@ -81,12 +72,15 @@ const CustomNode: React.FC<CustomNodeProps & WithSelectionProps> = ({
   ...rest
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const data: NodeModel = element.getData();
+  const data = element.getData();
   let Icon;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (data.type == "Source") {
     Icon = Icon1;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   } else if (data.type == "Sink") {
     Icon = Icon2;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   } else if (data.type == "Processor") {
     Icon = Icon3;
   } else {
@@ -98,7 +92,8 @@ const CustomNode: React.FC<CustomNodeProps & WithSelectionProps> = ({
       element={element}
       showStatusDecorator
       {...rest}
-      truncateLength={setTruncateLength}
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      truncateLength={data.length}
       onSelect={onSelect}
       selected={selected}
     >
@@ -130,7 +125,6 @@ const customLayoutFactory: LayoutFactory = (
         edgesep: 2,
         groupDistance: 150,
         ranker: "network-simplex",
-        // collideDistance: 30,
       });
     case "Dagre_tight-tree":
       return new DagreLayout(graph, {
@@ -140,32 +134,22 @@ const customLayoutFactory: LayoutFactory = (
         edgesep: 2,
         groupDistance: 150,
         ranker: "tight-tree",
-        // collideDistance: 30,
       });
     case "BreadthFirst":
       return new BreadthFirstLayout(graph, {
-        // linkDistance: 10,
-        // collideDistance: 30,
-        // groupDistance: 650,
         nodeDistance: 80,
       });
     case "Concentric":
       return new ConcentricLayout(graph, {
-        // linkDistance: 10,
-        // collideDistance: 30,
         groupDistance: 150,
       });
     case "Grid":
       return new GridLayout(graph, {
-        // linkDistance: 10,
-        // collideDistance: 30,
         groupDistance: 150,
         nodeDistance: 75,
       });
     default:
       return new ForceLayout(graph, {
-        // linkDistance: 10,
-        // collideDistance: 30,
         groupDistance: 250,
       });
   }
@@ -194,15 +178,19 @@ const customComponentFactory: ComponentFactory = (
   }
 };
 
-const TopologyViewDemo = (props: TopologyViewDemoProps): JSX.Element => {
-  const { layout, NODES, EDGES, truncateLength } = props;
-  setTruncateLength = truncateLength;
+const TopologyView = (props: TopologyViewDemoProps): JSX.Element => {
+  const { layout, nodes, edges, truncateLength } = props;
+
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const controller = React.useMemo(() => {
+    nodes.map((node) => {
+      node.data && Object.assign(node?.data, { length: truncateLength });
+    });
+
     const model: Model = {
-      nodes: NODES,
-      edges: EDGES,
+      nodes: nodes,
+      edges: edges,
       graph: {
         id: "g1",
         type: "graph",
@@ -220,7 +208,9 @@ const TopologyViewDemo = (props: TopologyViewDemoProps): JSX.Element => {
     newController.fromModel(model, false);
 
     return newController;
-  }, [EDGES, NODES, layout]);
+  }, [edges, layout, nodes, truncateLength]);
+
+  const node = nodes.find((node) => node.id === selectedIds[0]);
 
   const topologySideBar = (
     <TopologySideBar
@@ -228,12 +218,12 @@ const TopologyViewDemo = (props: TopologyViewDemoProps): JSX.Element => {
       show={selectedIds.length > 0}
       onClose={(): void => setSelectedIds([])}
     >
-      <NodeInformation nodeId={selectedIds[0]} />
+      <NodeInformation node={node} />
     </TopologySideBar>
   );
 
   return (
-    <TopologyView
+    <PFTopologyView
       sideBar={topologySideBar}
       controlBar={
         <TopologyControlBar
@@ -260,8 +250,8 @@ const TopologyViewDemo = (props: TopologyViewDemoProps): JSX.Element => {
       <VisualizationProvider controller={controller}>
         <VisualizationSurface state={{ selectedIds }} />
       </VisualizationProvider>
-    </TopologyView>
+    </PFTopologyView>
   );
 };
 
-export default TopologyViewDemo;
+export default TopologyView;

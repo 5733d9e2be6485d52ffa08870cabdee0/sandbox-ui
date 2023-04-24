@@ -6,14 +6,6 @@ import {
   NodeStatus,
 } from "@patternfly/react-topology";
 
-export interface Topology {
-  layout: string;
-  NODES_6: NodeModel[];
-  EDGES_6: EdgeModel[];
-  NODES_12: NodeModel[];
-  EDGES_12: EdgeModel[];
-}
-
 export const layout = "Dagre_network-simplex";
 
 const NODE_DIAMETER = 75;
@@ -33,8 +25,6 @@ export const NODES_6: NodeModel[] = [
       timeCreated: "3 months ago",
       timeUpdated: "3 months ago",
     },
-    // x: 200,
-    // y: 200,
   },
   {
     id: "node-1",
@@ -97,7 +87,6 @@ export const NODES_6: NodeModel[] = [
       timeUpdated: "2 months ago",
     },
   },
-
   {
     id: "node-4",
     type: "node",
@@ -125,7 +114,7 @@ export const NODES_6: NodeModel[] = [
   },
 ];
 
-export const EDGES_6 = [
+export const EDGES_6: EdgeModel[] = [
   {
     id: "edge-node-0-node-1",
     type: "edge",
@@ -361,7 +350,6 @@ export const NODES_12: NodeModel[] = [
       timeUpdated: "2 months ago",
     },
   },
-
   {
     id: "Group-1",
     children: [
@@ -388,7 +376,7 @@ export const NODES_12: NodeModel[] = [
   },
 ];
 
-export const EDGES_12 = [
+export const EDGES_12: EdgeModel[] = [
   {
     id: "edge-node-0-node-1",
     type: "edge",
@@ -506,7 +494,6 @@ export const NODES_12_Without_Edges: NodeModel[] = [
       timeUpdated: "3 months ago",
     },
   },
-
   {
     id: "node-5",
     type: "node",
@@ -582,7 +569,6 @@ export const NODES_12_Without_Edges: NodeModel[] = [
       timeUpdated: "3 months ago",
     },
   },
-
   {
     id: "node-11",
     type: "node",

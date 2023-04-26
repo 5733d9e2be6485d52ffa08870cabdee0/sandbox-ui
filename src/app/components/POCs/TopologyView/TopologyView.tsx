@@ -42,7 +42,7 @@ import {
 
 import NodeInformation from "./NodeSideBarDetails";
 
-export interface TopologyViewDemoProps {
+export interface TopologyViewProps {
   layout: string;
   nodes: NodeModel[];
   edges: EdgeModel[];
@@ -178,7 +178,7 @@ const customComponentFactory: ComponentFactory = (
   }
 };
 
-const TopologyView = (props: TopologyViewDemoProps): JSX.Element => {
+const TopologyView = (props: TopologyViewProps): JSX.Element => {
   const { layout, nodes, edges, truncateLength } = props;
 
   const [selectedIds, setSelectedIds] = React.useState<string[]>([]);

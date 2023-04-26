@@ -39,7 +39,7 @@
     "@rhoas/app-services-ui-components": "2.30.0",
     "@rhoas/app-services-ui-shared": "0.16.6",
     "@rhoas/smart-events-management-sdk": "1.0.2",
-    "@xstate/react": "3.2.1",
+    "@xstate/react": "3.2.2",
     "date-fns": "2.29.3",
     "js-yaml": "4.1.0",
     "keycloak-js": "9.0.0",
@@ -53,7 +53,7 @@
     "react-error-boundary": "4.0.4",
     "react-monaco-editor": "0.50.0",
     "react-router-dom": "5.2.1",
-    "xstate": "4.37.1"
+    "xstate": "4.37.2"
   },
   "devDependencies": {
     "@babel/core": "7.21.4",

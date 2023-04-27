@@ -12,8 +12,12 @@ const ChunkMapper = require("@redhat-cloud-services/frontend-components-config/c
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
+// styles of the topology component are not included in the patternfly-base stylesheet. We needed to allow them to be imported from the @patternlfy/react-styles repo.
 const isPatternflyStyles = (stylesheet) =>
-  stylesheet.includes("@patternfly/react-styles/css/") ||
+  (stylesheet.includes("@patternfly/react-styles/css/") &&
+    !stylesheet.includes(
+      "@patternfly/react-styles/css/components/Topology/"
+    )) ||
   stylesheet.includes("@patternfly/react-core/");
 
 const ASSET_PATH = process.env.DEMO_APP ? "/" : "auto";

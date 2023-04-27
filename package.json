@@ -36,6 +36,7 @@
     "@patternfly/react-icons": "4.93.6",
     "@patternfly/react-styles": "4.92.6",
     "@patternfly/react-table": "4.113.0",
+    "@patternfly/react-topology": "4.91.40",
     "@rhoas/app-services-ui-components": "2.30.0",
     "@rhoas/app-services-ui-shared": "0.16.6",
     "@rhoas/smart-events-management-sdk": "1.0.2",

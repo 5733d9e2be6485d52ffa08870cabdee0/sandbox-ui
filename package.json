@@ -54,7 +54,7 @@
     "react-error-boundary": "4.0.4",
     "react-monaco-editor": "0.50.0",
     "react-router-dom": "5.2.1",
-    "xstate": "4.37.2"
+    "xstate": "4.38.0"
   },
   "devDependencies": {
     "@babel/core": "7.21.4",
